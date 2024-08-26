@@ -23,6 +23,11 @@ dist/
 target/
 dist/
 
+# Neovim jdtls
+.classpath
+.project
+.settings/
+
 # JetBrains IDE
 .idea/
 
