@@ -28,6 +28,9 @@ dist/
 .project
 .settings/
 
+# Tomcat deployment script
+tomcat-deploy
+
 # JetBrains IDE
 .idea/
 
