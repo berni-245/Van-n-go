@@ -9,7 +9,8 @@ public class HelloWorldController {
 
   @RequestMapping("/")
   public ModelAndView index() {
-    final ModelAndView mav = new ModelAndView("index.jsp");
+    final ModelAndView mav = new ModelAndView("index");
+    mav.addObject("username", "<script>alert(\"Lalalala\")</script>");
 
     return mav;
   }
