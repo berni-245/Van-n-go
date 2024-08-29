@@ -19,6 +19,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>${parent.groupId}</groupId>
+      <artifactId>interfaces</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
