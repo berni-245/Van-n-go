@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS users (
+  userId SERIAL PRIMARY KEY,
+  username varchar(255) UNIQUE NOT NULL
+);
