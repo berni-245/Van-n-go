@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
 import javax.sql.DataSource;
 
 @EnableWebMvc
@@ -20,44 +21,44 @@ import javax.sql.DataSource;
         "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig {
-  @Value("classpath:schema.sql")
-  private Resource schemaSql;
+    @Value("classpath:schema.sql")
+    private Resource schemaSql;
 
-  @Bean
-  public ViewResolver viewResolver() {
-    final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-    viewResolver.setViewClass(JstlView.class);
-    viewResolver.setPrefix("/WEB-INF/jsp/");
-    viewResolver.setSuffix(".jsp");
+    @Bean
+    public ViewResolver viewResolver() {
+        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/jsp/");
+        viewResolver.setSuffix(".jsp");
 
-    return viewResolver;
-  }
+        return viewResolver;
+    }
 
-  @Bean
-  public DataSource dataSource() {
-    final SimpleDriverDataSource ds = new SimpleDriverDataSource();
+    @Bean
+    public DataSource dataSource() {
+        final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 
-    ds.setDriverClass(org.postgresql.Driver.class);
+        ds.setDriverClass(org.postgresql.Driver.class);
 
-    // lo de abajo cambiará en el servidor que usaremos nosotros
-    ds.setUrl("jdbc:postgresql://localhost/paw-2024b-01");
-    ds.setUsername("paw-2024b-01");
-    ds.setPassword("9vegcAS5x");
+        // lo de abajo cambiará en el servidor que usaremos nosotros
+        ds.setUrl("jdbc:postgresql://localhost/paw-2024b-01");
+        ds.setUsername("paw-2024b-01");
+        ds.setPassword("9vegcAS5x");
 
-    return ds;
-  }
+        return ds;
+    }
 
-  @Bean
-  public DataSourceInitializer dsInitializer(final DataSource ds) {
-    DataSourceInitializer dsi = new DataSourceInitializer();
-    dsi.setDataSource(ds);
-    dsi.setDatabasePopulator(dsPopulator());
-    return dsi;
-  }
+    @Bean
+    public DataSourceInitializer dsInitializer(final DataSource ds) {
+        DataSourceInitializer dsi = new DataSourceInitializer();
+        dsi.setDataSource(ds);
+        dsi.setDatabasePopulator(dsPopulator());
+        return dsi;
+    }
 
-  private DatabasePopulator dsPopulator() {
-    ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
-    dbp.addScript(schemaSql);
-    return dbp;
-  }
+    private DatabasePopulator dsPopulator() {
+        ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
+        dbp.addScript(schemaSql);
+        return dbp;
+    }
 }

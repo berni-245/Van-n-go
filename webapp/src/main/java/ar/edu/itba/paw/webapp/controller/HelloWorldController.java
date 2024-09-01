@@ -15,38 +15,38 @@ import java.util.Optional;
 @Controller
 public class HelloWorldController {
 
-  @Autowired
-  private UserService us;
+    @Autowired
+    private UserService us;
 
-  public HelloWorldController(final UserService us) {
-    this.us = us;
-  }
+    public HelloWorldController(final UserService us) {
+        this.us = us;
+    }
 
-  @RequestMapping("/")
-  public ModelAndView index(@RequestParam(name = "userId", defaultValue = "1") long userId) {
-    final ModelAndView mav = new ModelAndView("helloworld/index");
-    mav.addObject("username", us.findById(userId).get().getUsername());
-    mav.addObject("userId", userId);
-    return mav;
-  }
+    @RequestMapping("/")
+    public ModelAndView index(@RequestParam(name = "userId", defaultValue = "1") long userId) {
+        final ModelAndView mav = new ModelAndView("helloworld/index");
+        mav.addObject("username", us.findById(userId).get().getUsername());
+        mav.addObject("userId", userId);
+        return mav;
+    }
 
-  @RequestMapping("/{userId:\\d+}")
-  public ModelAndView profile(@PathVariable(name = "userId") long userId) {
-    final ModelAndView mav = new ModelAndView("helloworld/profile");
-    Optional<User> user = us.findById(userId);
-    mav.addObject("username", user.get().getUsername());
-    mav.addObject("userId", user.get().getId());
-    return mav;
-  }
+    @RequestMapping("/{userId:\\d+}")
+    public ModelAndView profile(@PathVariable(name = "userId") long userId) {
+        final ModelAndView mav = new ModelAndView("helloworld/profile");
+        Optional<User> user = us.findById(userId);
+        mav.addObject("username", user.get().getUsername());
+        mav.addObject("userId", user.get().getId());
+        return mav;
+    }
 
-  @RequestMapping(path = "/create", method = RequestMethod.POST)
-  public ModelAndView create(@RequestParam("username") String username){
-    final User user = us.create(username);
-    return new ModelAndView("redirect:/" + user.getId());
-  }
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
+    public ModelAndView create(@RequestParam("username") String username) {
+        final User user = us.create(username);
+        return new ModelAndView("redirect:/" + user.getId());
+    }
 
-  @RequestMapping(path = "/create", method = RequestMethod.GET)
-  public ModelAndView createForm() {
-    return new ModelAndView("helloworld/create");
-  }
+    @RequestMapping(path = "/create", method = RequestMethod.GET)
+    public ModelAndView createForm() {
+        return new ModelAndView("helloworld/create");
+    }
 }
