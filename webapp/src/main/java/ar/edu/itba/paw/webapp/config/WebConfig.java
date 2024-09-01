@@ -40,7 +40,7 @@ public class WebConfig {
     ds.setDriverClass(org.postgresql.Driver.class);
 
     // lo de abajo cambiará en el servidor que usaremos nosotros
-    ds.setUrl("jdbc:postgresql://localhost/paw");
+    ds.setUrl("jdbc:postgresql://localhost/paw-2024b-01");
     ds.setUsername("paw-2024b-01");
     ds.setPassword("9vegcAS5x");
 
