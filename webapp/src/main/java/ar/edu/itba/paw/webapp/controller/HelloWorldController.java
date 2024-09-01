@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,7 +25,7 @@ public class HelloWorldController {
   @RequestMapping("/")
   public ModelAndView index(@RequestParam(name = "userId", defaultValue = "1") long userId) {
     final ModelAndView mav = new ModelAndView("helloworld/index");
-    mav.addObject("username", us.findById(1).get().getUsername());
+    mav.addObject("username", us.findById(userId).get().getUsername());
     mav.addObject("userId", userId);
     return mav;
   }
@@ -36,5 +37,16 @@ public class HelloWorldController {
     mav.addObject("username", user.get().getUsername());
     mav.addObject("userId", user.get().getId());
     return mav;
+  }
+
+  @RequestMapping(path = "/create", method = RequestMethod.POST)
+  public ModelAndView create(@RequestParam("username") String username){
+    final User user = us.create(username);
+    return new ModelAndView("redirect:/" + user.getId());
+  }
+
+  @RequestMapping(path = "/create", method = RequestMethod.GET)
+  public ModelAndView createForm() {
+    return new ModelAndView("helloworld/create");
   }
 }
