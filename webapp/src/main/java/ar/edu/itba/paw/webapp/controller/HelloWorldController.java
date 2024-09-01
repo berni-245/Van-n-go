@@ -18,7 +18,7 @@ public class HelloWorldController {
   @Autowired
   private UserService us;
 
-  public HelloWorldController(final UserService us) {}{
+  public HelloWorldController(final UserService us) {
     this.us = us;
   }
 
