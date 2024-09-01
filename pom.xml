@@ -17,6 +17,8 @@
         <jstl.version>1.2</jstl.version>
         <spring.version>5.3.33</spring.version>
         <org.postgresql.version>42.2.5</org.postgresql.version>
+        <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+        <org.hibernate.validator>6.2.4.Final</org.hibernate.validator>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +53,16 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${org.postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${org.hibernate.validator}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

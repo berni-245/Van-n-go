@@ -2,14 +2,14 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -40,13 +40,16 @@ public class HelloWorldController {
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public ModelAndView create(@RequestParam("username") String username) {
-        final User user = us.create(username);
+    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return createForm(userForm);
+        }
+        final User user = us.create(userForm.getUsername());
         return new ModelAndView("redirect:/" + user.getId());
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.GET)
-    public ModelAndView createForm() {
+    public ModelAndView createForm(@ModelAttribute("userForm") UserForm userForm) {
         return new ModelAndView("helloworld/create");
     }
 }

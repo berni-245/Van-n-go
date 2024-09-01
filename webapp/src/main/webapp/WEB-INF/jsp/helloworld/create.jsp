@@ -1,20 +1,28 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 
 <body>
 <c:url var="postUrl" value="/create"/>
-<form action="${postUrl}" method="post">
+<form:form action="${postUrl}" method="post" modelAttribute="userForm">
     <div>
         <label>
             Username:
-            <input name="username" type="text"/>
+            <form:input path="username" type="text"/>
         </label>
+        <form:errors path="username" element="p" cssStyle="color: red"/>
+    </div>
+    <div>
+        <label>
+            <form:input path="mail"/>
+        </label>
+        <form:errors path="mail" element="p" cssStyle="color: red"/>
     </div>
     <div>
         <input type="submit">
     </div>
-</form>
+</form:form>
 </body>
 
 </html>
