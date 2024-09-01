@@ -1,10 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 
 <body>
-<h2>Hello <c:out value="${username}"/>!</h2>
-<h5>Your user id is <c:out value="${userId}"/></h5>
+<h2><spring:message code="hwc.home.greeting" arguments="${username}"/></h2>
+<h5><spring:message code="hwc.home.userId" arguments="${userId}"/></h5>
 </body>
 
 </html>
