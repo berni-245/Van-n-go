@@ -15,7 +15,7 @@ public class UserJdbcDao implements UserDao {
 
     private static final RowMapper<User> ROW_MAPPER =
             (rs, rowNum) -> new User(
-                    rs.getLong("user_id"),
+                    rs.getLong("id"),
                     rs.getString("username"),
                     rs.getString("mail")
             );
