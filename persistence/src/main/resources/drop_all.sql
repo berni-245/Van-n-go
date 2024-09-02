@@ -1,0 +1,7 @@
+drop table vehicle_weekly_zone;
+drop table zone;
+drop table weekly_availability;
+drop table vehicle;
+drop table driver;
+drop table client;
+drop table app_user;

@@ -14,7 +14,11 @@ import java.util.Optional;
 public class UserJdbcDao implements UserDao {
 
     private static final RowMapper<User> ROW_MAPPER =
-            (rs, rowNum) -> new User(rs.getLong("userid"), rs.getString("username"));
+            (rs, rowNum) -> new User(
+                    rs.getLong("user_id"),
+                    rs.getString("username"),
+                    rs.getString("mail")
+            );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -22,13 +26,14 @@ public class UserJdbcDao implements UserDao {
     public UserJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .usingGeneratedKeyColumns("userid")
+                .usingGeneratedKeyColumns("id")
                 .withTableName("users");
     }
 
     @Override
     public Optional<User> findById(long id) {
-        return jdbcTemplate.query("SELECT * FROM users where userid = ?",
+        return jdbcTemplate.query(
+                        "SELECT * FROM app_user where id = ?",
                         new Object[]{id},
                         new int[]{java.sql.Types.BIGINT},
                         ROW_MAPPER)
@@ -36,9 +41,9 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public User create(String username) {
-        Map<String, String> userData = Map.of("username", username);
+    public User create(String username, String mail) {
+        Map<String, String> userData = Map.of("username", username, "mail", mail);
         final Number generatedId = jdbcInsert.executeAndReturnKey(userData);
-        return new User(generatedId.longValue(), username);
+        return new User(generatedId.longValue(), username, mail);
     }
 }

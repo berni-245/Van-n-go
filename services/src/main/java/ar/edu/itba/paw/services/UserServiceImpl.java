@@ -21,15 +21,15 @@ public class UserServiceImpl implements UserService {
         return userDao.findById(id);
     }
 
-    public User create(String username) {
-        // register user
+    public User create(String username, String mail) {
+        // Register user
         // TODO
-        // 1. validar inputs
-        // 2. ingresarlo en base de datos
-        // 3. generar un token de validación y guardarlo en base
-        // 4. enviar el token de validación en un correo de bienvenida
-        // 5. agregar al usuario a una cola de verificación manual...
-        // 6. ... sigue tan complejo como lo requiera la aplicación
-        return userDao.create(username);
+        // 1. Validate inputs
+        // 2. Store in database
+        // 3. Generate validation token and store in db
+        // 4. Send validation token in a welcome email
+        // 5. Add user to manual verification queue
+        // 6. ... Whatever else the app needs
+        return userDao.create(username, mail);
     }
 }

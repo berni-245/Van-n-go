@@ -40,11 +40,14 @@ public class HelloWorldController {
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
+    public ModelAndView create(
+            @Valid @ModelAttribute("userForm") UserForm userForm,
+            BindingResult errors
+    ) {
         if (errors.hasErrors()) {
             return createForm(userForm);
         }
-        final User user = us.create(userForm.getUsername());
+        final User user = us.create(userForm.getUsername(), userForm.getMail());
         return new ModelAndView("redirect:/" + user.getId());
     }
 
