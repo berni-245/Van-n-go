@@ -14,7 +14,7 @@ public class ClientController {
     public ModelAndView viewPosts() {
         final ModelAndView mav = new ModelAndView("clients/availability");
         List<TestUser> users = new ArrayList<>();
-        TestUser user1 = new TestUser("john_doe", 1, "Delivery specialist, specially centered in doing stuff with big text", "Toyota Corolla", 500);
+        TestUser user1 = new TestUser("john_doe", 1, "Delivery specialist, centered in doing stuff with big text", "Toyota Corolla", 500);
         TestUser user2 = new TestUser("jane_smith", 2, "Freight handler", "Ford F-150", 1000);
         TestUser user3 = new TestUser("alice_jones", 3, "Courier", "Honda Civic", 300);
         TestUser user4 = new TestUser("bob_brown", 4, "Warehouse operator", "Chevrolet Silverado", 1200);
