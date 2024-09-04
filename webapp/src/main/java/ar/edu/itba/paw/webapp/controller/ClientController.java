@@ -12,7 +12,7 @@ import java.util.List;
 public class ClientController {
     @RequestMapping("/posts")
     public ModelAndView viewPosts() {
-        final ModelAndView mav = new ModelAndView("clients/availability");
+        final ModelAndView mav = new ModelAndView("client/availability");
         List<TestUser> users = new ArrayList<>();
         TestUser user1 = new TestUser("john_doe", 1, "Delivery specialist, centered in doing stuff with big text", "Toyota Corolla", 500);
         TestUser user2 = new TestUser("jane_smith", 2, "Freight handler", "Ford F-150", 1000);
