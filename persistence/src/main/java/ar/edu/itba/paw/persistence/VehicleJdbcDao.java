@@ -44,7 +44,7 @@ public class VehicleJdbcDao implements VehicleDao {
         try {
             final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
             return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
-        } catch (RuntimeException e) {
+        } catch (DuplicateKeyException e) {
             return null;
         }
     }
