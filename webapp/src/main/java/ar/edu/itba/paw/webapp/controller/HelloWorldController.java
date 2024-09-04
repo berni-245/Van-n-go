@@ -4,6 +4,9 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -39,20 +42,36 @@ public class HelloWorldController {
         return mav;
     }
 
+    //TODO: Hashear la password en us.create
+
+    PasswordEncoder pw = new BCryptPasswordEncoder();
+
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public ModelAndView create(
-            @Valid @ModelAttribute("userForm") UserForm userForm,
-            BindingResult errors
-    ) {
+    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
         if (errors.hasErrors()) {
             return createForm(userForm);
         }
-        final User user = us.create(userForm.getUsername(), userForm.getMail());
+        final User user = us.create(userForm.getUsername(), userForm.getMail(), pw.encode(userForm.getPassword()));
         return new ModelAndView("redirect:/" + user.getId());
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.GET)
     public ModelAndView createForm(@ModelAttribute("userForm") UserForm userForm) {
         return new ModelAndView("helloworld/create");
+    }
+
+    @RequestMapping(path = "/test")
+    public ModelAndView test() {
+        return new ModelAndView("helloworld/materialTest");
+    }
+
+    @RequestMapping(path = "/home")
+    public ModelAndView home(){
+        return new ModelAndView("helloworld/home");
+    }
+
+    @RequestMapping(path = "/login")
+    public ModelAndView login() {
+        return new ModelAndView("helloworld/login");
     }
 }

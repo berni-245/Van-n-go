@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,11 +15,7 @@ import java.util.Optional;
 public class UserJdbcDao implements UserDao {
 
     private static final RowMapper<User> ROW_MAPPER =
-            (rs, rowNum) -> new User(
-                    rs.getLong("id"),
-                    rs.getString("username"),
-                    rs.getString("mail")
-            );
+            (rs, rowNum) -> new User(rs.getLong("userid"), rs.getString("username"), rs.getString("mail"), rs.getString("password"));
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -27,14 +24,7 @@ public class UserJdbcDao implements UserDao {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .usingGeneratedKeyColumns("id")
-                .withTableName("users");
-    }
-
-    @Override
-    public User create(String username, String mail) {
-        Map<String, String> userData = Map.of("username", username, "mail", mail);
-        final Number generatedId = jdbcInsert.executeAndReturnKey(userData);
-        return new User(generatedId.longValue(), username, mail);
+                .withTableName("app_user");
     }
 
     @Override
@@ -45,5 +35,20 @@ public class UserJdbcDao implements UserDao {
                         new int[]{java.sql.Types.BIGINT},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+    @Override
+    public User create(String username, String mail, String password) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("username", username);
+        userData.put("mail", mail);
+        userData.put("password", password);
+        final Number generatedId = jdbcInsert.executeAndReturnKey(userData);
+        return new User(generatedId.longValue(), username, mail, password);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM app_user WHERE username = ?", new Object[]{username}, new int[]{java.sql.Types.VARCHAR},ROW_MAPPER).stream().findFirst().orElse(null);
     }
 }

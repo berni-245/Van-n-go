@@ -16,7 +16,7 @@ public class DriverJdbcDao implements DriverDao {
 
     private static final RowMapper<Driver> ROW_MAPPER =
             (rs, rowNum) -> new Driver(
-                    rs.getLong("user_id"),
+                    rs.getLong("id"),
                     rs.getString("username"),
                     rs.getString("mail"),
                     rs.getString("extra1")
@@ -38,7 +38,7 @@ public class DriverJdbcDao implements DriverDao {
     public Driver create(String username, String mail, String extra1) {
         Map<String, String> userData = Map.of("username", username, "mail", mail);
         final Number userId = jdbcUserInsert.executeAndReturnKey(userData);
-        jdbcDriverInsert.execute(Map.of("user_id", userId, "extra1", extra1));
+        jdbcDriverInsert.execute(Map.of("id", userId, "extra1", extra1));
         return new Driver(userId.longValue(), username, mail, extra1);
     }
 

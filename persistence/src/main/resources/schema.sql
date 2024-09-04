@@ -5,7 +5,7 @@
 create table if not exists app_user
 (
     id       serial primary key,
-    username text        not null,
+    username text unique not null,
     mail     text unique not null,
     password text        not null
 );
