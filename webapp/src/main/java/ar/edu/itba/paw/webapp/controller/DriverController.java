@@ -2,7 +2,10 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.models.WeeklyAvailability;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,8 +27,12 @@ public class DriverController {
     @Autowired
     private DriverService ds;
 
-    public DriverController(final DriverService ds) {
+    @Autowired
+    private ZoneService zs;
+
+    public DriverController(final DriverService ds, ZoneService zs) {
         this.ds = ds;
+        this.zs = zs;
     }
 
     @RequestMapping("/driver/{id:\\d+}")
@@ -75,6 +83,43 @@ public class DriverController {
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("driver/add_vehicle");
             mav.addObject("username", driver.get().getUsername());
+            return mav;
+        } else {
+            return new ModelAndView();
+        }
+    }
+
+    @RequestMapping(path = "/driver/{driverId:\\d+}/availability/add", method = RequestMethod.POST)
+    public ModelAndView addAvailability(
+            @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
+            BindingResult errors,
+            @PathVariable long driverId
+    ) {
+        if (errors.hasErrors()) {
+            return addAvailabilityForm(form, driverId);
+        }
+        List<WeeklyAvailability> successfulInsertions = ds.addWeeklyAvailability(
+                driverId,
+                form.getWeekDays(),
+                form.getTimeStart(),
+                form.getTimeEnd(),
+                new long[]{1, 2},
+                form.getVehicleIds()
+        );
+        return new ModelAndView("redirect:/driver/" + driverId);
+    }
+
+    @RequestMapping(path = "/driver/{driverId:\\d+}/availability/add", method = RequestMethod.GET)
+    public ModelAndView addAvailabilityForm(
+            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm,
+            @PathVariable long driverId
+    ) {
+        Optional<Driver> driver = ds.findById(driverId);
+        if (driver.isPresent()) {
+            final ModelAndView mav = new ModelAndView("driver/add_availability");
+            mav.addObject("username", driver.get().getUsername());
+            mav.addObject("vehicles", ds.getVehicles(driverId));
+            mav.addObject("zones", zs.getAllZones());
             return mav;
         } else {
             return new ModelAndView();

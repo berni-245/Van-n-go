@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Vehicle;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Types;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,5 +69,14 @@ public class VehicleJdbcDao implements VehicleDao {
                         new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+    @Override
+    public List<Vehicle> getDriverVehicles(long driverId) {
+        return jdbcTemplate.query(
+                "SELECT * FROM vehicle where driver_id = ?",
+                new Object[]{driverId},
+                new int[]{java.sql.Types.BIGINT},
+                ROW_MAPPER);
     }
 }
