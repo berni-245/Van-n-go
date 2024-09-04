@@ -40,7 +40,7 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(path = "/driver/{driverId:\\d+}/vehicle/create", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/{driverId:\\d+}/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehicle(
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
             BindingResult errors,
@@ -66,7 +66,7 @@ public class DriverController {
         return new ModelAndView("redirect:/driver/" + driverId);
     }
 
-    @RequestMapping(path = "/driver/{driverId:\\d+}/vehicle/create", method = RequestMethod.GET)
+    @RequestMapping(path = "/driver/{driverId:\\d+}/vehicle/add", method = RequestMethod.GET)
     public ModelAndView addVehicleForm(
             @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
             @PathVariable long driverId

@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <h2><spring:message code="driver.add_vehicle.title" arguments="${username}"/></h2>
-    <c:url var="postUrl" value="/driver/${driverId}/vehicle/create"/>
+    <c:url var="postUrl" value="/driver/${driverId}/vehicle/add"/>
     <form:form action="${postUrl}" method="post" modelAttribute="vehicleForm">
         <div class="mb-3">
             <label class="form-label">
