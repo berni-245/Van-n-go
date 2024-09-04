@@ -103,7 +103,7 @@ public class DriverController {
                 form.getWeekDays(),
                 form.getTimeStart(),
                 form.getTimeEnd(),
-                new long[]{1, 2},
+                form.getZoneIds(),
                 form.getVehicleIds()
         );
         return new ModelAndView("redirect:/driver/" + driverId);
