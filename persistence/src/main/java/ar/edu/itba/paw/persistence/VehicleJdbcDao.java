@@ -34,6 +34,22 @@ public class VehicleJdbcDao implements VehicleDao {
     }
 
     @Override
+    public Vehicle create(long driverId, String plateNumber, double volume, String description) {
+        Map<String, Object> vehicleData = Map.of(
+                "driver_id", driverId,
+                "plate_number", plateNumber,
+                "volume_m3", volume,
+                "description", description
+        );
+        try {
+            final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
+            return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    @Override
     public Optional<Vehicle> findById(long id) {
         return jdbcTemplate.query(
                         "SELECT * FROM vehicle where id = ?",
@@ -51,21 +67,5 @@ public class VehicleJdbcDao implements VehicleDao {
                         new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
-    }
-
-    @Override
-    public Vehicle create(long driverId, String plateNumber, double volume, String description) {
-        Map<String, Object> vehicleData = Map.of(
-                "driver_id", driverId,
-                "plate_number", plateNumber,
-                "volume_m3", volume,
-                "description", description
-        );
-        try {
-            final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
-            return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
-        } catch (RuntimeException e) {
-            return null;
-        }
     }
 }

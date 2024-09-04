@@ -34,6 +34,14 @@ public class DriverJdbcDao implements DriverDao {
     }
 
     @Override
+    public Driver create(String username, String mail, String extra1) {
+        Map<String, String> userData = Map.of("username", username, "mail", mail);
+        final Number userId = jdbcUserInsert.executeAndReturnKey(userData);
+        jdbcDriverInsert.execute(Map.of("user_id", userId, "extra1", extra1));
+        return new Driver(userId.longValue(), username, mail, extra1);
+    }
+
+    @Override
     public Optional<Driver> findById(long id) {
         return jdbcTemplate.query(
                         "SELECT * FROM driver join app_user on driver.user_id = app_user.id where id = ?",
@@ -41,13 +49,5 @@ public class DriverJdbcDao implements DriverDao {
                         new int[]{java.sql.Types.BIGINT},
                         ROW_MAPPER)
                 .stream().findFirst();
-    }
-
-    @Override
-    public Driver create(String username, String mail, String extra1) {
-        Map<String, String> userData = Map.of("username", username, "mail", mail);
-        final Number userId = jdbcUserInsert.executeAndReturnKey(userData);
-        jdbcDriverInsert.execute(Map.of("user_id", userId, "extra1", extra1));
-        return new Driver(userId.longValue(), username, mail, extra1);
     }
 }

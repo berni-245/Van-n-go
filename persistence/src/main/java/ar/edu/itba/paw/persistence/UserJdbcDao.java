@@ -31,6 +31,13 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
+    public User create(String username, String mail) {
+        Map<String, String> userData = Map.of("username", username, "mail", mail);
+        final Number generatedId = jdbcInsert.executeAndReturnKey(userData);
+        return new User(generatedId.longValue(), username, mail);
+    }
+
+    @Override
     public Optional<User> findById(long id) {
         return jdbcTemplate.query(
                         "SELECT * FROM app_user where id = ?",
@@ -38,12 +45,5 @@ public class UserJdbcDao implements UserDao {
                         new int[]{java.sql.Types.BIGINT},
                         ROW_MAPPER)
                 .stream().findFirst();
-    }
-
-    @Override
-    public User create(String username, String mail) {
-        Map<String, String> userData = Map.of("username", username, "mail", mail);
-        final Number generatedId = jdbcInsert.executeAndReturnKey(userData);
-        return new User(generatedId.longValue(), username, mail);
     }
 }
