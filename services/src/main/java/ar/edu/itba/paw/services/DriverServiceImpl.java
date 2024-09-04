@@ -85,4 +85,9 @@ public class DriverServiceImpl implements DriverService {
         }
         return availabilities;
     }
+
+    @Override
+    public List<Driver> getAll() {
+        return driverDao.getAll();
+    }
 }

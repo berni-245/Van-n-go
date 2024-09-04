@@ -26,4 +26,6 @@ public interface DriverService {
             long[] zoneIds,
             long[] vehicleIds
     );
+
+    List<Driver> getAll();
 }

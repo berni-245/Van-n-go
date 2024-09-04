@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,5 +50,14 @@ public class DriverJdbcDao implements DriverDao {
                         new int[]{java.sql.Types.BIGINT},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+    // We should probably add some kind of pagination to this.
+    @Override
+    public List<Driver> getAll() {
+        return jdbcTemplate.query(
+                "SELECT * FROM driver join app_user on driver.user_id = app_user.id",
+                ROW_MAPPER
+        );
     }
 }
