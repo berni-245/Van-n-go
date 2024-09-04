@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.webapp.validation.ArrayAllMax;
 import ar.edu.itba.paw.webapp.validation.ArrayAllMin;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
@@ -20,6 +21,12 @@ public class AvailabilityForm {
 
     @NotEmpty
     private long[] vehicleIds;
+
+    @AssertTrue(message = "Start time cannot come after end time")
+    public boolean isValidTime() {
+        return timeStart != null && timeEnd != null && timeEnd.compareTo(timeStart) > 0;
+    }
+
 
     @NotEmpty
     private long[] zoneIds;

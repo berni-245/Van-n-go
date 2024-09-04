@@ -55,6 +55,7 @@
                     <form:input path="timeEnd" cssClass="form-control" type="time"/>
                     <form:errors path="timeEnd" element="p" cssStyle="color: red"/>
                 </div>
+                <form:errors element="div" cssClass="alert alert-danger"/>
             </div>
         </div>
 
