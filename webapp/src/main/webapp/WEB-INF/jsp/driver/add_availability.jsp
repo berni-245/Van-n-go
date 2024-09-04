@@ -62,6 +62,11 @@
         <div class="mb-3">
             <label class="form-label"><spring:message code="driver.add_availability.selectVehicles"/></label>
             <ul class="list-group mh-25 overflow-auto">
+                <c:choose>
+                <c:when test="${vehicles.isEmpty()}">
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/vehicle/add" role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
+                </c:when>
+                <c:otherwise>
                 <c:forEach var="zone" items="${vehicles}">
                     <li class="list-group-item">
                         <form:checkbox path="vehicleIds" class="form-check-input me-1" value="${zone.id}"
@@ -69,6 +74,8 @@
                         <label class="form-check-label" for="vehicle_${zone.id}">${zone.plateNumber}</label>
                     </li>
                 </c:forEach>
+                </c:otherwise>
+                </c:choose>
             </ul>
             <form:errors path="vehicleIds" element="p" cssStyle="color: red"/>
         </div>
