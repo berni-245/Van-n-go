@@ -71,7 +71,7 @@ public class DriverController {
             );
             return addVehicleForm(vehicleForm, driverId);
         }
-        return new ModelAndView("redirect:/driver/" + driverId);
+        return new ModelAndView("redirect:/availability");
     }
 
     @RequestMapping(path = "/driver/{driverId:\\d+}/vehicle/add", method = RequestMethod.GET)
@@ -106,7 +106,7 @@ public class DriverController {
                 form.getZoneIds(),
                 form.getVehicleIds()
         );
-        return new ModelAndView("redirect:/driver/" + driverId);
+        return new ModelAndView("redirect:/availability");
     }
 
     @RequestMapping(path = "/driver/{driverId:\\d+}/availability/add", method = RequestMethod.GET)
