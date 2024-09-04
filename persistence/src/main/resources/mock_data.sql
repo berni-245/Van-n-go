@@ -18,14 +18,14 @@ insert into neighborhood
 values (3, 'Adrogué')
 on conflict do nothing;
 
-insert into country_province_neighborhood
-values (1, 1, 1)
+insert into zone
+values (1, 1, 1, 1)
 on conflict do nothing;
-insert into country_province_neighborhood
-values (1, 1, 2)
+insert into zone
+values (2, 1, 1, 2)
 on conflict do nothing;
-insert into country_province_neighborhood
-values (1, 2, 3)
+insert into zone
+values (3, 1, 2, 3)
 on conflict do nothing;
 
 -- Users

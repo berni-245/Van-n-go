@@ -60,19 +60,19 @@ create table if not exists neighborhood
     name text unique not null
 );
 
-create table if not exists country_province_neighborhood
+create table if not exists zone
 (
-    country_id  int references country (id) on delete cascade,
-    province_id int references province (id) on delete cascade,
+    id              serial primary key,
+    country_id      int references country (id) on delete cascade,
+    province_id     int references province (id) on delete cascade,
     neighborhood_id int references neighborhood (id) on delete cascade,
-    primary key (country_id, province_id, neighborhood_id)
+    unique (country_id, province_id, neighborhood_id)
 );
 
 create table if not exists vehicle_weekly_zone
 (
-    id              serial primary key,
     vehicle_id      int not null references vehicle (id) on delete cascade,
     availability_id int not null references weekly_availability (id) on delete cascade,
-    neighborhood_id int not null references neighborhood (id) on delete cascade,
-    unique (vehicle_id, availability_id, neighborhood_id)
+    zone_id         int not null references zone (id) on delete cascade,
+    primary key (vehicle_id, availability_id, zone_id)
 );
