@@ -2,11 +2,13 @@ package ar.edu.itba.paw.webapp.form;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public class VehicleForm {
     // This should be country dependant I think?
     // @Size(min = 8, max = 20)
-    // @Pattern(regexp = "[a-zA-Z]\\w*")
+    @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})",
+            message = "Debe ingresar una patente válida")
     @NotBlank
     private String plateNumber;
 

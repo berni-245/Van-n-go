@@ -39,7 +39,7 @@ public class VehicleJdbcDao implements VehicleDao {
     public Vehicle create(long driverId, String plateNumber, double volume, String description) {
         Map<String, Object> vehicleData = Map.of(
                 "driver_id", driverId,
-                "plate_number", plateNumber,
+                "plate_number", plateNumber.toUpperCase(),
                 "volume_m3", volume,
                 "description", description
         );
