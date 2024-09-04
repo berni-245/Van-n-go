@@ -17,7 +17,8 @@
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4"><spring:message code="HomeDesc"/></p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"><spring:message code="Search"/></button>
+                <a class="btn btn-primary btn-lg px-4 gap-3" href="${pageContext.request.contextPath}/availability" role="button"><spring:message code="Search"/></a>
+<%--                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"><spring:message code="Search"/></button>--%>
             </div>
         </div>
     </div>

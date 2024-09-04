@@ -51,20 +51,21 @@
                                             <%--                                        </p>--%>
 
                                         <div>
+                                            <p>Horarios:</p>
                                             <c:forEach var="av" items="${availability}">
                                                 <p class="card-text text-body-secondary">
-                                                    Asdf:
+
                                                     <c:out value="${av.weekDayString}"/> |
                                                     <c:out value="${av.timeStart}"/> to <c:out value="${av.timeEnd}"/> |
-                                                    <c:out value="${vehicles[av.vehicleId].plateNumber}"/> |
+                                                    <c:out value="${vehicles[av.vehicleId].plateNumber} - volumen: ${vehicles[av.vehicleId].volume}m^3"/> |
                                                     <c:out value="${zones[av.zoneId].neighborhoodName}"/>
                                                 </p>
                                             </c:forEach>
                                         </div>
 
-                                        <a href="#" class="card-link">
-                                            ¡Contactar!
-                                        </a>
+                                        <p>
+                                            Contacto: ${driver.mail}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
