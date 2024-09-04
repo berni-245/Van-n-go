@@ -37,8 +37,10 @@
                                  tabindex="${driver.id}">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">
+                                        <h5 class="card-title d-flex align-items-center">
                                             <c:out value="${driver.username}"/>
+                                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/vehicle/add" role="button">Agregar vehículo</a>
+                                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/availability/add" role="button">Agregar horario</a>
                                         </h5>
                                         <p class="card-text">
                                             Descripción: <c:out value="${driver.extra1}"/>

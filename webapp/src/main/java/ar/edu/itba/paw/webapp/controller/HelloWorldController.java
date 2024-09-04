@@ -60,7 +60,7 @@ public class HelloWorldController {
                 pw.encode(driverForm.getPassword()),
                 driverForm.getExtra1()
         );
-        return new ModelAndView("redirect:/" + user.getId());
+        return new ModelAndView("redirect:/availability");
     }
 
     @RequestMapping(path = "/driver/register", method = RequestMethod.GET)
