@@ -27,6 +27,10 @@ public class WebConfig {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
 
+//    Doesn't work. See https://github.com/spring-projects/spring-framework/issues/19999
+//    @Value("classpath:triggers.sql")
+//    private Resource triggersSql;
+
     @Bean
     public ViewResolver viewResolver() {
         final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -72,6 +76,7 @@ public class WebConfig {
     private DatabasePopulator dsPopulator() {
         ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
+//        dbp.addScript(triggersSql);
         return dbp;
     }
 }
