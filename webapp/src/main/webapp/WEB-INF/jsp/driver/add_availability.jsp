@@ -5,7 +5,7 @@
 <html>
 <head>
     <title></title>
-    <jsp:include page="../components/bootsrap.jsp"/>
+    <jsp:include page="../components/bootstrap.jsp"/>
 </head>
 
 <body>
