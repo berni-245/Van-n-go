@@ -19,21 +19,21 @@ public class VehicleForm {
         return plateNumber;
     }
 
+    public void setPlateNumber(@NotBlank String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
     @Min(1)
     public double getVolume() {
         return volume;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setPlateNumber(@NotBlank String plateNumber) {
-        this.plateNumber = plateNumber;
-    }
-
     public void setVolume(@Min(1) double volume) {
         this.volume = volume;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
