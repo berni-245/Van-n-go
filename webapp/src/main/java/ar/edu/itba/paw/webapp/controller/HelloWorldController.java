@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.form.DriverForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,15 +22,17 @@ public class HelloWorldController {
     @Autowired
     private UserService us;
 
+    @Autowired
+    private DriverService ds;
+
     public HelloWorldController(final UserService us) {
         this.us = us;
+        this.ds = ds;
     }
 
     @RequestMapping("/")
-    public ModelAndView index(@RequestParam(name = "userId", defaultValue = "1") long userId) {
-        final ModelAndView mav = new ModelAndView("helloworld/index");
-        mav.addObject("username", us.findById(userId).get().getUsername());
-        mav.addObject("userId", userId);
+    public ModelAndView index() {
+        final ModelAndView mav = new ModelAndView("helloworld/home");
         return mav;
     }
 
@@ -46,18 +49,23 @@ public class HelloWorldController {
 
     PasswordEncoder pw = new BCryptPasswordEncoder();
 
-    @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
+    @RequestMapping(path = "/driver/register", method = RequestMethod.POST)
+    public ModelAndView create(@Valid @ModelAttribute("driverForm") DriverForm driverForm, BindingResult errors) {
         if (errors.hasErrors()) {
-            return createForm(userForm);
+            return createForm(driverForm);
         }
-        final User user = us.create(userForm.getUsername(), userForm.getMail(), pw.encode(userForm.getPassword()));
+        final User user = ds.create(
+                driverForm.getUsername(),
+                driverForm.getMail(),
+                pw.encode(driverForm.getPassword()),
+                driverForm.getExtra1()
+        );
         return new ModelAndView("redirect:/" + user.getId());
     }
 
-    @RequestMapping(path = "/create", method = RequestMethod.GET)
-    public ModelAndView createForm(@ModelAttribute("userForm") UserForm userForm) {
-        return new ModelAndView("helloworld/create");
+    @RequestMapping(path = "/driver/register", method = RequestMethod.GET)
+    public ModelAndView createForm(@ModelAttribute("driverForm") DriverForm driverForm) {
+        return new ModelAndView("driver/register");
     }
 
     @RequestMapping(path = "/test")
@@ -66,7 +74,7 @@ public class HelloWorldController {
     }
 
     @RequestMapping(path = "/home")
-    public ModelAndView home(){
+    public ModelAndView home() {
         return new ModelAndView("helloworld/home");
     }
 

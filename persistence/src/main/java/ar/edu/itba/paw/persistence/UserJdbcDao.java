@@ -15,7 +15,12 @@ import java.util.Optional;
 public class UserJdbcDao implements UserDao {
 
     private static final RowMapper<User> ROW_MAPPER =
-            (rs, rowNum) -> new User(rs.getLong("userid"), rs.getString("username"), rs.getString("mail"), rs.getString("password"));
+            (rs, rowNum) -> new User(
+                    rs.getLong("id"),
+                    rs.getString("username"),
+                    rs.getString("mail"),
+                    rs.getString("password")
+            );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -49,6 +54,11 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public User findByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM app_user WHERE username = ?", new Object[]{username}, new int[]{java.sql.Types.VARCHAR},ROW_MAPPER).stream().findFirst().orElse(null);
+        return jdbcTemplate.query(
+                "SELECT * FROM app_user WHERE username = ?",
+                new Object[]{username},
+                new int[]{java.sql.Types.VARCHAR},
+                ROW_MAPPER
+        ).stream().findFirst().orElse(null);
     }
 }

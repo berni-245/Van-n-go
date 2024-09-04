@@ -3,8 +3,8 @@ package ar.edu.itba.paw.models;
 public class Driver extends User {
     private final String extra1;
 
-    public Driver(long id, String username, String mail, String extra1) {
-        super(id, username, mail);
+    public Driver(long id, String username, String mail, String password, String extra1) {
+        super(id, username, mail, password);
         this.extra1 = extra1;
     }
 

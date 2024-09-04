@@ -28,7 +28,8 @@ public class DriverServiceImpl implements DriverService {
         this.driverDao = driverDao;
     }
 
-    public Driver create(String username, String mail, String extra1) {
+    @Override
+    public Driver create(String username, String mail, String password, String extra1) {
         // Register user
         // TODO
         // 1. Validate inputs
@@ -37,7 +38,7 @@ public class DriverServiceImpl implements DriverService {
         // 4. Send validation token in a welcome email
         // 5. Add user to manual verification queue
         // 6. ... Whatever else the app needs
-        return driverDao.create(username, mail, extra1);
+        return driverDao.create(username, mail, password, extra1);
     }
 
     @Override

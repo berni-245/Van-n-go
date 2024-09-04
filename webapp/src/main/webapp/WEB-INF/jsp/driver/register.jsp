@@ -1,16 +1,81 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: franco
-  Date: 9/1/24
-  Time: 4:56 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <html>
 <head>
-    <title>Title</title>
+    <%@include file="../components/bootstrap.jsp" %>
+    <title>
+        Penguin Express
+    </title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
+<c:url var="postUrl" value="/driver/register"/>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom bg-white">
+    <a href="${pageContext.request.contextPath}/"
+       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <span class="fs-4">Logo</span>
+    </a>
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/login" class="nav-link"
+                                aria-current="page"><spring:message code="Login"/></a></li>
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/home" class="nav-link"><spring:message
+                code="hwc.create.returnHome"/></a></li>
+    </ul>
+</header>
 
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4"><spring:message code="hwc.create.userRegistry"/></h5>
+                    <form:form action="${postUrl}" method="post" modelAttribute="driverForm">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <spring:message code="hwc.create.username"/>
+                            </label>
+                            <form:input path="username" type="text" class="form-control"/>
+                            <form:errors path="username" element="p" cssClass="text-danger"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <spring:message code="hwc.create.mail"/>
+                            </label>
+                            <form:input path="mail" type="email" class="form-control"/>
+                            <form:errors path="mail" element="p" cssClass="text-danger"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <spring:message code="hwc.create.password"/>
+                            </label>
+                            <form:input type="password" path="password" class="form-control"/>
+                            <form:errors path="password" element="p" cssClass="text-danger"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <spring:message code="hwc.create.confirmPassword"/>
+                            </label>
+                            <form:input type="password" path="confirmPassword" class="form-control"/>
+                            <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
+                            <form:errors element="div" cssClass="alert alert-danger"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <spring:message code="hwc.create.description"/>
+                            </label>
+                            <form:input type="text" path="extra1" class="form-control"/>
+                            <form:errors path="extra1" element="p" cssClass="text-danger"/>
+                            <form:errors element="div" cssClass="alert alert-danger"/>
+                        </div>
+                        <div class="d-grid">
+                            <input type="submit" class="btn btn-primary" value=<spring:message code="confirm"/>>
+                        </div>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -14,10 +14,16 @@
         <span class="fs-4">Van N' Go Logo</span>
     </a>
     <ul class="nav nav-pills">
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/" class="nav-link" aria-current="page">Home</a>
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/" class="nav-link" aria-current="page">
+                Home
+            </a>
         </li>
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/register" class="nav-link">Registerse como
-            fletero</a></li>
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/create" class="nav-link">
+                Registerse como fletero
+            </a>
+        </li>
     </ul>
 </header>
 
@@ -35,7 +41,7 @@
                             <button class="nav-link text-truncate" style="max-width: 200px;" id="${driver.id}-tab"
                                     data-bs-toggle="pill" data-bs-target="#${driver.id}"
                                     type="button" role="tab" aria-controls="${driver.id}" aria-selected="false">
-                                <c:out value="${driver.username}"/>
+                                <c:out value="${driver.username} (id: ${driver.id})"/>
                             </button>
                         </c:forEach>
                     </div>

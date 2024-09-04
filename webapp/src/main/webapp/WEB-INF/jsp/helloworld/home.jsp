@@ -17,7 +17,7 @@
     </a>
     <ul class="nav nav-pills">
         <li class="nav-item"><a href="${pageContext.request.contextPath}/login" class="nav-link" aria-current="page"><spring:message code="Login"/></a></li>
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/create" class="nav-link"><spring:message code="Register"/></a></li>
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/driver/register" class="nav-link"><spring:message code="Register"/></a></li>
     </ul>
 </header>
 <main>

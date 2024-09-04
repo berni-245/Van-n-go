@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DriverDao {
-    Driver create(String username, String mail, String extra1);
+    Driver create(String username, String mail, String password, String extra1);
 
     Optional<Driver> findById(long id);
 

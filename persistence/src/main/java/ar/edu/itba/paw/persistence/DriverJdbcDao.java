@@ -19,6 +19,7 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getLong("id"),
                     rs.getString("username"),
                     rs.getString("mail"),
+                    rs.getString("password"),
                     rs.getString("extra1")
             );
 
@@ -35,11 +36,12 @@ public class DriverJdbcDao implements DriverDao {
     }
 
     @Override
-    public Driver create(String username, String mail, String extra1) {
-        Map<String, String> userData = Map.of("username", username, "mail", mail);
+    public Driver create(String username, String mail, String password, String extra1) {
+        Map<String, String> userData = Map.of("username", username, "mail", mail, "password", password);
+        // We should use transactions here....
         final Number userId = jdbcUserInsert.executeAndReturnKey(userData);
-        jdbcDriverInsert.execute(Map.of("id", userId, "extra1", extra1));
-        return new Driver(userId.longValue(), username, mail, extra1);
+        jdbcDriverInsert.execute(Map.of("user_id", userId, "extra1", extra1));
+        return new Driver(userId.longValue(), username, mail, password, extra1);
     }
 
     @Override
