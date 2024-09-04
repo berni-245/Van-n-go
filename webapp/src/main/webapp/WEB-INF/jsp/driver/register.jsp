@@ -11,18 +11,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 <c:url var="postUrl" value="/driver/register"/>
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom bg-white">
-    <a href="${pageContext.request.contextPath}/"
-       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <span class="fs-4">Logo</span>
-    </a>
-    <ul class="nav nav-pills">
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/login" class="nav-link"
-                                aria-current="page"><spring:message code="Login"/></a></li>
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/home" class="nav-link"><spring:message
-                code="hwc.create.returnHome"/></a></li>
-    </ul>
-</header>
+<%@include file="../components/myHeader.jsp" %>
 
 <div class="container mt-5">
     <div class="row justify-content-center">

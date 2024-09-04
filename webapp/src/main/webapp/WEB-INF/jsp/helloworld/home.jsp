@@ -10,16 +10,7 @@
 <body class="d-flex flex-column min-vh-100">
 
 
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-    <a href="${pageContext.request.contextPath}/"
-       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <span class="fs-4">Logo</span>
-    </a>
-    <ul class="nav nav-pills">
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/login" class="nav-link" aria-current="page"><spring:message code="Login"/></a></li>
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/driver/register" class="nav-link"><spring:message code="Register"/></a></li>
-    </ul>
-</header>
+<%@include file="../components/myHeader.jsp" %>
 <main>
     <div class="px-4 py-5 my-5 text-center">
         <h1 class="display-5 fw-bold text-body-emphasis">Van N' Go</h1>

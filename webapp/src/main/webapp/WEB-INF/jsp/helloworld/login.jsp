@@ -7,16 +7,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 <c:url value="/login" var="loginUrl"/>
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom bg-white">
-    <a href="${pageContext.request.contextPath}/"
-       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <span class="fs-4">Logo</span>
-    </a>
-    <ul class="nav nav-pills">
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/home" class="nav-link"><spring:message code="hwc.create.returnHome"/></a></li>
-        <li class="nav-item"><a href="${pageContext.request.contextPath}/create" class="nav-link"><spring:message code="Register"/></a></li>
-    </ul>
-</header>
+<%@include file="../components/myHeader.jsp" %>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4">
