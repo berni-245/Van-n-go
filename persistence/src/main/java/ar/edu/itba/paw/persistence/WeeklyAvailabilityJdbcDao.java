@@ -52,6 +52,10 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     public Optional<WeeklyAvailability> create(
             int weekDay, String timeStart, String timeEnd, long zoneId, long vehicleId
     ) {
+        // This should be a db trigger...
+        if (timeEnd.compareTo(timeStart) <= 0) {
+            throw new IllegalArgumentException("Time end must be later than time start");
+        }
         Optional<Long> availabilityIdOpt = findId(weekDay, timeStart, timeEnd);
         final Number availabilityId;
         if (availabilityIdOpt.isPresent()) {
