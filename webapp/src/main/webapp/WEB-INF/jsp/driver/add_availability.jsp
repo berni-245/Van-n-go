@@ -63,7 +63,7 @@
             <ul class="list-group mh-25 overflow-auto">
                 <c:choose>
                 <c:when test="${vehicles.isEmpty()}">
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/vehicle/add" role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driverId}/vehicle/add" role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
                 </c:when>
                 <c:otherwise>
                 <c:forEach var="zone" items="${vehicles}">
