@@ -1,0 +1,31 @@
+<%@ attribute name="path" required="true" type="java.lang.String" %>
+<%@ tag body-content="empty" %>
+
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+<spring:message code="driver.add_availability.monday" var="mon"/>
+<spring:message code="driver.add_availability.tuesday" var="tue"/>
+<spring:message code="driver.add_availability.wednesday" var="wed"/>
+<spring:message code="driver.add_availability.thursday" var="thu"/>
+<spring:message code="driver.add_availability.friday" var="fri"/>
+<spring:message code="driver.add_availability.saturday" var="sat"/>
+<spring:message code="driver.add_availability.sunday" var="sun"/>
+
+<div class="row weekday-toggle-group mt-3">
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(mon, 0, 1)}" tooltip="${mon}" value="1"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(tue, 0, 1)}" tooltip="${tue}" value="2"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(wed, 0, 1)}" tooltip="${wed}" value="3"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(thu, 0, 1)}" tooltip="${thu}" value="4"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(fri, 0, 1)}" tooltip="${fri}" value="5"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(sat, 0, 1)}" tooltip="${sat}" value="6"/>
+    <comp:SquareToggleButton path="${path}" content="${fn:substring(sun, 0, 1)}" tooltip="${sun}" value="7"/>
+</div>
+
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
