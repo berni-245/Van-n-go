@@ -18,7 +18,8 @@
 </head>
 
 <body>
-<div class="container-sm mt-2 p-3 border border-primary rounded">
+<comp:header/>
+<div class="container mt-2 p-3 border border-primary rounded">
     <h2 class="mb-4"><spring:message code="driver.add_availability.title"/></h2>
     <c:url var="postUrl" value="/driver/${driverId}/availability/add"/>
     <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">

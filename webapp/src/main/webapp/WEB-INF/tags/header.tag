@@ -1,3 +1,5 @@
+<%@ tag body-content="empty" %>
+
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">

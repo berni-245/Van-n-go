@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>
@@ -8,7 +9,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<%@include file="../components/header.jsp" %>
+<comp:header/>
 <main>
     <div class="px-4 py-5 my-5 text-center">
         <h1 class="display-5 fw-bold text-body-emphasis"><spring:message code="siteName"/></h1>

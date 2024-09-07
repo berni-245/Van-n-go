@@ -10,7 +10,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 <c:url var="postUrl" value="/driver/register"/>
-<%@include file="../components/header.jsp" %>
+<%@include file="../../tags/header.tag" %>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
