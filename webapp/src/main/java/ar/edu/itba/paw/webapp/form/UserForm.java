@@ -5,7 +5,7 @@ import javax.validation.constraints.*;
 public class UserForm {
 
     @Size(min = 5, max = 20)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Z]\\w*$")
     private String username;
 
     @NotBlank
@@ -13,14 +13,11 @@ public class UserForm {
     private String mail;
 
     @Size(min = 8, max = 32)
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d/@#$%&*+-=_]{8,}$",
-            message = "Clave debe "
-    )
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]+$")
     private String password;
 
     @Size(min = 8, max = 32)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d/@#$%&*+-=_]{8,}$")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]+$")
     private String confirmPassword;
 
     @AssertTrue(message = "Passwords do not match")

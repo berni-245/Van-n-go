@@ -4,11 +4,12 @@
 <html>
 <head>
     <title>Posts</title>
-    <%@include file="../components/bootstrap.jsp" %>
+    <%@include file="../lib/bootstrap_css.jsp" %>
+    <%@include file="../lib/bootstrap_js.jsp" %>
 </head>
 <body>
 
-<%@include file="../components/myHeader.jsp" %>
+<%@include file="../components/header.jsp" %>
 
 <main>
     <div class="container">
