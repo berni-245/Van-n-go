@@ -25,7 +25,7 @@
     <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
 
         <div class="mb-3">
-            <comp:WeekDaySelector path="weekDays"/>
+            <comp:WeekdaySelector path="weekDays"/>
             <form:errors path="weekDays" element="p" cssStyle="color: red"/>
         </div>
 
