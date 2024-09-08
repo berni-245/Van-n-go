@@ -27,7 +27,6 @@ public class AvailabilityForm {
         return timeStart != null && timeEnd != null && timeEnd.compareTo(timeStart) > 0;
     }
 
-
     @NotEmpty
     private long[] zoneIds;
 

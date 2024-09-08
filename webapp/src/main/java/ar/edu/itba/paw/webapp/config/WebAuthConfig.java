@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableWebSecurity
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
-public class WebAuthConfig  extends WebSecurityConfigurerAdapter {
+public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PawUserDetailsService userDetailsService;
 
@@ -40,7 +40,7 @@ public class WebAuthConfig  extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
-                .defaultSuccessUrl("/",false)
+                .defaultSuccessUrl("/", false)
                 .loginPage("/login")
                 .and().rememberMe()
                 .rememberMeParameter("j_rememberme")
@@ -58,7 +58,7 @@ public class WebAuthConfig  extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico","/403");
+                .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/403");
     }
 
     @Bean

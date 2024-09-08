@@ -39,8 +39,12 @@
                                     <div class="card-body">
                                         <div class="card-title d-flex align-items-center justify-content-between">
                                             <c:out value="${driver.username}"/>
-                                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/vehicle/add" role="button">Agregar vehículo</a>
-                                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/driver/${driver.id}/availability/add" role="button">Agregar horario</a>
+                                            <a class="btn btn-primary"
+                                               href="${pageContext.request.contextPath}/driver/${driver.id}/vehicle/add"
+                                               role="button">Agregar vehículo</a>
+                                            <a class="btn btn-primary"
+                                               href="${pageContext.request.contextPath}/driver/${driver.id}/availability/add"
+                                               role="button">Agregar horario</a>
                                         </div>
                                         <p class="card-text">
                                             Descripción: <c:out value="${driver.extra1}"/>
@@ -59,7 +63,8 @@
 
                                                     <c:out value="${av.weekDayString}"/> |
                                                     <c:out value="${av.timeStart}"/> to <c:out value="${av.timeEnd}"/> |
-                                                    <c:out value="${vehicles[av.vehicleId].plateNumber} - volumen: ${vehicles[av.vehicleId].volume}m^3"/> |
+                                                    <c:out value="${vehicles[av.vehicleId].plateNumber} - volumen: ${vehicles[av.vehicleId].volume}m^3"/>
+                                                    |
                                                     <c:out value="${zones[av.zoneId].neighborhoodName}"/>
                                                 </p>
                                             </c:forEach>
