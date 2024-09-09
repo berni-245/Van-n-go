@@ -39,7 +39,7 @@ public class AvailabilityForm {
     }
 
     public String getTimeStart() {
-        return timeStart + ":00";
+        return (timeStart != null) ? timeStart + ":00" : null;
     }
 
     public void setTimeStart(String timeStart) {
@@ -47,7 +47,7 @@ public class AvailabilityForm {
     }
 
     public String getTimeEnd() {
-        return timeEnd + ":00";
+        return (timeEnd != null) ? timeEnd + ":00" : null;
     }
 
     public void setTimeEnd(String timeEnd) {
