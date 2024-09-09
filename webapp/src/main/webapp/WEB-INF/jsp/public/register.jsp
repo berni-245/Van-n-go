@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>
@@ -9,9 +10,7 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
-<c:url var="postUrl" value="/driver/register"/>
-<%@include file="../../tags/header.tag" %>
-
+<comp:header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -20,6 +19,7 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="public.register.registerUser"/>
                     </h5>
+                    <c:url var="postUrl" value="/driver/register"/>
                     <form:form action="${postUrl}" method="post" modelAttribute="userForm">
                         <div class="mb-3">
                             <label class="form-label">
