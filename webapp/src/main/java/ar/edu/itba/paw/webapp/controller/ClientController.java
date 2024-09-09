@@ -23,7 +23,7 @@ public class ClientController {
     @Autowired
     private ZoneService zs;
 
-    public ClientController(final DriverService ds) {
+    public ClientController(DriverService ds, ZoneService zs) {
         this.ds = ds;
         this.zs = zs;
     }
