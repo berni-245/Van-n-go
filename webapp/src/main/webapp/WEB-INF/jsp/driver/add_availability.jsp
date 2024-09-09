@@ -9,11 +9,22 @@
     <jsp:include page="../lib/bootstrap_css.jsp"/>
     <jsp:include page="../lib/bootstrap_js.jsp"/>
     <jsp:include page="../lib/popper.jsp"/>
+    <jsp:include page="../lib/tom_select.jsp"/>
     <%--    Why doesn't this work?--%>
     <%--    <c:url value="/css/styles.css" var="css"/>--%>
     <%--    <link rel="stylesheet" href="${css}">--%>
     <style>
         <%@ include file="/css/styles.css" %>
+
+        .ts-wrapper .option .title {
+            display: block;
+        }
+
+        .ts-wrapper .option .description {
+            font-size: 14px;
+            display: block;
+            color: #a0a0a0;
+        }
     </style>
 </head>
 
@@ -45,42 +56,33 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label"><spring:message code="driver.add_availability.selectVehicles"/></label>
-            <ul class="list-group mh-25 overflow-auto">
-                <c:choose>
-                    <c:when test="${vehicles.isEmpty()}">
-                        <a class="btn btn-primary"
-                           href="${pageContext.request.contextPath}/driver/${driverId}/vehicle/add"
-                           role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="zone" items="${vehicles}">
-                            <li class="list-group-item">
-                                <form:checkbox path="vehicleIds" class="form-check-input me-1" value="${zone.id}"
-                                               id="vehicle_${zone.id}"/>
-                                <label class="form-check-label" for="vehicle_${zone.id}">${zone.plateNumber}</label>
-                            </li>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
+            <c:choose>
+                <c:when test="${vehicles.isEmpty()}">
+                    <a class="btn btn-primary"
+                       href="${pageContext.request.contextPath}/driver/${driverId}/vehicle/add"
+                       role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
+                </c:when>
+                <c:otherwise>
+                    <spring:message code="driver.add_availability.selectVehicles" var="selectVehicles"/>
+                    <form:select path="vehicleIds" id="select-vehicles" multiple="true"
+                                 placeholder="${selectVehicles}..." autocomplete="off"
+                    >
+                        <form:options items="${vehicles}" itemValue="id"/>
+                    </form:select>
+                </c:otherwise>
+            </c:choose>
             <form:errors path="vehicleIds" element="p" cssStyle="color: red"/>
         </div>
 
+
         <div class="mb-3">
-            <label class="form-label"><spring:message code="driver.add_availability.selectZones"/></label>
-            <ul class="list-group mh-25 overflow-auto">
-                <c:forEach var="zone" items="${zones}">
-                    <li class="list-group-item">
-                        <form:checkbox path="zoneIds" class="form-check-input me-1" value="${zone.id}"
-                                       id="zone_${zone.id}"/>
-                        <label class="form-check-label" for="zone_${zone.id}">
-                                ${zone.provinceName} - ${zone.neighborhoodName}
-                        </label>
-                    </li>
-                </c:forEach>
-            </ul>
-            <form:errors path="vehicleIds" element="p" cssStyle="color: red"/>
+            <spring:message code="driver.add_availability.selectZones" var="selectZones"/>
+            <form:select path="zoneIds" id="select-zones" multiple="true"
+                         placeholder="${selectZones}..." autocomplete="off"
+            >
+                <form:options items="${zones}" itemValue="id"/>
+            </form:select>
+            <form:errors path="zoneIds" element="p" cssStyle="color: red"/>
         </div>
 
         <div>
@@ -89,6 +91,26 @@
 
     </form:form>
 </div>
+<script>
+    new TomSelect("#select-zones");
+    new TomSelect("#select-vehicles", {
+        render: {
+            option: function (data, escape) {
+                const [plateNumber, description, volume] = data.text.split('||');
+                return '<div>' +
+                    '<span class="title">' +
+                    escape(plateNumber) + ' - ' + escape(volume) + ' m³' +
+                    '</span>' +
+                    '<span class="description">' + escape(description) + '</span>' +
+                    '</div>';
+            },
+            item: function (data, escape) {
+                const [plateNumber] = data.text.split('||');
+                return '<div>' + escape(plateNumber) + '</div>';
+            }
+        }
+    });
+</script>
 </body>
 
 </html>

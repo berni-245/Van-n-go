@@ -64,4 +64,9 @@ public class Zone {
     public String getNeighborhoodName() {
         return neighborhoodName;
     }
+
+    @Override
+    public String toString() {
+        return "%s, %s, %s".formatted(neighborhoodName, provinceName, countryCode);
+    }
 }
