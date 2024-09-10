@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Hauler requested service</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1 th:text="#{hauler.request.header}" >You requested a hauler</h1>
+<h3 th:text="#{request.details}" >Details</h3>
+
+<div>
+    <ul>
+        <li th:text="#{request.name(${clientName})}" >name</li>
+        <li th:text="#{request.date(${dateRequested.toString()})}">date</li>
+        <li th:text="#{request.contact(${clientMail})}" >contact info</li>
+    </ul>
+</div>
+
+<p th:text="#{hauler.request.takeAction}"></p>
+
+<footer th:text="#{request.footer}">Thanks for using Van N' Go</footer>
+
+</body>
+
