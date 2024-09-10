@@ -33,7 +33,7 @@ public class PublicController {
         this.ds = ds;
     }
 
-    @RequestMapping("/")
+    @RequestMapping(path = {"/", "/home"})
     public ModelAndView index() {
         return new ModelAndView("public/home");
     }
@@ -74,11 +74,6 @@ public class PublicController {
     @RequestMapping(path = "/driver/register", method = RequestMethod.GET)
     public ModelAndView createForm(@ModelAttribute("userForm") DriverForm driverForm) {
         return new ModelAndView("public/register");
-    }
-
-    @RequestMapping(path = "/home")
-    public ModelAndView home() {
-        return new ModelAndView("public/home");
     }
 
     @RequestMapping(path = "/login")
