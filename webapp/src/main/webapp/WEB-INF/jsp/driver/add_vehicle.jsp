@@ -22,7 +22,7 @@
         <div>
             <label class="form-label">
                 <spring:message code="driver.add_vehicle.volume"/>
-                <form:input path="volume" cssClass="form-control"/>
+                <form:input path="volume" cssClass="form-control" type="number" min="1" max="100" step="0.01"/>
             </label>
             <form:errors path="volume" element="p" cssStyle="color: red"/>
         </div>

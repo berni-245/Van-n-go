@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.form;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 public class VehicleForm {
@@ -13,6 +13,7 @@ public class VehicleForm {
     private String plateNumber;
 
     @Min(1)
+    @Max(100)
     private double volume;
 
     @Length(max = 30)
