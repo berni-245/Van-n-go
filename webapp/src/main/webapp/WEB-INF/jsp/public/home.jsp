@@ -35,21 +35,21 @@
     <div class="container">
         <div class="row text-center">
             <div class="col-lg-4 mb-4">
-                <h2 class="display-4">Sobre Nosotros</h2>
-                <p class="lead">Somos una empresa dedicada a hacer la busqueda de fletes mas facíl.</p>
+                <h2 class="display-4"><spring:message code="public.home.aboutUs"/></h2>
+                <p class="lead"><spring:message code="public.home.aboutUs.text"/></p>
             </div>
             <div class="col-lg-4 mb-4">
-                <h2 class="display-4">Nuestros Servicios</h2>
-                <ul class="list-unstyled">
-                    <li><i class="bi bi-envelope"></i>- Encuentra fletes en tu zona</li>
-                    <li><i class="bi bi-truck"></i>- Facil interacción con el fletero</li>
-                    <li><i class="bi bi-people"></i>- Ve y escribe reseñas</li>
+                <h2 class="display-4"><spring:message code="public.home.services"/></h2>
+                <ul>
+                    <li><i class="bi bi-envelope"></i><spring:message code="public.home.service.1"/> </li>
+                    <li><i class="bi bi-truck"></i><spring:message code="public.home.service.2"/> </li>
+                    <li><i class="bi bi-people"></i><spring:message code="public.home.service.3"/> </li>
                 </ul>
             </div>
             <div class="col-lg-4 mb-4">
-                <h2 class="display-4">Lo que dicen nuestros usuarios</h2>
+                <h2 class="display-4"><spring:message code="public.home.clientOpinion"/></h2>
                 <blockquote class="blockquote">
-                    <p>"Es fantastico, contratar un flete nunca fue tan facíl como cuando uso Van N' Go"</p>
+                    <p><spring:message code="public.home.clientOpinion.text"/></p>
                     <footer class="blockquote-footer">Elon Musk, <cite title="Source Title">Space X</cite></footer>
                 </blockquote>
             </div>
