@@ -1,14 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
 <head>
     <title><spring:message code="siteName"/></title>
     <%@include file="../lib/bootstrap_css.jsp" %>
-    <style>
-        <%@ include file="/css/styles.css" %>
-    </style>
+    <c:url value="${pageContext.request.contextPath}/css/weekdaySelector.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
