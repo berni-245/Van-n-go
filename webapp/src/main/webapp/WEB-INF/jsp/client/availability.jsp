@@ -8,6 +8,7 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
     <%@include file="../lib/bootstrap_js.jsp" %>
     <script src="${pageContext.request.contextPath}/js/availability.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/availability.css">
 </head>
 <body>
 <comp:header/>
