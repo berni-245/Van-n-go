@@ -92,6 +92,23 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
+    public void sendHaulerWelcomeMail(String to, String userName) {
+        Message message = getMessage();
+        Context context = new Context();
+        context.setVariable("haulerName", userName);
+        String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("Welcome " + userName);
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception ignore) {
+        }
+
+        sendMail(message);
+    }
+
+    @Async
+    @Override
     public void sendRequestedHauler(String clientMail, String haulerMail, String clientName, String haulerName, String jobDescription) {
         Context context = new Context();
         context.setVariable("haulerName", haulerName);
@@ -110,9 +127,7 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject("You requested a Van N' Go hauler");
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception e) {
-            return;
-        }
+        } catch (Exception ignored) {}
 
 
         sendMail(message);
@@ -126,9 +141,8 @@ public class MailServiceImpl implements MailService {
             String mailBodyProcessed = templateEngine.process("haulerRequestedServiceMail", context);
             message.setSubject("You received a request for your service");
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception e) {
-            return;
-        }
+        } catch (Exception ignore) { }
+
         sendMail(message);
     }
 
