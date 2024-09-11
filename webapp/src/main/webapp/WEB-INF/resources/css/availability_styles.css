@@ -1,0 +1,24 @@
+.three-line-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limitar a 3 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%; /* Asegurar que el ancho esté limitado */
+    word-wrap: break-word; /* Rompe las palabras largas */
+    word-break: break-all; /* Permitir que las palabras largas se rompan */
+}
+
+.availability-button {
+    background-color: #f8f9fa; /* Gris claro */
+    color: #000; /* Color de texto negro */
+    max-width: 200px; /* Ancho máximo definido */
+}
+
+.availability-button:hover {
+    background-color: #e9ecef; /* Un poco más oscuro al hacer hover */
+}
+
+.availability-divider {
+    border-bottom: 1px solid #dee2e6; /* Añadir una línea divisoria gris clara */
+}

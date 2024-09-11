@@ -11,11 +11,9 @@
     <jsp:include page="../lib/popper.jsp"/>
     <jsp:include page="../lib/tom_select.jsp"/>
     <%--    Why doesn't this work?--%>
-    <%--    <c:url value="/css/styles.css" var="css"/>--%>
-    <%--    <link rel="stylesheet" href="${css}">--%>
+    <c:url value="${pageContext.request.contextPath}/css/weekdaySelector.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <style>
-        <%@ include file="/css/styles.css" %>
-
         .ts-wrapper .option .title {
             display: block;
         }
