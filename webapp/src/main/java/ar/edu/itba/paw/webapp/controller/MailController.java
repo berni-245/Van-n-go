@@ -23,7 +23,7 @@ public class MailController {
                                        @RequestParam("driverName") String driverName,
                                        @RequestParam("clientName") String clientName) {
         mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
-        return new ModelAndView("redirect:/availability");
+        return new ModelAndView("redirect:/");
     }
 
 }

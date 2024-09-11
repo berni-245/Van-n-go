@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -71,6 +72,7 @@ public class MailServiceImpl implements MailService {
     }
 
 
+
     @Override
     public boolean sendWelcomeMail(String to, String userName) {
         Message message = getMessage();
@@ -88,6 +90,7 @@ public class MailServiceImpl implements MailService {
         return sendMail(message);
     }
 
+    @Async
     @Override
     public void sendRequestedHauler(String clientMail, String haulerMail, String clientName, String haulerName, String jobDescription) {
         Context context = new Context();
@@ -100,7 +103,7 @@ public class MailServiceImpl implements MailService {
         sendHaulerRequestedMail(haulerMail, context, jobDescription);
     }
 
-    private boolean sendClientRequestedServiceMail(String clientMail, Context context) {
+    private void sendClientRequestedServiceMail(String clientMail, Context context) {
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
@@ -108,14 +111,14 @@ public class MailServiceImpl implements MailService {
             message.setSubject("You requested a Van N' Go hauler");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception e) {
-            return false;
+            return;
         }
 
 
-        return sendMail(message);
+        sendMail(message);
     }
 
-    private boolean sendHaulerRequestedMail(String haulerMail, Context context, String jobDescription) {
+    private void sendHaulerRequestedMail(String haulerMail, Context context, String jobDescription) {
         context.setVariable("jobDescription", jobDescription);
         Message message = getMessage();
         try {
@@ -124,9 +127,9 @@ public class MailServiceImpl implements MailService {
             message.setSubject("You received a request for your service");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception e) {
-            return false;
+            return;
         }
-        return sendMail(message);
+        sendMail(message);
     }
 
 
