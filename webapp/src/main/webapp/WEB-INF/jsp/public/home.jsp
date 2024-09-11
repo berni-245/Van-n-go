@@ -15,6 +15,7 @@
 <comp:header/>
 <main>
     <div class="welcome-main-div px-4 py-5 my-5 text-center">
+        <img class="background-img" src="${pageContext.request.contextPath}/images/welcome_picture.webp" alt="Background" class="background-img">
         <div class="welcome-page-div-text">
             <h1><spring:message code="siteName"/></h1>
             <div class="col-lg-6 mx-auto">

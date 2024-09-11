@@ -13,6 +13,8 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.thymeleaf.TemplateEngine;
@@ -28,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 @ComponentScan({"ar.edu.itba.paw.webapp.controller",
         "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
 
@@ -104,5 +106,24 @@ public class WebConfig {
         templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setCacheable(false);
         return templateResolver;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // IMAGES
+        registry.addResourceHandler("/images/**") // Relative paths
+                .addResourceLocations("/WEB-INF/resources/images/") // Actual resource locations
+                .setCachePeriod(5000); // Cache period
+
+        // CSS
+        registry
+                .addResourceHandler("/css/**")
+                .addResourceLocations("/WEB-INF/resources/css/");
+
+        // JAVASCRIPT
+        registry
+                .addResourceHandler("/js/**")
+                .addResourceLocations("/WEB-INF/resources/js/");
+
     }
 }
