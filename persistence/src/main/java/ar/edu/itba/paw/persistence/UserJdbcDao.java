@@ -61,4 +61,12 @@ public class UserJdbcDao implements UserDao {
                 ROW_MAPPER
         ).stream().findFirst().orElse(null);
     }
+
+    @Override
+    public boolean mailExists(String mail) {
+        Integer count = this.jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM app_user where mail = ?", Integer.class,
+                mail);
+        return count != null && count > 0;
+    }
 }

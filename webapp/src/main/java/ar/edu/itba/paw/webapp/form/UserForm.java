@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.webapp.validation.ValidMail;
+
 import javax.validation.constraints.*;
 
 public class UserForm {
@@ -10,6 +12,7 @@ public class UserForm {
 
     @NotBlank
     @Email
+    @ValidMail
     private String mail;
 
     @Size(min = 8, max = 32)

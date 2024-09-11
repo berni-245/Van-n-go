@@ -29,4 +29,9 @@ public class UserServiceImpl implements UserService {
         // 6. ... sigue tan complejo como lo requiera la aplicación
         return userDao.create(username, mail, password);
     }
+
+    @Override
+    public boolean mailExists(String mail) {
+        return userDao.mailExists(mail);
+    }
 }

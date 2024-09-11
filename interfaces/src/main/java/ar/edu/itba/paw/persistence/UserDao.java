@@ -10,4 +10,6 @@ public interface UserDao {
     User create(String username, String mail, String password);
 
     User findByUsername(String username);
+
+    boolean mailExists(String mail);
 }
