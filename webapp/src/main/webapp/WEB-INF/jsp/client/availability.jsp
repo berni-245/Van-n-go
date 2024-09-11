@@ -120,11 +120,12 @@
                                                  style="display: none;">
                                                 <form action="${pageContext.request.contextPath}/availability/contact"
                                                       method="post">
-                                                    <label for="clientName">Your name:</label>
+                                                    <label for="clientName">  <spring:message
+                                                            code="form.clientName"/></label>
                                                     <input type="text" id="clientName" name="clientName" required>
-                                                    <label for="clientMail">Your email:</label>
+                                                    <label for="clientMail"><spring:message code="form.clientMail"/></label>
                                                     <input type="email" id="clientMail" name="clientMail" required>
-                                                    <label for="jobDescription">Description:</label>
+                                                    <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
                                                     <textarea id="jobDescription" name="jobDescription" rows="4"
                                                               cols="50" required></textarea>
                                                     <input type="hidden" name="driverMail" value="${driver.mail}"/>
