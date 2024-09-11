@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.DriverForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import java.util.Optional;
 
 @Controller
 public class PublicController {
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private UserService us;
@@ -68,6 +72,7 @@ public class PublicController {
                 pw.encode(driverForm.getPassword()),
                 driverForm.getExtra1()
         );
+        mailService.sendHaulerWelcomeMail(driverForm.getMail(), driverForm.getUsername());
         return new ModelAndView("redirect:/availability");
     }
 
