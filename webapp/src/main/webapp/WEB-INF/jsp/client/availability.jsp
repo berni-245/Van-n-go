@@ -10,8 +10,10 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
     <%@include file="../lib/bootstrap_js.jsp" %>
     <jsp:include page="../lib/tom_select.jsp"/>
-    <script src="${pageContext.request.contextPath}/js/availability.js"></script>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/availability.css">
+    <c:url value="/js/availability.js" var="js" />
+    <c:url value="/css/availability_styles.css" var="css" />
+    <script src="${js}"></script>
+    <link rel="stylesheet" href="${css}">
     <%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/AnchorCard.css">--%>
 </head>
 <body>

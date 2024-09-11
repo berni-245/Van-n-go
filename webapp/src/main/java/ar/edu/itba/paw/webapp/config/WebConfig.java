@@ -114,18 +114,18 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // IMAGES
         registry.addResourceHandler("/images/**") // Relative paths
-                .addResourceLocations("/WEB-INF/resources/images/") // Actual resource locations
+                .addResourceLocations("/images/") // Actual resource locations
                 .setCachePeriod(5000); // Cache period
 
         // CSS
         registry
                 .addResourceHandler("/css/**")
-                .addResourceLocations("/WEB-INF/resources/css/");
+                .addResourceLocations("/css/");
 
         // JAVASCRIPT
         registry
                 .addResourceHandler("/js/**")
-                .addResourceLocations("/WEB-INF/resources/js/");
+                .addResourceLocations("/js/");
 
     }
 }

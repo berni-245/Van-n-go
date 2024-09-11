@@ -9,7 +9,7 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
     <jsp:include page="../lib/bootstrap_js.jsp"/>
     <jsp:include page="../lib/popper.jsp"/>
-    <c:url value="${pageContext.request.contextPath}/css/styles.css" var="css"/>
+    <c:url value="/css/styles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </head>
 
@@ -17,8 +17,9 @@
 <comp:header/>
 <main>
     <div class="welcome-main-div px-4 py-5 my-5 text-center">
+        <c:url value="/images/welcome_picture.webp" var="welcome_picture" />
         <img class="background-img"
-             src="${pageContext.request.contextPath}/images/welcome_picture.webp"
+             src="${welcome_picture}"
              alt="Background">
         <div class="welcome-page-div-text">
             <h1><spring:message code="siteName"/></h1>
