@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>
@@ -8,6 +9,7 @@
 </head>
 
 <body>
+<comp:header/>
 <div class="container">
     <h2><spring:message code="driver.add_vehicle.title" arguments="${username}"/></h2>
     <c:url var="postUrl" value="/driver/${driverId}/vehicle/add"/>

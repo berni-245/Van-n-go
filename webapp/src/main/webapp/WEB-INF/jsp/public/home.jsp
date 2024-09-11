@@ -1,21 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
 <head>
     <title><spring:message code="siteName"/></title>
     <%@include file="../lib/bootstrap_css.jsp" %>
-    <style>
-        <%@ include file="/css/styles.css" %>
-    </style>
+    <jsp:include page="../lib/bootstrap_js.jsp"/>
+    <jsp:include page="../lib/popper.jsp"/>
+    <c:url value="${pageContext.request.contextPath}/css/styles.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:header/>
 <main>
     <div class="welcome-main-div px-4 py-5 my-5 text-center">
-        <img class="background-img" src="${pageContext.request.contextPath}/images/welcome_picture.webp" alt="Background" class="background-img">
+        <img class="background-img"
+             src="${pageContext.request.contextPath}/images/welcome_picture.webp"
+             alt="Background">
         <div class="welcome-page-div-text">
             <h1><spring:message code="siteName"/></h1>
             <div class="col-lg-6 mx-auto">
@@ -42,9 +46,9 @@
             <div class="col-lg-4 mb-4">
                 <h2 class="display-4"><spring:message code="public.home.services"/></h2>
                 <ul>
-                    <li><i class="bi bi-envelope"></i><spring:message code="public.home.service.1"/> </li>
-                    <li><i class="bi bi-truck"></i><spring:message code="public.home.service.2"/> </li>
-                    <li><i class="bi bi-people"></i><spring:message code="public.home.service.3"/> </li>
+                    <li><i class="bi bi-envelope"></i><spring:message code="public.home.service.1"/></li>
+                    <li><i class="bi bi-truck"></i><spring:message code="public.home.service.2"/></li>
+                    <li><i class="bi bi-people"></i><spring:message code="public.home.service.3"/></li>
                 </ul>
             </div>
             <div class="col-lg-4 mb-4">
