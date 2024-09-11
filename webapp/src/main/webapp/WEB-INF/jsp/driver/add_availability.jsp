@@ -10,7 +10,7 @@
     <jsp:include page="../lib/bootstrap_js.jsp"/>
     <jsp:include page="../lib/popper.jsp"/>
     <jsp:include page="../lib/tom_select.jsp"/>
-    <c:url value="${pageContext.request.contextPath}/css/styles.css" var="css"/>
+    <c:url value="${pageContext.request.contextPath}/css/weekdaySelector.css" var="css"/>
     <link rel="stylesheet" href="${css}">
     <style>
         .ts-wrapper .option .title {

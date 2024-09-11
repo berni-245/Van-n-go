@@ -59,7 +59,7 @@
         <div class="d-flex justify-content-center">
             <c:choose>
                 <c:when test="${drivers.isEmpty()}">
-                    <p>No hay postulaciones actualmente, intente más tarde</p>
+                    <p><spring:message code="availability.posts.noPosts"/></p>
                 </c:when>
                 <c:otherwise>
                     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
@@ -68,7 +68,7 @@
                             <button class="nav-link text-truncate" style="max-width: 200px;" id="${driver.id}-tab"
                                     data-bs-toggle="pill" data-bs-target="#${driver.id}"
                                     type="button" role="tab" aria-controls="${driver.id}" aria-selected="false">
-                                <c:out value="${driver.username} (id: ${driver.id})"/>
+                                <c:out value="${driver.username}"/>
                             </button>
                         </c:forEach>
                     </div>
@@ -85,8 +85,9 @@
                                         <h6 class="card-subtitle mb-2 text-body-secondary">
                                             Cantidad de vehículos: <c:out value="${driver.vehicles.size()}"/>
                                         </h6>
-                                        <p class="card-text">
-                                            Descripción: <c:out value="${driver.extra1}"/>
+                                        <p class="card-text three-line-truncate">
+                                            <spring:message code="generic.word.description"/>: <c:out
+                                                value="${driver.extra1}"/>
                                         </p>
                                         <div>
                                             <h6 class="card-title mb-2">Horarios</h6>
@@ -113,7 +114,8 @@
                                                     onclick="showMailForm(${driver.id})">
                                                 Contactar
                                             </button>
-                                            <div class="form-control mt-5" id="contactForm${driver.id}" style="display: none;">
+                                            <div class="form-control mt-5" id="contactForm${driver.id}"
+                                                 style="display: none;">
                                                 <form action="${pageContext.request.contextPath}/availability/contact"
                                                       method="post">
                                                     <label for="clientName">Your name:</label>
