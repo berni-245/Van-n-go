@@ -10,6 +10,7 @@
     <%@include file="../lib/bootstrap_js.jsp" %>
     <c:url value="${pageContext.request.contextPath}/css/availability_styles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <script src="${pageContext.request.contextPath}/js/availability.js"></script>
 
 </head>
 <body>
