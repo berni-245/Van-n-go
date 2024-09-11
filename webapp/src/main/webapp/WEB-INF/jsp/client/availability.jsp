@@ -7,6 +7,7 @@
     <title>Posts</title>
     <%@include file="../lib/bootstrap_css.jsp" %>
     <%@include file="../lib/bootstrap_js.jsp" %>
+    <script src="${pageContext.request.contextPath}/js/availability.js"></script>
 </head>
 <body>
 <comp:header/>
@@ -70,9 +71,22 @@
                                             </c:forEach>
                                         </div>
 
-                                        <p>
-                                            Contacto: ${driver.mail}
-                                        </p>
+                                        <div>
+                                            <button id="contactButton${driver.id}" onclick="showMailForm(${driver.id})">Contactar</button>
+                                            <div id="contactForm${driver.id}" style="display: none;">
+                                                <form action="${pageContext.request.contextPath}/availability/contact" method="post">
+                                                    <label for="clientName">Your name:</label>
+                                                    <input type="text" id="clientName" name="clientName" required>
+                                                    <label for="clientMail">Your email:</label>
+                                                    <input type="email" id="clientMail" name="clientMail" required>
+                                                    <label for="jobDescription">Description:</label>
+                                                    <textarea id="jobDescription" name="jobDescription" rows="4" cols="50" required></textarea>
+                                                    <input type="hidden" name="driverMail" value="${driver.mail}" />
+                                                    <input type="hidden" name="driverName" value="${driver.username}" />
+                                                    <button type="submit">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
