@@ -48,6 +48,14 @@ public class ZoneJdbcDao implements ZoneDao {
                 ROW_MAPPER).stream().findFirst();
     }
 
+    @Override
+    public boolean isValidZone(long zoneId) {
+        Integer count = this.jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM zone where id = ?", Integer.class,
+                zoneId);
+        return count != null && count > 0;
+    }
+
     // What's the best way to reuse this sql statements?
     @Override
     public List<Zone> getAllZones() {

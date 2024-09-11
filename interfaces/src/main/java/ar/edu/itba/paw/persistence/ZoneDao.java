@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface ZoneDao {
     Optional<Zone> getZone(long zoneId);
-
+    boolean isValidZone(long zoneId);
     List<Zone> getAllZones();
 }

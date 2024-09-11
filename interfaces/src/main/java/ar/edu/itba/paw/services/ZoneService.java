@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ZoneService {
     List<Zone> getAllZones();
+
+    boolean isValidZone(long zoneId);
 }

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 import ar.edu.itba.paw.persistence.DriverDao;
@@ -90,5 +91,15 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public List<Driver> getAll() {
         return driverDao.getAll();
+    }
+
+    @Override
+    public List<Driver> getAll(long zoneId) {
+        return List.of();
+    }
+
+    @Override
+    public List<Driver> getAll(long zoneId, Size size) {
+        return driverDao.getAll(zoneId, size);
     }
 }

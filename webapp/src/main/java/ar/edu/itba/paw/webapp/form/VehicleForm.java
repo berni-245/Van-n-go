@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.Size;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -12,8 +13,8 @@ public class VehicleForm {
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
     private String plateNumber;
 
-    @Min(1)
-    @Max(100)
+    @Min(Size.MIN)
+    @Max(Size.MAX)
     private double volume;
 
     @Length(max = 30)

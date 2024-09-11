@@ -20,4 +20,9 @@ public class ZoneServiceImpl implements ZoneService {
     public List<Zone> getAllZones() {
         return zoneDao.getAllZones();
     }
+
+    @Override
+    public boolean isValidZone(long zoneId) {
+        return zoneDao.isValidZone(zoneId);
+    }
 }

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 
@@ -28,4 +29,8 @@ public interface DriverService {
     );
 
     List<Driver> getAll();
+
+    List<Driver> getAll(long zoneId);
+
+    List<Driver> getAll(long zoneId, Size size);
 }

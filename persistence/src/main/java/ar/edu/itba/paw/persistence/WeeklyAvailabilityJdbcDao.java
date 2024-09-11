@@ -99,4 +99,16 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
     }
+
+    @Override
+    public List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId) {
+        return jdbcTemplate.query("""
+                        select id, week_day, t_start, t_end, zone_id, vehicle_id
+                        from vehicle_weekly_zone vwz
+                        join weekly_availability wa on vwz.availability_id = wa.id
+                        where vehicle_id = ?""",
+                new Object[]{vehicleId},
+                new int[]{Types.BIGINT},
+                ROW_MAPPER);
+    }
 }

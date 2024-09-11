@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,12 +28,14 @@ public class VehicleJdbcDao implements VehicleDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcVehicleInsert;
+    private final WeeklyAvailabilityDao weeklyAvailabilityDao;
 
     public VehicleJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcVehicleInsert = new SimpleJdbcInsert(ds)
                 .usingGeneratedKeyColumns("id")
                 .withTableName("vehicle");
+        weeklyAvailabilityDao = new WeeklyAvailabilityJdbcDao(ds);
     }
 
     @Override
@@ -78,5 +81,25 @@ public class VehicleJdbcDao implements VehicleDao {
                 new Object[]{driverId},
                 new int[]{java.sql.Types.BIGINT},
                 ROW_MAPPER);
+    }
+
+    @Override
+    public List<Vehicle> getDriverVehicles(long driverId, long zoneId, Size size) {
+        List<Vehicle> vehicles = jdbcTemplate.query("""
+                        select * from vehicle v
+                        where driver_id = ? and volume_m3 between ? and ? and exists(
+                            select * from vehicle_weekly_zone vwz
+                            where vwz.vehicle_id = v.id and vwz.zone_id = ?
+                        )""",
+                new Object[]{driverId, size.getMinVolume(), size.getMaxVolume(), zoneId},
+                new int[]{Types.BIGINT, Types.INTEGER, Types.INTEGER, Types.BIGINT},
+                ROW_MAPPER
+        );
+        for (Vehicle vehicle : vehicles) {
+            vehicle.setWeeklyAvailability(
+                    weeklyAvailabilityDao.getVehicleWeeklyAvailability(vehicle.getId())
+            );
+        }
+        return vehicles;
     }
 }

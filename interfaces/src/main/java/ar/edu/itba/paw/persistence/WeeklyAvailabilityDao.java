@@ -9,4 +9,6 @@ public interface WeeklyAvailabilityDao {
     Optional<WeeklyAvailability> create(int weekDay, String timeStart, String timeEnd, long zoneId, long vehicleId);
 
     List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId);
+
+    List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId);
 }

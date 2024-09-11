@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface VehicleDao {
     Optional<Vehicle> findByPlateNumber(String plateNumber);
 
     List<Vehicle> getDriverVehicles(long driverId);
+
+    List<Vehicle> getDriverVehicles(long driverId, long zoneId, Size size);
 }
