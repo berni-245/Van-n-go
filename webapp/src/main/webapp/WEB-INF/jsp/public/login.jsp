@@ -19,7 +19,7 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="public.login.greeting"/>
                     </h5>
-                    <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+                    <form action="${pageContext.request.contextPath}/login" method="post" enctype="application/x-www-form-urlencoded">
                         <div class="mb-3">
                             <label for="username" class="form-label">
                                 <spring:message code="generic.word.username"/>
