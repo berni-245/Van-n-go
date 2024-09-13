@@ -1,16 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.form.DriverForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -69,7 +65,7 @@ public class PublicController {
         final User user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
         puds.loadUserByUsername(user.getUsername());
         mailService.sendHaulerWelcomeMail(userForm.getMail(), userForm.getUsername());
-        return new ModelAndView("redirect:/public/home");
+        return new ModelAndView("redirect:/home");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)

@@ -19,7 +19,7 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="public.register.registerUser"/>
                     </h5>
-                    <c:url var="postUrl" value="/driver/register"/>
+                    <c:url var="postUrl" value="/register"/>
                     <form:form action="${postUrl}" method="post" modelAttribute="userForm">
                         <div class="mb-3">
                             <label class="form-label">
