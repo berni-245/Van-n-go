@@ -69,4 +69,9 @@ public class UserJdbcDao implements UserDao {
                 mail);
         return count != null && count > 0;
     }
+
+    @Override
+    public boolean isDriver(String username) {
+        return !jdbcTemplate.query("SELECT * FROM app_user as au JOIN driver as d ON au.id=d.user_id WHERE username = ?", new Object[]{username}, new int[]{java.sql.Types.VARCHAR},ROW_MAPPER).isEmpty();
+    }
 }

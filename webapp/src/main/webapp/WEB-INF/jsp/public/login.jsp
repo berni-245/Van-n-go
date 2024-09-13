@@ -9,6 +9,7 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
+<c:url value="/login" var="loginUrl"/>
 <comp:header/>
 <div class="container mt-5">
     <div class="row justify-content-center">

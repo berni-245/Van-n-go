@@ -56,7 +56,7 @@
                 <h2 class="display-4"><spring:message code="public.home.clientOpinion"/></h2>
                 <blockquote class="blockquote">
                     <p><spring:message code="public.home.clientOpinion.text"/></p>
-                    <footer class="blockquote-footer">Elon Musk, <cite title="Source Title">Space X</cite></footer>
+                    <footer class="blockquote-footer">Belon Tusk, <cite title="Source Title">Space X</cite></footer>
                 </blockquote>
             </div>
         </div>

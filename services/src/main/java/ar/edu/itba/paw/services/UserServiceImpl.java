@@ -1,19 +1,20 @@
 package ar.edu.itba.paw.services;
-
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(final UserDao userDao) {
+    public UserServiceImpl(final UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -21,13 +22,22 @@ public class UserServiceImpl implements UserService {
         return userDao.findById(id);
     }
 
-    public User create(String username, String mail, String password) {
-        // 2. ingresarlo en base de datos
+    public User create(String username,String mail, String password) {
         // 3. generar un token de validación y guardarlo en base
         // 4. enviar el token de validación en un correo de bienvenida
         // 5. agregar al usuario a una cola de verificación manual...
         // 6. ... sigue tan complejo como lo requiera la aplicación
-        return userDao.create(username, mail, password);
+        return userDao.create(username,mail,passwordEncoder.encode(password));
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userDao.findByUsername(username);
+    }
+
+    @Override
+    public boolean isDriver(String username) {
+        return userDao.isDriver(username);
     }
 
     @Override

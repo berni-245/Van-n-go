@@ -9,5 +9,9 @@ public interface UserService {
 
     User create(String username, String mail, String password);
 
+    boolean isDriver(String username);
+
     boolean mailExists(String mail);
+
+    User findByUsername(String username);
 }

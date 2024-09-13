@@ -5,7 +5,9 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.form.DriverForm;
+import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +30,8 @@ public class PublicController {
 
     @Autowired
     private UserService us;
+    @Autowired
+    private PawUserDetailsService puds;
 
     @Autowired
     private DriverService ds;
@@ -57,27 +61,19 @@ public class PublicController {
         return mav;
     }
 
-    //TODO: Hashear la password en us.create
-
-    PasswordEncoder pw = new BCryptPasswordEncoder();
-
-    @RequestMapping(path = "/driver/register", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute("userForm") DriverForm driverForm, BindingResult errors) {
+    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
         if (errors.hasErrors()) {
-            return createForm(driverForm);
+            return createForm(userForm);
         }
-        final Driver driver = ds.create(
-                driverForm.getUsername(),
-                driverForm.getMail(),
-                pw.encode(driverForm.getPassword()),
-                driverForm.getExtra1()
-        );
-        mailService.sendHaulerWelcomeMail(driverForm.getMail(), driverForm.getUsername());
-        return new ModelAndView("redirect:/availability");
+        final User user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+        puds.loadUserByUsername(user.getUsername());
+        mailService.sendHaulerWelcomeMail(userForm.getMail(), userForm.getUsername());
+        return new ModelAndView("redirect:/public/home");
     }
 
-    @RequestMapping(path = "/driver/register", method = RequestMethod.GET)
-    public ModelAndView createForm(@ModelAttribute("userForm") DriverForm driverForm) {
+    @RequestMapping(path = "/register", method = RequestMethod.GET)
+    public ModelAndView createForm(@ModelAttribute("userForm") UserForm userForm) {
         return new ModelAndView("public/register");
     }
 

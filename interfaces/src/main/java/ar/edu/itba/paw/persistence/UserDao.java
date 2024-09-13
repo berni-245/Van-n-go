@@ -12,4 +12,6 @@ public interface UserDao {
     User findByUsername(String username);
 
     boolean mailExists(String mail);
+
+    boolean isDriver(String username);
 }

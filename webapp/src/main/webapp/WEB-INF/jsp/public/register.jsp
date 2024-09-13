@@ -50,15 +50,6 @@
                             <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
                             <form:errors element="div" cssClass="alert alert-danger"/>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <spring:message code="generic.word.description"/>
-                            </label>
-                            <form:input type="text" path="extra1" class="form-control"/>
-                            <form:errors path="extra1" element="p" cssClass="text-danger"/>
-                            <form:errors element="div" cssClass="alert alert-danger"/>
-                        </div>
-                        <div class="d-grid">
                             <spring:message code="generic.word.confirm" var="confirm"/>
                             <input type="submit" class="btn btn-primary" value="${confirm}">
                         </div>
@@ -67,6 +58,5 @@
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
