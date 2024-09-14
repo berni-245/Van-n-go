@@ -26,7 +26,7 @@ public class MailServiceImpl implements MailService {
     private final Authenticator auth;
     private final Properties properties;
 
-    MailServiceImpl() {
+    public MailServiceImpl() {
         this.properties = new Properties();
         setProperties();
 
@@ -49,14 +49,13 @@ public class MailServiceImpl implements MailService {
         properties.setProperty("mail.smtp.auth", "true");
     }
 
-    private boolean sendMail(Message message) {
+    private void sendMail(Message message) {
         try {
             message.setSentDate(new java.util.Date());
             Transport.send(message);
-        } catch (MessagingException e) {
-            return false;
+        } catch (MessagingException ignored) {
+            //logger
         }
-        return true;
     }
 
     private Message getMessage() {
@@ -74,7 +73,7 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
-    public boolean sendWelcomeMail(String to, String userName) {
+    public void sendClientWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
@@ -82,26 +81,28 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("Welcome " + userName);
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception e) {
-            return false;
+        } catch (Exception ignored) {
+            //logger
         }
 
 
-        return sendMail(message);
+        sendMail(message);
     }
 
     @Async
     @Override
-    public void sendHaulerWelcomeMail(String to, String userName) {
+    public void sendHaulerWelcomeMail(String to, String userName,long id) {
         Message message = getMessage();
         Context context = new Context();
         context.setVariable("haulerName", userName);
+        context.setVariable("id",id);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("Welcome " + userName);
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignore) {
+        } catch (Exception ignored) {
+            //logger
         }
 
         sendMail(message);

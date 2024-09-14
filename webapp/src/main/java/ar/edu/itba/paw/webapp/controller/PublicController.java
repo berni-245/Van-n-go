@@ -21,9 +21,6 @@ import java.util.Optional;
 public class PublicController {
 
     @Autowired
-    private MailService mailService;
-
-    @Autowired
     private UserService us;
     @Autowired
     private PawUserDetailsService puds;
@@ -63,7 +60,6 @@ public class PublicController {
         }
         final User user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
         puds.loadUserByUsername(user.getUsername());
-        mailService.sendHaulerWelcomeMail(userForm.getMail(), userForm.getUsername());
         return new ModelAndView("redirect:/home");
     }
 
