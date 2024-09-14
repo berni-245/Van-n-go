@@ -136,14 +136,14 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCachePeriod(5000); // Cache period
 
         // CSS
-        registry
-                .addResourceHandler("/css/**")
+        registry.addResourceHandler("/css/**")
                 .addResourceLocations("/css/");
 
         // JAVASCRIPT
-        registry
-                .addResourceHandler("/js/**")
+        registry.addResourceHandler("/js/**")
                 .addResourceLocations("/js/");
 
+        registry.addResourceHandler("/favicon.ico")
+                .addResourceLocations("/");
     }
 }
