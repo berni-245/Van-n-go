@@ -5,21 +5,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1 th:text="#{siteName}">
+<h1 th:text="#{mail.siteName}">
     name
 </h1>
 
-<h2 th:text="#{hauler.welcome.greeting(${userName})}">
-        Welcome User!
-</h2>
+<h2 th:text="#{welcome(${userName})}">Welcome (name) to the Van N' Go community</h2>
 
 <p th:text="#{client.welcome.firstSteps}">
     Start searching drivers fit for your job here (link).
 </p>
 
-<p>
-    Regards, <br />
-    <em>The Van N' Go team</em>
-</p>
+<footer th:text="#{request.footer}">Thanks for using Van N' Go</footer>
 </body>
 </html>

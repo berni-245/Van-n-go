@@ -12,6 +12,9 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailService mailService;
+
     public UserServiceImpl(final UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User create(String username,String mail, String password) {
+        mailService.sendClientWelcomeMail(mail,username);
         // 3. generar un token de validación y guardarlo en base
         // 4. enviar el token de validación en un correo de bienvenida
         // 5. agregar al usuario a una cola de verificación manual...

@@ -6,16 +6,14 @@
 </head>
 
 <body>
-<h1 th:text="#{hauler.welcome.greeting(${haulerName})}" > Welcome (name) to the Van N' Go community </h1>
+<h1 th:text="#{welcome(${haulerName})}" > Welcome (name) to the Van N' Go community </h1>
 
 <h2 th:text="#{hauler.nextSteps}"> Follow this steps to start receiving reservations</h2>
 
 <div>
     <ul>
         <li th:text="#{hauler.nextSteps.addVehicles}  " >name</li>
-        <li th:text="pawserver.it.itba.edu.ar/paw-2024b-01/driver/${id}/vehicule/add"></li>
         <li th:text="#{hauler.nextSteps.addAvailability}">date</li>
-        <li th:text="pawserver.it.itba.edu.ar/paw-2024b-01/driver/${id}/availability/add"></li>
     </ul>
 </div>
 

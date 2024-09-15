@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.services;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -18,8 +22,8 @@ import java.util.Properties;
 //@PropertySource("classpath:resources/mail/mailConfig.properties") //TODO: pasar las configuraciones a mailConfig.properties
 public class MailServiceImpl implements MailService {
 
-    @Autowired
-    private TemplateEngine templateEngine;
+
+    private final TemplateEngine templateEngine;
 
     private final String FROM = "van.n.go.paw@gmail.com";
     private final String password = "lrbe ukez jvkk fleu";
@@ -36,7 +40,35 @@ public class MailServiceImpl implements MailService {
                 return new PasswordAuthentication(FROM, password);
             }
         };
+        templateEngine = emailTemplateEngine();
+        templateEngine.addTemplateResolver(htmlTemplateResolver());
+    }
 
+
+    private TemplateEngine emailTemplateEngine() {
+        final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(htmlTemplateResolver());
+        templateEngine.setMessageSource(messageSource());
+        return templateEngine;
+    }
+
+    private ITemplateResolver htmlTemplateResolver() {
+        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setOrder(1);
+        templateResolver.setPrefix("/mail/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCacheable(false);
+        return templateResolver;
+    }
+
+    private ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("/i18n/messages");  // Ruta base a tus archivos de propiedades
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true); // Muestra el código si no se encuentra la clave
+        return messageSource;
     }
 
     private void setProperties() {
@@ -76,6 +108,7 @@ public class MailServiceImpl implements MailService {
     public void sendClientWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
+        context.setVariable("userName",userName);
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
