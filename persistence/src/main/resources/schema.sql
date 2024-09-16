@@ -76,3 +76,17 @@ create table if not exists vehicle_weekly_zone
     zone_id         int not null references zone (id) on delete cascade,
     primary key (vehicle_id, availability_id, zone_id)
 );
+
+create table if not exists booking
+(
+    id serial primary key,
+    date date unique
+);
+
+create table if not exists reservation
+(
+    driver_id int not null references driver (user_id) on delete cascade,
+    client_id int not null references client (user_id) on delete cascade,
+    booking_id int not null references booking (id) on delete cascade,
+    primary key (driver_id, booking_id)
+);
