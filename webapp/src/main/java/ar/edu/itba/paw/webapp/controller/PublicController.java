@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserRole;
+import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.form.UserForm;
@@ -27,10 +27,13 @@ public class PublicController {
     private PawUserDetailsService puds;
 
     @Autowired
+    private ClientService cs;
+    @Autowired
     private DriverService ds;
 
-    public PublicController(UserService us, DriverService ds) {
+    public PublicController(UserService us, ClientService cs, DriverService ds) {
         this.us = us;
+        this.cs = cs;
         this.ds = ds;
     }
 
@@ -63,7 +66,7 @@ public class PublicController {
         if(userForm.getUserType().equals(UserRole.DRIVER.name()))
             user = ds.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(),"");
         else
-            user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
         puds.loadUserByUsername(user.getUsername());
         return new ModelAndView("redirect:/home");
     }
