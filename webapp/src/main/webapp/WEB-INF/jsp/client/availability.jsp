@@ -10,11 +10,13 @@
     <%@include file="../lib/bootstrap_css.jsp" %>
     <%@include file="../lib/bootstrap_js.jsp" %>
     <jsp:include page="../lib/tom_select.jsp"/>
-    <c:url value="/js/availability.js" var="js" />
-    <c:url value="/css/availability_styles.css" var="css" />
+    <c:url value="/js/availability.js" var="js"/>
+    <c:url value="/css/availability_styles.css" var="css"/>
     <script src="${js}"></script>
     <link rel="stylesheet" href="${css}">
     <%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/AnchorCard.css">--%>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <comp:header/>
@@ -56,7 +58,74 @@
 
         </form:form>
 
-        <%--        <comp:AvailabilityGrid drivers="${drivers}"/>--%>
+
+
+
+        <c:forEach var="driver" items="${drivers}">
+            <div class="modal fade" id="modal${driver.id}" tabindex="-1" role="dialog" aria-labelledby="modalLabel${driver.id}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel${driver.id}"><c:out value="${driver.username}"/></h5>
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Cantidad de vehículos: <c:out value="${driver.vehicles.size()}"/>
+                            </h6>
+                            <p class="card-text">
+                                Descripción: <c:out value="${driver.extra1}"/>
+                            </p>
+                            <div>
+                                <h6 class="mb-2">Horarios</h6>
+                                <c:forEach var="v" items="${driver.vehicles}">
+                                    <div>
+                                        <h6 class="card-subtitle mb-2 mt-2">
+                                            <c:out value="${v.plateNumber}"/> - <c:out value="${v.volume}"/> m³
+                                        </h6>
+                                        <ul class="list-group">
+                                            <c:forEach var="av" items="${v.weeklyAvailability}">
+                                                <li class="list-group-item">
+                                                    <c:out value="${av.weekDayString}"/> |
+                                                    <c:out value="${av.timeStart}"/> to
+                                                    <c:out value="${av.timeEnd}"/>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </div>
+                                </c:forEach>
+
+                                <div>
+                                    <button id="contactButton${driver.id}" class="btn btn-secondary mt-2"
+                                            onclick="showMailForm(${driver.id})">
+                                        Contactar
+                                    </button>
+                                    <div class="form-control mt-5" id="contactForm${driver.id}"
+                                         style="display: none;">
+                                        <form action="${pageContext.request.contextPath}/availability/contact"
+                                              method="post">
+                                            <label for="clientName">  <spring:message
+                                                    code="form.clientName"/></label>
+                                            <input type="text" id="clientName" name="clientName" required>
+                                            <label for="clientMail"><spring:message code="form.clientMail"/></label>
+                                            <input type="email" id="clientMail" name="clientMail" required>
+                                            <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
+                                            <textarea id="jobDescription" name="jobDescription" rows="4"
+                                                      cols="50" required></textarea>
+                                            <input type="hidden" name="driverMail" value="${driver.mail}"/>
+                                            <input type="hidden" name="driverName" value="${driver.username}"/>
+                                            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:forEach>
 
         <div class="d-flex justify-content-center">
             <c:choose>
@@ -64,81 +133,32 @@
                     <p><spring:message code="availability.posts.noPosts"/></p>
                 </c:when>
                 <c:otherwise>
-                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
-                         aria-orientation="vertical">
-                        <c:forEach var="driver" items="${drivers}">
-                            <button class="nav-link text-truncate" style="max-width: 200px;" id="${driver.id}-tab"
-                                    data-bs-toggle="pill" data-bs-target="#${driver.id}"
-                                    type="button" role="tab" aria-controls="${driver.id}" aria-selected="false">
-                                <c:out value="${driver.username}"/>
-                            </button>
-                        </c:forEach>
-                    </div>
-                    <div class="tab-content flex-grow-1 px-2" id="v-pills-tabContent">
-                        <c:forEach var="driver" items="${drivers}" varStatus="status">
-                            <div class="tab-pane fade show" id="${driver.id}" role="tabpanel"
-                                 aria-labelledby="v-pills-home-tab"
-                                 tabindex="${driver.id}">
-                                <div class="card">
+                    <div class="container">
+                        <div class="row mb-4">
+                            <c:forEach var="driver" items="${drivers}" varStatus="status">
+                            <div class="col-md-3">
+                                <div class="card" style="width: 18rem;">
                                     <div class="card-body">
-                                        <h4 class="card-title d-flex align-items-center justify-content-between">
-                                            <c:out value="${driver.username}"/>
-                                        </h4>
-                                        <h6 class="card-subtitle mb-2 text-body-secondary">
-                                            Cantidad de vehículos: <c:out value="${driver.vehicles.size()}"/>
-                                        </h6>
-                                        <p class="card-text three-line-truncate">
-                                            <spring:message code="generic.word.description"/>: <c:out
-                                                value="${driver.extra1}"/>
-                                        </p>
-                                        <div>
-                                            <h6 class="card-title mb-2">Horarios</h6>
-                                            <c:forEach var="v" items="${driver.vehicles}">
-                                                <div>
-                                                    <h6 class="card-subtitle mb-2 mt-2">
-                                                        <c:out value="${v.plateNumber} - ${v.volume}m³"/>
-                                                    </h6>
-                                                    <ul class="list-group">
-                                                        <c:forEach var="av" items="${v.weeklyAvailability}">
-                                                            <li class="list-group-item card-text text-body-secondary">
-                                                                <c:out value="${av.weekDayString}"/> |
-                                                                <c:out value="${av.timeStart}"/> to <c:out
-                                                                    value="${av.timeEnd}"/>
-                                                            </li>
-                                                        </c:forEach>
-                                                    </ul>
-                                                </div>
-                                            </c:forEach>
-                                        </div>
+                                        <h5 class="card-title">${driver.username}</h5>
+                                        <p class="card-text">Aca va la descripcion</p>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal${driver.id}">
+                                            Ver detalles
+                                        </button>
 
-                                        <div>
-                                            <button id="contactButton${driver.id}" class="btn btn-secondary mt-2"
-                                                    onclick="showMailForm(${driver.id})">
-                                                Contactar
-                                            </button>
-                                            <div class="form-control mt-5" id="contactForm${driver.id}"
-                                                 style="display: none;">
-                                                <form action="${pageContext.request.contextPath}/availability/contact"
-                                                      method="post">
-                                                    <label for="clientName">  <spring:message
-                                                            code="form.clientName"/></label>
-                                                    <input type="text" id="clientName" name="clientName" required>
-                                                    <label for="clientMail"><spring:message code="form.clientMail"/></label>
-                                                    <input type="email" id="clientMail" name="clientMail" required>
-                                                    <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
-                                                    <textarea id="jobDescription" name="jobDescription" rows="4"
-                                                              cols="50" required></textarea>
-                                                    <input type="hidden" name="driverMail" value="${driver.mail}"/>
-                                                    <input type="hidden" name="driverName" value="${driver.username}"/>
-                                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </c:forEach>
+                            <c:if test="${(status.index + 1) % 4 == 0}">
+                        </div>
+                        <div class="row mb-4">
+                            </c:if>
+                            </c:forEach>
+
+                        </div>
                     </div>
+
+
+
                 </c:otherwise>
             </c:choose>
         </div>
