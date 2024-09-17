@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.models.PawUserDetails;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.UserService;
@@ -31,6 +32,6 @@ public class PawUserDetailsService implements UserDetailsService {
         } else {
             authorities.add( new SimpleGrantedAuthority(("ROLE_" + UserRole.CLIENT.name())));
         }
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
+        return new PawUserDetails(username, user.getPassword(),user.getId(),user.getMail(), authorities);
     }
 }
