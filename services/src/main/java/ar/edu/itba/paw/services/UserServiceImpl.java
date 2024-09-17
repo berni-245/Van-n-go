@@ -27,10 +27,6 @@ public class UserServiceImpl implements UserService {
 
     public User create(String username,String mail, String password) {
         mailService.sendClientWelcomeMail(mail,username);
-        // 3. generar un token de validación y guardarlo en base
-        // 4. enviar el token de validación en un correo de bienvenida
-        // 5. agregar al usuario a una cola de verificación manual...
-        // 6. ... sigue tan complejo como lo requiera la aplicación
         return userDao.create(username,mail,passwordEncoder.encode(password));
     }
 

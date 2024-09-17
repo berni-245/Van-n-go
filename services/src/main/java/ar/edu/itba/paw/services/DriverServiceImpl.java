@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Vehicle;
-import ar.edu.itba.paw.models.WeeklyAvailability;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.DriverDao;
+import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.persistence.VehicleDao;
 import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,9 @@ import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private DriverDao driverDao;
 
@@ -31,15 +32,8 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver create(String username, String mail, String password, String extra1) {
-        // Register user
-        // TODO
-        // 1. Validate inputs
-        // 2. Store in database
-        // 3. Generate validation token and store in db
-        // 4. Send validation token in a welcome email
-        // 5. Add user to manual verification queue
-        // 6. ... Whatever else the app needs
-        return driverDao.create(username, mail, password, extra1);
+        User user = userService.create(username, mail, password);
+        return driverDao.create(user, extra1);
     }
 
     @Override
