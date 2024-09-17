@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.DriverDao;
-import ar.edu.itba.paw.persistence.UserDao;
-import ar.edu.itba.paw.persistence.VehicleDao;
-import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
+import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +23,9 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     private WeeklyAvailabilityDao weeklyAvailabilityDao;
+
+    @Autowired
+    private BookingDao bookingDao;
 
     public DriverServiceImpl(final DriverDao driverDao) {
         this.driverDao = driverDao;
