@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Vehicle;
-import ar.edu.itba.paw.models.WeeklyAvailability;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.DriverDao;
 import ar.edu.itba.paw.persistence.VehicleDao;
 import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,9 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     private WeeklyAvailabilityDao weeklyAvailabilityDao;
+
+    @Autowired
+    private BookingDao bookingDao;
 
     public DriverServiceImpl(final DriverDao driverDao) {
         this.driverDao = driverDao;
@@ -101,5 +103,25 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public List<Driver> getAll(long zoneId, Size size) {
         return driverDao.getAll(zoneId, size);
+    }
+
+    @Override
+    public List<Booking> getBookings(long driverId) {
+        return bookingDao.getBookings(driverId);
+    }
+
+    @Override
+    public List<Booking> getBookingsByDate(long driverId, Date date) {
+        return bookingDao.getBookingsByDate(driverId, date);
+    }
+
+    @Override
+    public void acceptBooking(long bookingId) {
+        bookingDao.acceptBooking(bookingId);
+    }
+
+    @Override
+    public void rejectBooking(long bookingId) {
+        bookingDao.rejectBooking(bookingId);
     }
 }

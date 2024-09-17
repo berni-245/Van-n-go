@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.services;
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -14,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private BookingDao bookingDao;
 
     public UserServiceImpl(final UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
@@ -47,5 +54,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean mailExists(String mail) {
         return userDao.mailExists(mail);
+    }
+
+    @Override
+    public Optional<Booking> appointBooking(long driverId, long clientId, Date date) {
+        return bookingDao.appointBooking(driverId, clientId, date);
     }
 }
