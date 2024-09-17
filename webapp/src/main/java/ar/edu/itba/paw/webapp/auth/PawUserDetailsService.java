@@ -32,6 +32,6 @@ public class PawUserDetailsService implements UserDetailsService {
         } else {
             authorities.add( new SimpleGrantedAuthority(("ROLE_" + UserRole.CLIENT.name())));
         }
-        return new PawUserDetails(username, user.getPassword(),user.getId(),user.getMail(), authorities);
+        return new PawUserDetails(user, authorities);
     }
 }

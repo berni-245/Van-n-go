@@ -7,26 +7,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class PawUserDetails implements UserDetails {
-    private final String username;
-    private final String password;
-    private final long id;
-    private final String email;
+    private final User user;
     private final Collection<SimpleGrantedAuthority> authorities;
     private final boolean accountNonExpired;
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;
     private final boolean enabled;
 
-    public PawUserDetails(String username, String password, long id, String mail, Collection<SimpleGrantedAuthority> authorities) {
-        this(username,password,id,mail,authorities,true,true,true,true);
+    public PawUserDetails(User user, Collection<SimpleGrantedAuthority> authorities) {
+        this(user, authorities, true, true, true, true);
     }
 
-    public PawUserDetails(String username, String password, long id, String mail, Collection<SimpleGrantedAuthority> authorities, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
-        this.username = username;
-        this.password = password;
-        this.id = id;
-        this.email = mail;
-        this.authorities=authorities;
+    public PawUserDetails(User user, Collection<SimpleGrantedAuthority> authorities, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
+        this.user = user;
+        this.authorities = authorities;
         this.accountNonExpired = accountNonExpired;
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
@@ -38,22 +32,18 @@ public class PawUserDetails implements UserDetails {
         return authorities;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public long getId() {
-        return id;
+        return user.getUsername();
     }
 
     @Override
