@@ -103,11 +103,8 @@
                                          style="display: none;">
                                         <form action="${pageContext.request.contextPath}/availability/contact"
                                               method="post">
-                                            <label for="clientName">  <spring:message
-                                                    code="form.clientName"/></label>
-                                            <input type="text" id="clientName" name="clientName" required>
-                                            <label for="clientMail"><spring:message code="form.clientMail"/></label>
-                                            <input type="email" id="clientMail" name="clientMail" required>
+                                            <input type="hidden" name="clientName" value="${loggedUsername}">
+                                            <input type="hidden" name="clientMail" value="${loggedMail}">
                                             <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
                                             <textarea id="jobDescription" name="jobDescription" rows="4"
                                                       cols="50" required></textarea>

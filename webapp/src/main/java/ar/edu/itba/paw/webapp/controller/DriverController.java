@@ -8,6 +8,9 @@ import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -54,6 +57,8 @@ public class DriverController {
             BindingResult errors,
             @PathVariable long driverId
     ) {
+        if(! checkIfUserIsAllowed(driverId))
+            return new ModelAndView("redirect:/");
         if (errors.hasErrors()) {
             return addVehicleForm(vehicleForm, driverId);
         }
@@ -80,12 +85,12 @@ public class DriverController {
             @PathVariable long driverId
     ) {
         Optional<Driver> driver = ds.findById(driverId);
-        if (driver.isPresent()) {
+        if (checkIfUserIsAllowed(driver)) {
             final ModelAndView mav = new ModelAndView("driver/add_vehicle");
             mav.addObject("username", driver.get().getUsername());
             return mav;
         } else {
-            return new ModelAndView();
+            return new ModelAndView("redirect:/");
         }
     }
 
@@ -95,6 +100,8 @@ public class DriverController {
             BindingResult errors,
             @PathVariable long driverId
     ) {
+        if(! checkIfUserIsAllowed(driverId))
+            return new ModelAndView("redirect:/");
         if (errors.hasErrors()) {
             return addAvailabilityForm(form, driverId);
         }
@@ -115,14 +122,26 @@ public class DriverController {
             @PathVariable long driverId
     ) {
         Optional<Driver> driver = ds.findById(driverId);
-        if (driver.isPresent()) {
+
+        if (checkIfUserIsAllowed(driver)) {
             final ModelAndView mav = new ModelAndView("driver/add_availability");
             mav.addObject("username", driver.get().getUsername());
             mav.addObject("vehicles", ds.getVehicles(driverId));
             mav.addObject("zones", zs.getAllZones());
             return mav;
         } else {
-            return new ModelAndView();
+            return new ModelAndView("redirect:/");
         }
+    }
+
+    private boolean checkIfUserIsAllowed(Optional<Driver> driver) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        return driver.isPresent() && currentUser.getUsername().equals(driver.get().getUsername());
+    }
+
+    private boolean checkIfUserIsAllowed(long driverId) {
+        Optional<Driver> driver = ds.findById(driverId);
+        return checkIfUserIsAllowed(driver);
     }
 }
