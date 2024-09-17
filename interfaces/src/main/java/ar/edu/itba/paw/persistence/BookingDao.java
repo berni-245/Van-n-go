@@ -22,6 +22,20 @@ public interface BookingDao {
     Optional<Booking> appointBooking(long driverId, long clientId, Date date);
 
     /**
+     * Accepts a booking for a given driver and the booking id. Rejects all the other bookings on that day for that driver.
+     *
+     * @param bookingId The ID of the booking.
+     */
+    void acceptBooking(long bookingId);
+
+    /**
+     * Rejects a booking for a given booking id. Removing it from the Dao.
+     *
+     * @param bookingId The ID of the booking.
+     */
+    void rejectBooking(long bookingId);
+
+    /**
      * Retrieves all the bookings a given driver has.
      *
      * @param driverId The ID of the driver.

@@ -4,25 +4,31 @@ import java.util.Date;
 
 public class Booking {
     private final long bookingId;
-    private final long clientId;
+    private final User user;
     private final Date date;
+    private final boolean confirmed;
 
 
-    public Booking(long bookingId, long clientId, Date date) {
+    public Booking(long bookingId, User user, Date date, boolean confirmed) {
         this.bookingId = bookingId;
-        this.clientId = clientId;
+        this.user = user;
         this.date = date;
+        this.confirmed = confirmed;
     }
 
     public long getBookingId() {
         return bookingId;
     }
 
-    public long getClientId() {
-        return clientId;
+    public User getClient() {
+        return user;
     }
 
     public Date getDate() {
         return date;
+    }
+
+    public boolean getConfirmed() {
+        return confirmed;
     }
 }
