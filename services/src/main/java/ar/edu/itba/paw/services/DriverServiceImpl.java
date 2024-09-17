@@ -5,6 +5,7 @@ import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -104,7 +105,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<Booking> getBookingsByDate(long driverId, Date date) {
+    public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return bookingDao.getBookingsByDate(driverId, date);
     }
 

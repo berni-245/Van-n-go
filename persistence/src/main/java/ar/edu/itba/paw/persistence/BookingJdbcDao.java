@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.*;
 
 @Repository
@@ -22,7 +23,7 @@ public class BookingJdbcDao implements BookingDao{
                     rs.getLong("booking_id"),
 
                     clientIdToUser(rs.getLong("client_id")),
-                    rs.getDate("date"),
+                    rs.getDate("date").toLocalDate(),
                     rs.getBoolean("is_confirmed")
             );
 
@@ -36,7 +37,7 @@ public class BookingJdbcDao implements BookingDao{
     }
 
     @Override
-    public Optional<Booking> appointBooking(long clientId, long driverId, Date date) {
+    public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
         if(isDriverBookedForThatDay(driverId, date) || isClientAlreadyAppointed(driverId, clientId, date))
             return Optional.empty();
 
@@ -58,20 +59,20 @@ public class BookingJdbcDao implements BookingDao{
                         select booking_id, client_id, date, is_confirmed
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ? and is_confirmed = ?""",
-                new Object[]{driverId, false},
-                new int[]{Types.BIGINT, Types.BIT},
+                new Object[]{driverId, Boolean.FALSE},
+                new int[]{Types.BIGINT, Types.BOOLEAN},
                 ROW_MAPPER);
 
     }
 
     @Override
-    public List<Booking> getBookingsByDate(long driverId, Date date) {
+    public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return jdbcTemplate.query("""
                     select booking_id, client_id, date, is_confirmed
                     from booking b join reservation r on b.id = r.booking_id
                     where driver_id = ? and date = ? and is_confirmed = ?""",
-                new Object[]{driverId, date, false},
-                new int[]{Types.BIGINT, Types.DATE, Types.BIT},
+                new Object[]{driverId, date.toString(), Boolean.FALSE},
+                new int[]{Types.BIGINT, Types.DATE, Types.BOOLEAN},
                 ROW_MAPPER);
     }
 
@@ -81,8 +82,8 @@ public class BookingJdbcDao implements BookingDao{
                     update reservation
                     set is_confirmed = ?
                     where booking_id = ?""",
-                new Object[]{true, bookingId},
-                new int[]{Types.BIT, Types.BIGINT});
+                new Object[]{Boolean.TRUE, bookingId},
+                new int[]{Types.BOOLEAN, Types.BIGINT});
         jdbcTemplate.update("""
                     delete 
                     from booking
@@ -101,24 +102,24 @@ public class BookingJdbcDao implements BookingDao{
                 new int[]{Types.BIGINT});
     }
 
-    private boolean isDriverBookedForThatDay(long driverId, Date date) {
+    private boolean isDriverBookedForThatDay(long driverId, LocalDate date) {
         Integer count = jdbcTemplate.queryForObject("""
                         select count(*)
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ? and date = ? and is_confirmed = ?""",
-                new Object[]{driverId, date, true},
-                new int[]{Types.BIGINT, Types.DATE, Types.BIT},
+                new Object[]{driverId, date.toString(), Boolean.TRUE},
+                new int[]{Types.BIGINT, Types.DATE, Types.BOOLEAN},
                 Integer.class);
 
         return count != null && count > 0;
     }
 
-    private boolean isClientAlreadyAppointed(long driverId, long clientId, Date date) {
+    private boolean isClientAlreadyAppointed(long driverId, long clientId, LocalDate date) {
         Integer count = jdbcTemplate.queryForObject("""
                         select count(*)
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ? and client_id = ? and date = ?""",
-                new Object[]{driverId, clientId, date},
+                new Object[]{driverId, clientId, date.toString()},
                 new int[]{Types.BIGINT, Types.BIGINT, Types.DATE},
                 Integer.class);
 

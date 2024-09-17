@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Booking> appointBooking(long driverId, long clientId, Date date) {
+    public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
         return bookingDao.appointBooking(driverId, clientId, date);
     }
 }

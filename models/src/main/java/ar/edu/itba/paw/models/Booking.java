@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.models;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Booking {
     private final long bookingId;
     private final User user;
-    private final Date date;
+    private final LocalDate date;
     private final boolean confirmed;
 
 
-    public Booking(long bookingId, User user, Date date, boolean confirmed) {
+    public Booking(long bookingId, User user, LocalDate date, boolean confirmed) {
         this.bookingId = bookingId;
         this.user = user;
         this.date = date;
@@ -24,7 +25,7 @@ public class Booking {
         return user;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
