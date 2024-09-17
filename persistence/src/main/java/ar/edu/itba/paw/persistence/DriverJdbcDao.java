@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -40,12 +41,9 @@ public class DriverJdbcDao implements DriverDao {
     }
 
     @Override
-    public Driver create(String username, String mail, String password, String extra1) {
-        Map<String, String> userData = Map.of("username", username, "mail", mail, "password", password);
-        // We should use transactions here....
-        final Number userId = jdbcUserInsert.executeAndReturnKey(userData);
-        jdbcDriverInsert.execute(Map.of("user_id", userId, "extra1", extra1));
-        return new Driver(userId.longValue(), username, mail, password, extra1);
+    public Driver create(User user, String extra1) {
+        jdbcDriverInsert.execute(Map.of("user_id", user.getId(), "extra1", extra1));
+        return new Driver(user, extra1);
     }
 
     @Override

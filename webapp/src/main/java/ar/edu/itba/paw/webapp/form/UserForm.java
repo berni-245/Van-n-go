@@ -23,6 +23,9 @@ public class UserForm {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
     private String confirmPassword;
 
+    @NotBlank
+    private String userType;
+
     @AssertTrue(message = "Passwords do not match")
     public boolean passwordMatch() {
         return password != null && password.equals(confirmPassword);
@@ -58,5 +61,13 @@ public class UserForm {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }
