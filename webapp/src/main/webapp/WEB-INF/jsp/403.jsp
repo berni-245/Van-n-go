@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>
@@ -7,6 +8,7 @@
     <title>Van n' Go</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
+<comp:header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
