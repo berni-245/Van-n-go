@@ -85,7 +85,7 @@ create table if not exists booking
 
 create table if not exists reservation
 (
-    driver_id int not null references driver (user_id) on delete cascade,
+        driver_id int not null references driver (user_id) on delete cascade,
     client_id int not null references client (user_id) on delete cascade,
     booking_id int not null references booking (id) on delete cascade,
     primary key (driver_id, booking_id)
