@@ -27,9 +27,9 @@ public class PawUserDetailsService implements UserDetailsService {
 
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if(us.isDriver(username)){
-            authorities.add( new SimpleGrantedAuthority(UserRole.DRIVER.name()));
+            authorities.add( new SimpleGrantedAuthority("ROLE_" + UserRole.DRIVER.name()));
         } else {
-            authorities.add( new SimpleGrantedAuthority((UserRole.CLIENT.name())));
+            authorities.add( new SimpleGrantedAuthority(("ROLE_" + UserRole.CLIENT.name())));
         }
         return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
     }
