@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.UserService;
@@ -58,7 +59,11 @@ public class PublicController {
         if (errors.hasErrors()) {
             return createForm(userForm);
         }
-        final User user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+        final User user;
+        if(userForm.getUserType().equals(UserRole.DRIVER.name()))
+            user = ds.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(),"");
+        else
+            user = us.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
         puds.loadUserByUsername(user.getUsername());
         return new ModelAndView("redirect:/home");
     }
