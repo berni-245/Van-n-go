@@ -40,7 +40,7 @@ public class BookingJdbcDao implements BookingDao{
         if(isDriverBookedForThatDay(driverId, date) || isClientAlreadyAppointed(driverId, clientId, date))
             return Optional.empty();
 
-        Map<String, Date> bookingData = Map.of("date", date);
+        Map<String, Object> bookingData = Map.of("date", date);
         final Number generatedBookingId = jdbcBookingInsert.executeAndReturnKey(bookingData);
 
         Map<String, Object> reservationData = new HashMap<>();
@@ -82,7 +82,7 @@ public class BookingJdbcDao implements BookingDao{
                     set is_confirmed = ?
                     where booking_id = ?""",
                 new Object[]{true, bookingId},
-                new int[]{Types.BIT, Types.BIGINT, Types.BIGINT});
+                new int[]{Types.BIT, Types.BIGINT});
         jdbcTemplate.update("""
                     delete 
                     from booking
