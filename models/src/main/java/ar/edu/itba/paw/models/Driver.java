@@ -30,11 +30,8 @@ public class Driver extends User {
         this(id, username, mail, password, extra1, null);
     }
 
-    public Driver(
-            User user,
-            String extra1
-    ) {
-        this(user.getId(), user.getUsername(), user.getMail(), user.getPassword(), extra1, null);
+    public Driver(User user, String extra1) {
+        this(user.getId(), user.getUsername(), user.getMail(), user.getPassword(), extra1);
     }
 
     public String getExtra1() {
