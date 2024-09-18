@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -89,7 +88,7 @@ public class BookingJdbcDao implements BookingDao{
                 new Object[]{Boolean.TRUE, bookingId},
                 new int[]{Types.BOOLEAN, Types.BIGINT});
         jdbcTemplate.update("""
-                    delete 
+                    delete
                     from booking
                     where id != ?""",
                 new Object[]{bookingId},
@@ -99,7 +98,7 @@ public class BookingJdbcDao implements BookingDao{
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                    delete 
+                    delete
                     from booking
                     where id = ?""",
                 new Object[]{bookingId},

@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Booking {
     private final long bookingId;

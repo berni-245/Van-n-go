@@ -1,14 +1,9 @@
 package ar.edu.itba.paw.services;
-import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
