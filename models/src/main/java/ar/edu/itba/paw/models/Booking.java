@@ -9,8 +9,7 @@ public class Booking {
     private final LocalDate date;
     private final boolean confirmed;
 
-
-    public Booking(long bookingId, User user, LocalDate date, boolean confirmed) {
+    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed) {
         this.bookingId = bookingId;
         this.user = user;
         this.date = date;

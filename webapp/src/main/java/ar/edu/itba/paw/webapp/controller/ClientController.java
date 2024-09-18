@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.MailService;
-import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,10 +28,11 @@ public class ClientController {
     private MailService mailService;
 
     @Autowired
-    private UserService userService;
+    private ClientService cs;
 
-    public ClientController(DriverService ds, ZoneService zs) {
+    public ClientController(DriverService ds, ClientService cs, ZoneService zs) {
         this.ds = ds;
+        this.cs = cs;
         this.zs = zs;
     }
 
@@ -71,12 +69,12 @@ public class ClientController {
                                                @RequestParam("driverName") String driverName,
                                                @RequestParam("clientName") String clientName,
                                                @RequestParam("bookingDate") String date) {
-        Optional<Booking> booking = userService.appointBooking(driverName, clientName, LocalDate.parse(date));
+        Optional<Booking> booking = cs.appointBooking(driverName, clientName, LocalDate.parse(date));
         if (booking.isPresent()) {
             mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
             return new ModelAndView("redirect:/availability");
         }
-        return new ModelAndView();
+        return new ModelAndView("redirect:/availability");
     }
 
 }

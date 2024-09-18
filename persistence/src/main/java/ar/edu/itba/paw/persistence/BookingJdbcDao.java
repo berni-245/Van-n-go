@@ -18,22 +18,26 @@ public class BookingJdbcDao implements BookingDao{
     private final SimpleJdbcInsert jdbcBookingInsert;
     private final SimpleJdbcInsert jdbcReservationInsert;
 
-    private final RowMapper<Booking> ROW_MAPPER =
-            (rs, rowNum) -> new Booking(
-                    rs.getLong("booking_id"),
+    private final ClientDao clientDao;
 
-                    clientIdToUser(rs.getLong("client_id")),
-                    rs.getDate("date").toLocalDate(),
-                    rs.getBoolean("is_confirmed")
-            );
+    private final RowMapper<Booking> ROW_MAPPER;
 
     public BookingJdbcDao(final DataSource ds) {
+        clientDao = new ClientJdbcDao(ds);
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcBookingInsert = new SimpleJdbcInsert(ds)
                 .usingGeneratedKeyColumns("id")
                 .withTableName("booking");
         jdbcReservationInsert = new SimpleJdbcInsert(ds)
                 .withTableName("reservation");
+
+        ROW_MAPPER = (rs, rowNum) -> new Booking(
+                rs.getLong("booking_id"),
+
+                clientDao.findById(rs.getLong("client_id")).orElseThrow(),
+                rs.getDate("date").toLocalDate(),
+                rs.getBoolean("is_confirmed")
+        );
     }
 
     @Override
@@ -50,7 +54,7 @@ public class BookingJdbcDao implements BookingDao{
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientIdToUser(clientId), date, false));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false));
     }
 
     @Override
@@ -87,7 +91,7 @@ public class BookingJdbcDao implements BookingDao{
         jdbcTemplate.update("""
                     delete 
                     from booking
-                    where booking_id != ?""",
+                    where id != ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT});
     }
@@ -97,7 +101,7 @@ public class BookingJdbcDao implements BookingDao{
         jdbcTemplate.update("""
                     delete 
                     from booking
-                    where booking_id = ?""",
+                    where id = ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT});
     }
@@ -124,20 +128,5 @@ public class BookingJdbcDao implements BookingDao{
                 Integer.class);
 
         return count != null && count > 0;
-    }
-
-    private User clientIdToUser(long clientId) {
-        return jdbcTemplate.query("""
-                    select id, username, mail, password
-                    from app_user
-                    where id = ?""",
-                new Object[]{clientId},
-                new int[]{Types.BIGINT},
-                (rs, rowNum) -> new User(
-                        rs.getLong("id"),
-                        rs.getString("username"),
-                        rs.getString("mail"),
-                        rs.getString("password")
-                )).stream().findFirst().orElseThrow();
     }
 }

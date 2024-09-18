@@ -88,33 +88,33 @@
                                                     <c:out value="${av.weekDayString}"/> |
                                                     <c:out value="${av.timeStart}"/> to
                                                     <c:out value="${av.timeEnd}"/>
+                                                        <div>
+                                                            <button id="contactButton${driver.id}" class="btn btn-secondary mt-2"
+                                                                    onclick="showMailForm(${driver.id})">
+                                                                Contactar
+                                                            </button>
+                                                            <div class="form-control mt-5" id="contactForm${driver.id}"
+                                                                 style="display: none;">
+                                                                <form action="${pageContext.request.contextPath}/availability/contact"
+                                                                      method="post">
+                                                                    <input type="hidden" name="clientName" value="${loggedUsername}">
+                                                                    <input type="hidden" name="clientMail" value="${loggedMail}">
+                                                                    <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
+                                                                    <textarea id="jobDescription" name="jobDescription" rows="4"
+                                                                              cols="50" required></textarea>
+                                                                    <input type="hidden" name="driverMail" value="${driver.mail}"/>
+                                                                    <input type="hidden" name="driverName" value="${driver.username}"/>
+                                                                    <input type="hidden" name="bookingDate" value="${"2024-09-17"}"/>
+                                                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                    </div>
                                                 </li>
                                             </c:forEach>
                                         </ul>
                                     </div>
                                 </c:forEach>
-
-                                <div>
-                                    <button id="contactButton${driver.id}" class="btn btn-secondary mt-2"
-                                            onclick="showMailForm(${driver.id})">
-                                        Contactar
-                                    </button>
-                                    <div class="form-control mt-5" id="contactForm${driver.id}"
-                                         style="display: none;">
-                                        <form action="${pageContext.request.contextPath}/availability/contact"
-                                              method="post">
-                                            <input type="hidden" name="clientName" value="${loggedUsername}">
-                                            <input type="hidden" name="clientMail" value="${loggedMail}">
-                                            <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
-                                            <textarea id="jobDescription" name="jobDescription" rows="4"
-                                                      cols="50" required></textarea>
-                                            <input type="hidden" name="driverMail" value="${driver.mail}"/>
-                                            <input type="hidden" name="driverName" value="${driver.username}"/>
-                                            <button type="submit" class="btn btn-primary mt-2">Submit</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

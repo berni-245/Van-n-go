@@ -20,9 +20,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MailService mailService;
 
-    @Autowired
-    private BookingDao bookingDao;
-
     public UserServiceImpl(final UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
@@ -51,10 +48,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean mailExists(String mail) {
         return userDao.mailExists(mail);
-    }
-
-    @Override
-    public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
-        return bookingDao.appointBooking(driverId, clientId, date);
     }
 }
