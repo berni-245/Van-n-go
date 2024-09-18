@@ -28,8 +28,10 @@ public class PawUserDetailsService implements UserDetailsService {
 
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if(us.isDriver(username)){
+            user.setIsDriver(true);
             authorities.add( new SimpleGrantedAuthority("ROLE_" + UserRole.DRIVER.name()));
         } else {
+            user.setIsDriver(false);
             authorities.add( new SimpleGrantedAuthority(("ROLE_" + UserRole.CLIENT.name())));
         }
         return new PawUserDetails(user, authorities);

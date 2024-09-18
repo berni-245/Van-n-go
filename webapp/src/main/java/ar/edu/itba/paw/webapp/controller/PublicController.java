@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -38,8 +39,13 @@ public class PublicController {
     }
 
     @RequestMapping(path = {"/", "/home"})
-    public ModelAndView index() {
-        return new ModelAndView("public/home");
+    public ModelAndView index(@ModelAttribute("loggedUser") User loggedUser) {
+        if (loggedUser == null || !loggedUser.getIsDriver()) {
+            return new ModelAndView("public/home");
+        } else {
+            return new ModelAndView("driver/home");
+        }
+
     }
 
     @RequestMapping("/{userId:\\d+}")
@@ -63,8 +69,8 @@ public class PublicController {
             return createForm(userForm);
         }
         final User user;
-        if(userForm.getUserType().equals(UserRole.DRIVER.name()))
-            user = ds.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(),"");
+        if (userForm.getUserType().equals(UserRole.DRIVER.name()))
+            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
         puds.loadUserByUsername(user.getUsername());
