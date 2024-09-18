@@ -1,10 +1,15 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.webapp.validation.PasswordMatch;
 import ar.edu.itba.paw.webapp.validation.ValidMail;
 import ar.edu.itba.paw.webapp.validation.ValidUsername;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+@PasswordMatch
 public class UserForm {
 
     @Size(min = 5, max = 20)
@@ -22,16 +27,10 @@ public class UserForm {
     private String password;
 
     @Size(min = 8, max = 32)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
     private String confirmPassword;
 
     @NotBlank
     private String userType;
-
-    @AssertTrue(message = "Passwords do not match")
-    public boolean passwordMatch() {
-        return password != null && password.equals(confirmPassword);
-    }
 
     public String getUsername() {
         return username;
