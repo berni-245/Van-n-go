@@ -15,6 +15,8 @@ public interface VehicleDao {
 
     List<Vehicle> getDriverVehicles(long driverId);
 
+    List<Vehicle> getDriverVehiclesFull(long driverId);
+
     List<Vehicle> getDriverVehicles(long driverId, long zoneId, Size size);
 
     boolean plateNumberExists(String plateNumber);

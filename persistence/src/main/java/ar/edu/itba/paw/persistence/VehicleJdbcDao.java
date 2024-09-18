@@ -79,6 +79,22 @@ public class VehicleJdbcDao implements VehicleDao {
     }
 
     @Override
+    public List<Vehicle> getDriverVehiclesFull(long driverId) {
+        List<Vehicle> vehicles = jdbcTemplate.query(
+                "select * from vehicle where driver_id = ? order by plate_number",
+                new Object[]{driverId},
+                new int[]{java.sql.Types.BIGINT},
+                ROW_MAPPER);
+
+        for (Vehicle vehicle : vehicles) {
+            vehicle.setWeeklyAvailability(
+                    weeklyAvailabilityDao.getVehicleWeeklyAvailability(vehicle.getId())
+            );
+        }
+        return vehicles;
+    }
+
+    @Override
     public List<Vehicle> getDriverVehicles(long driverId, long zoneId, Size size) {
         List<Vehicle> vehicles = jdbcTemplate.query("""
                         select * from vehicle v

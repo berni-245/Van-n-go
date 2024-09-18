@@ -68,17 +68,17 @@ public class DriverController {
         return new ModelAndView("driver/add_vehicle");
     }
 
-    @RequestMapping(path = "/driver/{driverId:\\d+}/availability/add", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.POST)
     public ModelAndView addAvailability(
+            @ModelAttribute("loggedUser") User loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
-            BindingResult errors,
-            @PathVariable long driverId
+            BindingResult errors
     ) {
         if (errors.hasErrors()) {
-            return addAvailabilityForm(form, driverId);
+            return addAvailabilityForm(loggedUser, form);
         }
         List<WeeklyAvailability> successfulInsertions = ds.addWeeklyAvailability(
-                driverId,
+                loggedUser.getId(),
                 form.getWeekDays(),
                 form.getTimeStart(),
                 form.getTimeEnd(),
@@ -88,22 +88,17 @@ public class DriverController {
         return new ModelAndView("redirect:/availability");
     }
 
-    @RequestMapping(path = "/driver/{driverId:\\d+}/availability/add", method = RequestMethod.GET)
+    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
     public ModelAndView addAvailabilityForm(
-            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm,
-            @PathVariable long driverId
+            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
     ) {
-        Optional<Driver> driver = ds.findById(driverId);
+        Optional<Driver> driver = ds.findById(loggedUser.getId());
 
-//        if (checkIfUserIsAllowed(driver)) {
         final ModelAndView mav = new ModelAndView("driver/add_availability");
-        mav.addObject("username", driver.get().getUsername());
-        mav.addObject("vehicles", ds.getVehicles(driverId));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
         mav.addObject("zones", zs.getAllZones());
         return mav;
-//        } else {
-//            return new ModelAndView("redirect:/");
-//        }
     }
 
     @RequestMapping(path = "/driver/vehicles")
@@ -116,7 +111,7 @@ public class DriverController {
     @RequestMapping(path = "/driver/availability")
     public ModelAndView availabilityDashboard(@ModelAttribute("loggedUser") User loggedUser) {
         final ModelAndView mav = new ModelAndView("driver/availability");
-//        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehiclesFull(loggedUser.getId()));
         return mav;
     }
 
@@ -167,5 +162,22 @@ public class DriverController {
         ));
 
         return new ModelAndView("redirect:/driver/vehicles");
+    }
+
+    @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.GET)
+    public ModelAndView editAvailabilityGet(
+            @ModelAttribute("loggedUser") User loggedUser,
+            @RequestParam(name = "availabilityId") long availabilityId,
+            @ModelAttribute("vehicleForm") VehicleForm form
+    ) {
+//        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), availabilityId);
+//        if (vehicle.isPresent()) {
+//            form.setAll(vehicle.get());
+//            var mav = new ModelAndView("driver/edit_vehicle");
+//            mav.addObject("plateNumber", availabilityId);
+//            return mav;
+//        } else {
+            return new ModelAndView();
+//        }
     }
 }

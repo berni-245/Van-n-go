@@ -15,6 +15,8 @@ public interface DriverService {
 
     List<Vehicle> getVehicles(long id);
 
+    List<Vehicle> getVehiclesFull(long id);
+
     List<WeeklyAvailability> getWeeklyAvailability(long id);
 
     List<WeeklyAvailability> addWeeklyAvailability(
@@ -53,10 +55,10 @@ public interface DriverService {
      * Retrieves all the bookings a given driver has on a specific date.
      *
      * @param driverId The ID of the driver.
-     * @param date The date of the bookings.
+     * @param date     The date of the bookings.
      * @return A list of {@link Booking} objects for the specified driver on a specific date. Will be empty if no bookings were found.
      */
-    default List<Booking> getBookingsByDate(long driverId, String date){
+    default List<Booking> getBookingsByDate(long driverId, String date) {
         return getBookingsByDate(driverId, LocalDate.parse(date));
     }
 

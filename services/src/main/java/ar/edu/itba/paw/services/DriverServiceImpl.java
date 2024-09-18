@@ -56,6 +56,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public List<Vehicle> getVehiclesFull(long id) {
+        return vehicleDao.getDriverVehiclesFull(id);
+    }
+
+    @Override
     public List<WeeklyAvailability> getWeeklyAvailability(long id) {
         return weeklyAvailabilityDao.getDriverWeeklyAvailability(id);
     }
