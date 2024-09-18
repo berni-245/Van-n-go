@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Booking {
     private final long bookingId;
-    private final User user;
+    private final Client user;
     private final LocalDate date;
     private final boolean confirmed;
 
@@ -19,7 +19,7 @@ public class Booking {
         return bookingId;
     }
 
-    public User getClient() {
+    public Client getClient() {
         return user;
     }
 
