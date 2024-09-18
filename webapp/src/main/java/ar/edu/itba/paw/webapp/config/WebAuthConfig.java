@@ -39,7 +39,7 @@ public class WebAuthConfig  extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/home","/login","/register").anonymous()
                 .antMatchers("/driver/**").hasRole(UserRole.DRIVER.name())
-                .antMatchers("/client/**").hasRole(UserRole.CLIENT.name())
+                .antMatchers("/client/**","/availability/**").hasRole(UserRole.CLIENT.name())
                 .antMatchers("/**").authenticated()
                 .and().formLogin()
                 .usernameParameter("j_username")
