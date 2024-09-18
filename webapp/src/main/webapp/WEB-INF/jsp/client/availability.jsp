@@ -97,8 +97,8 @@
                                                                  style="display: none;">
                                                                 <form action="${pageContext.request.contextPath}/availability/contact"
                                                                       method="post">
-                                                                    <input type="hidden" name="clientName" value="${loggedUser.getUsername()}">
-                                                                    <input type="hidden" name="clientMail" value="${loggedUser.getMail()}">
+                                                                    <input type="hidden" name="clientName" value="${loggedUser.username}">
+                                                                    <input type="hidden" name="clientMail" value="${loggedUser.mail}">
                                                                     <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
                                                                     <textarea id="jobDescription" name="jobDescription" rows="4"
                                                                               cols="50" required></textarea>
