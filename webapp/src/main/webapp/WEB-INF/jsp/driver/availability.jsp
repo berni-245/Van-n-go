@@ -20,13 +20,18 @@
             <ul class="list-group">
                 <c:forEach var="av" items="${v.weeklyAvailability}">
                     <c:url var="vUrl" value="/driver/availability/edit"/>
-                    <a href="${vUrl}?availabilityId=TODO"
-                       class="list-group-item list-group-item-action vehicle-item"
-                    >
+                    <div class="list-group-item list-group-item-action vehicle-item">
                         <c:out value="${av.weekDayString}"/> |
                         <c:out value="${av.timeStart}"/> to
                         <c:out value="${av.timeEnd}"/>
-                    </a>
+                    </div>
+                    <%--                    <a href="${vUrl}?availabilityId=TODO"--%>
+                    <%--                       class="list-group-item list-group-item-action vehicle-item"--%>
+                    <%--                    >--%>
+                    <%--                        <c:out value="${av.weekDayString}"/> |--%>
+                    <%--                        <c:out value="${av.timeStart}"/> to--%>
+                    <%--                        <c:out value="${av.timeEnd}"/>--%>
+                    <%--                    </a>--%>
                 </c:forEach>
             </ul>
         </div>
