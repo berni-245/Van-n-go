@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -43,7 +45,10 @@ public class PublicController {
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {
-            return new ModelAndView("driver/home");
+            final ModelAndView mav = new ModelAndView("driver/home");
+            List<Booking> bookings = ds.getBookings(loggedUser.getId());
+            mav.addObject("bookings",bookings);
+            return mav;
         }
 
     }

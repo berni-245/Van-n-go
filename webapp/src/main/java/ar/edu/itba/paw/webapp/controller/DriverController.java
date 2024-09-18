@@ -180,4 +180,21 @@ public class DriverController {
             return new ModelAndView();
 //        }
     }
+
+
+    @RequestMapping(path = "/driver/acceptBooking", method = RequestMethod.POST)
+    public ModelAndView acceptBooking(
+            @RequestParam("bookingId") long bookingId
+    ) {
+       ds.acceptBooking(bookingId);
+       return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(path = "/driver/rejectBooking", method = RequestMethod.POST)
+    public ModelAndView denyBooking(
+            @RequestParam("bookingId") long bookingId
+    ) {
+        ds.rejectBooking(bookingId);
+        return new ModelAndView("redirect:/");
+    }
 }

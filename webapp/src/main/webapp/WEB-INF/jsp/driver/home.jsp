@@ -16,7 +16,49 @@
 <body class="d-flex flex-column min-vh-100">
 <comp:header inHome="true"/>
 <main>
-    Driver home
+    <body>
+    <div class="container mt-4">
+
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-left">Sus reservas</h1>
+            </div>
+        </div>
+
+        <div class="row row-cols-3">
+            <c:forEach var="booking" items="${bookings}">
+            <div class="col mb-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Fecha: <c:out value="${booking.date}" /></h5>
+                        <p class="card-text">Cliente: <c:out value="${booking.client.username}" /></p>
+                        <p class="card-text">Mail Cliente: <c:out value="${booking.client.mail}" /></p>
+                        <p class="card-text card-description">description</p>
+                        <c:if test="${booking.confirmed}">
+                            <p>La reserva esta confirmada</p>
+                        </c:if>
+                        <c:if test="${!booking.confirmed}">
+                            <div class="d-flex justify-content-between">
+                            <form action="${pageContext.request.contextPath}/driver/acceptBooking" method="POST">
+                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                <button type="submit" class="btn btn-success">Aceptar</button>
+                            </form>
+                            <form action="${pageContext.request.contextPath}/driver/rejectBooking" method="POST">
+                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                <button type="submit" class="btn btn-danger">Rechazar</button>
+                            </form>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+            </c:forEach>
+        </div>
+    </div>
+
+
+
+
 </main>
 
 <footer class="mt-auto">
