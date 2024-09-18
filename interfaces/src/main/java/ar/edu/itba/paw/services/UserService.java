@@ -13,5 +13,7 @@ public interface UserService {
 
     boolean mailExists(String mail);
 
+    boolean usernameExists(String mail);
+
     User findByUsername(String username);
 }

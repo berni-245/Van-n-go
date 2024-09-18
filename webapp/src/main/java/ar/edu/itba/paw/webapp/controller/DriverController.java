@@ -68,14 +68,6 @@ public class DriverController {
                 vehicleForm.getVolume(),
                 vehicleForm.getDescription()
         );
-        if (vehicle == null) {
-            errors.addError(new FieldError(
-                    "vehicleForm",
-                    "plateNumber",
-                    "Plate number already registered")
-            );
-            return addVehicleForm(vehicleForm, driverId);
-        }
         return new ModelAndView("redirect:/availability");
     }
 

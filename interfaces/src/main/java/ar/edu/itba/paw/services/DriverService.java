@@ -73,4 +73,6 @@ public interface DriverService {
      * @param bookingId The ID of the booking.
      */
     void rejectBooking(long bookingId);
+
+    boolean plateNumberExists(String plateNumber);
 }

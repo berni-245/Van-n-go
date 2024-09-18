@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -46,12 +45,8 @@ public class VehicleJdbcDao implements VehicleDao {
                 "volume_m3", volume,
                 "description", description
         );
-        try {
-            final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
-            return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
-        } catch (DuplicateKeyException e) {
-            return null;
-        }
+        final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
+        return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
     }
 
     @Override
@@ -101,5 +96,14 @@ public class VehicleJdbcDao implements VehicleDao {
             );
         }
         return vehicles;
+    }
+
+    @Override
+    public boolean plateNumberExists(String plateNumber) {
+        Integer count = this.jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM vehicle where plate_number = ?", Integer.class,
+                plateNumber
+        );
+        return count != null && count > 0;
     }
 }

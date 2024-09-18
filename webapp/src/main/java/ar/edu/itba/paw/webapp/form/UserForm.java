@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.webapp.validation.ValidMail;
+import ar.edu.itba.paw.webapp.validation.ValidUsername;
 
 import javax.validation.constraints.*;
 
@@ -8,6 +9,7 @@ public class UserForm {
 
     @Size(min = 5, max = 20)
     @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    @ValidUsername
     private String username;
 
     @NotBlank

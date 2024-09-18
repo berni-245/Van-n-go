@@ -117,4 +117,9 @@ public class DriverServiceImpl implements DriverService {
     public void rejectBooking(long bookingId) {
         bookingDao.rejectBooking(bookingId);
     }
+
+    @Override
+    public boolean plateNumberExists(String plateNumber) {
+        return vehicleDao.plateNumberExists(plateNumber);
+    }
 }

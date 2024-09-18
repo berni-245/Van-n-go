@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public class UserJdbcDao implements UserDao {
-
     private static final RowMapper<User> ROW_MAPPER =
             (rs, rowNum) -> new User(
                     rs.getLong("id"),
@@ -67,6 +66,15 @@ public class UserJdbcDao implements UserDao {
         Integer count = this.jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM app_user where mail = ?", Integer.class,
                 mail);
+        return count != null && count > 0;
+    }
+
+    // Es prácticamente igual al de arriba... Se puede modularizar?
+    @Override
+    public boolean usernameExists(String username) {
+        Integer count = this.jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM app_user where username = ?", Integer.class,
+                username);
         return count != null && count > 0;
     }
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -11,6 +12,7 @@ public class VehicleForm {
     // This should be country dependant I think?
     // @Size(min = 8, max = 20)
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
+    @ValidPlateNumber
     private String plateNumber;
 
     @Min(Size.MIN)
