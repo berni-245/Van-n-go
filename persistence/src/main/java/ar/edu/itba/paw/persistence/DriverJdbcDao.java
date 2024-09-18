@@ -27,15 +27,11 @@ public class DriverJdbcDao implements DriverDao {
             );
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcUserInsert;
     private final SimpleJdbcInsert jdbcDriverInsert;
     private final VehicleDao vehicleDao;
 
     public DriverJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcUserInsert = new SimpleJdbcInsert(ds)
-                .usingGeneratedKeyColumns("id")
-                .withTableName("app_user");
         jdbcDriverInsert = new SimpleJdbcInsert(ds).withTableName("driver");
         vehicleDao = new VehicleJdbcDao(ds);
     }
