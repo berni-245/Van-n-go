@@ -14,20 +14,94 @@
     <c:url value="/css/availability_styles.css" var="css"/>
     <script src="${js}"></script>
     <link rel="stylesheet" href="${css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4; /* Light gray background */
+        }
+
+        /* Flex container for button and title */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space out items */
+            margin: 20px;
+        }
+
+        .header-button .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .header-button .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .page-title {
+            text-align: center;
+            font-weight: 500;
+            font-size: 2rem;
+            margin: 0; /* Remove default margin for better alignment */
+            flex-grow: 1; /* Allow title to take up space */
+        }
+
+        .calendar-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff; /* White background for calendar */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #confirmForm {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        #confirmForm textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        #confirmForm .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+            margin-top: 20px;
+        }
+
+        #confirmForm .btn-primary:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
 
-<div class="header-button">
-    <a href="${pageContext.request.contextPath}/availability/" class="btn btn-primary">Atrás</a>
+<!-- Flex container for header button and title -->
+<div class="header-container">
+    <div class="header-button">
+        <a href="${pageContext.request.contextPath}/availability/" class="btn btn-primary">
+            <spring:message code="components.availability.Return"/>
+        </a>
+    </div>
+    <h1 class="page-title"><c:out value="${driver.username}"/></h1>
 </div>
-
-
-<h1 class="page-title"><c:out value="${driver.username}"/></h1>
-
 
 <div class="calendar-container mt-5">
     <div id="calendar"></div>
@@ -45,12 +119,10 @@
             <input type="hidden" name="driverMail" value="${driver.mail}"/>
             <input type="hidden" name="driverName" value="${driver.username}"/>
             <input  id="bookingDate" type="hidden" name="bookingDate" value=""/>
-            <button type="submit" class="btn btn-primary mt-2">Reservar</button>
+            <button type="submit" class="btn btn-primary"><spring:message code="components.availability.Reserve"/></button>
         </form>
     </div>
 </div>
-
-
 
 <script type="text/javascript">
     var reservedDates = [
@@ -69,7 +141,6 @@
         'Saturday': 6
     };
 
-
     var workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
         "<c:out value='${workDay}'/>",
@@ -84,12 +155,10 @@
         return !visibleDays.includes(dayIndex);
     });
 
-
     let selectedDate = null;
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var today = new Date();
-
 
         var maxDate = new Date();
         maxDate.setMonth(today.getMonth() + 2);
@@ -104,13 +173,11 @@
             'Saturday': 6
         };
 
-
-
         calendar = new FullCalendar.Calendar(calendarEl, {
             themeSystem: 'bootstrap5',
             fixedWeekCount: false,
             showNonCurrentDates: false,
-            initialView: 'dayGridMonth', // Vista mensual
+            initialView: 'dayGridMonth',
             validRange: {
                 start: today.toISOString().split('T')[0],
                 end: maxDate.toISOString().split('T')[0]
@@ -121,8 +188,6 @@
                 right: 'dayGridMonth'
             },
             hiddenDays: hiddenDays,
-
-
 
             datesSet: function(dateInfo) {
                 var prevButton = document.querySelector('.fc-prev-button');
@@ -143,7 +208,7 @@
                 if (reservedDates.includes(info.dateStr)) {
                     alert("Este día ya está reservado. Por favor, selecciona otro día.");
                     document.getElementById('confirmForm').style.display = 'none';
-                    return; ///hay que cambiarlo pr un modal!!!
+                    return;
                 }
 
                 updateSelected(info.dayEl)
@@ -157,17 +222,14 @@
         calendar.render();
     });
 
-        function updateSelected(newDay){
-            if(selectedDate != null ){
-                selectedDate.style.backgroundColor = 'white';
-            }
-            newDay.style.backgroundColor = 'blue';
-            selectedDate = newDay;
+    function updateSelected(newDay){
+        if(selectedDate != null ){
+            selectedDate.style.backgroundColor = 'white';
         }
+        newDay.style.backgroundColor = 'blue';
+        selectedDate = newDay;
+    }
 </script>
-
-
-
 
 </body>
 </html>

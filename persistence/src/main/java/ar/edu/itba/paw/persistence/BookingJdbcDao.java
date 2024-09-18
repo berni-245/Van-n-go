@@ -90,9 +90,12 @@ public class BookingJdbcDao implements BookingDao{
         jdbcTemplate.update("""
                     delete
                     from booking
-                    where id != ?""",
-                new Object[]{bookingId},
-                new int[]{Types.BIGINT});
+                    where id != ? and date = (
+                        select distinct date
+                        from booking b2 where b2.id = ?
+                    )""",
+                new Object[]{bookingId,bookingId},
+                new int[]{Types.BIGINT,Types.BIGINT});
     }
 
     @Override
