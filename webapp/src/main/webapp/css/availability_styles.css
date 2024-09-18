@@ -134,3 +134,55 @@ textarea {
 textarea {
     resize: vertical;
 }
+
+.anchor-card {
+    text-decoration: none;
+    box-shadow: var(--bs-box-shadow);
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.anchor-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+
+.calendar-container {
+    max-width: 40%;
+    margin: 0 auto;
+}
+
+.header-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.page-title {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.fc-daygrid-day-frame {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fc-daygrid-day-event {
+    width: 100%;
+    height: 100%;
+}
+
+.fc-daygrid-day-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#confirmForm {
+    display: none;
+    max-width: 40%;
+    margin: 0 auto;
+}
