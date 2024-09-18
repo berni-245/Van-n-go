@@ -17,23 +17,46 @@
                 <spring:message code="siteName"/>
             </a>
             <c:if test="${loggedIn}">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a href="${pageContext.request.contextPath}/" class="nav-link ${inHome ? 'active' : ''}">
-                            <spring:message code="components.header.home"/>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="${pageContext.request.contextPath}/driver/vehicles" class="nav-link ${inVehicles ? 'active' : ''}">
-                            <spring:message code="components.header.vehicles"/>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="${pageContext.request.contextPath}/driver/availability" class="nav-link ${inAvailability ? 'active' : ''}">
-                            <spring:message code="components.header.availability"/>
-                        </a>
-                    </li>
-                </ul>
+                <c:choose>
+                    <c:when test="${loggedUser.isDriver}">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/"
+                                   class="nav-link ${inHome ? 'active' : ''}">
+                                    <spring:message code="components.header.home"/>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/driver/vehicles"
+                                   class="nav-link ${inVehicles ? 'active' : ''}">
+                                    <spring:message code="components.header.vehicles"/>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/driver/availability"
+                                   class="nav-link ${inAvailability ? 'active' : ''}">
+                                    <spring:message code="components.header.availability"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </c:when>
+                    <c:otherwise>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/"
+                                   class="nav-link ${inHome ? 'active' : ''}">
+                                    <spring:message code="components.header.home"/>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/availability"
+                                   class="nav-link ${inAvailability ? 'active' : ''}">
+                                    <spring:message code="components.header.availability"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </c:otherwise>
+                </c:choose>
             </c:if>
 
             <ul class="nav nav-pills ms-auto">
