@@ -61,9 +61,9 @@ public class BookingJdbcDao implements BookingDao{
         return jdbcTemplate.query("""
                         select booking_id, client_id, date, is_confirmed
                         from booking b join reservation r on b.id = r.booking_id
-                        where driver_id = ? and is_confirmed = ?""",
-                new Object[]{driverId, Boolean.FALSE},
-                new int[]{Types.BIGINT, Types.BOOLEAN},
+                        where driver_id = ?""",
+                new Object[]{driverId},
+                new int[]{Types.BIGINT},
                 ROW_MAPPER);
 
     }
@@ -73,9 +73,9 @@ public class BookingJdbcDao implements BookingDao{
         return jdbcTemplate.query("""
                     select booking_id, client_id, date, is_confirmed
                     from booking b join reservation r on b.id = r.booking_id
-                    where driver_id = ? and date = ? and is_confirmed = ?""",
-                new Object[]{driverId, date.toString(), Boolean.FALSE},
-                new int[]{Types.BIGINT, Types.DATE, Types.BOOLEAN},
+                    where driver_id = ? and date = ?""",
+                new Object[]{driverId, date.toString()},
+                new int[]{Types.BIGINT, Types.DATE},
                 ROW_MAPPER);
     }
 
