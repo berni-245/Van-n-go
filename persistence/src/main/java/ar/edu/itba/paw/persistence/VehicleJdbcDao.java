@@ -60,11 +60,11 @@ public class VehicleJdbcDao implements VehicleDao {
     }
 
     @Override
-    public Optional<Vehicle> findByPlateNumber(String plateNumber) {
+    public Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber) {
         return jdbcTemplate.query(
-                        "SELECT * FROM vehicle where plate_number = ?",
-                        new Object[]{plateNumber},
-                        new int[]{Types.VARCHAR},
+                        "SELECT * FROM vehicle where driver_id = ? and plate_number = ?",
+                        new Object[]{driverId, plateNumber},
+                        new int[]{Types.BIGINT, Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
     }
@@ -72,7 +72,7 @@ public class VehicleJdbcDao implements VehicleDao {
     @Override
     public List<Vehicle> getDriverVehicles(long driverId) {
         return jdbcTemplate.query(
-                "SELECT * FROM vehicle where driver_id = ?",
+                "select * from vehicle where driver_id = ? order by plate_number",
                 new Object[]{driverId},
                 new int[]{java.sql.Types.BIGINT},
                 ROW_MAPPER);
@@ -105,5 +105,16 @@ public class VehicleJdbcDao implements VehicleDao {
                 plateNumber
         );
         return count != null && count > 0;
+    }
+
+    @Override
+    public boolean updateVehicle(long driverId, Vehicle v) {
+        return jdbcTemplate.update("""
+                        UPDATE vehicle
+                        SET plate_number = ?, volume_m3 = ?, description = ?
+                        WHERE driver_id = ? and id = ?""",
+                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), driverId, v.getId()},
+                new int[]{Types.VARCHAR, Types.DOUBLE, Types.VARCHAR, Types.BIGINT, Types.BIGINT}
+        ) > 0;
     }
 }

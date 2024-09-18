@@ -56,7 +56,7 @@
             <c:choose>
                 <c:when test="${vehicles.isEmpty()}">
                     <a class="btn btn-primary"
-                       href="${pageContext.request.contextPath}/driver/${driverId}/vehicle/add"
+                       href="${pageContext.request.contextPath}/driver/vehicle/add"
                        role="button"><spring:message code="driver.add_availability.noVehicles"/></a>
                 </c:when>
                 <c:otherwise>

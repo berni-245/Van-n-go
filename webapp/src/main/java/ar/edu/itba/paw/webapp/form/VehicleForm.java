@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
 
@@ -19,8 +20,25 @@ public class VehicleForm {
     @Max(Size.MAX)
     private double volume;
 
-    @Length(max = 30)
+    @Length(max = 40)
     private String description;
+
+    private long id;
+
+    public void setAll(Vehicle vehicle) {
+        this.id = vehicle.getId();
+        this.description = vehicle.getDescription();
+        this.volume = vehicle.getVolume();
+        this.plateNumber = vehicle.getPlateNumber();
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 
     public String getPlateNumber() {
         return plateNumber;

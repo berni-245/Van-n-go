@@ -11,11 +11,13 @@ public interface VehicleDao {
 
     Optional<Vehicle> findById(long id);
 
-    Optional<Vehicle> findByPlateNumber(String plateNumber);
+    Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber);
 
     List<Vehicle> getDriverVehicles(long driverId);
 
     List<Vehicle> getDriverVehicles(long driverId, long zoneId, Size size);
 
     boolean plateNumberExists(String plateNumber);
+
+    boolean updateVehicle(long driverId, Vehicle vehicle);
 }

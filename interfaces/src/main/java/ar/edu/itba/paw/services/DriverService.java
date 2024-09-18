@@ -44,7 +44,7 @@ public interface DriverService {
      * Retrieves all the bookings a given driver has on a specific date.
      *
      * @param driverId The ID of the driver.
-     * @param date The date of the bookings.
+     * @param date     The date of the bookings.
      * @return A list of {@link Booking} objects for the specified driver on a specific date. Will be empty if no bookings were found.
      */
     List<Booking> getBookingsByDate(long driverId, LocalDate date);
@@ -74,5 +74,7 @@ public interface DriverService {
      */
     void rejectBooking(long bookingId);
 
-    boolean plateNumberExists(String plateNumber);
+    public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
+
+    public boolean updateVehicle(long driverId, Vehicle vehicle);
 }

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.Vehicle;
 
 import java.util.List;
 import java.util.Optional;

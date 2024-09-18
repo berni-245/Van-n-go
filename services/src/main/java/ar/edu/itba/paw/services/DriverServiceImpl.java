@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.*;
+import ar.edu.itba.paw.persistence.BookingDao;
+import ar.edu.itba.paw.persistence.DriverDao;
+import ar.edu.itba.paw.persistence.VehicleDao;
+import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +122,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public boolean plateNumberExists(String plateNumber) {
-        return vehicleDao.plateNumberExists(plateNumber);
+    public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber) {
+        return vehicleDao.findByPlateNumber(driverId, plateNumber);
+    }
+
+    @Override
+    public boolean updateVehicle(long driverId, Vehicle vehicle) {
+        return vehicleDao.updateVehicle(driverId, vehicle);
     }
 }

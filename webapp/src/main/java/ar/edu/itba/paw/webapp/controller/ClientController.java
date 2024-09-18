@@ -39,6 +39,7 @@ public class ClientController {
 
     @RequestMapping("/availability")
     public ModelAndView availability(
+            @ModelAttribute("loggedUser") User loggedUser,
             @RequestParam(name = "zoneId", required = false) Long zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
