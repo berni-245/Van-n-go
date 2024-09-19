@@ -28,7 +28,7 @@
             <a href="${vUrl}?plateNumber=${v.plateNumber}" class="list-group-item list-group-item-action vehicle-item">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong><c:out value="${v.plateNumber}"/></strong> - <c:out value="${v.volume}"/>m³
+                        <strong><c:out value="${v.plateNumber}"/></strong> - <c:out value="${v.volume}"/>m&sup3
                         <span class="vehicle-description">
                             <c:out value="${v.description}"/>
                         </span>
