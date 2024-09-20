@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-<comp:header/>
+<comp:Header/>
 <div class="container mt-4">
     <c:url var="postUrl" value="/availability"/>
     <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">

@@ -10,7 +10,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 <c:url value="/login" var="loginUrl"/>
-<comp:header/>
+<comp:Header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4">

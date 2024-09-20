@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<comp:header/>
+<comp:Header/>
 <div class="container mt-4">
     <h2><spring:message code="driver.edit_vehicle.title" arguments="${loggedUser.username}"/></h2>
     <comp:VehicleForm action="/driver/vehicle/edit" modelAttribute="vehicleForm">

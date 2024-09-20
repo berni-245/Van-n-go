@@ -14,7 +14,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<comp:header inHome="true"/>
+<comp:Header inHome="true"/>
 <main>
     <body>
     <div class="container mt-4">

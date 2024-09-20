@@ -19,7 +19,7 @@
 </head>
 
 <body>
-<comp:header inVehicles="true"/>
+<comp:Header inVehicles="true"/>
 <div class="container mt-4">
     <h3 class="mb-3"><spring:message code="generic.phrase.your_vehicles"/></h3>
     <ul class="list-group">

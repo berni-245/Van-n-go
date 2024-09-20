@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<comp:header inAvailability="true"/>
+<comp:Header inAvailability="true"/>
 <div class="container">
 
     <c:forEach var="v" items="${vehicles}">

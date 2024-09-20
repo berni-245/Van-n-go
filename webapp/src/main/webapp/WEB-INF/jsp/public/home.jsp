@@ -14,7 +14,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<comp:header/>
+<comp:Header/>
 <main>
     <div class="welcome-main-div px-4 py-5 my-5 text-center">
         <c:url value="/images/welcome_picture.webp" var="welcome_picture" />
