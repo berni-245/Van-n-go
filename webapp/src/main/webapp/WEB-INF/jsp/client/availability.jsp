@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <comp:Head titleCode="components.header.availability" bootstrapjs="true" tomselect="true">
-    <c:url value="/css/availability_styles.css" var="css"/>
+    <c:url value="/css/availability.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
 

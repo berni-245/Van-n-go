@@ -5,7 +5,7 @@
 
 <html>
 <comp:Head titleCode="components.header.vehicles">
-    <c:url value="/css/styles.css" var="css"/>
+    <c:url value="/css/home.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
 
