@@ -32,19 +32,6 @@ public class DriverController {
         this.zs = zs;
     }
 
-    @RequestMapping("/driver/{id:\\d+}")
-    public ModelAndView profile(@PathVariable(name = "id") long id) {
-        Optional<Driver> driver = ds.findById(id);
-        if (driver.isPresent()) {
-            final ModelAndView mav = new ModelAndView("driver/manage_availability");
-            mav.addObject("username", driver.get().getUsername());
-            mav.addObject("driverId", driver.get().getId());
-            return mav;
-        } else {
-            return new ModelAndView();
-        }
-    }
-
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehiclePost(
             @ModelAttribute("loggedUser") User loggedUser,

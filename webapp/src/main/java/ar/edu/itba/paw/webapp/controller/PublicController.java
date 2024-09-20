@@ -53,21 +53,6 @@ public class PublicController {
 
     }
 
-    @RequestMapping("/{userId:\\d+}")
-    public ModelAndView profile(@PathVariable(name = "userId") long userId) {
-        final ModelAndView mav = new ModelAndView("public/profile");
-        Optional<User> user = us.findById(userId);
-        final String username;
-        if (user.isPresent()) {
-            username = user.get().getUsername();
-        } else {
-            username = "No user found";
-        }
-        mav.addObject("username", username);
-        mav.addObject("userId", userId);
-        return mav;
-    }
-
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
         if (errors.hasErrors()) {
