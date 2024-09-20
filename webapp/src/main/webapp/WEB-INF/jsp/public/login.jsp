@@ -4,11 +4,8 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <title><spring:message code="siteName"/></title>
-    <%@include file="../lib/bootstrap_css.jsp" %>
-</head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<comp:Head titleCode="public.login.login"/>
+<body class="d-flex flex-column min-vh-100">
 <c:url value="/login" var="loginUrl"/>
 <comp:Header/>
 <div class="container mt-5">

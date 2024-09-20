@@ -4,8 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <jsp:include page="../lib/bootstrap_css.jsp"/>
+<comp:Head titleCode="components.header.vehicles">
     <style>
         .vehicle-description {
             display: -webkit-box;
@@ -16,7 +15,7 @@
             max-height: 3rem;
         }
     </style>
-</head>
+</comp:Head>
 
 <body>
 <comp:Header inVehicles="true"/>

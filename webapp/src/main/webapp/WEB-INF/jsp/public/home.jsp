@@ -4,24 +4,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-<head>
-    <title><spring:message code="siteName"/></title>
-    <%@include file="../lib/bootstrap_css.jsp" %>
-    <jsp:include page="../lib/bootstrap_js.jsp"/>
-    <jsp:include page="../lib/popper.jsp"/>
+<comp:Head titleCode="components.header.vehicles">
     <c:url value="/css/styles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
-</head>
+</comp:Head>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 <main>
-    <div class="welcome-main-div px-4 py-5 my-5 text-center">
-        <c:url value="/images/welcome_picture.webp" var="welcome_picture" />
+    <div class="position-relative overflow-hidden px-4 py-5 my-5 text-center">
+        <c:url value="/images/welcome_picture.webp" var="welcome_picture"/>
         <img class="background-img"
              src="${welcome_picture}"
              alt="Background">
-        <div class="welcome-page-div-text">
+        <div class="position-relative text-light">
             <h1><spring:message code="siteName"/></h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4"><spring:message code="public.home.greeting"/></p>
@@ -54,7 +50,7 @@
             </div>
             <div class="col-lg-4 mb-4">
                 <h2 class="display-4"><spring:message code="public.home.clientOpinion"/></h2>
-                <blockquote class="blockquote">
+                <blockquote class="blockquote border-start border-4 border-primary ps-3 m-0">
                     <p><spring:message code="public.home.clientOpinion.text"/></p>
                     <footer class="blockquote-footer">Belon Tusk, <cite title="Source Title">Space X</cite></footer>
                 </blockquote>

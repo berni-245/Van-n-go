@@ -5,45 +5,11 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-<head>
-    <title>Posts</title>
-    <%@include file="../lib/bootstrap_css.jsp" %>
-    <%@include file="../lib/bootstrap_js.jsp" %>
-    <jsp:include page="../lib/tom_select.jsp"/>
-    <c:url value="/js/availability.js" var="js"/>
+<comp:Head titleCode="components.header.availability" bootstrapjs="true" tomselect="true">
     <c:url value="/css/availability_styles.css" var="css"/>
-    <script src="${js}"></script>
     <link rel="stylesheet" href="${css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        h5.card-title {
-            font-weight: 500;
-        }
-        .anchor-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: box-shadow 0.3s ease;
-        }
-        .anchor-card:hover {
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-    </style>
-</head>
+</comp:Head>
+
 <body>
 <comp:Header/>
 <div class="container mt-4">
@@ -55,7 +21,7 @@
                 <spring:bind path="zoneId">
                     <form:select path="zoneId" id="select-zones" multiple="false"
                                  placeholder="${selectZones}..." autocomplete="off"
-                                 cssClass="form-control ${status.error ? 'is-invalid' : ''}"
+                                 cssClass="form-select ${status.error ? 'is-invalid' : ''}"
                     >
                         <form:options items="${zones}" itemValue="id"/>
                     </form:select>
@@ -97,7 +63,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">${driver.username}</h5>
                                         <p class="card-text">Details about the driver can go here.</p>
-                                        <a href="${pageContext.request.contextPath}/availability/${driver.id}" class="btn btn-primary">
+                                        <a href="${pageContext.request.contextPath}/availability/${driver.id}"
+                                           class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>
                                         </a>
                                     </div>

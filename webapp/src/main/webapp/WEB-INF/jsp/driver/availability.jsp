@@ -4,9 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <jsp:include page="../lib/bootstrap_css.jsp"/>
-</head>
+<comp:Head titleCode="components.header.availability"/>
 
 <body>
 <comp:Header inAvailability="true"/>

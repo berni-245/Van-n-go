@@ -4,26 +4,10 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <title><spring:message code="siteName"/></title>
-    <jsp:include page="../lib/bootstrap_css.jsp"/>
-    <jsp:include page="../lib/bootstrap_js.jsp"/>
-    <jsp:include page="../lib/popper.jsp"/>
-    <jsp:include page="../lib/tom_select.jsp"/>
+<comp:Head titleCode="components.header.availability" bootstrapjs="true" popper="true" tomselect="true">
     <c:url value="/css/weekdaySelector.css" var="css"/>
     <link rel="stylesheet" href="${css}">
-    <style>
-        .ts-wrapper .option .title {
-            display: block;
-        }
-
-        .ts-wrapper .option .description {
-            font-size: 14px;
-            display: block;
-            color: #a0a0a0;
-        }
-    </style>
-</head>
+</comp:Head>
 
 <body>
 <comp:Header/>

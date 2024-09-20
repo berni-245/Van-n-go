@@ -5,11 +5,8 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <title><spring:message code="siteName"/></title>
-    <%@include file="../lib/bootstrap_css.jsp" %>
-</head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<comp:Head titleCode="components.header.register"/>
+<body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -56,7 +53,7 @@
                         </label>
                         <form:select path="userType" cssClass="form-select">
                             <form:option value="DRIVER" label="Admin">
-                                    <spring:message code="public.register.driver"/>
+                                <spring:message code="public.register.driver"/>
                             </form:option>
                             <form:option value="CLIENT" label="User">
                                 <spring:message code="public.register.client"/>

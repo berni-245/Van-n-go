@@ -3,11 +3,8 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<head>
-    <%@include file="./lib/bootstrap_css.jsp" %>
-    <title>Van n' Go</title>
-</head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<comp:Head titleCode="siteName"/>
+<body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
