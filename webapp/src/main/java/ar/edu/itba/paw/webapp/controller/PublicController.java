@@ -6,13 +6,13 @@ import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,9 +26,6 @@ public class PublicController {
 
     @Autowired
     private UserService us;
-    @Autowired
-    private PawUserDetailsService puds;
-
     @Autowired
     private ClientService cs;
     @Autowired
@@ -63,8 +60,9 @@ public class PublicController {
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
-        puds.loadUserByUsername(user.getUsername());
-        return new ModelAndView("redirect:/home");
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(token);
+        return new ModelAndView("redirect:/");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)

@@ -13,7 +13,7 @@
     <c:forEach var="v" items="${vehicles}">
         <div>
             <h6 class="card-subtitle mb-2 mt-2">
-                <c:out value="${v.plateNumber}"/> - <c:out value="${v.volume}"/> m³
+                <c:out value="${v.plateNumber}"/> - <c:out value="${v.volume}"/> m&sup3
             </h6>
             <ul class="list-group">
                 <c:forEach var="av" items="${v.weeklyAvailability}">

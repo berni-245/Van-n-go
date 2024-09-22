@@ -67,7 +67,9 @@
         </div>
 
         <div class="mt-4">
-            <input type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary mt-2">
+                <spring:message code="generic.word.confirm"/>
+            </button>
         </div>
 
     </form:form>
@@ -80,7 +82,7 @@
                 const [plateNumber, description, volume] = data.text.split('||');
                 return '<div>' +
                     '<span class="title">' +
-                    escape(plateNumber) + ' - ' + escape(volume) + ' m³' +
+                    escape(plateNumber) + ' - ' + escape(volume) + ' m&sup3' +
                     '</span>' +
                     '<span class="description">' + escape(description) + '</span>' +
                     '</div>';

@@ -11,6 +11,7 @@
 <div class="container mt-4">
     <h2><spring:message code="driver.add_vehicle.title" arguments="${loggedUser.username}"/></h2>
     <comp:VehicleForm action="/driver/vehicle/add" modelAttribute="vehicleForm"/>
+    <!--TODO: Put a Confirm label on the button How the fuck does html decide how this looks?-->
 </div>
 </body>
 

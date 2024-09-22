@@ -72,7 +72,7 @@ public class DriverController {
                 form.getZoneIds(),
                 form.getVehicleIds()
         );
-        return new ModelAndView("redirect:/availability");
+        return new ModelAndView("redirect:/driver/availability");
     }
 
     @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
