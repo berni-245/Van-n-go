@@ -11,7 +11,7 @@
 </comp:Head>
 
 <body>
-<comp:Header/>
+<comp:Header inAvailability="true"/>
 <div class="container mt-4">
     <c:url var="postUrl" value="/availability"/>
     <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">
