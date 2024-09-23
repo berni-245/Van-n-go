@@ -5,3 +5,5 @@ drop table vehicle;
 drop table driver;
 drop table client;
 drop table app_user;
+drop table booking;
+drop table reservation;
