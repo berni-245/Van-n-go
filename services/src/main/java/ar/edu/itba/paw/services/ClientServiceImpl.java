@@ -40,13 +40,6 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public Optional<Booking> appointBooking(String driverUsername, String clientUsername, LocalDate date) {
-        return bookingDao.appointBooking(
-                userService.findByUsername(driverUsername).getId(),
-                userService.findByUsername(clientUsername).getId(),date);
-    }
-
-    @Override
     public List<Booking> getBookings(long id) {
         return bookingDao.getClientBookings(id);
     }

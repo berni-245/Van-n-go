@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.MailService;
+import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +40,7 @@ public class ClientController {
     @RequestMapping("/bookings")
     public ModelAndView bookings(@ModelAttribute("loggedUser") User loggedUser) {
         ModelAndView mav = new ModelAndView("client/bookings");
-        mav.addObject("bookings",cs.getBookings(loggedUser.getId()));
+        mav.addObject("bookings", cs.getBookings(loggedUser.getId()));
         return mav;
     }
 
@@ -68,15 +71,15 @@ public class ClientController {
     }
 
     @RequestMapping("/availability/{id:\\d+}")
-    public ModelAndView driverAvailability(@PathVariable(name = "id") long id,  @ModelAttribute("loggedUser") User loggedUser){
+    public ModelAndView driverAvailability(@PathVariable(name = "id") long id, @ModelAttribute("loggedUser") User loggedUser) {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             List<String> workingDays = new ArrayList<>();
-            ds.getWeeklyAvailability(id).forEach( weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDayString()));
+            ds.getWeeklyAvailability(id).forEach(weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDayString()));
 
-            mav.addObject("workingDays",workingDays);
-            mav.addObject("bookings",ds.getBookings(driver.get().getId()));
+            mav.addObject("workingDays", workingDays);
+            mav.addObject("bookings", ds.getBookings(driver.get().getId()));
             mav.addObject("driver", driver.get());
             return mav;
         } else {
@@ -86,13 +89,17 @@ public class ClientController {
 
 
     @RequestMapping(path = "/availability/contact", method = RequestMethod.POST)
-    public ModelAndView sendRequestServiceMail(@RequestParam("clientMail") String clientMail,
-                                               @RequestParam("jobDescription") String jobDescription,
-                                               @RequestParam("driverMail") String driverMail,
-                                               @RequestParam("driverName") String driverName,
-                                               @RequestParam("clientName") String clientName,
-                                               @RequestParam("bookingDate") String date) {
-        Optional<Booking> booking = cs.appointBooking(driverName, clientName, LocalDate.parse(date));
+    public ModelAndView sendRequestServiceMail(
+            @RequestParam("clientId") long clientId,
+            @RequestParam("clientName") String clientName,
+            @RequestParam("clientMail") String clientMail,
+            @RequestParam("jobDescription") String jobDescription,
+            @RequestParam("driverId") long driverId,
+            @RequestParam("driverName") String driverName,
+            @RequestParam("driverMail") String driverMail,
+            @RequestParam("bookingDate") String date
+    ) {
+        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date));
         if (booking.isPresent()) {
             mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
             return new ModelAndView("redirect:/bookings");

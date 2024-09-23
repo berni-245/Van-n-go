@@ -55,13 +55,15 @@
 <div id="confirmForm" class="form-control mt-5">
     <form action="${pageContext.request.contextPath}/availability/contact"
           method="post">
+        <input type="hidden" name="clientId" value="${loggedUser.id}">
         <input type="hidden" name="clientName" value="${loggedUser.username}">
         <input type="hidden" name="clientMail" value="${loggedUser.mail}">
         <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
         <textarea id="jobDescription" name="jobDescription" rows="4"
                   cols="50" required></textarea>
-        <input type="hidden" name="driverMail" value="${driver.mail}"/>
+        <input type="hidden" name="driverId" value="${driver.id}"/>
         <input type="hidden" name="driverName" value="${driver.username}"/>
+        <input type="hidden" name="driverMail" value="${driver.mail}"/>
         <input id="bookingDate" type="hidden" name="bookingDate" value=""/>
         <button type="submit" class="btn btn-primary mt-2">
             <spring:message code="components.availability.Reserve"/>
