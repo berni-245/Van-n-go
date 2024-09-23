@@ -9,8 +9,12 @@ import java.util.Optional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
+    private final VehicleDao vehicleDao;
+
     @Autowired
-    private VehicleDao vehicleDao;
+    public VehicleServiceImpl(VehicleDao vehicleDao) {
+        this.vehicleDao = vehicleDao;
+    }
 
     @Override
     public boolean plateNumberExists(String plateNumber) {

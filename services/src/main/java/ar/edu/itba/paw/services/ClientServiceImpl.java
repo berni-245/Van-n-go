@@ -14,14 +14,18 @@ import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService{
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final ClientDao clientDao;
+
+    private final BookingDao bookingDao;
 
     @Autowired
-    private ClientDao clientDao;
-
-    @Autowired
-    private BookingDao bookingDao;
+    public ClientServiceImpl(UserService userService, ClientDao clientDao, BookingDao bookingDao) {
+        this.userService = userService;
+        this.clientDao = clientDao;
+        this.bookingDao = bookingDao;
+    }
 
     @Override
     public Client create(String username, String mail, String password) {

@@ -9,10 +9,11 @@ import java.util.List;
 
 @Service
 public class ZoneServiceImpl implements ZoneService {
-    @Autowired
-    private ZoneDao zoneDao;
 
-    public ZoneServiceImpl(final ZoneDao zoneDao) {
+    private final ZoneDao zoneDao;
+
+    @Autowired
+    public ZoneServiceImpl(ZoneDao zoneDao) {
         this.zoneDao = zoneDao;
     }
 

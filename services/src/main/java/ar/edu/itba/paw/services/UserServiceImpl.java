@@ -10,15 +10,16 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
     private final UserDao userDao;
+
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
 
-    public UserServiceImpl(final UserDao userDao, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public UserServiceImpl(UserDao userDao, MailService mailService, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.mailService = mailService;
         this.passwordEncoder = passwordEncoder;
     }
 

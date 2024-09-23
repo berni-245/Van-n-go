@@ -15,23 +15,23 @@ import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final DriverDao driverDao;
+
+    private final VehicleDao vehicleDao;
+
+    private final WeeklyAvailabilityDao weeklyAvailabilityDao;
+
+    private final BookingDao bookingDao;
 
     @Autowired
-    private DriverDao driverDao;
-
-    @Autowired
-    private VehicleDao vehicleDao;
-
-    @Autowired
-    private WeeklyAvailabilityDao weeklyAvailabilityDao;
-
-    @Autowired
-    private BookingDao bookingDao;
-
-    public DriverServiceImpl(final DriverDao driverDao) {
+    public DriverServiceImpl(UserService userService, DriverDao driverDao, VehicleDao vehicleDao, WeeklyAvailabilityDao weeklyAvailabilityDao, BookingDao bookingDao) {
+        this.userService = userService;
         this.driverDao = driverDao;
+        this.vehicleDao = vehicleDao;
+        this.weeklyAvailabilityDao = weeklyAvailabilityDao;
+        this.bookingDao = bookingDao;
     }
 
     @Override
