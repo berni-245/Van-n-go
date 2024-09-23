@@ -18,24 +18,25 @@ public class BookingJdbcDao implements BookingDao{
     private final SimpleJdbcInsert jdbcReservationInsert;
 
     private final ClientDao clientDao;
+    private final DriverDao driverDao;
 
     private final RowMapper<Booking> ROW_MAPPER;
 
     public BookingJdbcDao(final DataSource ds) {
         clientDao = new ClientJdbcDao(ds);
+        driverDao = new DriverJdbcDao(ds);
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcBookingInsert = new SimpleJdbcInsert(ds)
                 .usingGeneratedKeyColumns("id")
                 .withTableName("booking");
         jdbcReservationInsert = new SimpleJdbcInsert(ds)
                 .withTableName("reservation");
-
         ROW_MAPPER = (rs, rowNum) -> new Booking(
                 rs.getLong("booking_id"),
-
                 clientDao.findById(rs.getLong("client_id")).orElseThrow(),
                 rs.getDate("date").toLocalDate(),
-                rs.getBoolean("is_confirmed")
+                rs.getBoolean("is_confirmed"),
+                driverDao.findById(rs.getLong("driver_id")).orElseThrow()
         );
     }
 
@@ -43,29 +44,26 @@ public class BookingJdbcDao implements BookingDao{
     public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
         if(isDriverBookedForThatDay(driverId, date) || isClientAlreadyAppointed(driverId, clientId, date))
             return Optional.empty();
-
         Map<String, Object> bookingData = Map.of("date", date);
         final Number generatedBookingId = jdbcBookingInsert.executeAndReturnKey(bookingData);
-
         Map<String, Object> reservationData = new HashMap<>();
         reservationData.put("driver_id", driverId);
         reservationData.put("client_id", clientId);
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false,driverDao.findById(driverId).orElseThrow()));
     }
 
     @Override
     public List<Booking> getBookings(long driverId) {
         return jdbcTemplate.query("""
-                        select booking_id, client_id, date, is_confirmed
+                        select booking_id, client_id, date, is_confirmed, driver_id
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ?""",
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
-
     }
 
     @Override
@@ -76,6 +74,17 @@ public class BookingJdbcDao implements BookingDao{
                     where driver_id = ? and date = ?""",
                 new Object[]{driverId, date.toString()},
                 new int[]{Types.BIGINT, Types.DATE},
+                ROW_MAPPER);
+    }
+
+    @Override
+    public List<Booking> getClientBookings(long id) {
+        return jdbcTemplate.query("""
+                        select booking_id, driver_id, date, is_confirmed, client_id
+                        from booking b join reservation r on b.id = r.booking_id
+                        where client_id = ?""",
+                new Object[]{id},
+                new int[]{Types.BIGINT},
                 ROW_MAPPER);
     }
 

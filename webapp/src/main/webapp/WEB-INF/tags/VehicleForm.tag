@@ -32,6 +32,8 @@
     </div>
     <jsp:doBody/>
     <div class="mt-4">
-        <input type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary mt-2">
+            <spring:message code="generic.word.confirm"/>
+        </button>
     </div>
 </form:form>

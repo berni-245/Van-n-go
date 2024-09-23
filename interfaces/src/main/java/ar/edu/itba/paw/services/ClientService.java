@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ClientService {
@@ -54,4 +55,6 @@ public interface ClientService {
     default Optional<Booking> appointBooking(String driverUsername, String clientUsername, String date) {
         return appointBooking(driverUsername, clientUsername, LocalDate.parse(date));
     }
+
+    List<Booking> getBookings(long id);
 }

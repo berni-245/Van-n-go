@@ -34,6 +34,12 @@ public class ClientController {
         this.zs = zs;
     }
 
+    @RequestMapping("/bookings")
+    public ModelAndView bookings(@ModelAttribute("loggedUser") User loggedUser) {
+        ModelAndView mav = new ModelAndView("client/bookings");
+        mav.addObject("bookings",cs.getBookings(loggedUser.getId()));
+        return mav;
+    }
 
     @RequestMapping("/availability")
     public ModelAndView availability(
@@ -89,9 +95,9 @@ public class ClientController {
         Optional<Booking> booking = cs.appointBooking(driverName, clientName, LocalDate.parse(date));
         if (booking.isPresent()) {
             mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
-            return new ModelAndView("redirect:/availability");
+            return new ModelAndView("redirect:/bookings");
         }
-        return new ModelAndView("redirect:/availability");
+        return new ModelAndView("redirect:/bookings");
     }
 
 }

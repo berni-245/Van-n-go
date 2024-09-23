@@ -7,7 +7,7 @@
 <html>
 <comp:Head titleCode="components.header.availability" bootstrapjs="true">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <%-- Move to css file--%>
+    <%--TODO: Move to css file--%>
     <style>
         .calendar-container {
             max-width: 800px;

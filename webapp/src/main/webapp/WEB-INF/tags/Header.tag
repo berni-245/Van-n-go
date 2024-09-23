@@ -23,7 +23,7 @@
                             <li class="nav-item">
                                 <a href="${pageContext.request.contextPath}/"
                                    class="nav-link ${inHome ? 'active' : ''}">
-                                    <spring:message code="components.header.home"/>
+                                    <spring:message code="components.header.bookings"/>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -43,9 +43,9 @@
                     <c:otherwise>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a href="${pageContext.request.contextPath}/"
+                                <a href="${pageContext.request.contextPath}/bookings"
                                    class="nav-link ${inHome ? 'active' : ''}">
-                                    <spring:message code="components.header.home"/>
+                                    <spring:message code="components.header.bookings"/>
                                 </a>
                             </li>
                             <li class="nav-item">

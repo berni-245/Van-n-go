@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,7 +43,11 @@ public class ClientServiceImpl implements ClientService{
     public Optional<Booking> appointBooking(String driverUsername, String clientUsername, LocalDate date) {
         return bookingDao.appointBooking(
                 userService.findByUsername(driverUsername).getId(),
-                userService.findByUsername(clientUsername).getId(),
-                date);
+                userService.findByUsername(clientUsername).getId(),date);
+    }
+
+    @Override
+    public List<Booking> getBookings(long id) {
+        return bookingDao.getClientBookings(id);
     }
 }

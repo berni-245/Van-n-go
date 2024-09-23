@@ -71,4 +71,6 @@ public interface BookingDao {
     default List<Booking> getBookingsByDate(long driverId, String date) {
         return getBookingsByDate(driverId, LocalDate.parse(date));
     }
+
+    List<Booking> getClientBookings(long id);
 }

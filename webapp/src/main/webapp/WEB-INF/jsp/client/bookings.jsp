@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -25,36 +25,22 @@
                             <h5 class="card-title"><c:out
                                     value="${booking.date}"/></h5>
                             <p class="card-text"><c:out
-                                    value="${booking.client.username}"/></p>
+                                    value="${booking.driver.username}"/></p>
                             <p class="card-text"><c:out
-                                    value="${booking.client.mail}"/></p>
+                                    value="${booking.driver.mail}"/></p>
                             <c:if test="${booking.confirmed}">
                                 <p><spring:message code="driver.home.bookingConfirmed"/></p>
                             </c:if>
                             <c:if test="${!booking.confirmed}">
-                                <div class="d-flex justify-content-between">
-                                    <form action="${pageContext.request.contextPath}/driver/acceptBooking"
-                                          method="POST">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
-                                        <button type="submit" class="btn btn-success"><spring:message
-                                                code="driver.home.accept"/></button>
-                                    </form>
-                                    <form action="${pageContext.request.contextPath}/driver/rejectBooking"
-                                          method="POST">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
-                                        <button type="submit" class="btn btn-danger"><spring:message
-                                                code="driver.home.reject"/></button>
-                                    </form>
-                                </div>
+                                <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
                             </c:if>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
+
     </div>
-
-
 </main>
 
 <footer class="mt-auto">
@@ -65,6 +51,5 @@
         <p class="mb-1">&copy; PAW 2024B G1</p>
     </div>
 </footer>
-
 </body>
 </html>
