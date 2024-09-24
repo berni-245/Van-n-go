@@ -47,4 +47,7 @@ public class ClientServiceImpl implements ClientService{
     public List<Booking> getBookings(long id) {
         return bookingDao.getClientBookings(id);
     }
+
+    @Override
+    public List<Booking> getHistory(long id) {return bookingDao.getClientHistory(id);}
 }

@@ -82,7 +82,18 @@ public class BookingJdbcDao implements BookingDao{
         return jdbcTemplate.query("""
                         select booking_id, driver_id, date, is_confirmed, client_id
                         from booking b join reservation r on b.id = r.booking_id
-                        where client_id = ?""",
+                        where client_id = ? AND date >= CURRENT_DATE""",
+                new Object[]{id},
+                new int[]{Types.BIGINT},
+                ROW_MAPPER);
+    }
+
+    @Override
+    public List<Booking> getClientHistory(long id) {
+        return jdbcTemplate.query("""
+                        select booking_id, driver_id, date, is_confirmed, client_id
+                        from booking b join reservation r on b.id = r.booking_id
+                        where client_id = ? AND date < CURRENT_DATE""",
                 new Object[]{id},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);

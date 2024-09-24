@@ -44,6 +44,13 @@ public class ClientController {
         return mav;
     }
 
+    @RequestMapping("/client/history")
+    public ModelAndView clientHistory(@ModelAttribute("loggedUser") User loggedUser) {
+        ModelAndView mav = new ModelAndView("client/history");
+        mav.addObject("history",cs.getHistory(loggedUser.getId()));
+        return mav;
+    }
+
     @RequestMapping("/availability")
     public ModelAndView availability(
             @ModelAttribute("loggedUser") User loggedUser,

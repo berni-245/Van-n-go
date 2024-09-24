@@ -73,4 +73,6 @@ public interface BookingDao {
     }
 
     List<Booking> getClientBookings(long id);
+
+    List<Booking> getClientHistory(long id);
 }

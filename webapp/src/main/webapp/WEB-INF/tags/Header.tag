@@ -1,6 +1,7 @@
 <%@ attribute name="inHome" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="inVehicles" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="inAvailability" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="inHistory" required="false" type="java.lang.Boolean" %>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -52,6 +53,12 @@
                                 <a href="${pageContext.request.contextPath}/availability"
                                    class="nav-link ${inAvailability ? 'active' : ''}">
                                     <spring:message code="components.header.availability"/>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/client/history"
+                                   class="nav-link ${inHistory ? 'active' : ''}">
+                                    <spring:message code="generic.word.history"/>
                                 </a>
                             </li>
                         </ul>
