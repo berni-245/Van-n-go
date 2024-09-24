@@ -91,3 +91,29 @@ create table if not exists reservation
     is_confirmed boolean not null,
     primary key (driver_id, booking_id)
 );
+
+create table if not exists proof_of_payment
+(
+    driver_id int not null references driver (user_id) on delete cascade,
+    booking_id int not null references booking (id) on delete cascade,
+    img_id int not null references image (id) on delete cascade
+);
+
+create table if not exists profile_picture
+(
+    user_id int not null references app_user (id) on delete cascade,
+    img_id int not null references image (id) on delete cascade
+);
+
+create table if not exists vehicle_picture
+(
+    vehicle_id int not null references vehicle (id) on delete cascade,
+    img_id int not null references image (id) on delete cascade
+);
+
+create table if not exists image
+(
+    id serial primary key,
+    file_name varchar(256) not null,
+    img bytea not null
+)
