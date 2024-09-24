@@ -91,7 +91,14 @@ public class BookingJdbcDao implements BookingDao{
     @Override
     public void acceptBooking(long bookingId) {
         jdbcTemplate.update("""
-                delete from booking
+                    update reservation
+                    set is_confirmed = ?
+                    where booking_id = ?""",
+                new Object[]{Boolean.TRUE, bookingId},
+                new int[]{Types.BOOLEAN, Types.BIGINT});
+        jdbcTemplate.update("""
+                delete 
+                from booking
                 where id != ? 
                 and date = (
                     select distinct date
@@ -107,8 +114,8 @@ public class BookingJdbcDao implements BookingDao{
                         where booking_id = ?
                     )
                 )""",
-                new Object[]{bookingId,bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT});
+                new Object[]{bookingId,bookingId, bookingId},
+                new int[]{Types.BIGINT,Types.BIGINT, Types.BIGINT});
     }
 
     @Override
