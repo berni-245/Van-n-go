@@ -92,6 +92,13 @@ create table if not exists reservation
     primary key (driver_id, booking_id)
 );
 
+create table if not exists image
+(
+    id serial primary key,
+    file_name varchar(256) not null,
+    img bytea not null
+);
+
 create table if not exists proof_of_payment
 (
     driver_id int not null references driver (user_id) on delete cascade,
@@ -110,10 +117,3 @@ create table if not exists vehicle_picture
     vehicle_id int not null references vehicle (id) on delete cascade,
     img_id int not null references image (id) on delete cascade
 );
-
-create table if not exists image
-(
-    id serial primary key,
-    file_name varchar(256) not null,
-    img bytea not null
-)
