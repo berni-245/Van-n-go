@@ -6,6 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ImageService {
-    int saveImage(MultipartFile imgFile) throws IOException;
-    public Image getImage(int id);
+    public Image getPfp(int userId);
+    public Image getVehicleImage(int vehicleId);
+    public Image getPop(int driverId, int bookingId);
+    public int uploadPfp(MultipartFile file,int userId);
+    public int uploadVehicleImage(MultipartFile file,int vehicleId);
+    public int uploadPop(MultipartFile file,int driverId, int bookingId);
 }
