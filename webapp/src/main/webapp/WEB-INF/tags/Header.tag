@@ -70,6 +70,11 @@
                 <c:choose>
                     <c:when test="${loggedIn}">
                         <li class="nav-item">
+                            <a href="${pageContext.request.contextPath}/profile" class="nav-link" aria-current="page">
+                                <c:out value="${loggedUser.username}"/>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="${pageContext.request.contextPath}/logout" class="nav-link" aria-current="page">
                                 <spring:message code="components.header.logout"/>
                             </a>

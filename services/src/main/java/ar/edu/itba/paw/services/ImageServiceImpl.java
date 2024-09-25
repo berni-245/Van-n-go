@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -20,10 +17,8 @@ public class ImageServiceImpl implements ImageService {
         this.imgDao = imgDao;
     }
 
-    private int saveImage(MultipartFile imgFile) throws IOException {
-        String fileName = imgFile.getOriginalFilename();
-        byte[] imgData = imgFile.getBytes();
-        return imgDao.uploadImage(fileName, imgData);
+    private int saveImage(byte[] bin, String fileName) {
+        return imgDao.uploadImage(fileName, bin);
     }
 
     private Image getImage(int id) {
@@ -47,35 +42,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int uploadPfp(MultipartFile file, int userId){
-        int aux = -1;
-        try {
-            aux = imgDao.uploadPfp(file, userId);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return aux;
+    public int uploadPfp(byte[] bin, String fileName, int userId) {
+        return imgDao.uploadPfp(bin,fileName,userId);
     }
 
     @Override
-    public int uploadVehicleImage(MultipartFile file, int vehicleId){
-        int aux = -1;
-        try {
-            aux = imgDao.uploadVehicleImage(file, vehicleId);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return aux;
+    public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
+        return imgDao.uploadVehicleImage(bin, fileName,vehicleId);
     }
 
     @Override
-    public int uploadPop(MultipartFile file, int driverId, int bookingId){
-        int aux = -1;
-        try {
-            aux = imgDao.uploadPop(file, driverId, bookingId);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return aux;
+    public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
+        return imgDao.uploadPop(bin,fileName,driverId,bookingId);
     }
 }
