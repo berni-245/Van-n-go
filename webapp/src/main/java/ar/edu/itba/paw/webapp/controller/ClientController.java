@@ -38,22 +38,22 @@ public class ClientController {
     }
 
     @RequestMapping("/bookings")
-    public ModelAndView bookings(@ModelAttribute("loggedUser") User loggedUser) {
+    public ModelAndView bookings(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("client/bookings");
         mav.addObject("bookings", cs.getBookings(loggedUser.getId()));
         return mav;
     }
 
     @RequestMapping("/client/history")
-    public ModelAndView clientHistory(@ModelAttribute("loggedUser") User loggedUser) {
+    public ModelAndView clientHistory(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("client/history");
-        mav.addObject("history",cs.getHistory(loggedUser.getId()));
+        mav.addObject("history", cs.getHistory(loggedUser.getId()));
         return mav;
     }
 
     @RequestMapping("/availability")
     public ModelAndView availability(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "zoneId", required = false) Long zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
@@ -78,7 +78,10 @@ public class ClientController {
     }
 
     @RequestMapping("/availability/{id:\\d+}")
-    public ModelAndView driverAvailability(@PathVariable(name = "id") long id, @ModelAttribute("loggedUser") User loggedUser) {
+    public ModelAndView driverAvailability(
+            @PathVariable(name = "id") long id,
+            @ModelAttribute("loggedUser") Client loggedUser
+    ) {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
@@ -93,7 +96,6 @@ public class ClientController {
             return new ModelAndView("redirect:/403");
         }
     }
-
 
     @RequestMapping(path = "/availability/contact", method = RequestMethod.POST)
     public ModelAndView sendRequestServiceMail(

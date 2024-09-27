@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.persistence.ClientDao;
+import ar.edu.itba.paw.persistence.DriverDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,37 +12,31 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+    @Autowired
     private final UserDao userDao;
+
+    @Autowired
+    protected final MailService mailService;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final MailService mailService;
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao, MailService mailService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(
+            UserDao userDao,
+            PasswordEncoder passwordEncoder,
+            MailService mailService
+    ) {
         this.userDao = userDao;
-        this.mailService = mailService;
         this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
     }
 
-    @Override
-    public Optional<User> findById(long id) {
-        return userDao.findById(id);
-    }
-
-    public User create(String username, String mail, String password) {
-        mailService.sendClientWelcomeMail(mail, username);
+    protected long createUser(String username, String mail, String password) {
         return userDao.create(username, mail, passwordEncoder.encode(password));
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Optional<? extends User> findByUsername(String username) {
         return userDao.findByUsername(username);
-    }
-
-    @Override
-    public boolean isDriver(String username) {
-        return userDao.isDriver(username);
     }
 
     @Override

@@ -124,11 +124,10 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendHaulerWelcomeMail(String to, String userName,long id) {
+    public void sendHaulerWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
         context.setVariable("haulerName", userName);
-        context.setVariable("id",id);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));

@@ -1,19 +1,16 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.User;
 
 import java.util.Optional;
 
 public interface UserDao {
-    Optional<User> findById(long id);
-
-    User create(String username, String mail, String password);
-
-    User findByUsername(String username);
+    long create(String username, String mail, String password);
 
     boolean mailExists(String mail);
 
     boolean usernameExists(String mail);
 
-    boolean isDriver(String username);
+    Optional<? extends User> findByUsername(String username);
 }

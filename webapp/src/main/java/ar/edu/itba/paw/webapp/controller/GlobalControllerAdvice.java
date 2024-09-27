@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.PawUserDetails;
 import ar.edu.itba.paw.models.User;
 import org.springframework.security.core.Authentication;

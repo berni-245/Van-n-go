@@ -11,7 +11,7 @@
 <main>
     <div class="container mt-4">
 
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-12">
                 <h1 class="text-left"><spring:message code="driver.home.yourBookings"/></h1>
             </div>
@@ -20,7 +20,7 @@
         <div class="row row-cols-3">
             <c:forEach var="booking" items="${bookings}">
                 <div class="col mb-4">
-                    <div class="card mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <h5 class="card-title"><c:out
                                     value="${booking.date}"/></h5>

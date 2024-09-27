@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,17 +30,17 @@ import java.util.List;
 public class PublicController {
 
     private static final Logger log = LoggerFactory.getLogger(PublicController.class);
-    @Autowired
-    private UserService us;
+
     @Autowired
     private ClientService cs;
+
     @Autowired
     private DriverService ds;
+
     @Autowired
     private ImageService is;
 
-    public PublicController(UserService us, ClientService cs, DriverService ds, ImageService is) {
-        this.us = us;
+    public PublicController(ClientService cs, DriverService ds, ImageService is) {
         this.cs = cs;
         this.ds = ds;
         this.is = is;
@@ -51,7 +53,7 @@ public class PublicController {
         } else {
             final ModelAndView mav = new ModelAndView("driver/home");
             List<Booking> bookings = ds.getBookings(loggedUser.getId());
-            mav.addObject("bookings",bookings);
+            mav.addObject("bookings", bookings);
             return mav;
         }
 
@@ -66,7 +68,7 @@ public class PublicController {
         if (userForm.getUserType().equals(UserRole.DRIVER.name()))
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
-            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+            user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");

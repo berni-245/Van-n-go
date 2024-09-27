@@ -2,14 +2,11 @@ package ar.edu.itba.paw.models;
 
 import jdk.jshell.spi.ExecutionControl;
 
-public class User {
+public abstract class User {
     private final long id;
     private final String username;
     private final String mail;
     private final String password;
-
-    // This should definitely be handled differently.
-    private boolean isDriver;
 
     public User(long id, String username, String mail, String password) {
         this.id = id;
@@ -34,13 +31,11 @@ public class User {
         return mail;
     }
 
-    public void setIsDriver(boolean isDriver) {
-        this.isDriver = isDriver;
-    }
+    public abstract boolean isDriver();
 
     public boolean getIsDriver() {
-        return isDriver;
-    }
+        return isDriver();
+    };
 
     @Override
     public String toString() {

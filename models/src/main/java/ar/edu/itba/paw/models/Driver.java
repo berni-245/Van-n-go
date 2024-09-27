@@ -30,10 +30,6 @@ public class Driver extends User {
         this(id, username, mail, password, extra1, null);
     }
 
-    public Driver(User user, String extra1) {
-        this(user.getId(), user.getUsername(), user.getMail(), user.getPassword(), extra1);
-    }
-
     public String getExtra1() {
         return extra1;
     }
@@ -44,5 +40,17 @@ public class Driver extends User {
 
     public void setVehicles(List<Vehicle> vehicles) {
         this.vehicles = vehicles;
+    }
+
+    @Override
+    public boolean isDriver() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Driver{id=%d, username='%s', mail='%s', extra1='%s', vehicles='%s'".formatted(
+                getId(), getUsername(), getMail(), extra1, vehicles
+        );
     }
 }

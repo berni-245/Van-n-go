@@ -8,14 +8,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class ClientJdbcDao implements ClientDao{
-
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcClientInsert;
+public class ClientJdbcDao implements ClientDao {
 
     private static final RowMapper<Client> ROW_MAPPER =
             (rs, rowNum) -> new Client(
@@ -25,6 +23,8 @@ public class ClientJdbcDao implements ClientDao{
                     rs.getString("password")
             );
 
+    protected final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcClientInsert;
 
     public ClientJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -32,9 +32,9 @@ public class ClientJdbcDao implements ClientDao{
     }
 
     @Override
-    public Client create(User user) {
-        jdbcClientInsert.execute(Map.of("user_id", user.getId()));
-        return new Client(user);
+    public Client create(long id, String username, String mail, String password) {
+        jdbcClientInsert.execute(Map.of("user_id", id));
+        return new Client(id, username, mail, password);
     }
 
     @Override
@@ -42,7 +42,17 @@ public class ClientJdbcDao implements ClientDao{
         return jdbcTemplate.query(
                         "SELECT * FROM client join app_user on client.user_id = app_user.id where id = ?",
                         new Object[]{id},
-                        new int[]{java.sql.Types.BIGINT},
+                        new int[]{Types.BIGINT},
+                        ROW_MAPPER)
+                .stream().findFirst();
+    }
+
+    @Override
+    public Optional<Client> findByUsername(String username) {
+        return jdbcTemplate.query(
+                        "SELECT * FROM client join app_user on client.user_id = app_user.id where username = ?",
+                        new Object[]{username},
+                        new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
     }

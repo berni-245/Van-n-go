@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 import ar.edu.itba.paw.services.DriverService;
@@ -11,7 +10,10 @@ import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -34,7 +36,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehiclePost(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
             BindingResult errors
     ) {
@@ -57,7 +59,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/availability/add", method = RequestMethod.POST)
     public ModelAndView addAvailability(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
             BindingResult errors
     ) {
@@ -77,7 +79,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
     public ModelAndView addAvailabilityForm(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
     ) {
         Optional<Driver> driver = ds.findById(loggedUser.getId());
@@ -89,14 +91,16 @@ public class DriverController {
     }
 
     @RequestMapping(path = "/driver/vehicles")
-    public ModelAndView vehiclesDashboard(@ModelAttribute("loggedUser") User loggedUser) {
+    public ModelAndView vehiclesDashboard(@ModelAttribute("loggedUser") Driver loggedUser) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
         mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
         return mav;
     }
 
     @RequestMapping(path = "/driver/availability")
-    public ModelAndView availabilityDashboard(@ModelAttribute("loggedUser") User loggedUser) {
+    public ModelAndView availabilityDashboard(
+            @ModelAttribute("loggedUser") Driver loggedUser
+    ) {
         final ModelAndView mav = new ModelAndView("driver/availability");
         mav.addObject("vehicles", ds.getVehiclesFull(loggedUser.getId()));
         return mav;
@@ -104,7 +108,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.GET)
     public ModelAndView editVehicleGet(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "plateNumber") String plateNumber,
             @ModelAttribute("vehicleForm") VehicleForm form
     ) {
@@ -121,7 +125,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.POST)
     public ModelAndView editVehiclePost(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("ogPlateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
             BindingResult errors
@@ -153,7 +157,7 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.GET)
     public ModelAndView editAvailabilityGet(
-            @ModelAttribute("loggedUser") User loggedUser,
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "availabilityId") long availabilityId,
             @ModelAttribute("vehicleForm") VehicleForm form
     ) {
@@ -164,7 +168,7 @@ public class DriverController {
 //            mav.addObject("plateNumber", availabilityId);
 //            return mav;
 //        } else {
-            return new ModelAndView();
+        return new ModelAndView();
 //        }
     }
 
@@ -173,8 +177,8 @@ public class DriverController {
     public ModelAndView acceptBooking(
             @RequestParam("bookingId") long bookingId
     ) {
-       ds.acceptBooking(bookingId);
-       return new ModelAndView("redirect:/");
+        ds.acceptBooking(bookingId);
+        return new ModelAndView("redirect:/");
     }
 
     @RequestMapping(path = "/driver/rejectBooking", method = RequestMethod.POST)
