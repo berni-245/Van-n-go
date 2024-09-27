@@ -2,7 +2,6 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.User;
 
 import java.time.LocalDate;
 import java.util.List;

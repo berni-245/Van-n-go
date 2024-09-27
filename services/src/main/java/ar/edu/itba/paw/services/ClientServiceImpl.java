@@ -2,7 +2,6 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -59,5 +58,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public List<Booking> getHistory(long id) {return bookingDao.getClientHistory(id);}
+    public List<Booking> getHistory(long id) {
+        return bookingDao.getClientHistory(id);
+    }
 }

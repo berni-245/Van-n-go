@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import jdk.jshell.spi.ExecutionControl;
-
 public abstract class User {
     private final long id;
     private final String username;
@@ -35,7 +33,7 @@ public abstract class User {
 
     public boolean getIsDriver() {
         return isDriver();
-    };
+    }
 
     @Override
     public String toString() {

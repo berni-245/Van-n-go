@@ -23,7 +23,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 
@@ -102,8 +101,6 @@ public class WebConfig implements WebMvcConfigurer {
 //        dbp.addScript(triggersSql);
         return dbp;
     }
-
-
 
 
     @Override

@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
@@ -41,18 +40,18 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public Image getImage(int id){
+    public Image getImage(int id) {
         return jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image WHERE id = ?""",
+                        SELECT id, img, file_name
+                        FROM image WHERE id = ?""",
                 new Object[]{id},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER).getFirst();
     }
 
     @Override
-    public Integer uploadImage(String fileName, byte[] imgData){
-        Map<String,Object> toInsert = new HashMap<>();
+    public Integer uploadImage(String fileName, byte[] imgData) {
+        Map<String, Object> toInsert = new HashMap<>();
         toInsert.put("file_name", fileName);
         toInsert.put("img", imgData);
         final Number imgId = jdbcImageInsert.execute(toInsert);
@@ -62,13 +61,13 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public Image getpfp(int userId) {
         List<Image> images = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN profile_picture AS p ON p.img_id = i.id 
-                WHERE p.user_id = ?""",
+                        SELECT id, img, file_name
+                        FROM image AS i JOIN profile_picture AS p ON p.img_id = i.id 
+                        WHERE p.user_id = ?""",
                 new Object[]{userId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
-        if(images.isEmpty())
+        if (images.isEmpty())
             return null;
         return images.getFirst();
     }
@@ -76,13 +75,13 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public Image getVehicleImage(int vehicleId) {
         List<Image> img = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN vehicle_picture AS v ON v.img_id = i.id 
-                WHERE v.vehicle_id = ?""",
+                        SELECT id, img, file_name
+                        FROM image AS i JOIN vehicle_picture AS v ON v.img_id = i.id 
+                        WHERE v.vehicle_id = ?""",
                 new Object[]{vehicleId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
-        if(img.isEmpty())
+        if (img.isEmpty())
             return null;
         return img.getFirst();
     }
@@ -91,21 +90,21 @@ public class ImageJdbcDao implements ImageDao {
     public Image getPop(int driverId, int bookingId) {
         List<Image> img;
         img = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN proof_of_payment AS p ON p.img_id = i.id 
-                WHERE p.driver_id = ? AND p.booking_id = ?""",
+                        SELECT id, img, file_name
+                        FROM image AS i JOIN proof_of_payment AS p ON p.img_id = i.id 
+                        WHERE p.driver_id = ? AND p.booking_id = ?""",
                 new Object[]{driverId, bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT},
+                new int[]{Types.BIGINT, Types.BIGINT},
                 ROW_MAPPER);
-        if(img.isEmpty())
+        if (img.isEmpty())
             return null;
         return img.getFirst();
     }
 
     @Override
     public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
-        Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
+        Integer key = uploadImage(fileName, bin);
+        Map<String, Object> toInsert = new HashMap<>();
         toInsert.put("driver_id", driverId);
         toInsert.put("booking_id", bookingId);
         toInsert.put("img_id", key);
@@ -114,8 +113,8 @@ public class ImageJdbcDao implements ImageDao {
 
     @Override
     public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
-        Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
+        Integer key = uploadImage(fileName, bin);
+        Map<String, Object> toInsert = new HashMap<>();
         toInsert.put("vehicle_id", vehicleId);
         toInsert.put("img_id", key);
         return jdbcVehicleInsert.execute(toInsert);
@@ -123,8 +122,8 @@ public class ImageJdbcDao implements ImageDao {
 
     @Override
     public int uploadPfp(byte[] bin, String fileName, int userId) {
-        Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
+        Integer key = uploadImage(fileName, bin);
+        Map<String, Object> toInsert = new HashMap<>();
         toInsert.put("user_id", userId);
         toInsert.put("img_id", key);
         return jdbcPfpInsert.execute(toInsert);

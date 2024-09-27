@@ -4,8 +4,6 @@ import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.webapp.validation.ValidZoneId;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Pattern;
-
 public class AvailabilitySearchForm {
     @ValidZoneId
     @Nullable

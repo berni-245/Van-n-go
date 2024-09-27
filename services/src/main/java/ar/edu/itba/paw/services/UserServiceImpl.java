@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.persistence.ClientDao;
-import ar.edu.itba.paw.persistence.DriverDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

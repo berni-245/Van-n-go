@@ -2,17 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:remove="all">Prueba templates java mail</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<h1 th:text="#{client.request.header}" >You requested a hauler</h1>
-<h3 th:text="#{request.details}" >Details</h3>
+<h1 th:text="#{client.request.header}">You requested a hauler</h1>
+<h3 th:text="#{request.details}">Details</h3>
 
 <div>
     <ul>
-        <li th:text="#{request.name(${haulerName})}" >name</li>
+        <li th:text="#{request.name(${haulerName})}">name</li>
         <li th:text="#{request.date(${dateRequested.toString()})}">date</li>
-        <li th:text="#{request.contact(${haulerMail})}" >contact info</li>
+        <li th:text="#{request.contact(${haulerMail})}">contact info</li>
     </ul>
 </div>
 

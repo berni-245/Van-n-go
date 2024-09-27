@@ -2,21 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:remove="all">Hauler welcome mail</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 
 <body>
-<h1 th:text="#{welcome(${haulerName})}" > Welcome (name) to the Van N' Go community </h1>
+<h1 th:text="#{welcome(${haulerName})}"> Welcome (name) to the Van N' Go community </h1>
 
 <h2 th:text="#{hauler.nextSteps}"> Follow this steps to start receiving reservations</h2>
 
 <div>
     <ul>
-        <li th:text="#{hauler.nextSteps.addVehicles}  " >name</li>
+        <li th:text="#{hauler.nextSteps.addVehicles}  ">name</li>
         <li th:text="#{hauler.nextSteps.addAvailability}">date</li>
     </ul>
 </div>
-
 
 
 <footer th:text="#{request.footer}">Thanks for using Van N' Go</footer>

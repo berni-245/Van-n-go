@@ -15,11 +15,14 @@
                     <h3 class="card-title mb-4"><c:out value="${loggedUser.username}"/></h3>
 
                     <!-- Profile Picture Section -->
-                    <form:form action="${pageContext.request.contextPath}/upload/pfp" method="post" enctype="multipart/form-data">
+                    <form:form action="${pageContext.request.contextPath}/upload/pfp" method="post"
+                               enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="profilePic">
-                                <img id="profilePicPreview" src="${pageContext.request.contextPath}/images/${profilePic.fileName}"
-                                     alt="Profile Picture" class="img-thumbnail" style="cursor: pointer; width: 150px; height: 150px;">
+                                <img id="profilePicPreview"
+                                     src="${pageContext.request.contextPath}/images/${profilePic.fileName}"
+                                     alt="Profile Picture" class="img-thumbnail"
+                                     style="cursor: pointer; width: 150px; height: 150px;">
                             </label>
                             <input type="file" id="profilePic" name="file" class="d-none"
                                    onchange="document.getElementById('profilePicPreview').src = window.URL.createObjectURL(this.files[0])">
@@ -44,7 +47,7 @@
 
 <script>
     // Automatically open file dialog when clicking the image
-    document.getElementById('profilePicPreview').onclick = function() {
+    document.getElementById('profilePicPreview').onclick = function () {
         document.getElementById('profilePic').click();
     };
 </script>

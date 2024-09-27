@@ -33,7 +33,7 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public long create(String username, String mail, String password) {
-            Map<String, Object> userData = new HashMap<>();
+        Map<String, Object> userData = new HashMap<>();
         userData.put("username", username);
         userData.put("mail", mail);
         userData.put("password", password);
