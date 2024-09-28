@@ -1,52 +1,45 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
-<head>
-    <title><c:out value="${loggedUser.username}"/></title>
-</head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<comp:Head titleCode="siteName">
+</comp:Head>
+<body class="d-flex flex-column min-vh-100">
+<comp:Header/>
+
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-4"><c:out value="${loggedUser.username}"/></h3>
-
-                    <!-- Profile Picture Section -->
-                    <form:form action="${pageContext.request.contextPath}/upload/pfp" method="post" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="profilePic">
-                                <img id="profilePicPreview" src="${pageContext.request.contextPath}/images/${profilePic.fileName}"
-                                     alt="Profile Picture" class="img-thumbnail" style="cursor: pointer; width: 150px; height: 150px;">
-                            </label>
-                            <input type="file" id="profilePic" name="file" class="d-none"
-                                   onchange="document.getElementById('profilePicPreview').src = window.URL.createObjectURL(this.files[0])">
-                        </div>
-                        <div class="d-grid">
-                            <input type="submit" class="btn btn-primary" value="Update Profile Picture">
-                        </div>
-                    </form:form>
-
-                    <!-- User Information -->
-                    <div class="mt-4">
-                        <p><strong>Email:</strong> <c:out value="${loggedUser.mail}"/></p>
-                    </div>
-
-                    <!-- Back to Home Button -->
-                    <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary mt-3">Return to Home</a>
-                </div>
+    <div class="card">
+        <div class="card-header text-center">
+            <h1><c:out value="${loggedUser.username}"/></h1>
+        </div>
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <form id="uploadProfilePicForm" method="post" action="<c:url value='/upload/pfp'/>" enctype="multipart/form-data">
+                    <input type="file" id="profilePicInput" name="profilePicture" class="d-none" accept="image/*" onchange="document.getElementById('uploadProfilePicForm').submit();">
+                    <label for="profilePicInput" style="cursor: pointer;">
+                        <c:if test="${empty profilePic}">
+                            <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">
+                        </c:if>
+                        <c:if test="${not empty profilePic}">
+                            <img src="<c:url value='/profile/picture'/>" alt="Profile Picture" class="rounded-circle border" width="150" height="150">
+                        </c:if>
+                    </label>
+                </form>
+            </div>
+            <div class="user-info text-center">
+                <p class="mb-1"><strong>Email:</strong> <c:out value="${loggedUser.mail}"/></p>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // Automatically open file dialog when clicking the image
-    document.getElementById('profilePicPreview').onclick = function() {
-        document.getElementById('profilePic').click();
-    };
-</script>
+<footer class="mt-auto bg-dark text-white py-3 text-center">
+    <div class="container">
+        <p class="mb-0">2024 VanNGo. All Rights Reserved.</p>
+    </div>
+</footer>
+
 </body>
 </html>

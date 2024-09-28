@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-<comp:Head titleCode="components.header.vehicles">
+<comp:Head titleCode="siteName">
     <c:url value="/css/home.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>

@@ -7,11 +7,14 @@ import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,16 +32,13 @@ public class PublicController {
 
     private static final Logger log = LoggerFactory.getLogger(PublicController.class);
     @Autowired
-    private UserService us;
-    @Autowired
     private ClientService cs;
     @Autowired
     private DriverService ds;
     @Autowired
     private ImageService is;
 
-    public PublicController(UserService us, ClientService cs, DriverService ds, ImageService is) {
-        this.us = us;
+    public PublicController(ClientService cs, DriverService ds, ImageService is) {
         this.cs = cs;
         this.ds = ds;
         this.is = is;
@@ -67,6 +67,13 @@ public class PublicController {
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+        if (userForm.getProfilePicture() != null && !userForm.getProfilePicture().isEmpty()){
+            try{
+                is.uploadPfp(userForm.getProfilePicture().getBytes(),userForm.getProfilePicture().getOriginalFilename(),(int) user.getId());
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");
@@ -83,20 +90,42 @@ public class PublicController {
     }
 
     @RequestMapping(path = "/upload/pfp", method = RequestMethod.POST)
-    public ModelAndView uploadProfilePicture(@RequestParam("file") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
+    public String submit(@RequestParam("profilePicture") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
+        if (file==null || file.isEmpty()) {
+            return "redirect:/profile";
+        }
         try {
-            is.uploadPfp(file.getBytes(), file.getOriginalFilename(), (int) loggedUser.getId());
-        } catch (IOException e) {
+            is.uploadPfp(file.getBytes(), file.getOriginalFilename(),(int)loggedUser.getId());
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return new ModelAndView("redirect:/profile");
+        return "redirect:/profile";
     }
 
     @RequestMapping(path = "/profile")
     public ModelAndView profile(@ModelAttribute("loggedUser") User loggedUser) {
         ModelAndView mav = new ModelAndView("public/profile");
         Image pfp = is.getPfp((int) loggedUser.getId());
-        mav.addObject("profilePic", pfp);
+        if (pfp != null) {
+            mav.addObject("profilePic", pfp);
+        }
+        mav.addObject("loggedUser", loggedUser);
         return mav;
     }
+
+    @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
+        Image pfp = is.getPfp((int) loggedUser.getId());
+
+        if (pfp != null && pfp.getData() != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("image/png"));
+            headers.setContentLength(pfp.getData().length);
+            return new ResponseEntity<>(pfp.getData(), headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -1,19 +1,22 @@
--- From what I've read it seems to be recommended to use the singular
--- form for table names.
+create table if not exists image
+(
+    id serial primary key,
+    file_name varchar(255) not null ,
+    bin bytea not null
+);
 
--- `user` is a reserved word smh...
 create table if not exists app_user
 (
     id       serial primary key,
     username text unique not null,
     mail     text unique not null,
-    password text        not null
+    password text        not null,
+    pfp      int references image (id) on delete set null
 );
 
 create table if not exists client
 (
     user_id int primary key references app_user (id) on delete cascade
-    -- more client only props would go here
 );
 
 create table if not exists driver
@@ -29,7 +32,8 @@ create table if not exists vehicle
     driver_id    int not null references driver (user_id) on delete cascade,
     plate_number text unique,
     volume_m3    double precision,
-    description  text
+    description  text,
+    img_id int references image (id)
 );
 
 create table if not exists weekly_availability
@@ -89,31 +93,6 @@ create table if not exists reservation
     client_id int not null references client (user_id) on delete cascade,
     booking_id int not null references booking (id) on delete cascade,
     is_confirmed boolean not null,
+    proof_of_payment int references image (id),
     primary key (driver_id, booking_id)
-);
-
-create table if not exists image
-(
-    id serial primary key,
-    file_name varchar(256) not null,
-    img bytea not null
-);
-
-create table if not exists proof_of_payment
-(
-    driver_id int not null references driver (user_id) on delete cascade,
-    booking_id int not null references booking (id) on delete cascade,
-    img_id int not null references image (id) on delete cascade
-);
-
-create table if not exists profile_picture
-(
-    user_id int not null references app_user (id) on delete cascade,
-    img_id int not null references image (id) on delete cascade
-);
-
-create table if not exists vehicle_picture
-(
-    vehicle_id int not null references vehicle (id) on delete cascade,
-    img_id int not null references image (id) on delete cascade
 );

@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +16,6 @@ import java.util.Map;
 public class ImageJdbcDao implements ImageDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcImageInsert;
-    private final SimpleJdbcInsert jdbcPfpInsert;
-    private final SimpleJdbcInsert jdbcPopInsert;
-    private final SimpleJdbcInsert jdbcVehicleInsert;
     private final RowMapper<Image> ROW_MAPPER;
 
     public ImageJdbcDao(final DataSource ds) {
@@ -27,15 +23,9 @@ public class ImageJdbcDao implements ImageDao {
         jdbcImageInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .usingGeneratedKeyColumns("id")
                 .withTableName("image");
-        jdbcPfpInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("profile_picture");
-        jdbcPopInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("proof_of_payment");
-        jdbcVehicleInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("vehicle_picture");
         ROW_MAPPER = (rs, rowNum) -> new Image(
                 (int) rs.getLong("id"),
-                rs.getBytes("img"),
+                rs.getBytes("bin"),
                 rs.getString("file_name")
         );
     }
@@ -54,17 +44,17 @@ public class ImageJdbcDao implements ImageDao {
     public Integer uploadImage(String fileName, byte[] imgData){
         Map<String,Object> toInsert = new HashMap<>();
         toInsert.put("file_name", fileName);
-        toInsert.put("img", imgData);
-        final Number imgId = jdbcImageInsert.execute(toInsert);
+        toInsert.put("bin", imgData);
+        final Number imgId = jdbcImageInsert.executeAndReturnKey(toInsert);
         return imgId.intValue();
     }
 
     @Override
     public Image getpfp(int userId) {
         List<Image> images = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN profile_picture AS p ON p.img_id = i.id 
-                WHERE p.user_id = ?""",
+                        SELECT i.id, bin, file_name
+                        FROM image AS i JOIN app_user AS u ON u.pfp = i.id
+                        WHERE u.id = ?""",
                 new Object[]{userId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -76,9 +66,9 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public Image getVehicleImage(int vehicleId) {
         List<Image> img = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN vehicle_picture AS v ON v.img_id = i.id 
-                WHERE v.vehicle_id = ?""",
+                SELECT id, bin, file_name
+                FROM image AS i JOIN vehicle AS v ON v.img_id = i.id 
+                WHERE v.id = ?""",
                 new Object[]{vehicleId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -91,9 +81,9 @@ public class ImageJdbcDao implements ImageDao {
     public Image getPop(int driverId, int bookingId) {
         List<Image> img;
         img = jdbcTemplate.query("""
-                SELECT id, img, file_name
-                FROM image AS i JOIN proof_of_payment AS p ON p.img_id = i.id 
-                WHERE p.driver_id = ? AND p.booking_id = ?""",
+                SELECT id, bin, file_name
+                FROM image AS i JOIN reservation AS r ON r.proof_of_payment = i.id 
+                WHERE r.driver_id = ? AND r.booking_id = ?""",
                 new Object[]{driverId, bookingId},
                 new int[]{Types.BIGINT,Types.BIGINT},
                 ROW_MAPPER);
@@ -105,28 +95,30 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
         Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
-        toInsert.put("driver_id", driverId);
-        toInsert.put("booking_id", bookingId);
-        toInsert.put("img_id", key);
-        return jdbcPopInsert.execute(toInsert);
+        return jdbcTemplate.update("""
+                    update reservation set proof_of_payment = ?
+                    where driver_id = ? and booking_id = ?""",
+                new Object[]{key,driverId,bookingId},
+                new int[]{Types.BIGINT,Types.BIGINT,Types.BIGINT});
     }
 
     @Override
     public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
         Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
-        toInsert.put("vehicle_id", vehicleId);
-        toInsert.put("img_id", key);
-        return jdbcVehicleInsert.execute(toInsert);
+        return jdbcTemplate.update("""
+                    update vehicle set img_id = ?
+                    where id = ?""",
+                new Object[]{key,vehicleId},
+                new int[]{Types.BIGINT,Types.BIGINT});
     }
 
     @Override
     public int uploadPfp(byte[] bin, String fileName, int userId) {
         Integer key = uploadImage(fileName,bin);
-        Map<String,Object> toInsert = new HashMap<>();
-        toInsert.put("user_id", userId);
-        toInsert.put("img_id", key);
-        return jdbcPfpInsert.execute(toInsert);
+        return jdbcTemplate.update("""
+                    update app_user set pfp = ?
+                    where id = ?""",
+                new Object[]{key,userId},
+                new int[]{Types.BIGINT,Types.BIGINT});
     }
 }
