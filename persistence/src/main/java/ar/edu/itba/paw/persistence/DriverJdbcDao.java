@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -26,7 +25,7 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("extra1")
             );
 
-    private final JdbcTemplate jdbcTemplate;
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcDriverInsert;
     private final VehicleDao vehicleDao;
 
@@ -37,9 +36,9 @@ public class DriverJdbcDao implements DriverDao {
     }
 
     @Override
-    public Driver create(User user, String extra1) {
-        jdbcDriverInsert.execute(Map.of("user_id", user.getId(), "extra1", extra1));
-        return new Driver(user, extra1);
+    public Driver create(long id, String username, String mail, String password, String extra1) {
+        jdbcDriverInsert.execute(Map.of("user_id", id, "extra1", extra1));
+        return new Driver(id, username, mail, password, extra1);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class DriverJdbcDao implements DriverDao {
         return jdbcTemplate.query(
                         "SELECT * FROM driver join app_user on driver.user_id = app_user.id where id = ?",
                         new Object[]{id},
-                        new int[]{java.sql.Types.BIGINT},
+                        new int[]{Types.BIGINT},
                         ROW_MAPPER)
                 .stream().findFirst();
     }
@@ -86,5 +85,15 @@ public class DriverJdbcDao implements DriverDao {
                 "SELECT * FROM driver join app_user on driver.user_id = app_user.id",
                 ROW_MAPPER
         );
+    }
+
+    @Override
+    public Optional<Driver> findByUsername(String username) {
+        return jdbcTemplate.query(
+                        "SELECT * FROM driver join app_user on driver.user_id = app_user.id where username = ?",
+                        new Object[]{username},
+                        new int[]{Types.VARCHAR},
+                        ROW_MAPPER)
+                .stream().findFirst();
     }
 }

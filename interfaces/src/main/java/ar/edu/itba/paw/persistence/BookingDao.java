@@ -13,7 +13,7 @@ public interface BookingDao {
      *
      * @param driverId The ID of the driver.
      * @param clientId The ID of the client.
-     * @param date The date of the booking.
+     * @param date     The date of the booking.
      * @return An {@link Optional} containing the appointed booking if successful, otherwise an empty {@link Optional} if the date is already appointed for that driver.
      */
     Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date);
@@ -23,7 +23,7 @@ public interface BookingDao {
      *
      * @param driverId The ID of the driver.
      * @param clientId The ID of the client.
-     * @param date The date of the booking.
+     * @param date     The date of the booking.
      * @return An {@link Optional} containing the appointed booking if successful, otherwise an empty {@link Optional} if the date is already appointed for that driver.
      */
     default Optional<Booking> appointBooking(long driverId, long clientId, String date) {
@@ -56,7 +56,7 @@ public interface BookingDao {
      * Retrieves all the bookings a given driver has on a specific date.
      *
      * @param driverId The ID of the driver.
-     * @param date The date of the bookings.
+     * @param date     The date of the bookings.
      * @return A list of {@link Booking} objects for the specified driver on a specific date. Will be empty if no bookings were found.
      */
     List<Booking> getBookingsByDate(long driverId, LocalDate date);
@@ -65,7 +65,7 @@ public interface BookingDao {
      * Retrieves all the bookings a given driver has on a specific date.
      *
      * @param driverId The ID of the driver.
-     * @param date The date of the bookings.
+     * @param date     The date of the bookings.
      * @return A list of {@link Booking} objects for the specified driver on a specific date. Will be empty if no bookings were found.
      */
     default List<Booking> getBookingsByDate(long driverId, String date) {

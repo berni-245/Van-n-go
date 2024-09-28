@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.User;
 
 import java.util.Optional;
 
 public interface ClientDao {
-    Client create(User user);
+    Client create(long id, String username, String mail, String password);
 
     Optional<Client> findById(long id);
+
+    Optional<Client> findByUsername(String username);
 }

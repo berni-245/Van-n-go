@@ -33,5 +33,7 @@ public class Booking {
         return confirmed;
     }
 
-    public Driver getDriver() {return driver;}
+    public Driver getDriver() {
+        return driver;
+    }
 }

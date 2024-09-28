@@ -43,16 +43,16 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public int uploadPfp(byte[] bin, String fileName, int userId) {
-        return imgDao.uploadPfp(bin,fileName,userId);
+        return imgDao.uploadPfp(bin, fileName, userId);
     }
 
     @Override
     public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
-        return imgDao.uploadVehicleImage(bin, fileName,vehicleId);
+        return imgDao.uploadVehicleImage(bin, fileName, vehicleId);
     }
 
     @Override
     public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
-        return imgDao.uploadPop(bin,fileName,driverId,bookingId);
+        return imgDao.uploadPop(bin, fileName, driverId, bookingId);
     }
 }

@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.BookingDao;
-import ar.edu.itba.paw.persistence.DriverDao;
-import ar.edu.itba.paw.persistence.VehicleDao;
-import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
+import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,30 +12,44 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DriverServiceImpl implements DriverService {
-    private final UserService userService;
-
+public class DriverServiceImpl extends UserServiceImpl implements DriverService {
+    @Autowired
     private final DriverDao driverDao;
 
+    @Autowired
     private final VehicleDao vehicleDao;
 
+    @Autowired
     private final WeeklyAvailabilityDao weeklyAvailabilityDao;
 
+    @Autowired
     private final BookingDao bookingDao;
 
-    @Autowired
-    public DriverServiceImpl(UserService userService, DriverDao driverDao, VehicleDao vehicleDao, WeeklyAvailabilityDao weeklyAvailabilityDao, BookingDao bookingDao) {
-        this.userService = userService;
+    public DriverServiceImpl(
+            UserDao userDao,
+            PasswordEncoder passwordEncoder,
+            MailService mailService,
+            DriverDao driverDao,
+            VehicleDao vehicleDao,
+            WeeklyAvailabilityDao weeklyAvailabilityDao,
+            BookingDao bookingDao
+    ) {
+        super(userDao, passwordEncoder, mailService);
         this.driverDao = driverDao;
         this.vehicleDao = vehicleDao;
         this.weeklyAvailabilityDao = weeklyAvailabilityDao;
         this.bookingDao = bookingDao;
     }
 
+    //@Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1) {
-        User user = userService.create(username, mail, password);
-        return driverDao.create(user, extra1);
+        long id = createUser(username, mail, password);
+        // Driver instance will be created with unencrypted password.
+        // Is that a problem tho?
+        Driver driver = driverDao.create(id, username, mail, password, extra1);
+        mailService.sendHaulerWelcomeMail(mail, username);
+        return driver;
     }
 
     @Override

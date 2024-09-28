@@ -103,12 +103,11 @@ public class MailServiceImpl implements MailService {
     }
 
 
-
     @Override
     public void sendClientWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
-        context.setVariable("userName",userName);
+        context.setVariable("userName", userName);
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -124,11 +123,10 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendHaulerWelcomeMail(String to, String userName,long id) {
+    public void sendHaulerWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
         context.setVariable("haulerName", userName);
-        context.setVariable("id",id);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -161,7 +159,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject("You requested a Van N' Go hauler");
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
 
         sendMail(message);
@@ -175,7 +174,8 @@ public class MailServiceImpl implements MailService {
             String mailBodyProcessed = templateEngine.process("haulerRequestedServiceMail", context);
             message.setSubject("You received a request for your service");
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+        }
 
         sendMail(message);
     }

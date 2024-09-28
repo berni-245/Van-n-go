@@ -9,10 +9,13 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
-public class BookingJdbcDao implements BookingDao{
+public class BookingJdbcDao implements BookingDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcBookingInsert;
     private final SimpleJdbcInsert jdbcReservationInsert;
@@ -42,7 +45,7 @@ public class BookingJdbcDao implements BookingDao{
 
     @Override
     public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
-        if(isDriverBookedForThatDay(driverId, date) || isClientAlreadyAppointed(driverId, clientId, date))
+        if (isDriverBookedForThatDay(driverId, date) || isClientAlreadyAppointed(driverId, clientId, date))
             return Optional.empty();
         Map<String, Object> bookingData = Map.of("date", date);
         final Number generatedBookingId = jdbcBookingInsert.executeAndReturnKey(bookingData);
@@ -52,7 +55,7 @@ public class BookingJdbcDao implements BookingDao{
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false,driverDao.findById(driverId).orElseThrow()));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow()));
     }
 
     @Override
@@ -69,9 +72,9 @@ public class BookingJdbcDao implements BookingDao{
     @Override
     public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return jdbcTemplate.query("""
-                    select booking_id, client_id, date, is_confirmed
-                    from booking b join reservation r on b.id = r.booking_id
-                    where driver_id = ? and date = ?""",
+                        select booking_id, client_id, date, is_confirmed
+                        from booking b join reservation r on b.id = r.booking_id
+                        where driver_id = ? and date = ?""",
                 new Object[]{driverId, date.toString()},
                 new int[]{Types.BIGINT, Types.DATE},
                 ROW_MAPPER);
@@ -102,39 +105,39 @@ public class BookingJdbcDao implements BookingDao{
     @Override
     public void acceptBooking(long bookingId) {
         jdbcTemplate.update("""
-                    update reservation
-                    set is_confirmed = ?
-                    where booking_id = ?""",
+                        update reservation
+                        set is_confirmed = ?
+                        where booking_id = ?""",
                 new Object[]{Boolean.TRUE, bookingId},
                 new int[]{Types.BOOLEAN, Types.BIGINT});
         jdbcTemplate.update("""
-                delete 
-                from booking
-                where id != ? 
-                and date = (
-                    select distinct date
-                    from booking b2 
-                    where b2.id = ?
-                )
-                and id in (
-                    select r.booking_id
-                    from reservation r
-                    where r.driver_id = (
-                        select distinct driver_id
-                        from reservation
-                        where booking_id = ?
-                    )
-                )""",
-                new Object[]{bookingId,bookingId, bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT, Types.BIGINT});
+                        delete 
+                        from booking
+                        where id != ? 
+                        and date = (
+                            select distinct date
+                            from booking b2 
+                            where b2.id = ?
+                        )
+                        and id in (
+                            select r.booking_id
+                            from reservation r
+                            where r.driver_id = (
+                                select distinct driver_id
+                                from reservation
+                                where booking_id = ?
+                            )
+                        )""",
+                new Object[]{bookingId, bookingId, bookingId},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT});
     }
 
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                    delete
-                    from booking
-                    where id = ?""",
+                        delete
+                        from booking
+                        where id = ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT});
     }

@@ -17,6 +17,7 @@ create table if not exists app_user
 create table if not exists client
 (
     user_id int primary key references app_user (id) on delete cascade
+    -- more client only props would go here
 );
 
 create table if not exists driver
@@ -83,15 +84,15 @@ create table if not exists vehicle_weekly_zone
 
 create table if not exists booking
 (
-    id serial primary key,
+    id   serial primary key,
     date date
 );
 
 create table if not exists reservation
 (
-    driver_id int not null references driver (user_id) on delete cascade,
-    client_id int not null references client (user_id) on delete cascade,
-    booking_id int not null references booking (id) on delete cascade,
+    driver_id    int     not null references driver (user_id) on delete cascade,
+    client_id    int     not null references client (user_id) on delete cascade,
+    booking_id   int     not null references booking (id) on delete cascade,
     is_confirmed boolean not null,
     proof_of_payment int references image (id),
     primary key (driver_id, booking_id)

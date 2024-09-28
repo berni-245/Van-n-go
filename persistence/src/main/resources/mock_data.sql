@@ -168,9 +168,10 @@ insert into zone (country_id, province_id, neighborhood_id)
 values (1, 2, 3)
 on conflict do nothing;
 insert into zone (country_id, province_id, neighborhood_id)
-select 1, 1, id 
+select 1, 1, id
 from neighborhood
-where id > 3 and id <= 49;
+where id > 3
+  and id <= 49;
 
 -- Users
 insert into app_user
