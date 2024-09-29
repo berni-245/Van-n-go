@@ -3,6 +3,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="siteName">
     <c:url value="/css/home.css" var="css"/>
@@ -67,6 +68,5 @@
         <p class="mb-1">&copy; PAW 2024B G1</p>
     </div>
 </footer>
-
 </body>
 </html>

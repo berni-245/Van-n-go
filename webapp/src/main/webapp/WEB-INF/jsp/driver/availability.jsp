@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.availability"/>
+<comp:Head titleCode="components.header.availability" bootstrapjs="true"/>
 
 <body>
 <comp:Header inAvailability="true"/>
@@ -44,6 +44,7 @@
         </a>
     </div>
 </div>
+<comp:ToastManager toasts="${toasts}"/>
 </body>
 
 </html>

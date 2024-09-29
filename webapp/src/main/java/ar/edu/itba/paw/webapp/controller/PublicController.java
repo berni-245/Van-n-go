@@ -49,12 +49,12 @@ public class PublicController {
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {
+            // This should probably not be here but in the DriverController.
             final ModelAndView mav = new ModelAndView("driver/home");
             List<Booking> bookings = ds.getBookings(loggedUser.getId());
             mav.addObject("bookings",bookings);
             return mav;
         }
-
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)

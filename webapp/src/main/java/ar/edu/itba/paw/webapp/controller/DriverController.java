@@ -1,22 +1,23 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Vehicle;
-import ar.edu.itba.paw.models.WeeklyAvailability;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,8 @@ public class DriverController {
     public ModelAndView addVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             return addVehicleGet(vehicleForm);
@@ -49,6 +51,10 @@ public class DriverController {
                 vehicleForm.getVolume(),
                 vehicleForm.getDescription()
         );
+        List<Toast> toasts = Collections.singletonList(new Toast(
+                ToastType.success, "toast.vehicle.add.success"
+        ));
+        redirectAttributes.addFlashAttribute("toasts", toasts);
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
@@ -61,7 +67,8 @@ public class DriverController {
     public ModelAndView addAvailability(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             return addAvailabilityForm(loggedUser, form);
@@ -74,6 +81,10 @@ public class DriverController {
                 form.getZoneIds(),
                 form.getVehicleIds()
         );
+        List<Toast> toasts = Collections.singletonList(new Toast(
+                ToastType.success, "toast.availability.add.success"
+        ));
+        redirectAttributes.addFlashAttribute("toasts", toasts);
         return new ModelAndView("redirect:/driver/availability");
     }
 
@@ -91,18 +102,28 @@ public class DriverController {
     }
 
     @RequestMapping(path = "/driver/vehicles")
-    public ModelAndView vehiclesDashboard(@ModelAttribute("loggedUser") Driver loggedUser) {
+    public ModelAndView vehiclesDashboard(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            Model model
+    ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
         mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        if (model.containsAttribute("toasts")) {
+            mav.addObject("toasts", model.getAttribute("toasts"));
+        }
         return mav;
     }
 
     @RequestMapping(path = "/driver/availability")
     public ModelAndView availabilityDashboard(
-            @ModelAttribute("loggedUser") Driver loggedUser
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/availability");
         mav.addObject("vehicles", ds.getVehiclesFull(loggedUser.getId()));
+        if (model.containsAttribute("toasts")) {
+            mav.addObject("toasts", model.getAttribute("toasts"));
+        }
         return mav;
     }
 
