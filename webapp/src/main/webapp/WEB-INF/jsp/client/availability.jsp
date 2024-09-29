@@ -5,7 +5,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-<comp:Head titleCode="components.header.availability" bootstrapjs="true" tomselect="true">
+<comp:Head titleCode="components.header.availability" bootstrapjs="true" tomselect="true" bsIcons="true">
     <c:url value="/css/availability.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
@@ -63,6 +63,42 @@
                                     <div class="card-body">
                                         <h5 class="card-title">${driver.username}</h5>
                                         <p class="card-text">Details about the driver can go here.</p>
+                                        <div class="d-flex align-items-center">
+
+                                            <c:choose>
+                                                <c:when test="${driver.rating != null}">
+
+                                                    <span class="fw-bold text-warning" >
+                                                           <c:out value="${driver.rating}"/>
+                                                    </span>
+
+
+                                                    <div class="ms-2">
+                                                        <c:set var="fullStars" value="${driver.rating.intValue()}" />
+                                                        <c:set var="halfStar" value="${(driver.rating - driver.rating.intValue() >= 0.5) ? true : false}" />
+                                                        <c:set var="emptyStars" value="${5 - fullStars - (halfStar ? 1 : 0)}" />
+
+
+                                                        <c:forEach var="i" begin="1" end="${fullStars}">
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                        </c:forEach>
+
+
+                                                        <c:if test="${halfStar}">
+                                                            <i class="bi bi-star-half text-warning" ></i>
+                                                        </c:if>
+
+
+                                                        <c:forEach var="i" begin="1" end="${emptyStars}">
+                                                            <i class="bi bi-star text-secondary" ></i>
+                                                        </c:forEach>
+                                                    </div>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span>No rating available</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
                                         <a href="${pageContext.request.contextPath}/availability/${driver.id}"
                                            class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>

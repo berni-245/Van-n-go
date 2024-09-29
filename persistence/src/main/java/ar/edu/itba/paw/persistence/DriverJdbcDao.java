@@ -22,7 +22,8 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("username"),
                     rs.getString("mail"),
                     rs.getString("password"),
-                    rs.getString("extra1")
+                    rs.getString("extra1"),
+                    rs.getObject("rating", Double.class)
             );
 
     protected final JdbcTemplate jdbcTemplate;
@@ -38,7 +39,7 @@ public class DriverJdbcDao implements DriverDao {
     @Override
     public Driver create(long id, String username, String mail, String password, String extra1) {
         jdbcDriverInsert.execute(Map.of("user_id", id, "extra1", extra1));
-        return new Driver(id, username, mail, password, extra1);
+        return new Driver(id, username, mail, password, extra1,null);
     }
 
     @Override
@@ -95,5 +96,19 @@ public class DriverJdbcDao implements DriverDao {
                         new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+
+    @Override
+    public void updateDriverRating(long driverId) {
+        jdbcTemplate.update("""
+                            update driver
+                            set rating = (
+                                select avg(rating)
+                                from booking b join reservation r on b.id = r.booking_id
+                                where driver_id = driver.user_id
+                            )
+                            where user_id = ?
+                """, new Object[]{driverId}, new int[]{Types.BIGINT});
     }
 }

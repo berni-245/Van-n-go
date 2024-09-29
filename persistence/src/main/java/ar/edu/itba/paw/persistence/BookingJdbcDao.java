@@ -39,7 +39,8 @@ public class BookingJdbcDao implements BookingDao {
                 clientDao.findById(rs.getLong("client_id")).orElseThrow(),
                 rs.getDate("date").toLocalDate(),
                 rs.getBoolean("is_confirmed"),
-                driverDao.findById(rs.getLong("driver_id")).orElseThrow()
+                driverDao.findById(rs.getLong("driver_id")).orElseThrow(),
+                rs.getObject("rating", Integer.class)
         );
     }
 
@@ -55,13 +56,13 @@ public class BookingJdbcDao implements BookingDao {
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow()));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow(), null));
     }
 
     @Override
     public List<Booking> getBookings(long driverId) {
         return jdbcTemplate.query("""
-                        select booking_id, client_id, date, is_confirmed, driver_id
+                        select *
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ?""",
                 new Object[]{driverId},
@@ -72,7 +73,7 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return jdbcTemplate.query("""
-                        select booking_id, client_id, date, is_confirmed
+                        select *
                         from booking b join reservation r on b.id = r.booking_id
                         where driver_id = ? and date = ?""",
                 new Object[]{driverId, date.toString()},
@@ -83,7 +84,7 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getClientBookings(long id) {
         return jdbcTemplate.query("""
-                        select booking_id, driver_id, date, is_confirmed, client_id
+                        select *
                         from booking b join reservation r on b.id = r.booking_id
                         where client_id = ? AND date >= CURRENT_DATE""",
                 new Object[]{id},
@@ -94,7 +95,7 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getClientHistory(long id) {
         return jdbcTemplate.query("""
-                        select booking_id, driver_id, date, is_confirmed, client_id
+                        select *
                         from booking b join reservation r on b.id = r.booking_id
                         where client_id = ? AND date < CURRENT_DATE""",
                 new Object[]{id},
@@ -105,41 +106,67 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public void acceptBooking(long bookingId) {
         jdbcTemplate.update("""
-                        update reservation
-                        set is_confirmed = ?
-                        where booking_id = ?""",
+                    update reservation
+                    set is_confirmed = ?
+                    where booking_id = ?""",
                 new Object[]{Boolean.TRUE, bookingId},
                 new int[]{Types.BOOLEAN, Types.BIGINT});
         jdbcTemplate.update("""
-                        delete 
-                        from booking
-                        where id != ? 
-                        and date = (
-                            select distinct date
-                            from booking b2 
-                            where b2.id = ?
-                        )
-                        and id in (
-                            select r.booking_id
-                            from reservation r
-                            where r.driver_id = (
-                                select distinct driver_id
-                                from reservation
-                                where booking_id = ?
-                            )
-                        )""",
-                new Object[]{bookingId, bookingId, bookingId},
-                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT});
+                delete 
+                from booking
+                where id != ? 
+                and date = (
+                    select distinct date
+                    from booking b2 
+                    where b2.id = ?
+                )
+                and id in (
+                    select r.booking_id
+                    from reservation r
+                    where r.driver_id = (
+                        select distinct driver_id
+                        from reservation
+                        where booking_id = ?
+                    )
+                )""",
+                new Object[]{bookingId,bookingId, bookingId},
+                new int[]{Types.BIGINT,Types.BIGINT, Types.BIGINT});
     }
 
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                        delete
-                        from booking
-                        where id = ?""",
+                    delete
+                    from booking
+                    where id = ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT});
+    }
+
+    @Override
+    public void setRating(long bookingId, int rating) {
+        jdbcTemplate.update("""
+                    update booking
+                    set rating = ?
+                    where id = ?
+                """, new Object[]{rating, bookingId}, new int[]{Types.INTEGER, Types.BIGINT});
+        Long driverId = jdbcTemplate.queryForObject("""
+                select driver_id
+                from booking b join reservation j on b.id = j.booking_id
+                where b.id = ?
+                """, new Object[]{bookingId}, new int[]{Types.BIGINT}, Long.class);
+        if (driverId != null) {
+            driverDao.updateDriverRating(driverId);
+        }
+    }
+
+    @Override
+    public Double getDriverRating(long driverID) {
+        return jdbcTemplate.queryForObject("""
+                select avg(rating)
+                from booking b join reservation r on b.id = r.booking_id
+                where driver_id = ?
+                """, new Object[]{driverID}, new int[]{Types.BIGINT}, Double.class);
     }
 
     private boolean isDriverBookedForThatDay(long driverId, LocalDate date) {

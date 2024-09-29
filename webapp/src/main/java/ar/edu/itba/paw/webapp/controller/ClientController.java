@@ -116,4 +116,10 @@ public class ClientController {
         return new ModelAndView("redirect:/bookings");
     }
 
+    @RequestMapping(path = "/sendReview", method = RequestMethod.POST)
+    public ModelAndView sendReview(@RequestParam("bookingId") long bookingId, @RequestParam("rating") int rating){
+        cs.setRating(bookingId,rating);
+        return  new ModelAndView("redirect:/client/history");
+    }
+
 }
