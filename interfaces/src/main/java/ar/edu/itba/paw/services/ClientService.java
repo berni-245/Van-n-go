@@ -21,4 +21,6 @@ public interface ClientService {
     List<Booking> getBookings(long id);
 
     List<Booking> getHistory(long id);
+
+    void setRating(long bookingId, int rating);
 }

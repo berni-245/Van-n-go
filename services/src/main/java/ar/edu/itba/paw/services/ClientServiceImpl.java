@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ClientServiceImpl implements ClientService{
+public class ClientServiceImpl implements ClientService {
     private final UserService userService;
 
     private final ClientDao clientDao;
@@ -49,5 +49,12 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public List<Booking> getHistory(long id) {return bookingDao.getClientHistory(id);}
+    public List<Booking> getHistory(long id) {
+        return bookingDao.getClientHistory(id);
+    }
+
+    @Override
+    public void setRating(long bookingId, int rating) {
+        bookingDao.setRating(bookingId, rating);
+    }
 }

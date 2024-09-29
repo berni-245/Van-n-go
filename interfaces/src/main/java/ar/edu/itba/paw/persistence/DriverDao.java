@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.Vehicle;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +18,6 @@ public interface DriverDao {
     List<Driver> getAll(long zoneId);
 
     List<Driver> getAll(Long zoneId, Size size);
+
+    void updateDriverRating(long driverId);
 }

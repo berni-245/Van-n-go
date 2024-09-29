@@ -2,6 +2,7 @@
 <%@ attribute name="bootstrapjs" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="popper" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="tomselect" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
 
 <%@ tag body-content="scriptless" %>
 
@@ -31,6 +32,10 @@
         <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css"
               rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    </c:if>
+
+    <c:if test="${bsIcons}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </c:if>
 
     <c:url value="/favicon.ico" var="favicon"/>

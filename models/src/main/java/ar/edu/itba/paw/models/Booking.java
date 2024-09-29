@@ -8,13 +8,15 @@ public class Booking {
     private final Driver driver;
     private final LocalDate date;
     private final boolean confirmed;
+    private final Integer rating;
 
-    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver) {
+    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating) {
         this.bookingId = bookingId;
         this.user = user;
         this.driver = driver;
         this.date = date;
         this.confirmed = confirmed;
+        this.rating = rating;
     }
 
     public long getBookingId() {
@@ -34,4 +36,6 @@ public class Booking {
     }
 
     public Driver getDriver() {return driver;}
+
+    public Integer getRating() {return rating;}
 }
