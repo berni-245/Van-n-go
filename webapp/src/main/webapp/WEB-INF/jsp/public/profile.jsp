@@ -17,7 +17,7 @@
         <div class="card-body">
             <div class="text-center mb-4">
                 <form id="uploadProfilePicForm" method="post" action="<c:url value='/upload/pfp'/>" enctype="multipart/form-data">
-                    <input type="file" id="profilePicInput" name="profilePicture" class="d-none" accept="image/*" onchange="document.getElementById('uploadProfilePicForm').submit();">
+                    <input type="file" id="profilePicInput" name="profilePicture" class="d-none" accept="image/png, image/jpeg" onchange="document.getElementById('uploadProfilePicForm').submit();">
                     <label for="profilePicInput" style="cursor: pointer;">
                         <c:if test="${empty profilePic}">
                             <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">

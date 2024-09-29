@@ -117,15 +117,26 @@ public class PublicController {
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
         Image pfp = is.getPfp((int) loggedUser.getId());
-
         if (pfp != null && pfp.getData() != null) {
+            String fileName = pfp.getFileName();
+            String contentType;
+            if(fileName == null)
+                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            if (fileName.toLowerCase().endsWith(".png")) {
+                contentType = "image/png";
+            } else if (fileName.toLowerCase().endsWith(".jpeg") || fileName.toLowerCase().endsWith(".jpg")) {
+                contentType = "image/jpeg";
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("image/png"));
+            headers.setContentType(MediaType.parseMediaType(contentType));
             headers.setContentLength(pfp.getData().length);
             return new ResponseEntity<>(pfp.getData(), headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
 }
