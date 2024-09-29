@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.vehicles">
+<comp:Head titleCode="components.header.vehicles" bootstrapjs="true">
     <style>
         .vehicle-description {
             display: -webkit-box;
@@ -45,6 +45,9 @@
         </a>
     </div>
 </div>
+
+<comp:ToastManager toasts="${toasts}"/>
+
 </body>
 
 </html>
