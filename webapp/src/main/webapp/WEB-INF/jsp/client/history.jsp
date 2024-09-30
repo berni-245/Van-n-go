@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <comp:Head titleCode="siteName"/>
@@ -29,12 +30,12 @@
 
                             <c:if test="${booking.rating == null}">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#reviewModal">
+                                        data-bs-target="#reviewModal${booking.bookingId}">
                                     <spring:message code="client.review"/>
                                 </button>
 
 
-                                <div class="modal fade" id="reviewModal" tabindex="-1"
+                                <div class="modal fade" id="reviewModal${booking.bookingId}" tabindex="-1"
                                      aria-labelledby="reviewModalLabel"
                                      aria-hidden="true">
                                     <div class="modal-dialog">
@@ -46,52 +47,39 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="${pageContext.request.contextPath}/sendReview"
-                                                      method="POST">
+                                                <form:form modelAttribute="bookingReviewForm" method="post"
+                                                           action="${pageContext.request.contextPath}">
 
-                                                    <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                                    <form:input type="hidden" path="bookingID"
+                                                                value="${booking.bookingId}"/>
 
-                                                    <div class="form-group">
-                                                        <label for="rating" class="form-label"><spring:message
+                                                    <div class="mb-3">
+                                                        <form:label path="rating" cssClass="form-label">
+                                                            <spring:message
                                                                 code="client.select.rating"
-                                                                arguments="${booking.driver.username}"/></label>
-                                                        <div id="rating" class="d-flex gap-2">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio0" value="0" required>
-                                                                <label class="form-check-label" for="radio0">0</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio1" value="1">
-                                                                <label class="form-check-label" for="radio1">1</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio2" value="2">
-                                                                <label class="form-check-label" for="radio2">2</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio3" value="3">
-                                                                <label class="form-check-label" for="radio3">3</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio4" value="4">
-                                                                <label class="form-check-label" for="radio4">4</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                       name="rating" id="radio5" value="5">
-                                                                <label class="form-check-label" for="radio5">5</label>
-                                                            </div>
-                                                        </div>
+                                                                arguments="${booking.driver.username}"/>
+                                                        </form:label>
+                                                        <form:input path="rating" type="text" />
+
                                                     </div>
 
-                                                    <button type="submit" class="btn btn-primary mt-3"><spring:message
-                                                            code="generic.word.confirm"/></button>
-                                                </form>
+                                                    <div class="mb-3">
+                                                        <form:label path="review" cssClass="form-label">
+                                                            <spring:message
+                                                                    code="client.make.review"
+                                                                    arguments="${booking.driver.username}"/>
+                                                        </form:label>
+                                                        <form:input path="review" type="text"/>
+                                                    </div>
+
+
+                                                    <button type="submit" class="btn btn-primary mt-3">
+                                                        <spring:message code="generic.word.confirm"/>
+                                                    </button>
+
+                                                </form:form>
+
+
                                             </div>
                                         </div>
                                     </div>

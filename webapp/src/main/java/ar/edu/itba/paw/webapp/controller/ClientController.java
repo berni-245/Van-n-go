@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MailService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
+import ar.edu.itba.paw.webapp.form.BookingReviewForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -45,10 +46,23 @@ public class ClientController {
     }
 
     @RequestMapping("/client/history")
-    public ModelAndView clientHistory(@ModelAttribute("loggedUser") Client loggedUser) {
+    public ModelAndView clientHistory(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form) {
         ModelAndView mav = new ModelAndView("client/history");
         mav.addObject("history", cs.getHistory(loggedUser.getId()));
         return mav;
+    }
+
+    @RequestMapping(path = "/client/history", method = RequestMethod.POST)
+    public ModelAndView sendReview(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return clientHistory(loggedUser,form);
+        }
+        cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
+        return new ModelAndView("redirect:/client/history");
     }
 
     @RequestMapping("/availability")
@@ -114,12 +128,6 @@ public class ClientController {
             return new ModelAndView("redirect:/bookings");
         }
         return new ModelAndView("redirect:/bookings");
-    }
-
-    @RequestMapping(path = "/sendReview", method = RequestMethod.POST)
-    public ModelAndView sendReview(@RequestParam("bookingId") long bookingId, @RequestParam("rating") int rating){
-        cs.setRating(bookingId,rating);
-        return  new ModelAndView("redirect:/client/history");
     }
 
 }

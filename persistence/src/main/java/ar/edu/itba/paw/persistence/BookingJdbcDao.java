@@ -40,7 +40,8 @@ public class BookingJdbcDao implements BookingDao {
                 rs.getDate("date").toLocalDate(),
                 rs.getBoolean("is_confirmed"),
                 driverDao.findById(rs.getLong("driver_id")).orElseThrow(),
-                rs.getObject("rating", Integer.class)
+                rs.getObject("rating", Integer.class),
+                rs.getString("review")
         );
     }
 
@@ -56,7 +57,7 @@ public class BookingJdbcDao implements BookingDao {
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow(), null));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow(), null, null));
     }
 
     @Override
@@ -104,52 +105,58 @@ public class BookingJdbcDao implements BookingDao {
     }
 
     @Override
+    public void setRating(long bookingId, int rating) {
+
+    }
+
+    @Override
     public void acceptBooking(long bookingId) {
         jdbcTemplate.update("""
-                    update reservation
-                    set is_confirmed = ?
-                    where booking_id = ?""",
+                        update reservation
+                        set is_confirmed = ?
+                        where booking_id = ?""",
                 new Object[]{Boolean.TRUE, bookingId},
                 new int[]{Types.BOOLEAN, Types.BIGINT});
         jdbcTemplate.update("""
-                delete 
-                from booking
-                where id != ? 
-                and date = (
-                    select distinct date
-                    from booking b2 
-                    where b2.id = ?
-                )
-                and id in (
-                    select r.booking_id
-                    from reservation r
-                    where r.driver_id = (
-                        select distinct driver_id
-                        from reservation
-                        where booking_id = ?
-                    )
-                )""",
-                new Object[]{bookingId,bookingId, bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT, Types.BIGINT});
+                        delete 
+                        from booking
+                        where id != ? 
+                        and date = (
+                            select distinct date
+                            from booking b2 
+                            where b2.id = ?
+                        )
+                        and id in (
+                            select r.booking_id
+                            from reservation r
+                            where r.driver_id = (
+                                select distinct driver_id
+                                from reservation
+                                where booking_id = ?
+                            )
+                        )""",
+                new Object[]{bookingId, bookingId, bookingId},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT});
     }
 
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                    delete
-                    from booking
-                    where id = ?""",
+                        delete
+                        from booking
+                        where id = ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT});
     }
 
     @Override
-    public void setRating(long bookingId, int rating) {
+    public void setRatingAndReview(long bookingId, int rating, String review) {
         jdbcTemplate.update("""
-                    update booking
-                    set rating = ?
-                    where id = ?
-                """, new Object[]{rating, bookingId}, new int[]{Types.INTEGER, Types.BIGINT});
+                update booking
+                set rating = ?,
+                review = ?
+                where id = ?
+                """, new Object[]{rating, review, bookingId}, new int[]{Types.INTEGER, Types.VARCHAR, Types.BIGINT});
         Long driverId = jdbcTemplate.queryForObject("""
                 select driver_id
                 from booking b join reservation j on b.id = j.booking_id

@@ -63,7 +63,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public void setRating(long bookingId, int rating) {
-        bookingDao.setRating(bookingId, rating);
+    public void setBookingRatingAndReview(long bookingId, int rating, String review) {
+        bookingDao.setRatingAndReview(bookingId, rating,review);
     }
 }

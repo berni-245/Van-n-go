@@ -84,5 +84,7 @@ public interface BookingDao {
      */
     void setRating(long bookingId, int rating);
 
+    void setRatingAndReview(long bookingId, int rating, String review);
+
     Double getDriverRating(long driverID);
 }

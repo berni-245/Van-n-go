@@ -86,7 +86,8 @@ create table if not exists booking
 (
     id serial primary key,
     date date,
-    rating int
+    rating int,
+    review varchar(255)
 );
 
 create table if not exists reservation
