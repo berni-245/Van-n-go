@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-<comp:Head titleCode="siteName" bootstrapjs="true"/>
+<comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header inHistory="true"/>
 <main>
@@ -52,7 +52,9 @@
                                                     <input type="hidden" name="bookingId" value="${booking.bookingId}">
 
                                                     <div class="form-group">
-                                                        <label for="rating" class="form-label"><spring:message code="client.select.rating" arguments="${booking.driver.username}"/></label>
+                                                        <label for="rating" class="form-label"><spring:message
+                                                                code="client.select.rating"
+                                                                arguments="${booking.driver.username}"/></label>
                                                         <div id="rating" class="d-flex gap-2">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="radio"
@@ -87,7 +89,8 @@
                                                         </div>
                                                     </div>
 
-                                                    <button type="submit" class="btn btn-primary mt-3"><spring:message code="generic.word.confirm"/></button>
+                                                    <button type="submit" class="btn btn-primary mt-3"><spring:message
+                                                            code="generic.word.confirm"/></button>
                                                 </form>
                                             </div>
                                         </div>

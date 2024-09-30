@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.vehicles" bootstrapjs="true">
+<comp:Head titleCode="components.header.vehicles">
     <style>
         .vehicle-description {
             display: -webkit-box;

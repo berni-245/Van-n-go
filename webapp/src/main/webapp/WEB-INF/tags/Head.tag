@@ -1,6 +1,4 @@
 <%@ attribute name="titleCode" required="true" type="java.lang.String" %>
-<%@ attribute name="bootstrapjs" required="false" type="java.lang.Boolean" %>
-<%@ attribute name="popper" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="tomselect" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
 
@@ -16,17 +14,11 @@
     <c:url value="/css/bootstrap.min.css" var="bscss"/>
     <link rel="stylesheet" href="${bscss}">
 
-    <c:if test="${bootstrapjs}">
-        <c:url value="/js/bootstrap.min.js" var="bsjs"/>
-        <script src="${bsjs}"></script>
-    </c:if>
+    <c:url value="/js/popper.min.js" var="popperjs"/>
+    <script src="${popperjs}"></script>
 
-    <c:if test="${popper}">
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-                integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-                crossorigin="anonymous"
-        ></script>
-    </c:if>
+    <c:url value="/js/bootstrap.min.js" var="bsjs"/>
+    <script src="${bsjs}"></script>
 
     <c:if test="${tomselect}">
         <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css"
@@ -43,6 +35,13 @@
 
     <c:url value="/js/bootstrap-theme-toggler.js" var="bsjs"/>
     <script src="${bsjs}"></script>
+
+    <style>
+        .header-dropdown.dropdown-menu[data-bs-popper] {
+            right: 0;
+            left: unset;
+        }
+    </style>
 
     <jsp:doBody/>
 </head>
