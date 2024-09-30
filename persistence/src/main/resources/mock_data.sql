@@ -4,168 +4,66 @@ values (1, 'Argentina', 'AR')
 on conflict do nothing;
 
 insert into province
-values (1, 'Capital Federal')
-on conflict do nothing;
-insert into province
-values (2, 'Buenos Aires')
+values (1, 'Capital Federal'),
+       (2, 'Buenos Aires')
 on conflict do nothing;
 
 insert into neighborhood
-values (1, 'Palermo')
-on conflict do nothing;
-insert into neighborhood
-values (2, 'Belgrano')
-on conflict do nothing;
-insert into neighborhood
-values (3, 'Adrogué')
-on conflict do nothing;
-insert into neighborhood
-values (4, 'Agronomía')
-on conflict do nothing;
-insert into neighborhood
-values (5, 'Almagro')
-on conflict do nothing;
-insert into neighborhood
-values (6, 'Balvanera')
-on conflict do nothing;
-insert into neighborhood
-values (7, 'Barracas')
-on conflict do nothing;
-insert into neighborhood
-values (8, 'Boedo')
-on conflict do nothing;
-insert into neighborhood
-values (9, 'Caballito')
-on conflict do nothing;
-insert into neighborhood
-values (10, 'Chacarita')
-on conflict do nothing;
-insert into neighborhood
-values (11, 'Coghlan')
-on conflict do nothing;
-insert into neighborhood
-values (12, 'Colegiales')
-on conflict do nothing;
-insert into neighborhood
-values (13, 'Constitución')
-on conflict do nothing;
-insert into neighborhood
-values (14, 'Flores')
-on conflict do nothing;
-insert into neighborhood
-values (15, 'Floresta')
-on conflict do nothing;
-insert into neighborhood
-values (16, 'La Boca')
-on conflict do nothing;
-insert into neighborhood
-values (17, 'La Paternal')
-on conflict do nothing;
-insert into neighborhood
-values (18, 'Liniers')
-on conflict do nothing;
-insert into neighborhood
-values (19, 'Mataderos')
-on conflict do nothing;
-insert into neighborhood
-values (20, 'Monte Castro')
-on conflict do nothing;
-insert into neighborhood
-values (21, 'Montserrat')
-on conflict do nothing;
-insert into neighborhood
-values (22, 'Nueva Pompeya')
-on conflict do nothing;
-insert into neighborhood
-values (23, 'Nuñez')
-on conflict do nothing;
-insert into neighborhood
-values (24, 'Parque Avellaneda')
-on conflict do nothing;
-insert into neighborhood
-values (25, 'Parque Chacabuco')
-on conflict do nothing;
-insert into neighborhood
-values (26, 'Parque Chas')
-on conflict do nothing;
-insert into neighborhood
-values (27, 'Parque Patricios')
-on conflict do nothing;
-insert into neighborhood
-values (28, 'Puerto Madero')
-on conflict do nothing;
-insert into neighborhood
-values (29, 'Recoleta')
-on conflict do nothing;
-insert into neighborhood
-values (30, 'Retiro')
-on conflict do nothing;
-insert into neighborhood
-values (31, 'Saavedra')
-on conflict do nothing;
-insert into neighborhood
-values (32, 'San Cristóbal')
-on conflict do nothing;
-insert into neighborhood
-values (33, 'San Nicolás')
-on conflict do nothing;
-insert into neighborhood
-values (34, 'San Telmo')
-on conflict do nothing;
-insert into neighborhood
-values (35, 'Versalles')
-on conflict do nothing;
-insert into neighborhood
-values (36, 'Villa Crespo')
-on conflict do nothing;
-insert into neighborhood
-values (37, 'Villa Devoto')
-on conflict do nothing;
-insert into neighborhood
-values (38, 'Villa General Mitre')
-on conflict do nothing;
-insert into neighborhood
-values (39, 'Villa Lugano')
-on conflict do nothing;
-insert into neighborhood
-values (40, 'Villa Luro')
-on conflict do nothing;
-insert into neighborhood
-values (41, 'Villa Ortúzar')
-on conflict do nothing;
-insert into neighborhood
-values (42, 'Villa Pueyrredón')
-on conflict do nothing;
-insert into neighborhood
-values (43, 'Villa Real')
-on conflict do nothing;
-insert into neighborhood
-values (44, 'Villa Riachuelo')
-on conflict do nothing;
-insert into neighborhood
-values (45, 'Villa Santa Rita')
-on conflict do nothing;
-insert into neighborhood
-values (46, 'Villa Soldati')
-on conflict do nothing;
-insert into neighborhood
-values (47, 'Villa Urquiza')
-on conflict do nothing;
-insert into neighborhood
-values (48, 'Villa del Parque')
-on conflict do nothing;
-insert into neighborhood
-values (49, 'Vélez Sarsfield')
+values (1, 'Palermo'),
+       (2, 'Belgrano'),
+       (3, 'Adrogué'),
+       (4, 'Agronomía'),
+       (5, 'Almagro'),
+       (6, 'Balvanera'),
+       (7, 'Barracas'),
+       (8, 'Boedo'),
+       (9, 'Caballito'),
+       (10, 'Chacarita'),
+       (11, 'Coghlan'),
+       (12, 'Colegiales'),
+       (13, 'Constitución'),
+       (14, 'Flores'),
+       (15, 'Floresta'),
+       (16, 'La Boca'),
+       (17, 'La Paternal'),
+       (18, 'Liniers'),
+       (19, 'Mataderos'),
+       (20, 'Monte Castro'),
+       (21, 'Montserrat'),
+       (22, 'Nueva Pompeya'),
+       (23, 'Nuñez'),
+       (24, 'Parque Avellaneda'),
+       (25, 'Parque Chacabuco'),
+       (26, 'Parque Chas'),
+       (27, 'Parque Patricios'),
+       (28, 'Puerto Madero'),
+       (29, 'Recoleta'),
+       (30, 'Retiro'),
+       (31, 'Saavedra'),
+       (32, 'San Cristóbal'),
+       (33, 'San Nicolás'),
+       (34, 'San Telmo'),
+       (35, 'Versalles'),
+       (36, 'Villa Crespo'),
+       (37, 'Villa Devoto'),
+       (38, 'Villa General Mitre'),
+       (39, 'Villa Lugano'),
+       (40, 'Villa Luro'),
+       (41, 'Villa Ortúzar'),
+       (42, 'Villa Pueyrredón'),
+       (43, 'Villa Real'),
+       (44, 'Villa Riachuelo'),
+       (45, 'Villa Santa Rita'),
+       (46, 'Villa Soldati'),
+       (47, 'Villa Urquiza'),
+       (48, 'Villa del Parque'),
+       (49, 'Vélez Sarsfield')
 on conflict do nothing;
 
 insert into zone (country_id, province_id, neighborhood_id)
-values (1, 1, 1)
-on conflict do nothing;
-insert into zone (country_id, province_id, neighborhood_id)
-values (1, 1, 2)
-on conflict do nothing;
-insert into zone (country_id, province_id, neighborhood_id)
-values (1, 2, 3)
+values (1, 2, 3),
+       (1, 1, 1),
+       (1, 1, 2)
 on conflict do nothing;
 insert into zone (country_id, province_id, neighborhood_id)
 select 1, 1, id
@@ -175,15 +73,38 @@ where id > 3
 
 -- Users
 insert into app_user
-values (1, 'franco', 'fmorroni@itba.edu.ar', '1234')
-on conflict do nothing;
-insert into app_user
-values (2, 'berna', 'bzapico@itba.edu.ar', '1234')
+values (1, 'franco', 'fmorroni@itba.edu.ar', '1234'),
+       (2, 'berna', 'bzapico@itba.edu.ar', '1234')
 on conflict do nothing;
 
 insert into driver
-values (1, 'lalala')
+values (1, 'lalala'),
+       (2, 'lololo')
 on conflict do nothing;
-insert into driver
-values (2, 'lololo')
-on conflict do nothing;
+
+-- Hour blocks
+INSERT INTO hour_block (t_start, t_end)
+VALUES ('00:00:00', '01:00:00'),
+       ('01:00:00', '02:00:00'),
+       ('02:00:00', '03:00:00'),
+       ('03:00:00', '04:00:00'),
+       ('04:00:00', '05:00:00'),
+       ('05:00:00', '06:00:00'),
+       ('06:00:00', '07:00:00'),
+       ('07:00:00', '08:00:00'),
+       ('08:00:00', '09:00:00'),
+       ('09:00:00', '10:00:00'),
+       ('10:00:00', '11:00:00'),
+       ('11:00:00', '12:00:00'),
+       ('12:00:00', '13:00:00'),
+       ('13:00:00', '14:00:00'),
+       ('14:00:00', '15:00:00'),
+       ('15:00:00', '16:00:00'),
+       ('16:00:00', '17:00:00'),
+       ('17:00:00', '18:00:00'),
+       ('18:00:00', '19:00:00'),
+       ('19:00:00', '20:00:00'),
+       ('20:00:00', '21:00:00'),
+       ('21:00:00', '22:00:00'),
+       ('22:00:00', '23:00:00'),
+       ('23:00:00', '00:00:00');
