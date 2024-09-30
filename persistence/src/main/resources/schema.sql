@@ -34,7 +34,7 @@ create table if not exists vehicle
     plate_number text unique,
     volume_m3    double precision,
     description  text,
-    img_id int references image (id)
+    img_id int references image (id) on delete set null
 );
 
 create table if not exists weekly_availability
@@ -94,6 +94,6 @@ create table if not exists reservation
     client_id    int     not null references client (user_id) on delete cascade,
     booking_id   int     not null references booking (id) on delete cascade,
     is_confirmed boolean not null,
-    proof_of_payment int references image (id),
+    proof_of_payment int references image (id) on delete set null,
     primary key (driver_id, booking_id)
 );
