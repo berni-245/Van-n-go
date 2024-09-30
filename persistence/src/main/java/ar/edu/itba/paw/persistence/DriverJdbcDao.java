@@ -22,29 +22,29 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("username"),
                     rs.getString("mail"),
                     rs.getString("password"),
-                    rs.getString("extra1")
+                    rs.getString("extra1"),
+                    rs.getObject("rating", Double.class)
             );
 
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcDriverInsert;
-    private final VehicleDao vehicleDao;
 
     public DriverJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcDriverInsert = new SimpleJdbcInsert(ds).withTableName("driver");
-        vehicleDao = new VehicleJdbcDao(ds);
     }
 
     @Override
     public Driver create(long id, String username, String mail, String password, String extra1) {
         jdbcDriverInsert.execute(Map.of("user_id", id, "extra1", extra1));
-        return new Driver(id, username, mail, password, extra1);
+        return new Driver(id, username, mail, password, extra1,null);
     }
 
     @Override
     public Optional<Driver> findById(long id) {
-        return jdbcTemplate.query(
-                        "SELECT * FROM driver join app_user on driver.user_id = app_user.id where id = ?",
+        return jdbcTemplate.query("""
+                                SELECT * FROM driver join app_user
+                                on driver.user_id = app_user.id where id = ?""",
                         new Object[]{id},
                         new int[]{Types.BIGINT},
                         ROW_MAPPER)
@@ -53,7 +53,7 @@ public class DriverJdbcDao implements DriverDao {
 
     @Override
     public List<Driver> getAll(Long zoneId, Size size) {
-        List<Driver> drivers = jdbcTemplate.query("""
+        return jdbcTemplate.query("""
                         select * from driver d join app_user on d.user_id = app_user.id
                         where exists (select * from vehicle_weekly_zone vwz
                             where vwz.zone_id = ? and exists (
@@ -67,10 +67,6 @@ public class DriverJdbcDao implements DriverDao {
                 new int[]{Types.BIGINT, Types.INTEGER, Types.INTEGER},
                 ROW_MAPPER
         );
-        for (Driver driver : drivers) {
-            driver.setVehicles(vehicleDao.getDriverVehicles(driver.getId(), zoneId, size));
-        }
-        return drivers;
     }
 
     @Override
@@ -95,5 +91,19 @@ public class DriverJdbcDao implements DriverDao {
                         new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+
+    @Override
+    public void updateDriverRating(long driverId) {
+        jdbcTemplate.update("""
+                            update driver
+                            set rating = (
+                                select avg(rating)
+                                from booking b join reservation r on b.id = r.booking_id
+                                where driver_id = driver.user_id
+                            )
+                            where user_id = ?
+                """, new Object[]{driverId}, new int[]{Types.BIGINT});
     }
 }

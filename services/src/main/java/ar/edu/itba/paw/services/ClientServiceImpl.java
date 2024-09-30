@@ -61,4 +61,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     public List<Booking> getHistory(long id) {
         return bookingDao.getClientHistory(id);
     }
+
+    @Override
+    public void setRating(long bookingId, int rating) {
+        bookingDao.setRating(bookingId, rating);
+    }
 }

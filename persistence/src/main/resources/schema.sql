@@ -23,8 +23,8 @@ create table if not exists client
 create table if not exists driver
 (
     user_id int primary key references app_user (id) on delete cascade,
-    extra1  text
-    -- more driver only props would go here
+    extra1  text,
+    rating double precision
 );
 
 create table if not exists vehicle
@@ -84,8 +84,9 @@ create table if not exists vehicle_weekly_zone
 
 create table if not exists booking
 (
-    id   serial primary key,
-    date date
+    id serial primary key,
+    date date,
+    rating int
 );
 
 create table if not exists reservation

@@ -18,5 +18,7 @@ public interface DriverDao {
 
     List<Driver> getAll(Long zoneId, Size size);
 
+    void updateDriverRating(long driverId);
+
     Optional<Driver> findByUsername(String username);
 }
