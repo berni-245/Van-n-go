@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Image;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.UserRole;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
@@ -38,14 +36,19 @@ public class PublicController {
     @Autowired
     private ImageService is;
 
-    public PublicController(ClientService cs, DriverService ds, ImageService is) {
+    @Autowired
+    private WeeklyAvailabilityDao wa;
+
+    public PublicController(ClientService cs, DriverService ds, ImageService is, WeeklyAvailabilityDao wa) {
         this.cs = cs;
         this.ds = ds;
         this.is = is;
+        this.wa = wa;
     }
 
     @RequestMapping(path = {"/", "/home"})
     public ModelAndView index(@ModelAttribute("loggedUser") User loggedUser) {
+        wa.testRefactor();
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {

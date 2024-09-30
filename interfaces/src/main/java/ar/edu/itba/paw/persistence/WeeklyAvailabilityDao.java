@@ -13,4 +13,6 @@ public interface WeeklyAvailabilityDao {
     List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId);
 
     List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId, long zoneId);
+
+    void testRefactor();
 }
