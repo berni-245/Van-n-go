@@ -2,17 +2,19 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,16 +25,17 @@ import java.util.Optional;
 
 @Controller
 public class DriverController {
-
     @Autowired
     private DriverService ds;
-
     @Autowired
     private ZoneService zs;
+    @Autowired
+    private ImageService is;
 
-    public DriverController(final DriverService ds, ZoneService zs) {
+    public DriverController(final DriverService ds, ZoneService zs, ImageService is) {
         this.ds = ds;
         this.zs = zs;
+        this.is = is;
     }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
@@ -208,5 +211,17 @@ public class DriverController {
     ) {
         ds.rejectBooking(bookingId);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/driver/pop", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser){
+        Image pop = is.getPop((int) loggedUser.getId(), (int) bookingId);
+        if(pop!=null&&pop.getFileName().endsWith(".pdf")){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            return new ResponseEntity<>(pop.getData(),headers,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

@@ -9,6 +9,7 @@ public class Booking {
     private final LocalDate date;
     private final boolean confirmed;
     private final Integer rating;
+    private Integer pop;
 
     public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating) {
         this.bookingId = bookingId;
@@ -17,6 +18,17 @@ public class Booking {
         this.date = date;
         this.confirmed = confirmed;
         this.rating = rating;
+        this.pop = null;
+    }
+
+    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating, Integer pop) {
+        this.bookingId = bookingId;
+        this.user = user;
+        this.driver = driver;
+        this.date = date;
+        this.confirmed = confirmed;
+        this.rating = rating;
+        this.pop = pop;
     }
 
     public long getBookingId() {
@@ -38,4 +50,12 @@ public class Booking {
     public Driver getDriver() {return driver;}
 
     public Integer getRating() {return rating;}
+
+    public int getPop() {
+        return pop;
+    }
+
+    public void setPop(Integer popId) {
+            this.pop = popId;
+    }
 }

@@ -40,7 +40,8 @@ public class BookingJdbcDao implements BookingDao {
                 rs.getDate("date").toLocalDate(),
                 rs.getBoolean("is_confirmed"),
                 driverDao.findById(rs.getLong("driver_id")).orElseThrow(),
-                rs.getObject("rating", Integer.class)
+                rs.getObject("rating", Integer.class),
+                rs.getInt("proof_of_payment")
         );
     }
 
