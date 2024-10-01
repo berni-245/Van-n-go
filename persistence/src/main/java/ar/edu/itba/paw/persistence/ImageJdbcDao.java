@@ -95,30 +95,33 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
         Integer key = uploadImage(fileName,bin);
-        return jdbcTemplate.update("""
+        jdbcTemplate.update("""
                     update reservation set proof_of_payment = ?
                     where driver_id = ? and booking_id = ?""",
                 new Object[]{key,driverId,bookingId},
                 new int[]{Types.BIGINT,Types.BIGINT,Types.BIGINT});
+        return key;
     }
 
     @Override
     public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
         Integer key = uploadImage(fileName,bin);
-        return jdbcTemplate.update("""
+        jdbcTemplate.update("""
                     update vehicle set img_id = ?
                     where id = ?""",
                 new Object[]{key,vehicleId},
                 new int[]{Types.BIGINT,Types.BIGINT});
+        return key;
     }
 
     @Override
     public int uploadPfp(byte[] bin, String fileName, int userId) {
         Integer key = uploadImage(fileName,bin);
-        return jdbcTemplate.update("""
+        jdbcTemplate.update("""
                     update app_user set pfp = ?
                     where id = ?""",
                 new Object[]{key,userId},
                 new int[]{Types.BIGINT,Types.BIGINT});
+        return key;
     }
 }

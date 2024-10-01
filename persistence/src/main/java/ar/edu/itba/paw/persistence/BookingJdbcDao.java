@@ -41,7 +41,8 @@ public class BookingJdbcDao implements BookingDao {
                 rs.getBoolean("is_confirmed"),
                 driverDao.findById(rs.getLong("driver_id")).orElseThrow(),
                 rs.getObject("rating", Integer.class),
-                rs.getString("review")
+                rs.getString("review"),
+                rs.getInt("proof_of_payment")
         );
     }
 
@@ -57,7 +58,7 @@ public class BookingJdbcDao implements BookingDao {
         reservationData.put("booking_id", generatedBookingId);
         reservationData.put("is_confirmed", 0);
         jdbcReservationInsert.execute(reservationData);
-        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow(), null, null));
+        return Optional.of(new Booking(generatedBookingId.longValue(), clientDao.findById(clientId).orElseThrow(), date, false, driverDao.findById(driverId).orElseThrow(), null, null,null));
     }
 
     @Override

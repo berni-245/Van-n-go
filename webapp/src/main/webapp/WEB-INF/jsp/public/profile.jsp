@@ -35,9 +35,12 @@
     </div>
 </div>
 
-<footer class="mt-auto bg-dark text-white py-3 text-center">
+<footer class="mt-auto">
     <div class="container">
-        <p class="mb-0">2024 VanNGo. All Rights Reserved.</p>
+        <p class="float-end mb-1">
+            <a href="#"><spring:message code="public.home.backToTop"/></a>
+        </p>
+        <p class="mb-1">&copy; PAW 2024B G1</p>
     </div>
 </footer>
 

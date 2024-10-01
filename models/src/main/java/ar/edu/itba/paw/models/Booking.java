@@ -10,8 +10,9 @@ public class Booking {
     private final boolean confirmed;
     private final Integer rating;
     private final String review;
+    private Integer pop;
 
-    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating,String review) {
+    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating,String review, Integer pop) {
         this.bookingId = bookingId;
         this.user = user;
         this.driver = driver;
@@ -19,7 +20,10 @@ public class Booking {
         this.confirmed = confirmed;
         this.rating = rating;
         this.review = review;
+        this.pop = null;
     }
+
+
 
     public long getBookingId() {
         return bookingId;
@@ -42,4 +46,12 @@ public class Booking {
     public Integer getRating() {return rating;}
 
     public String getReview() {return review;}
+
+    public int getPop() {
+        return pop;
+    }
+
+    public void setPop(Integer popId) {
+            this.pop = popId;
+    }
 }

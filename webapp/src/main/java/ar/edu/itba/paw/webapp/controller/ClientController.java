@@ -1,16 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.ClientService;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.MailService;
-import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
 import ar.edu.itba.paw.webapp.form.BookingReviewForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -21,21 +21,36 @@ import java.util.Optional;
 
 @Controller
 public class ClientController {
+    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private DriverService ds;
-
     @Autowired
     private ZoneService zs;
     @Autowired
     private MailService mailService;
-
     @Autowired
     private ClientService cs;
+    @Autowired
+    private ImageService is;
 
-    public ClientController(DriverService ds, ClientService cs, ZoneService zs) {
+    public ClientController(DriverService ds, ClientService cs, ZoneService zs, ImageService is) {
         this.ds = ds;
         this.cs = cs;
         this.zs = zs;
+        this.is = is;
+    }
+
+    @RequestMapping(path =  "/upload/pop", method = RequestMethod.POST)
+    public String submit(@RequestParam("proofOfPayment")MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
+        if (file == null || file.isEmpty()) {
+            return "redirect:/bookings";
+        }
+        try {
+            int img_id = is.uploadPop(file.getBytes(), file.getOriginalFilename(), Math.toIntExact(driverId), Math.toIntExact(bookingId));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return "redirect:/bookings";
     }
 
     @RequestMapping("/bookings")
