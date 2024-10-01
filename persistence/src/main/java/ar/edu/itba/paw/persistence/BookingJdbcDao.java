@@ -99,7 +99,7 @@ public class BookingJdbcDao implements BookingDao {
         return jdbcTemplate.query("""
                         select *
                         from booking b join reservation r on b.id = r.booking_id
-                        where client_id = ? AND date < CURRENT_DATE""",
+                        where client_id = ? AND date < CURRENT_DATE AND is_confirmed = TRUE AND proof_of_payment IS NOT NULL""",
                 new Object[]{id},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
