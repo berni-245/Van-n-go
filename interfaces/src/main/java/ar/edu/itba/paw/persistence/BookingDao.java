@@ -77,13 +77,12 @@ public interface BookingDao {
     List<Booking> getClientHistory(long id);
 
     /**
-     * Sets rating for a given booking
+     * Sets rating and review for a given booking
      *
      * @param bookingId The booking ID
      * @param rating the rating for the booking
+     * @param review the review made by the user
      */
-    void setRating(long bookingId, int rating);
-
     void setRatingAndReview(long bookingId, int rating, String review);
 
     Double getDriverRating(long driverID);

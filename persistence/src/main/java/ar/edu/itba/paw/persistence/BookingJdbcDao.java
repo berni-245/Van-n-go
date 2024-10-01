@@ -105,10 +105,6 @@ public class BookingJdbcDao implements BookingDao {
                 ROW_MAPPER);
     }
 
-    @Override
-    public void setRating(long bookingId, int rating) {
-
-    }
 
     @Override
     public void acceptBooking(long bookingId) {
