@@ -37,7 +37,7 @@
                                         </label>
                                     </form>
                                 </c:if>
-                                <c:if test="${not empty booking.pop}">
+                                <c:if test="${not empty booking.pop and booking.pop != 0}">
                                     <spring:message code="client.bookings.popProvided"/>
                                 </c:if>
                             </c:if>
