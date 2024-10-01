@@ -79,9 +79,9 @@ public class MailServiceImpl implements MailService {
 
     private ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("/i18n/messages");  // Ruta base a tus archivos de propiedades
+        messageSource.setBasename("/i18n/messages");
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setUseCodeAsDefaultMessage(true); // Muestra el código si no se encuentra la clave
+        messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
 
