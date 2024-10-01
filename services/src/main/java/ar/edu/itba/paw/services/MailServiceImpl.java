@@ -154,6 +154,7 @@ public class MailServiceImpl implements MailService {
         sendMail(message);
     }
 
+    @Async
     @Override
     public void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription) {
         Optional<Driver> driver = driverDao.findById(driverId);
