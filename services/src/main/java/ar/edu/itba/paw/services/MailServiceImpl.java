@@ -138,10 +138,10 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendHaulerWelcomeMail(String to, String userName) {
+    public void sendDriverWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
-        context.setVariable("haulerName", userName);
+        context.setVariable("driverName", userName);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -163,13 +163,13 @@ public class MailServiceImpl implements MailService {
             Context context = new Context();
             String clientMail = client.get().getMail();
             String driverMail = driver.get().getMail();
-            context.setVariable("haulerName", driver.get().getUsername());
-            context.setVariable("haulerMail", driver.get().getMail());
+            context.setVariable("driverName", driver.get().getUsername());
+            context.setVariable("driverMail", driver.get().getMail());
             context.setVariable("dateRequested", new java.util.Date());
             context.setVariable("clientName", driverMail);
             context.setVariable("clientMail", clientMail );
             sendClientRequestedServiceMail(clientMail, context);
-            sendHaulerRequestedMail(driverMail, context, jobDescription);
+            sendDriverRequestedMail(driverMail, context, jobDescription);
 
         }
 
@@ -181,7 +181,7 @@ public class MailServiceImpl implements MailService {
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject("You requested a Van N' Go hauler");
+            message.setSubject("You requested a Van N' Go driver");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
@@ -190,12 +190,12 @@ public class MailServiceImpl implements MailService {
         sendMail(message);
     }
 
-    private void sendHaulerRequestedMail(String haulerMail, Context context, String jobDescription) {
+    private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription) {
         context.setVariable("jobDescription", jobDescription);
         Message message = getMessage();
         try {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(haulerMail));
-            String mailBodyProcessed = templateEngine.process("haulerRequestedServiceMail", context);
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
+            String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
             message.setSubject("You received a request for your service");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {

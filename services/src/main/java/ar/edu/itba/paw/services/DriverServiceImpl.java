@@ -48,7 +48,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         // Driver instance will be created with unencrypted password.
         // Is that a problem tho?
         Driver driver = driverDao.create(id, username, mail, password, extra1);
-        mailService.sendHaulerWelcomeMail(mail, username);
+        mailService.sendDriverWelcomeMail(mail, username);
         return driver;
     }
 
