@@ -27,8 +27,6 @@ public class ClientController {
     @Autowired
     private ZoneService zs;
     @Autowired
-    private MailService mailService;
-    @Autowired
     private ClientService cs;
     @Autowired
     private ImageService is;
@@ -127,19 +125,14 @@ public class ClientController {
     }
 
     @RequestMapping(path = "/availability/contact", method = RequestMethod.POST)
-    public ModelAndView sendRequestServiceMail(
+    public ModelAndView appointbooking(
             @RequestParam("clientId") long clientId,
-            @RequestParam("clientName") String clientName,
-            @RequestParam("clientMail") String clientMail,
             @RequestParam("jobDescription") String jobDescription,
             @RequestParam("driverId") long driverId,
-            @RequestParam("driverName") String driverName,
-            @RequestParam("driverMail") String driverMail,
             @RequestParam("bookingDate") String date
     ) {
-        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date));
+        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date),jobDescription);
         if (booking.isPresent()) {
-            mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
             return new ModelAndView("redirect:/bookings");
         }
         return new ModelAndView("redirect:/bookings");

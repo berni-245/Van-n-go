@@ -12,11 +12,7 @@ public interface ClientService {
 
     Optional<Client> findById(long id);
 
-    Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date);
-
-    default Optional<Booking> appointBooking(long driverId, long clientId, String date) {
-        return appointBooking(driverId, clientId, LocalDate.parse(date));
-    }
+    Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date,String jobDescription);
 
     List<Booking> getBookings(long id);
 
