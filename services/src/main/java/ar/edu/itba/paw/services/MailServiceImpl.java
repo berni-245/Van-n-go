@@ -175,17 +175,6 @@ public class MailServiceImpl implements MailService {
 
     }
 
-    @Async
-    public void sendRequestedHauler(String clientMail, String haulerMail, String clientName, String haulerName, String jobDescription) {
-        Context context = new Context();
-        context.setVariable("haulerName", haulerName);
-        context.setVariable("haulerMail", haulerMail);
-        context.setVariable("dateRequested", new java.util.Date());
-        context.setVariable("clientName", clientName);
-        context.setVariable("clientMail", clientMail);
-        sendClientRequestedServiceMail(clientMail, context);
-        sendHaulerRequestedMail(haulerMail, context, jobDescription);
-    }
 
     private void sendClientRequestedServiceMail(String clientMail, Context context) {
         Message message = getMessage();
