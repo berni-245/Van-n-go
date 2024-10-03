@@ -69,7 +69,7 @@
             <ul class="nav nav-pills ms-auto">
                 <c:choose>
                     <c:when test="${loggedIn}">
-                        <div class="dropdown me-2">
+                        <div class="dropdown me-2 user-select-none">
                             <a class="text-body-emphasis d-flex align-items-center text-decoration-none dropdown-toggle"
                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                 <c:choose>
