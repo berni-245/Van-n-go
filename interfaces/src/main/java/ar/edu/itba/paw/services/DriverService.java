@@ -19,7 +19,7 @@ public interface DriverService {
 
     List<WeeklyAvailability> getWeeklyAvailability(long id);
 
-    List<WeeklyAvailability> addWeeklyAvailability(
+    void addWeeklyAvailability(
             long driverId,
             int[] weekDays,
             String timeStart,
@@ -51,7 +51,7 @@ public interface DriverService {
 
     void rejectBooking(long bookingId);
 
-    public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
+    Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
 
-    public boolean updateVehicle(long driverId, Vehicle vehicle);
+    boolean updateVehicle(long driverId, Vehicle vehicle);
 }

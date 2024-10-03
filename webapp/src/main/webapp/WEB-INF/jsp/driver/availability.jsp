@@ -20,8 +20,8 @@
                     <c:url var="vUrl" value="/driver/availability/edit"/>
                     <div class="list-group-item list-group-item-action vehicle-item">
                         <c:out value="${av.weekDayString}"/> |
-                        <c:out value="${av.timeStart}"/> to
-                        <c:out value="${av.timeEnd}"/>
+                        <c:out value="${av.hourBlockTimeStart}"/>
+
                     </div>
                     <%--                    <a href="${vUrl}?availabilityId=TODO"--%>
                     <%--                       class="list-group-item list-group-item-action vehicle-item"--%>

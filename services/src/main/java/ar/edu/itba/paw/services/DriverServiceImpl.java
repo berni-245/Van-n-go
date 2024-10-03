@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,7 +80,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     // which insertions failed.
     // And we Should probably use batch insertion.
     @Override
-    public List<WeeklyAvailability> addWeeklyAvailability(
+    public void addWeeklyAvailability(
             long driverId,
             int[] weekDays,
             String timeStart,
@@ -89,18 +88,15 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             long[] zoneIds,
             long[] vehicleIds
     ) {
-        List<WeeklyAvailability> availabilities = new ArrayList<>();
         for (int weekDay : weekDays) {
             for (long vehicleId : vehicleIds) {
                 for (long zoneId : zoneIds) {
-                    Optional<WeeklyAvailability> availability = weeklyAvailabilityDao.create(
+                    weeklyAvailabilityDao.create(
                             weekDay, timeStart, timeEnd, zoneId, vehicleId
                     );
-                    availability.ifPresent(availabilities::add);
                 }
             }
         }
-        return availabilities;
     }
 
     @Override

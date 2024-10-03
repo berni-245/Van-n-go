@@ -73,7 +73,7 @@ public class DriverController {
         if (errors.hasErrors()) {
             return addAvailabilityForm(loggedUser, form);
         }
-        List<WeeklyAvailability> successfulInsertions = ds.addWeeklyAvailability(
+        ds.addWeeklyAvailability(
                 loggedUser.getId(),
                 form.getWeekDays(),
                 form.getTimeStart(),
