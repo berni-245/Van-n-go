@@ -89,6 +89,8 @@ create table if not exists zone
 );
 
 
+create type state as enum('pending', 'accepted', 'rejected', 'finished');
+
 create table if not exists booking
 (
     id               serial primary key,
@@ -97,7 +99,7 @@ create table if not exists booking
     hour_end_id      int     not null references hour_block (id) on delete cascade,
     client_id        int     not null references client (user_id) on delete cascade,
     vehicle_id       int     not null references vehicle (id) on delete cascade,
-    is_confirmed     boolean not null,
+    state            state   not null,
     proof_of_payment int     references image (id) on delete set null,
     rating           int,
     review           text
