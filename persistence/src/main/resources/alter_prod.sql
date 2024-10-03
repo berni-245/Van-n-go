@@ -42,6 +42,8 @@ alter table booking
 alter table reservation
     rename to reservation_old;
 
+create type state as enum('pending', 'accepted', 'rejected', 'finished');
+
 create table if not exists booking
 (
     id               serial primary key,
@@ -50,19 +52,30 @@ create table if not exists booking
     hour_end_id      int     not null references hour_block (id) on delete cascade,
     client_id        int     not null references client (user_id) on delete cascade,
     vehicle_id       int     not null references vehicle (id) on delete cascade,
-    is_confirmed     boolean not null,
+    state            state   not null,
     proof_of_payment int     references image (id) on delete set null,
     rating           int,
     review           text
 );
 
-insert into booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, is_confirmed)
+insert into booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, state)
 select bo.date,
        min(wa.hour_block_id) as hour_start_id,
        min(wa.hour_block_id) as hour_end_id,
        re.client_id,
        min(ve.id)            as vehicle_id,
-       re.is_confirmed
+       CASE
+           WHEN re.is_confirmed THEN
+               CASE
+                   WHEN bo.date >= CURRENT_DATE THEN 'accepted'::state
+                   ELSE 'finished'::state
+                   END
+           ELSE
+               CASE
+                   WHEN bo.date >= CURRENT_DATE THEN 'pending'::state
+                   ELSE 'rejected'::state
+                   END
+           END as state
 from booking_old bo
          join reservation_old re on bo.id = re.booking_id
          join vehicle ve on re.driver_id = ve.driver_id
