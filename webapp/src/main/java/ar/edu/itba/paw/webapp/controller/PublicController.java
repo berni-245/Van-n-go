@@ -48,7 +48,6 @@ public class PublicController {
 
     @RequestMapping(path = {"/", "/home"})
     public ModelAndView index(@ModelAttribute("loggedUser") User loggedUser) {
-        wa.testRefactor();
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {
