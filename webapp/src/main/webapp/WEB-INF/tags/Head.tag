@@ -36,12 +36,5 @@
     <c:url value="/js/bootstrap-theme-toggler.js" var="bsjs"/>
     <script src="${bsjs}"></script>
 
-    <style>
-        .header-dropdown.dropdown-menu[data-bs-popper] {
-            right: 0;
-            left: unset;
-        }
-    </style>
-
     <jsp:doBody/>
 </head>
