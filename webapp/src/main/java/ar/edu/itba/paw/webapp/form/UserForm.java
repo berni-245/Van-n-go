@@ -2,9 +2,7 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.webapp.validation.PasswordMatch;
 import ar.edu.itba.paw.webapp.validation.ValidMail;
-import ar.edu.itba.paw.webapp.validation.ValidPfp;
 import ar.edu.itba.paw.webapp.validation.ValidUsername;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -33,9 +31,6 @@ public class UserForm {
 
     @NotBlank
     private String userType;
-
-    @ValidPfp
-    private MultipartFile profilePicture;
 
     public String getUsername() {
         return username;
@@ -76,8 +71,4 @@ public class UserForm {
     public void setUserType(String userType) {
         this.userType = userType;
     }
-
-    public MultipartFile getProfilePicture() {return profilePicture;}
-
-    public void setProfilePicture(MultipartFile profilePicture) {this.profilePicture = profilePicture;}
 }

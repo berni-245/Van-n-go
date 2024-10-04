@@ -2,8 +2,10 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -22,6 +24,9 @@ public class VehicleForm {
 
     @Length(max = 40)
     private String description;
+
+    @ValidImage
+    private MultipartFile vehicleImage;
 
     private long id;
 
@@ -63,4 +68,6 @@ public class VehicleForm {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public MultipartFile getVehicleImage() {return vehicleImage;}
 }

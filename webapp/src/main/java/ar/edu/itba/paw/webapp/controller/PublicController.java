@@ -67,13 +67,6 @@ public class PublicController {
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
-        if (userForm.getProfilePicture() != null && !userForm.getProfilePicture().isEmpty()){
-            try{
-                is.uploadPfp(userForm.getProfilePicture().getBytes(),userForm.getProfilePicture().getOriginalFilename(),(int) user.getId());
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");
