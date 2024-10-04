@@ -88,7 +88,7 @@ public class VehicleJdbcDao implements VehicleDao {
 
         for (Vehicle vehicle : vehicles) {
             vehicle.setWeeklyAvailability(
-                    weeklyAvailabilityDao.getVehicleWeeklyAvailability(vehicle.getId())
+                    weeklyAvailabilityDao.getVehicleWeeklyAvailabilityZoneAgnostic(vehicle.getId())
             );
         }
         return vehicles;
