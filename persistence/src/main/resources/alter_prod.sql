@@ -63,7 +63,7 @@ select bo.date,
        min(wa.hour_block_id) as hour_start_id,
        min(wa.hour_block_id) as hour_end_id,
        re.client_id,
-       min(ve.id)            as vehicle_id,
+       ve.id            as vehicle_id,
        CASE
            WHEN re.is_confirmed THEN
                CASE
@@ -83,6 +83,12 @@ from booking_old bo
 where wa.week_day = (select case
                                 when extract(dow from bo.date) = 0 then 7
                                 else extract(dow from bo.date) end)
-group by bo.id, bo.date, client_id, re.is_confirmed
+  and ve.id = (select min(ve2.id)
+               from vehicle ve2
+                        join weekly_availability wa2 on ve2.id = wa2.vehicle_id
+               where ve2.driver_id = ve.driver_id
+                 and wa2.week_day = wa.week_day)
+
+group by bo.id, bo.date, client_id, re.is_confirmed, ve.id
 order by date
 ;
