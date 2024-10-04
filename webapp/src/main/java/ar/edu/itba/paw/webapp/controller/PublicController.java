@@ -95,10 +95,11 @@ public class PublicController {
             return "redirect:/profile";
         }
         try {
-            is.uploadPfp(file.getBytes(), file.getOriginalFilename(),(int)loggedUser.getId());
+            loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(),(int)loggedUser.getId()));
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+
         return "redirect:/profile";
     }
 

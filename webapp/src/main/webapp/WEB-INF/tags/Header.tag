@@ -72,8 +72,14 @@
                         <div class="dropdown me-2">
                             <a class="text-body-emphasis d-flex align-items-center text-decoration-none dropdown-toggle"
                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                    <%-- <c:url value='/profile/picture' var="pfp"/>--%>
-                                <c:url value='/images/defaultUserPfp.png' var="pfpUrl"/>
+                                <c:choose>
+                                <c:when test="${loggedUser.pfp != 0}">
+                                    <c:url value='/profile/picture' var="pfpUrl"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:url value='/images/defaultUserPfp.png' var="pfpUrl"/>
+                                </c:otherwise>
+                                </c:choose>
                                 <img src="${pfpUrl}" alt="Profile Picture"
                                      class="rounded-circle me-2" width="50" height="50">
                                 <span class="d-sm-inline mx-1">${loggedUser.username}</span>

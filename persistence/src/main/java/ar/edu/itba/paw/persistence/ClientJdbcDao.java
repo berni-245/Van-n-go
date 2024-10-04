@@ -19,7 +19,8 @@ public class ClientJdbcDao implements ClientDao {
                     rs.getLong("id"),
                     rs.getString("username"),
                     rs.getString("mail"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getInt("pfp")
             );
 
     protected final JdbcTemplate jdbcTemplate;
@@ -33,7 +34,7 @@ public class ClientJdbcDao implements ClientDao {
     @Override
     public Client create(long id, String username, String mail, String password) {
         jdbcClientInsert.execute(Map.of("user_id", id));
-        return new Client(id, username, mail, password);
+        return new Client(id, username, mail, password,0);
     }
 
     @Override
