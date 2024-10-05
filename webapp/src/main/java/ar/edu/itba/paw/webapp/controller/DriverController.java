@@ -52,7 +52,8 @@ public class DriverController {
                 loggedUser.getId(),
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
-                vehicleForm.getDescription()
+                vehicleForm.getDescription(),
+                vehicleForm.getRate()
         );
         List<Toast> toasts = Collections.singletonList(new Toast(
                 ToastType.success, "toast.vehicle.add.success"
@@ -173,7 +174,9 @@ public class DriverController {
                 loggedUser.getId(),
                 form.getPlateNumber(),
                 form.getVolume(),
-                form.getDescription()
+                form.getDescription(),
+                null,
+                form.getRate()
         ));
 
         return new ModelAndView("redirect:/driver/vehicles");

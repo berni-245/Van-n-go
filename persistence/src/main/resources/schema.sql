@@ -25,7 +25,7 @@ create table if not exists driver
     user_id int primary key references app_user (id) on delete cascade,
     extra1  text,
     rating double precision,
-    CBU int
+    CBU varchar(32)
 );
 
 create table if not exists vehicle

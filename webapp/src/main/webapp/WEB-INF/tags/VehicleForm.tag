@@ -25,6 +25,13 @@
     </div>
     <div>
         <label class="form-label">
+            <spring:message code="driver.add_vehicle.hourly_rate"/>
+            <form:input path="rate" cssClass="form-control" type="number" min="100" max="100000" step="1"/>
+        </label>
+        <form:errors path="rate" element="p" cssStyle="color: red"/>
+    </div>
+    <div>
+        <label class="form-label">
             <spring:message code="driver.add_vehicle.description"/>
             <form:input path="description" cssClass="form-control"/>
         </label>
