@@ -25,7 +25,7 @@ public class BookingReviewForm {
         this.rating = rating;
     }
 
-    public @Length(min = 6, max = 255) String getReview() {
+    public String getReview() {
         return review;
     }
 
