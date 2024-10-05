@@ -84,15 +84,13 @@ public class PublicController {
 
     @RequestMapping(path = "/upload/pfp", method = RequestMethod.POST)
     public String submit(@RequestParam("profilePicture") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
-        if (file==null || file.isEmpty()) {
-            return "redirect:/profile";
+        if (file != null && !file.isEmpty()) {
+            try {
+                loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), (int) loggedUser.getId()));
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         }
-        try {
-            loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(),(int)loggedUser.getId()));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-
         return "redirect:/profile";
     }
 

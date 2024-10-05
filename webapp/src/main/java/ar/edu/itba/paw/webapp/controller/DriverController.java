@@ -6,6 +6,8 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,6 +28,7 @@ import java.util.Optional;
 
 @Controller
 public class DriverController {
+    private static final Logger log = LoggerFactory.getLogger(DriverController.class);
     @Autowired
     private DriverService ds;
     @Autowired
@@ -42,6 +46,7 @@ public class DriverController {
     public ModelAndView addVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
+            @RequestParam("vehicleImg") MultipartFile vehicleImg,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
@@ -55,11 +60,42 @@ public class DriverController {
                 vehicleForm.getDescription(),
                 vehicleForm.getRate()
         );
+        if(vehicleImg != null) {
+            try{
+                is.uploadVehicleImage(vehicleImg.getBytes(),vehicleImg.getOriginalFilename(),(int) vehicle.getId());
+            } catch (Exception e){
+                log.error(e.getMessage());
+            }
+        }
         List<Toast> toasts = Collections.singletonList(new Toast(
                 ToastType.success, "toast.vehicle.add.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
         return new ModelAndView("redirect:/driver/vehicles");
+    }
+
+    @RequestMapping(path="/vehicle/image", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("vehicleId") int vehicleId, @ModelAttribute("loggedUser") User loggedUser){
+        Image vehicleImg = is.getVehicleImage(vehicleId);
+        if(vehicleImg==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String fileName = vehicleImg.getFileName();
+        String contentType;
+        if(fileName == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        if(fileName.toLowerCase().endsWith(".png"))
+            contentType = "image/png";
+        else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
+            contentType = "image/jpeg";
+        } else {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(null);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        headers.setContentLength(vehicleImg.getData().length);
+        return new ResponseEntity<>(vehicleImg.getData(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
@@ -142,6 +178,7 @@ public class DriverController {
             form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
+            mav.addObject("vehicleId", vehicle.get().getId());
             return mav;
         } else {
             return new ModelAndView();

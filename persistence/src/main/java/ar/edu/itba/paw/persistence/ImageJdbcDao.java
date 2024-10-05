@@ -66,7 +66,7 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public Image getVehicleImage(int vehicleId) {
         List<Image> img = jdbcTemplate.query("""
-                SELECT id, bin, file_name
+                SELECT i.id, bin, file_name
                 FROM image AS i JOIN vehicle AS v ON v.img_id = i.id 
                 WHERE v.id = ?""",
                 new Object[]{vehicleId},
