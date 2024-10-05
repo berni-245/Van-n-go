@@ -55,7 +55,6 @@ public class MailServiceImpl implements MailService {
             }
         };
         templateEngine = emailTemplateEngine();
-        templateEngine.addTemplateResolver(htmlTemplateResolver());
     }
 
 
@@ -79,7 +78,7 @@ public class MailServiceImpl implements MailService {
 
     private ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("/i18n/messages");
+        messageSource.setBasename("/mail/i18n/mailMessages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
