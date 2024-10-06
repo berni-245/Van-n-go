@@ -131,9 +131,14 @@ public class ClientController {
             @RequestParam("driverId") long driverId,
             @RequestParam("bookingDate") String date
     ) {
-        //TODO cambiar driverId to vehicleId
+        // TODO cambiar driverId to vehicleId
+        long vehicleId = driverId;
+        // TODO add zoneId logic
+        long zoneId = 1;
         // TODO add HourInterval logc
-        Optional<Booking> booking = cs.appointBooking(driverId, clientId, date, new HourInterval(0, 24));
+        HourInterval hourInterval = new HourInterval(0, 24);
+
+        Optional<Booking> booking = cs.appointBooking(vehicleId, clientId, zoneId, date, hourInterval);
         if (booking.isPresent()) {
             return new ModelAndView("redirect:/bookings");
         }

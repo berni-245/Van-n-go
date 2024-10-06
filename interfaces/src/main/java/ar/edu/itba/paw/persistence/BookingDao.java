@@ -29,6 +29,4 @@ public interface BookingDao {
     List<Booking> getClientHistory(long clientId);
 
     void setRatingAndReview(long bookingId, int rating, String review);
-
-    Double getDriverRating(long driverID);
 }

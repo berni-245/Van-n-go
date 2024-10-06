@@ -39,11 +39,6 @@ public class BookingJdbcDao implements BookingDao {
 
         ROW_MAPPER = (rs, rowNum) -> {
             Vehicle vehicle = vehicleDao.findById(rs.getLong("vehicle_id")).orElseThrow();
-            Integer imageId = rs.getObject("proof_of_payment", Integer.class);
-            Image image = null;
-            if (imageId != null) {
-                image = imageDao.getImage(imageId);
-            }
 
             return new Booking(
                     rs.getLong("id"),
@@ -54,10 +49,9 @@ public class BookingJdbcDao implements BookingDao {
                     rs.getDate("date").toLocalDate(),
                     getHourInterval(rs.getLong("hour_start_id"), rs.getLong("hour_end_id")),
                     BookingState.valueOf(rs.getString("state").toUpperCase()),
-                    image,
                     rs.getObject("rating", Integer.class),
                     rs.getString("review"),
-                    rs.getInt("proof_of_payment")
+                    rs.getObject("proof_of_payment", Integer.class)
             );
         };
     }
@@ -100,7 +94,8 @@ public class BookingJdbcDao implements BookingDao {
         return jdbcTemplate.query("""
                         select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review
                         from booking b join vehicle v on b.vehicle_id = v.id
-                        where driver_id = ?""",
+                        where driver_id = ?
+                        order by b.date, b.hour_start_id, b.hour_end_id""",
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -122,7 +117,8 @@ public class BookingJdbcDao implements BookingDao {
         return jdbcTemplate.query("""
                         select *
                         from booking
-                        where vehicle_id = ?""",
+                        where vehicle_id = ?
+                        order by date, hour_start_id, hour_end_id""",
                 new Object[]{vehicleId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -143,8 +139,9 @@ public class BookingJdbcDao implements BookingDao {
     public List<Booking> getClientBookings(long clientId) {
         return jdbcTemplate.query("""
                         select *
-                        from booking b
-                        where client_id = ? AND date >= CURRENT_DATE""",
+                        from booking
+                        where client_id = ? AND date >= CURRENT_DATE
+                        order by b.date, b.hour_start_id, b.hour_end_id""",
                 new Object[]{clientId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -155,7 +152,8 @@ public class BookingJdbcDao implements BookingDao {
         return jdbcTemplate.query("""
                         select *
                         from booking
-                        where client_id = ? AND date < CURRENT_DATE""",
+                        where client_id = ? AND date < CURRENT_DATE
+                        order by b.date, b.hour_start_id, b.hour_end_id""",
                 new Object[]{clientId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -227,14 +225,6 @@ public class BookingJdbcDao implements BookingDao {
         if (driverId != null) {
             driverDao.updateDriverRating(driverId);
         }
-    }
-
-    @Override
-    public Double getDriverRating(long driverID) {
-        return jdbcTemplate.queryForObject("""
-                select avg(rating)
-                from booking b where driver_id = ?
-                """, new Object[]{driverID}, new int[]{Types.BIGINT}, Double.class);
     }
 
     private HourInterval getHourInterval(long hour_start_id, long hour_end_id) {
