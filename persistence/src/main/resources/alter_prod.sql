@@ -42,7 +42,7 @@ alter table booking
 alter table reservation
     rename to reservation_old;
 
-create type state as enum('pending', 'accepted', 'rejected', 'finished');
+create type state as enum('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
 
 create table if not exists booking
 (
@@ -67,13 +67,13 @@ select bo.date,
        CASE
            WHEN re.is_confirmed THEN
                CASE
-                   WHEN bo.date >= CURRENT_DATE THEN 'accepted'::state
-                   ELSE 'finished'::state
+                   WHEN bo.date >= CURRENT_DATE THEN 'ACCEPTED'::state
+                   ELSE 'FINISHED'::state
                    END
            ELSE
                CASE
-                   WHEN bo.date >= CURRENT_DATE THEN 'pending'::state
-                   ELSE 'rejected'::state
+                   WHEN bo.date >= CURRENT_DATE THEN 'PENDING'::state
+                   ELSE 'REJECTED'::state
                    END
            END as state
 from booking_old bo
