@@ -21,7 +21,8 @@
             <c:forEach var="booking" items="${bookings}">
                 <div class="col mb-4">
                     <div class="card mb-3">
-                        <div class="card-body">
+                        <div class="card-body d-flex justify-content-between">
+                            <div>
                             <h5 class="card-title"><c:out
                                     value="${booking.date}"/></h5>
                             <p class="card-text"><c:out
@@ -55,6 +56,15 @@
                                     </form>
                                 </div>
                             </c:if>
+                            </div>
+                            <c:choose>
+                                <c:when test="${booking.client.pfp==0}">
+                                    <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Client Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/user/pfp?userId=${booking.client.id}" alt="ClientPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
