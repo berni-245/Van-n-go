@@ -56,10 +56,10 @@ public class DriverJdbcDao implements DriverDao {
     public List<Driver> getAll(Long zoneId, Size size) {
         return jdbcTemplate.query("""
                         select * from driver d join app_user on d.user_id = app_user.id
-                        where exists (select * from vehicle_weekly_zone vwz
-                            where vwz.zone_id = ? and exists (
+                        where exists (select * from weekly_availability wa
+                            where wa.zone_id = ? and exists (
                                 select * from vehicle v
-                                where v.driver_id = d.user_id and v.id = vwz.vehicle_id
+                                where v.driver_id = d.user_id and v.id = wa.vehicle_id
                                 and v.volume_m3 between ? and ?
                             )
                         )

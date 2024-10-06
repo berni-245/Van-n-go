@@ -13,8 +13,6 @@ public interface WeeklyAvailabilityDao {
 
     List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId);
 
-    List<WeeklyAvailability> getVehicleWeeklyAvailabilityZoneAgnostic(long vehicleId);
-
     List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId, long zoneId);
 
 }

@@ -87,7 +87,7 @@ public class PublicController {
     public String submit(@RequestParam("profilePicture") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
         if (file != null && !file.isEmpty()) {
             try {
-                loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), (int) loggedUser.getId()));
+                loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
             } catch (Exception e) {
                 log.error(e.getMessage());
             }

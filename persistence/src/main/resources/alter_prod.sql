@@ -11,6 +11,8 @@ alter table driver
 alter table driver
     add column CBU varchar(32);
 
+alter table vehicle_weekly_zone rename to vehicle_weekly_zone_old;
+
 alter table weekly_availability
     rename to weekly_availability_old;
 alter table weekly_availability_old
@@ -30,7 +32,7 @@ select distinct wa.week_day,
                 hb.id,
                 vwz.zone_id,
                 vwz.vehicle_id
-from vehicle_weekly_zone vwz
+from vehicle_weekly_zone_old vwz
          join weekly_availability_old wa on vwz.availability_id = wa.id
          join hour_block hb
               on extract(hour from hb.t_start) >= extract(hour from wa.t_start) and

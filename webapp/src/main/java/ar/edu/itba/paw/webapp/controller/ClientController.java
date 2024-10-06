@@ -44,7 +44,7 @@ public class ClientController {
             return "redirect:/bookings";
         }
         try {
-            int img_id = is.uploadPop(file.getBytes(), file.getOriginalFilename(), Math.toIntExact(driverId), Math.toIntExact(bookingId));
+            long img_id = is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
         } catch (Exception e) {
             log.error(e.getMessage());
         }

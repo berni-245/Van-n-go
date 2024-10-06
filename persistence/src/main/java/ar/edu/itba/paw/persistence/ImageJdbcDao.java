@@ -24,16 +24,16 @@ public class ImageJdbcDao implements ImageDao {
                 .usingGeneratedKeyColumns("id")
                 .withTableName("image");
         ROW_MAPPER = (rs, rowNum) -> new Image(
-                (int) rs.getLong("id"),
+                rs.getLong("id"),
                 rs.getBytes("bin"),
                 rs.getString("file_name")
         );
     }
 
     @Override
-    public Image getImage(int id){
+    public Image getImage(long id){
         return jdbcTemplate.query("""
-                SELECT id, img, file_name
+                SELECT id, bin, file_name
                 FROM image WHERE id = ?""",
                 new Object[]{id},
                 new int[]{Types.BIGINT},
@@ -50,7 +50,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public Image getpfp(int userId) {
+    public Image getpfp(long userId) {
         List<Image> images = jdbcTemplate.query("""
                         SELECT i.id, bin, file_name
                         FROM image AS i JOIN app_user AS u ON u.pfp = i.id
@@ -64,7 +64,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public Image getVehicleImage(int vehicleId) {
+    public Image getVehicleImage(long vehicleId) {
         List<Image> img = jdbcTemplate.query("""
                 SELECT i.id, bin, file_name
                 FROM image AS i JOIN vehicle AS v ON v.img_id = i.id
@@ -78,7 +78,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public Image getPop(int bookingId) {
+    public Image getPop(long bookingId) {
         List<Image> img;
         img = jdbcTemplate.query("""
                 SELECT i.id, i.bin, i.file_name
@@ -93,7 +93,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public int uploadPop(byte[] bin, String fileName, int bookingId) {
+    public long uploadPop(byte[] bin, String fileName, long bookingId) {
         Integer key = uploadImage(fileName,bin);
         return jdbcTemplate.update("""
                 update booking
@@ -104,7 +104,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
+    public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
         Integer key = uploadImage(fileName,bin);
         jdbcTemplate.update("""
                     update vehicle set img_id = ?
@@ -115,7 +115,7 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public int uploadPfp(byte[] bin, String fileName, int userId) {
+    public long uploadPfp(byte[] bin, String fileName, long userId) {
         Integer key = uploadImage(fileName,bin);
         jdbcTemplate.update("""
                     update app_user set pfp = ?

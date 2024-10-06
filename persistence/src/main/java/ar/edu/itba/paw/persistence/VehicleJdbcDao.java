@@ -91,7 +91,7 @@ public class VehicleJdbcDao implements VehicleDao {
 
         for (Vehicle vehicle : vehicles) {
             vehicle.setWeeklyAvailability(
-                    weeklyAvailabilityDao.getVehicleWeeklyAvailabilityZoneAgnostic(vehicle.getId())
+                    weeklyAvailabilityDao.getVehicleWeeklyAvailability(vehicle.getId())
             );
         }
         return vehicles;
@@ -102,8 +102,8 @@ public class VehicleJdbcDao implements VehicleDao {
         List<Vehicle> vehicles = jdbcTemplate.query("""
                         select * from vehicle v
                         where driver_id = ? and volume_m3 between ? and ? and exists(
-                            select * from vehicle_weekly_zone vwz
-                            where vwz.vehicle_id = v.id and vwz.zone_id = ?
+                            select * from weekly_availability wa
+                            where wa.vehicle_id = v.id and wa.zone_id = ?
                         )""",
                 new Object[]{driverId, size.getMinVolume(), size.getMaxVolume(), zoneId},
                 new int[]{Types.BIGINT, Types.INTEGER, Types.INTEGER, Types.BIGINT},

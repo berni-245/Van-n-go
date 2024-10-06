@@ -263,7 +263,7 @@ public class DriverController {
     @RequestMapping(value = "/driver/pop", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser){
-        Image pop = is.getPop((int) loggedUser.getId(), (int) bookingId);
+        Image pop = is.getPop((int) bookingId);
         if(pop!=null&&pop.getFileName().endsWith(".pdf")){
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));

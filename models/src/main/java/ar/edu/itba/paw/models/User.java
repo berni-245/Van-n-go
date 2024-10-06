@@ -5,7 +5,7 @@ public abstract class User {
     private String username;
     private String mail;
     private final String password;
-    private int pfp;
+    private long pfp;
 
     public User(long id, String username, String mail, String password) {
         this.id = id;
@@ -46,9 +46,9 @@ public abstract class User {
         this.mail = mail;
     }
 
-    public void setPfp(int pfp) {this.pfp = pfp;}
+    public void setPfp(long pfp) {this.pfp = pfp;}
 
-    public int getPfp() {return pfp;}
+    public long getPfp() {return pfp;}
 
     public abstract boolean isDriver();
 
