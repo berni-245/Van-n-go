@@ -6,6 +6,7 @@ import ar.edu.itba.paw.webapp.validation.ArrayAllMin;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 public class AvailabilityForm {
     @NotEmpty
@@ -18,6 +19,8 @@ public class AvailabilityForm {
 
     @NotBlank
     private String timeEnd;
+
+    private List<String> intervals;
 
     @NotEmpty
     private long[] vehicleIds;
@@ -68,5 +71,13 @@ public class AvailabilityForm {
 
     public void setZoneIds(long[] zoneIds) {
         this.zoneIds = zoneIds;
+    }
+
+    public List<String> getIntervals(){
+        return intervals;
+    }
+
+    public void setIntervals(List<String> intervals){
+        this.intervals = intervals;
     }
 }

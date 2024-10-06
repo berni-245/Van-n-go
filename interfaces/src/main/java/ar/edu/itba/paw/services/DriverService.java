@@ -22,8 +22,7 @@ public interface DriverService {
     void addWeeklyAvailability(
             long driverId,
             int[] weekDays,
-            String timeStart,
-            String timeEnd,
+            List<String> hours,
             long[] zoneIds,
             long[] vehicleIds
     );

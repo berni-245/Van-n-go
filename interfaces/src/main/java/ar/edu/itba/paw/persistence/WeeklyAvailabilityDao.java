@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.WeeklyAvailability;
 import java.util.List;
 
 public interface WeeklyAvailabilityDao {
-    boolean create(int weekDay, String timeStart, String timeEnd, long zoneId, long vehicleId);
+    boolean create(int weekDay, List<String> hours, long zoneId, long vehicleId);
 
     List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId);
 

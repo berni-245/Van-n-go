@@ -116,8 +116,7 @@ public class DriverController {
         ds.addWeeklyAvailability(
                 loggedUser.getId(),
                 form.getWeekDays(),
-                form.getTimeStart(),
-                form.getTimeEnd(),
+                form.getIntervals(),
                 form.getZoneIds(),
                 form.getVehicleIds()
         );

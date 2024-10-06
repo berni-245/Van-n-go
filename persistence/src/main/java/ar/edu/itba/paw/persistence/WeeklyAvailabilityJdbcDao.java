@@ -34,18 +34,16 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     }
 
 
-    private List<Integer> findHourBlocksId(String hourStart, String hourEnd) {
-        return jdbcTemplate.query(
+
+    private Integer findHourBlockId(String hourStart) {
+        return jdbcTemplate.queryForObject(
                 """
-                        select *
+                        select id
                         from hour_block
-                        where id between
-                            (select id from hour_block where t_start = ?)
-                            AND
-                            (select id from hour_block where t_end = ?)
+                        where t_start = ?
                         """,
-                new Object[]{hourStart, hourEnd},
-                new int[]{Types.TIME, Types.TIME},
+                new Object[]{hourStart},
+                new int[]{Types.TIME},
                 ((rs, rowNum) -> rs.getInt("id"))
         );
     }
@@ -53,23 +51,19 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
 
     @Override
     public boolean create(
-            int weekDay, String hourStart, String hourEnd, long zoneId, long vehicleId
+            int weekDay, List<String> hours, long zoneId, long vehicleId
     ) {
-        // This should be a db trigger...
-        if (hourEnd.compareTo(hourStart) <= 0) {
-            throw new IllegalArgumentException("Time end must be later than time start");
-        }
-        List<Integer> hourBlockIds = findHourBlocksId(hourStart, hourEnd);
+
         int changedRows = 0;
-        for (Integer blockId : hourBlockIds) {
+        for (String hour : hours) {
             Map<String, Object> availability = new HashMap<>();
             availability.put("week_day", weekDay);
-            availability.put("hour_block_id", blockId);
+            availability.put("hour_block_id", findHourBlockId(hour));
             availability.put("zone_id", zoneId);
             availability.put("vehicle_id", vehicleId);
             changedRows += jdbcAvailabilityInsert.execute(availability);
         }
-        return changedRows == hourBlockIds.size();
+        return changedRows == hours.size();
 
     }
 
