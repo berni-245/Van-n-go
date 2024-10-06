@@ -42,6 +42,14 @@ public interface DriverService {
         return getBookingsByDate(driverId, LocalDate.parse(date));
     }
 
+    List<Booking> getBookingsByVehicle(long vehicleId);
+
+    List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date);
+
+    default List<Booking> getBookingsByVehicleAndDate(long vehicleId, String date) {
+        return getBookingsByVehicleAndDate(vehicleId, LocalDate.parse(date));
+    }
+
     void acceptBooking(long bookingId);
 
     void rejectBooking(long bookingId);

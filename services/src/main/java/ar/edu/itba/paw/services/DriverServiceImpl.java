@@ -125,6 +125,16 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
+    public List<Booking> getBookingsByVehicle(long vehicleId) {
+        return bookingDao.getBookingsByVehicle(vehicleId);
+    }
+
+    @Override
+    public List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date) {
+        return bookingDao.getBookingsByVehicleAndDate(vehicleId, date);
+    }
+
+    @Override
     public void acceptBooking(long bookingId) {
         bookingDao.acceptBooking(bookingId);
     }
