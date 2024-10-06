@@ -74,14 +74,13 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
                         select week_day, t_start, zone_id, vehicle_id
                         from hour_block hb
                         join weekly_availability wa on hb.id = wa.hour_block_id
-                        where exists(select *
-                                        from vehicle
-                                where id = wa.vehicle_id
-                                and driver_id = ?)""",
+                        join vehicle vh on vh.id = wa.vehicle_id
+                        where vh.driver_id = ?""",
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
     }
+
 
     @Override
     public List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId) {
