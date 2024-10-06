@@ -22,6 +22,7 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("username"),
                     rs.getString("mail"),
                     rs.getString("password"),
+                    rs.getInt("pfp"),
                     rs.getString("extra1"),
                     rs.getObject("rating", Double.class)
             );
@@ -37,7 +38,7 @@ public class DriverJdbcDao implements DriverDao {
     @Override
     public Driver create(long id, String username, String mail, String password, String extra1) {
         jdbcDriverInsert.execute(Map.of("user_id", id, "extra1", extra1));
-        return new Driver(id, username, mail, password, extra1,null);
+        return new Driver(id, username, mail, password, 0, extra1,null);
     }
 
     @Override
@@ -55,10 +56,10 @@ public class DriverJdbcDao implements DriverDao {
     public List<Driver> getAll(Long zoneId, Size size) {
         return jdbcTemplate.query("""
                         select * from driver d join app_user on d.user_id = app_user.id
-                        where exists (select * from vehicle_weekly_zone vwz
-                            where vwz.zone_id = ? and exists (
+                        where exists (select * from weekly_availability wa
+                            where wa.zone_id = ? and exists (
                                 select * from vehicle v
-                                where v.driver_id = d.user_id and v.id = vwz.vehicle_id
+                                where v.driver_id = d.user_id and v.id = wa.vehicle_id
                                 and v.volume_m3 between ? and ?
                             )
                         )

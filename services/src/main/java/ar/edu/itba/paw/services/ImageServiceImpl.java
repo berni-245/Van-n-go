@@ -21,38 +21,38 @@ public class ImageServiceImpl implements ImageService {
         return imgDao.uploadImage(fileName, bin);
     }
 
-    private Image getImage(int id) {
+    private Image getImage(long id) {
         return imgDao.getImage(id);
     }
 
 
     @Override
-    public Image getPfp(int userId) {
+    public Image getPfp(long userId) {
         return imgDao.getpfp(userId);
     }
 
     @Override
-    public Image getVehicleImage(int vehicleId) {
+    public Image getVehicleImage(long vehicleId) {
         return imgDao.getVehicleImage(vehicleId);
     }
 
     @Override
-    public Image getPop(int bookingId) {
+    public Image getPop(long bookingId) {
         return imgDao.getPop(bookingId);
     }
 
     @Override
-    public int uploadPfp(byte[] bin, String fileName, int userId) {
+    public long uploadPfp(byte[] bin, String fileName, long userId) {
         return imgDao.uploadPfp(bin, fileName, userId);
     }
 
     @Override
-    public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
+    public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
         return imgDao.uploadVehicleImage(bin, fileName, vehicleId);
     }
 
     @Override
-    public int uploadPop(byte[] bin, String fileName, int bookingId) {
+    public long uploadPop(byte[] bin, String fileName, long bookingId) {
         return imgDao.uploadPop(bin, fileName, bookingId);
     }
 }

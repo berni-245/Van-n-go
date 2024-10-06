@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -69,13 +68,6 @@ public class PublicController {
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
-        if (userForm.getProfilePicture() != null && !userForm.getProfilePicture().isEmpty()){
-            try{
-                is.uploadPfp(userForm.getProfilePicture().getBytes(),userForm.getProfilePicture().getOriginalFilename(),(int) user.getId());
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");
@@ -93,13 +85,12 @@ public class PublicController {
 
     @RequestMapping(path = "/upload/pfp", method = RequestMethod.POST)
     public String submit(@RequestParam("profilePicture") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
-        if (file==null || file.isEmpty()) {
-            return "redirect:/profile";
-        }
-        try {
-            is.uploadPfp(file.getBytes(), file.getOriginalFilename(),(int)loggedUser.getId());
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        if (file != null && !file.isEmpty()) {
+            try {
+                loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         }
         return "redirect:/profile";
     }
@@ -114,6 +105,8 @@ public class PublicController {
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }
+
+
 
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody

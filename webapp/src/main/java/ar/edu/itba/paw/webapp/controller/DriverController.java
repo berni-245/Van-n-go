@@ -2,17 +2,22 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,16 +28,18 @@ import java.util.Optional;
 
 @Controller
 public class DriverController {
-
+    private static final Logger log = LoggerFactory.getLogger(DriverController.class);
     @Autowired
     private DriverService ds;
-
     @Autowired
     private ZoneService zs;
+    @Autowired
+    private ImageService is;
 
-    public DriverController(final DriverService ds, ZoneService zs) {
+    public DriverController(final DriverService ds, ZoneService zs, ImageService is) {
         this.ds = ds;
         this.zs = zs;
+        this.is = is;
     }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
@@ -40,6 +47,7 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
             BindingResult errors,
+            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
             RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
@@ -49,13 +57,45 @@ public class DriverController {
                 loggedUser.getId(),
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
-                vehicleForm.getDescription()
+                vehicleForm.getDescription(),
+                vehicleForm.getRate()
         );
+        if(vehicleImg != null) {
+            try{
+                is.uploadVehicleImage(vehicleImg.getBytes(),vehicleImg.getOriginalFilename(),(int) vehicle.getId());
+            } catch (Exception e){
+                log.error(e.getMessage());
+            }
+        }
         List<Toast> toasts = Collections.singletonList(new Toast(
                 ToastType.success, "toast.vehicle.add.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
         return new ModelAndView("redirect:/driver/vehicles");
+    }
+
+    @RequestMapping(path="/vehicle/image", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("vehicleId") int vehicleId, @ModelAttribute("loggedUser") User loggedUser){
+        Image vehicleImg = is.getVehicleImage(vehicleId);
+        if(vehicleImg==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String fileName = vehicleImg.getFileName();
+        String contentType;
+        if(fileName == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        if(fileName.toLowerCase().endsWith(".png"))
+            contentType = "image/png";
+        else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
+            contentType = "image/jpeg";
+        } else {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(null);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        headers.setContentLength(vehicleImg.getData().length);
+        return new ResponseEntity<>(vehicleImg.getData(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
@@ -138,6 +178,7 @@ public class DriverController {
             form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
+            mav.addObject("vehicleId", vehicle.get().getId());
             return mav;
         } else {
             return new ModelAndView();
@@ -149,7 +190,8 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("ogPlateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
-            BindingResult errors
+            BindingResult errors,
+            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg
     ) {
         // Clearly hay que buscar la manera correcta de ignorar un error particular.
         if (errors.hasErrors()) {
@@ -170,9 +212,17 @@ public class DriverController {
                 loggedUser.getId(),
                 form.getPlateNumber(),
                 form.getVolume(),
-                form.getDescription()
+                form.getDescription(),
+                null,
+                form.getRate()
         ));
-
+        Image aux = is.getVehicleImage((int) form.getId());
+        if(vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
+            try{
+                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
@@ -208,5 +258,17 @@ public class DriverController {
     ) {
         ds.rejectBooking(bookingId);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/driver/pop", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser){
+        Image pop = is.getPop((int) bookingId);
+        if(pop!=null&&pop.getFileName().endsWith(".pdf")){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            return new ResponseEntity<>(pop.getData(),headers,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

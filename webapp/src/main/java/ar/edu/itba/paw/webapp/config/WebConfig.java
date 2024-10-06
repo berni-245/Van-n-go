@@ -126,6 +126,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("/js/");
 
+        registry.addResourceHandler("/icons/**")
+                .addResourceLocations("/icons/");
+
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations("/");
     }

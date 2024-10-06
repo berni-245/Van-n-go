@@ -24,7 +24,8 @@ create table if not exists driver
 (
     user_id int primary key references app_user (id) on delete cascade,
     extra1  text,
-    rating  double precision
+    rating double precision,
+    CBU varchar(32)
 );
 
 create table if not exists vehicle
@@ -34,7 +35,8 @@ create table if not exists vehicle
     plate_number text unique,
     volume_m3    double precision,
     description  text,
-    img_id       int references image (id) on delete set null
+    img_id int references image (id) on delete set null,
+    hourly_rate double precision not null default 0
 );
 
 create table if not exists weekly_availability
@@ -56,8 +58,7 @@ create table if not exists hour_block
     constraint hour_blocks_start_time_on_the_hour check (
         extract(minute from t_start) = 0 and extract(second from t_start) = 0
         ),
-    constraint hour_blocks_one_hour_interval check (t_end = t_start + interval '1 hour' or
-                                                    (t_start = '23:00:00' and t_end = '23:59:00'))
+    constraint hour_blocks_one_hour_interval check (t_end = t_start + interval '1 hour')
 );
 
 create table if not exists country

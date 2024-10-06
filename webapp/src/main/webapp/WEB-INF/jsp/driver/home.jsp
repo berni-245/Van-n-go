@@ -30,6 +30,14 @@
                                     value="${booking.client.mail}"/></p>
                             <c:if test="${booking.confirmed}">
                                 <p><spring:message code="driver.home.bookingConfirmed"/></p>
+                                <c:if test="${empty booking.pop or booking.pop == 0}">
+                                    <spring:message code="driver.home.unpaid"/>
+                                </c:if>
+                                <c:if test="${not empty booking.pop and booking.pop != 0}">
+                                    <a href="<c:url value='/driver/pop?bookingId=${booking.bookingId}' />" target="_blank">
+                                        <spring:message code="driver.home.paid"/>
+                                    </a>
+                                </c:if>
                             </c:if>
                             <c:if test="${!booking.confirmed}">
                                 <div class="d-flex justify-content-between">

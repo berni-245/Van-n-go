@@ -4,9 +4,14 @@ alter table app_user
     add column pfp int references image (id) on delete set null;
 alter table vehicle
     add column img_id int references image (id) on delete set null;
-
+alter table vehicle
+    add column hourly_rate double precision not null default 0;
 alter table driver
     add column rating double precision;
+alter table driver
+    add column CBU varchar(32);
+
+alter table vehicle_weekly_zone rename to vehicle_weekly_zone_old;
 
 alter table weekly_availability
     rename to weekly_availability_old;
@@ -27,7 +32,7 @@ select distinct wa.week_day,
                 hb.id,
                 vwz.zone_id,
                 vwz.vehicle_id
-from vehicle_weekly_zone vwz
+from vehicle_weekly_zone_old vwz
          join weekly_availability_old wa on vwz.availability_id = wa.id
          join hour_block hb
               on extract(hour from hb.t_start) >= extract(hour from wa.t_start) and
@@ -42,7 +47,7 @@ alter table booking
 alter table reservation
     rename to reservation_old;
 
-create type state as enum('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
+create type state as enum ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
 
 create table if not exists booking
 (

@@ -10,10 +10,11 @@ public class Driver extends User {
             String username,
             String mail,
             String password,
+            int pfp,
             String extra1,
             Double rating
     ) {
-        super(id, username, mail, password);
+        super(id, username, mail, password,pfp);
         this.extra1 = extra1;
         this.rating = rating;
     }

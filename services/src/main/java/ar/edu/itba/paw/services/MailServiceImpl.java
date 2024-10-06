@@ -1,6 +1,11 @@
 package ar.edu.itba.paw.services;
 
 
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.persistence.ClientDao;
+import ar.edu.itba.paw.persistence.DriverDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,11 +21,18 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Properties;
 
 @Service
 //@PropertySource("classpath:resources/mail/mailConfig.properties") //TODO: pasar las configuraciones a mailConfig.properties
 public class MailServiceImpl implements MailService {
+
+    @Autowired
+    private final DriverDao driverDao;
+    @Autowired
+    private final ClientDao clientDao;
 
 
     private final TemplateEngine templateEngine;
@@ -30,7 +42,9 @@ public class MailServiceImpl implements MailService {
     private final Authenticator auth;
     private final Properties properties;
 
-    public MailServiceImpl() {
+    public MailServiceImpl(DriverDao driverDao, ClientDao clientDao) {
+        this.driverDao = driverDao;
+        this.clientDao = clientDao;
         this.properties = new Properties();
         setProperties();
 
@@ -41,7 +55,6 @@ public class MailServiceImpl implements MailService {
             }
         };
         templateEngine = emailTemplateEngine();
-        templateEngine.addTemplateResolver(htmlTemplateResolver());
     }
 
 
@@ -65,9 +78,9 @@ public class MailServiceImpl implements MailService {
 
     private ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("/i18n/messages");  // Ruta base a tus archivos de propiedades
+        messageSource.setBasename("/mail/i18n/mailMessages");
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setUseCodeAsDefaultMessage(true); // Muestra el código si no se encuentra la clave
+        messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
 
@@ -103,6 +116,7 @@ public class MailServiceImpl implements MailService {
     }
 
 
+    @Async
     @Override
     public void sendClientWelcomeMail(String to, String userName) {
         Message message = getMessage();
@@ -123,10 +137,10 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendHaulerWelcomeMail(String to, String userName) {
+    public void sendDriverWelcomeMail(String to, String userName) {
         Message message = getMessage();
         Context context = new Context();
-        context.setVariable("haulerName", userName);
+        context.setVariable("driverName", userName);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -141,23 +155,32 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRequestedHauler(String clientMail, String haulerMail, String clientName, String haulerName, String jobDescription) {
-        Context context = new Context();
-        context.setVariable("haulerName", haulerName);
-        context.setVariable("haulerMail", haulerMail);
-        context.setVariable("dateRequested", new java.util.Date());
-        context.setVariable("clientName", clientName);
-        context.setVariable("clientMail", clientMail);
-        sendClientRequestedServiceMail(clientMail, context);
-        sendHaulerRequestedMail(haulerMail, context, jobDescription);
+    public void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription) {
+        Optional<Driver> driver = driverDao.findById(driverId);
+        Optional<Client> client = clientDao.findById(clientId);
+        if(driver.isPresent() && client.isPresent()){
+            Context context = new Context();
+            String clientMail = client.get().getMail();
+            String driverMail = driver.get().getMail();
+            context.setVariable("driverName", driver.get().getUsername());
+            context.setVariable("driverMail", driver.get().getMail());
+            context.setVariable("dateRequested", new java.util.Date());
+            context.setVariable("clientName", driverMail);
+            context.setVariable("clientMail", clientMail );
+            sendClientRequestedServiceMail(clientMail, context);
+            sendDriverRequestedMail(driverMail, context, jobDescription);
+
+        }
+
     }
+
 
     private void sendClientRequestedServiceMail(String clientMail, Context context) {
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject("You requested a Van N' Go hauler");
+            message.setSubject("You requested a Van N' Go driver");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
@@ -166,12 +189,12 @@ public class MailServiceImpl implements MailService {
         sendMail(message);
     }
 
-    private void sendHaulerRequestedMail(String haulerMail, Context context, String jobDescription) {
+    private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription) {
         context.setVariable("jobDescription", jobDescription);
         Message message = getMessage();
         try {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(haulerMail));
-            String mailBodyProcessed = templateEngine.process("haulerRequestedServiceMail", context);
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
+            String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
             message.setSubject("You received a request for your service");
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {

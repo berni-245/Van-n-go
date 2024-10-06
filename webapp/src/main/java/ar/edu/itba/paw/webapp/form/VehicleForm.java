@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.Rates;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
@@ -23,6 +24,10 @@ public class VehicleForm {
     @Length(max = 40)
     private String description;
 
+    @Min(Rates.MINIMUM)
+    @Max(Rates.MAXIMUM)
+    private double rate;
+
     private long id;
 
     public void setAll(Vehicle vehicle) {
@@ -30,6 +35,7 @@ public class VehicleForm {
         this.description = vehicle.getDescription();
         this.volume = vehicle.getVolume();
         this.plateNumber = vehicle.getPlateNumber();
+        this.rate = vehicle.getRate();
     }
 
     public void setId(long id) {
@@ -63,4 +69,8 @@ public class VehicleForm {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public double getRate() {return rate;}
+
+    public void setRate(double rate) {this.rate = rate;}
 }

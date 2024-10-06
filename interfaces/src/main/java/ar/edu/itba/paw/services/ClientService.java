@@ -23,5 +23,5 @@ public interface ClientService {
 
     List<Booking> getHistory(long id);
 
-    void setRating(long bookingId, int rating);
+    void setBookingRatingAndReview(long bookingId, int rating, String review);
 }

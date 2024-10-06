@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.availability" bootstrapjs="true"/>
+<comp:Head titleCode="components.header.availability"/>
 
 <body>
 <comp:Header inAvailability="true"/>
@@ -20,7 +20,7 @@
                     <c:url var="vUrl" value="/driver/availability/edit"/>
                     <div class="list-group-item list-group-item-action vehicle-item">
                         <c:out value="${av.weekDayString}"/> |
-                        <c:out value="${av.hourBlockTimeStart}"/>
+                        <c:out value="${av.hourInterval.startHour}"/>
 
                     </div>
                     <%--                    <a href="${vUrl}?availabilityId=TODO"--%>

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.auth;
 import ar.edu.itba.paw.models.PawUserDetails;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserRole;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,8 @@ public class PawUserDetailsService implements UserDetailsService {
     @Qualifier("userServiceImpl")
     @Autowired
     private UserService us;
+    @Autowired
+    private ImageService is;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -28,7 +31,6 @@ public class PawUserDetailsService implements UserDetailsService {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
-
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if (user.get().isDriver()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.DRIVER.name()));
