@@ -106,12 +106,12 @@
                                         </a>
                                         </div>
                                         <c:choose>
-                                        <c:when test="${driver.pfp==0}">
-                                            <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="${pageContext.request.contextPath}/user/pfp?userId=${driver.id}" alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
-                                        </c:otherwise>
+                                            <c:when test="${driver.pfp==0}">
+                                                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="${pageContext.request.contextPath}/user/pfp?userId=${driver.id}" alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                            </c:otherwise>
                                         </c:choose>
                                     </div>
                                 </div>
