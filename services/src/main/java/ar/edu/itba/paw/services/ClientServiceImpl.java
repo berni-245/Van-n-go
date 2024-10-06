@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.HourInterval;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -49,7 +50,8 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Override
     public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date) {
-        return bookingDao.appointBooking(driverId, clientId, date);
+        // TODO add HourInterval logc
+        return bookingDao.appointBooking(driverId, clientId, date, new HourInterval(0, 24));
     }
 
     @Override

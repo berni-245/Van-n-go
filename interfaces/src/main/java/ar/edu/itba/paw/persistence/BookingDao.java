@@ -15,11 +15,15 @@ public interface BookingDao {
 
     void rejectBooking(long bookingId);
 
-    public Optional<Booking> getBookingById(long bookingId);
+    Optional<Booking> getBookingById(long bookingId);
 
-    List<Booking> getBookings(long vehicleId);
+    List<Booking> getBookings(long driverId);
 
-    List<Booking> getBookingsByDate(long vehicleId, LocalDate date);
+    List<Booking> getBookingsByDate(long driverId, LocalDate date);
+
+    List<Booking> getBookingsByVehicle(long vehicleId);
+
+    List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date);
 
     List<Booking> getClientBookings(long clientId);
 

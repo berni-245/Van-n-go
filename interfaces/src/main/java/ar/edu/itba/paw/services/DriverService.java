@@ -42,11 +42,6 @@ public interface DriverService {
         return getBookingsByDate(driverId, LocalDate.parse(date));
     }
 
-    /**
-     * Accepts a booking for a given driver and the booking id. Rejects all the other bookings on that day for that driver.
-     *
-     * @param bookingId The ID of the booking.
-     */
     void acceptBooking(long bookingId);
 
     void rejectBooking(long bookingId);

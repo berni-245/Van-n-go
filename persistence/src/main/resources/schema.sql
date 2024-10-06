@@ -88,9 +88,6 @@ create table if not exists zone
     unique (country_id, province_id, neighborhood_id)
 );
 
-
-create type state as enum('pending', 'accepted', 'rejected', 'finished');
-
 create table if not exists booking
 (
     id               serial primary key,

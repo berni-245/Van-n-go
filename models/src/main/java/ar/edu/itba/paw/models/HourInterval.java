@@ -8,6 +8,8 @@ public class HourInterval {
     private final int hourCount;
 
     public HourInterval(int startHour, int endHour) {
+        if(endHour == 0)
+            endHour = 24;
         if(! ((0 <= startHour) && (startHour < endHour) && (endHour <= 24)) )
             throw new IllegalArgumentException("Start time must be before end time");
         this.startHour = startHour;
@@ -17,7 +19,7 @@ public class HourInterval {
 
     // Only uses the hours for interval
     public HourInterval(LocalTime startTime, LocalTime endTime) {
-        this(startTime.getHour(), endTime.getHour() == 0 ? 24 : endTime.getHour());
+        this(startTime.getHour(), endTime.getHour());
     }
 
     // Only uses the hours for interval
