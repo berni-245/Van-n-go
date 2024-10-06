@@ -41,6 +41,16 @@ from vehicle_weekly_zone_old vwz
 order by vehicle_id, zone_id, week_day, hb.id
 on conflict do nothing;
 
+insert into weekly_availability (week_day, hour_block_id, zone_id, vehicle_id)
+select   wa.week_day,
+         hb.id,
+         vwz.zone_id,
+         vwz.vehicle_id
+from weekly_availability_old wa join hour_block hb on extract(hour from wa.t_start) = extract(hour from hb.t_start)
+                                join vehicle_weekly_zone vwz on wa.id = vwz.availability_id
+where extract(hour from wa.t_start) = extract(hour from wa.t_end)
+on conflict do nothing;
+
 alter table booking
     rename to booking_old;
 
