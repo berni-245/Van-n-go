@@ -1,36 +1,29 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
+import ar.edu.itba.paw.webapp.validation.ValidChangePasssword;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
 
 
 @ValidChangeUsername
 @ValidChangeMail
+@ValidChangePasssword
 public class ChangeUserInfoForm {
 
 
     private boolean mailChanged;
 
-
     private boolean usernameChanged;
 
-
+    private boolean passwordChanged;
 
     private String username;
 
-
-
     private String mail;
 
-   /* @Nullable
-    @Size(min = 8, max = 32)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
     private String password;
 
-    @Nullable
-    @Size(min = 8, max = 32)
     private String confirmPassword;
-*/
 
     public String getUsername() {
         return username;
@@ -40,7 +33,7 @@ public class ChangeUserInfoForm {
         this.username = username;
     }
 
- /*   public String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -54,7 +47,7 @@ public class ChangeUserInfoForm {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
-    }*/
+    }
 
     public boolean getMailChanged() {
         return mailChanged;
@@ -72,11 +65,20 @@ public class ChangeUserInfoForm {
         this.usernameChanged = usernameChanged;
     }
 
-    public String getMail(){
+    public String getMail() {
         return mail;
     }
 
-    public void setMail(String mail){
+    public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public boolean getPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
+    }
+
 }
