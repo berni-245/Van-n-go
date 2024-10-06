@@ -12,7 +12,6 @@ public class Booking {
     private final LocalDate date;
     private final HourInterval hourInterval;
     private final BookingState bookingState;
-    private final Image proofOfPayment;
     private final Integer rating;
     private final String review;
     private final boolean confirmed;
@@ -20,7 +19,7 @@ public class Booking {
 
     public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
                    Zone zone, LocalDate date, HourInterval hourInterval,
-                   BookingState bookingState, Image proofOfPayment, Integer rating,
+                   BookingState bookingState, Integer rating,
                    String review, Integer pop) {
         this.bookingId = bookingId;
         this.client = client;
@@ -30,7 +29,6 @@ public class Booking {
         this.date = date;
         this.hourInterval = hourInterval;
         this.bookingState = bookingState;
-        this.proofOfPayment = proofOfPayment;
         this.rating = rating;
         this.review = review;
         this.confirmed = bookingState.equals(BookingState.ACCEPTED);
@@ -67,10 +65,6 @@ public class Booking {
         return client;
     }
 
-    public Optional<Image> getProofOfPayment() {
-        return Optional.ofNullable(proofOfPayment);
-    }
-
     public Optional<Integer> getRating() {
         return Optional.ofNullable(rating);
     }
@@ -79,11 +73,11 @@ public class Booking {
         return Optional.ofNullable(review);
     }
 
-    public boolean getConfirmed() {
-        return confirmed;
-    }
-
     public Integer getPop() {
         return pop;
+    }
+
+    public boolean getConfirmed() {
+        return confirmed;
     }
 }
