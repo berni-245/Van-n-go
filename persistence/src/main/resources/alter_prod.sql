@@ -7,4 +7,4 @@ alter table reservation add column proof_of_payment int references image (id) on
 alter table booking add column rating int;
 alter table booking add column review varchar(255);
 alter table driver add column rating double precision;
-alter table driver add column CBU int
+alter table driver add column CBU varchar(32);

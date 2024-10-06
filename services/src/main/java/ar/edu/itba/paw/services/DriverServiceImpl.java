@@ -58,8 +58,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description) {
-        return vehicleDao.create(driverId, plateNumber, volume, description);
+    public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate) {
+        return vehicleDao.create(driverId, plateNumber, volume, description, rate);
     }
 
     @Override
