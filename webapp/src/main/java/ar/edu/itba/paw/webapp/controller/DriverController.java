@@ -46,8 +46,8 @@ public class DriverController {
     public ModelAndView addVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
-            @RequestParam("vehicleImg") MultipartFile vehicleImg,
             BindingResult errors,
+            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
             RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
@@ -190,8 +190,8 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("ogPlateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
-            @RequestParam("vehicleImg") MultipartFile vehicleImg,
-            BindingResult errors
+            BindingResult errors,
+            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg
     ) {
         // Clearly hay que buscar la manera correcta de ignorar un error particular.
         if (errors.hasErrors()) {
@@ -217,7 +217,7 @@ public class DriverController {
                 form.getRate()
         ));
         Image aux = is.getVehicleImage((int) form.getId());
-        if(vehicleImg != null && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
+        if(vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
             try{
                 is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
             } catch (Exception e) {
