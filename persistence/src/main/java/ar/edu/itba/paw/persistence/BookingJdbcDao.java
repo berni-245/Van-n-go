@@ -53,7 +53,8 @@ public class BookingJdbcDao implements BookingDao {
                     BookingState.valueOf(rs.getString("state").toUpperCase()),
                     image,
                     rs.getObject("rating", Integer.class),
-                    rs.getString("review")
+                    rs.getString("review"),
+                    rs.getInt("proof_of_payment")
             );
         };
     }
@@ -204,14 +205,14 @@ public class BookingJdbcDao implements BookingDao {
     }
 
     @Override
-    public void setRating(long bookingId, int rating) {
+    public void setRatingAndReview(long bookingId, int rating, String review) {
         jdbcTemplate.update("""
                     update booking
-                    set rating = ?
+                    set rating = ?, review = ?
                     where id = ?
                 """,
-                new Object[]{rating, bookingId},
-                new int[]{Types.INTEGER, Types.BIGINT});
+                new Object[]{rating, review, bookingId},
+                new int[]{Types.INTEGER, Types.VARCHAR, Types.BIGINT});
         Long driverId = jdbcTemplate.queryForObject("""
                 select driver_id
                 from booking b join vehicle v on b.vehicle_id = v.id
@@ -223,6 +224,14 @@ public class BookingJdbcDao implements BookingDao {
         if (driverId != null) {
             driverDao.updateDriverRating(driverId);
         }
+    }
+
+    @Override
+    public Double getDriverRating(long driverID) {
+        return jdbcTemplate.queryForObject("""
+                select avg(rating)
+                from booking b where driver_id = ?
+                """, new Object[]{driverID}, new int[]{Types.BIGINT}, Double.class);
     }
 
     private HourInterval getHourInterval(long hour_start_id, long hour_end_id) {

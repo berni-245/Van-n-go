@@ -22,6 +22,7 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("username"),
                     rs.getString("mail"),
                     rs.getString("password"),
+                    rs.getInt("pfp"),
                     rs.getString("extra1"),
                     rs.getObject("rating", Double.class)
             );
@@ -37,7 +38,7 @@ public class DriverJdbcDao implements DriverDao {
     @Override
     public Driver create(long id, String username, String mail, String password, String extra1) {
         jdbcDriverInsert.execute(Map.of("user_id", id, "extra1", extra1));
-        return new Driver(id, username, mail, password, extra1,null);
+        return new Driver(id, username, mail, password, 0, extra1,null);
     }
 
     @Override

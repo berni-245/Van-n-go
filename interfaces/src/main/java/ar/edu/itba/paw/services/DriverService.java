@@ -11,7 +11,7 @@ public interface DriverService {
 
     Optional<Driver> findById(long id);
 
-    Vehicle addVehicle(long driverId, String plateNumber, double volume, String description);
+    Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate);
 
     List<Vehicle> getVehicles(long id);
 

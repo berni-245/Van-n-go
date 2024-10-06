@@ -24,7 +24,8 @@ create table if not exists driver
 (
     user_id int primary key references app_user (id) on delete cascade,
     extra1  text,
-    rating  double precision
+    rating double precision,
+    CBU varchar(32)
 );
 
 create table if not exists vehicle
@@ -34,7 +35,8 @@ create table if not exists vehicle
     plate_number text unique,
     volume_m3    double precision,
     description  text,
-    img_id       int references image (id) on delete set null
+    img_id int references image (id) on delete set null,
+    hourly_rate double precision not null default 0
 );
 
 create table if not exists weekly_availability

@@ -116,6 +116,19 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     }
 
     @Override
+    public List<WeeklyAvailability> getVehicleWeeklyAvailabilityZoneAgnostic(long vehicleId) {
+        return jdbcTemplate.query("""
+                    select distinct on (id, week_day, t_start, t_end, vehicle_id) id, week_day, t_start, t_end, zone_id, vehicle_id
+                    from vehicle_weekly_zone vwz
+                    join weekly_availability wa on vwz.availability_id = wa.id
+                    where vehicle_id = ?
+                    """,
+                new Object[]{vehicleId},
+                new int[]{Types.BIGINT},
+                ROW_MAPPER);
+    }
+
+    @Override
     public List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId, long zoneId) {
         return jdbcTemplate.query("""
                         select week_day, t_start, t_end, zone_id, vehicle_id

@@ -12,4 +12,10 @@ public interface UserDao {
     boolean usernameExists(String mail);
 
     Optional<? extends User> findByUsername(String username);
+
+    int updateMail(long userId, String updatedMail);
+
+    int updatePassword(long userId, String updatedPassword);
+
+    int updateUsername(long userId, String updatedUsername);
 }

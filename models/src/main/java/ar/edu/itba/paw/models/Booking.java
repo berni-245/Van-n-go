@@ -15,10 +15,11 @@ public class Booking {
     private final Integer rating;
     private final String review;
     private final boolean confirmed;
+    private final Integer pop;
 
     public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
                    LocalDate date, HourInterval hourInterval, BookingState bookingState,
-                   Image proofOfPayment, Integer rating, String review) {
+                   Image proofOfPayment, Integer rating, String review, Integer pop) {
         this.bookingId = bookingId;
         this.client = client;
         this.driver = driver;
@@ -30,6 +31,7 @@ public class Booking {
         this.rating = rating;
         this.review = review;
         this.confirmed = bookingState.equals(BookingState.ACCEPTED);
+        this.pop = pop;
     }
 
     public long getBookingId() {
@@ -74,5 +76,9 @@ public class Booking {
 
     public boolean getConfirmed() {
         return confirmed;
+    }
+
+    public Integer getPop() {
+        return pop;
     }
 }

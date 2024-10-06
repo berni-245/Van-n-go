@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.ClientService;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.MailService;
-import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
+import ar.edu.itba.paw.webapp.form.BookingReviewForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -20,21 +21,34 @@ import java.util.Optional;
 
 @Controller
 public class ClientController {
+    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private DriverService ds;
-
     @Autowired
     private ZoneService zs;
     @Autowired
-    private MailService mailService;
-
-    @Autowired
     private ClientService cs;
+    @Autowired
+    private ImageService is;
 
-    public ClientController(DriverService ds, ClientService cs, ZoneService zs) {
+    public ClientController(DriverService ds, ClientService cs, ZoneService zs, ImageService is) {
         this.ds = ds;
         this.cs = cs;
         this.zs = zs;
+        this.is = is;
+    }
+
+    @RequestMapping(path =  "/upload/pop", method = RequestMethod.POST)
+    public String submit(@RequestParam("proofOfPayment")MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
+        if (file == null || file.isEmpty()) {
+            return "redirect:/bookings";
+        }
+        try {
+            int img_id = is.uploadPop(file.getBytes(), file.getOriginalFilename(), Math.toIntExact(driverId), Math.toIntExact(bookingId));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return "redirect:/bookings";
     }
 
     @RequestMapping("/bookings")
@@ -45,10 +59,23 @@ public class ClientController {
     }
 
     @RequestMapping("/client/history")
-    public ModelAndView clientHistory(@ModelAttribute("loggedUser") Client loggedUser) {
+    public ModelAndView clientHistory(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form) {
         ModelAndView mav = new ModelAndView("client/history");
         mav.addObject("history", cs.getHistory(loggedUser.getId()));
         return mav;
+    }
+
+    @RequestMapping(path = "/client/history", method = RequestMethod.POST)
+    public ModelAndView sendReview(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return clientHistory(loggedUser,form);
+        }
+        cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
+        return new ModelAndView("redirect:/client/history");
     }
 
     @RequestMapping("/availability")
@@ -98,30 +125,19 @@ public class ClientController {
     }
 
     @RequestMapping(path = "/availability/contact", method = RequestMethod.POST)
-    public ModelAndView sendRequestServiceMail(
+    public ModelAndView appointbooking(
             @RequestParam("clientId") long clientId,
-            @RequestParam("clientName") String clientName,
-            @RequestParam("clientMail") String clientMail,
             @RequestParam("jobDescription") String jobDescription,
             @RequestParam("driverId") long driverId,
-            @RequestParam("driverName") String driverName,
-            @RequestParam("driverMail") String driverMail,
             @RequestParam("bookingDate") String date
     ) {
         //TODO cambiar driverId to vehicleId
         // TODO add HourInterval logc
         Optional<Booking> booking = cs.appointBooking(driverId, clientId, date, new HourInterval(0, 24));
         if (booking.isPresent()) {
-            mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
             return new ModelAndView("redirect:/bookings");
         }
         return new ModelAndView("redirect:/bookings");
-    }
-
-    @RequestMapping(path = "/sendReview", method = RequestMethod.POST)
-    public ModelAndView sendReview(@RequestParam("bookingId") long bookingId, @RequestParam("rating") int rating){
-        cs.setRating(bookingId,rating);
-        return  new ModelAndView("redirect:/client/history");
     }
 
 }

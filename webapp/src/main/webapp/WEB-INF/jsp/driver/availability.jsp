@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.availability" bootstrapjs="true"/>
+<comp:Head titleCode="components.header.availability"/>
 
 <body>
 <comp:Header inAvailability="true"/>

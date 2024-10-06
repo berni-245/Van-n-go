@@ -69,20 +69,68 @@
             <ul class="nav nav-pills ms-auto">
                 <c:choose>
                     <c:when test="${loggedIn}">
-                        <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/profile" class="nav-link" aria-current="page">
-                                <c:out value="${loggedUser.username}"/>
+                        <div class="dropdown me-2 user-select-none">
+                            <a class="text-body-emphasis d-flex align-items-center text-decoration-none dropdown-toggle"
+                               data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                <c:choose>
+                                <c:when test="${loggedUser.pfp != 0}">
+                                    <c:url value='/profile/picture' var="pfpUrl"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:url value='/images/defaultUserPfp.png' var="pfpUrl"/>
+                                </c:otherwise>
+                                </c:choose>
+                                <img src="${pfpUrl}" alt="Profile Picture"
+                                     class="rounded-circle me-2" width="50" height="50">
+                                <span class="d-sm-inline mx-1">${loggedUser.username}</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/logout" class="nav-link" aria-current="page">
-                                <spring:message code="components.header.logout"/>
-                            </a>
-                        </li>
+                            <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+                                <li class="dropdown-item">
+                                    <c:url value='/profile' var="profileUrl"/>
+                                    <a href="${profileUrl}"
+                                       class="nav-link icon-link text-body-emphasis"
+                                       aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-person-lines-fill"
+                                             viewBox="0 0 16 16">
+                                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"></path>
+                                        </svg>
+                                        <spring:message code="generic.word.profile"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-item">
+                                    <c:url value='/logout' var="logoutUrl"/>
+                                    <a href="${logoutUrl}"
+                                       class="nav-link icon-link icon-link-hover text-body-emphasis"
+                                       aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                             stroke-width="1.5" stroke-linecap="round"
+                                             stroke-linejoin="round" class="bi" style="fill: none">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                            <polyline points="16 17 21 12 16 7"></polyline>
+                                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                                        </svg>
+                                        <spring:message code="components.header.logout"/>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/login" class="nav-link" aria-current="page">
+                            <a href="${pageContext.request.contextPath}/login"
+                               class="nav-link icon-link icon-link-hover" aria-current="page">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                     stroke-linejoin="round" class="bi" style="fill: none">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                </svg>
                                 <spring:message code="components.header.login"/>
                             </a>
                         </li>

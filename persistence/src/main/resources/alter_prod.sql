@@ -4,9 +4,12 @@ alter table app_user
     add column pfp int references image (id) on delete set null;
 alter table vehicle
     add column img_id int references image (id) on delete set null;
-
+alter table vehicle
+    add column hourly_rate double precision not null default 0;
 alter table driver
     add column rating double precision;
+alter table driver
+    add column CBU varchar(32);
 
 alter table weekly_availability
     rename to weekly_availability_old;
@@ -42,22 +45,21 @@ alter table booking
 alter table reservation
     rename to reservation_old;
 
-create type state as enum('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
+create type state as enum ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
 
 create table if not exists booking
 (
     id               serial primary key,
     date             date,
-    hour_start_id    int     not null references hour_block (id) on delete cascade,
-    hour_end_id      int     not null references hour_block (id) on delete cascade,
-    client_id        int     not null references client (user_id) on delete cascade,
-    vehicle_id       int     not null references vehicle (id) on delete cascade,
-    state            state   not null,
-    proof_of_payment int     references image (id) on delete set null,
+    hour_start_id    int   not null references hour_block (id) on delete cascade,
+    hour_end_id      int   not null references hour_block (id) on delete cascade,
+    client_id        int   not null references client (user_id) on delete cascade,
+    vehicle_id       int   not null references vehicle (id) on delete cascade,
+    state            state not null,
+    proof_of_payment int   references image (id) on delete set null,
     rating           int,
     review           text
 );
-
 insert into booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, state)
 select bo.date,
        min(wa.hour_block_id) as hour_start_id,

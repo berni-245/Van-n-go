@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.availability" bootstrapjs="true" popper="true" tomselect="true">
+<comp:Head titleCode="components.header.availability" tomselect="true">
     <c:url value="/css/weekdaySelector.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>

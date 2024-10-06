@@ -22,7 +22,9 @@ public class VehicleJdbcDao implements VehicleDao {
                     rs.getLong("driver_id"),
                     rs.getString("plate_number"),
                     rs.getDouble("volume_m3"),
-                    rs.getString("description")
+                    rs.getString("description"),
+                    rs.getInt("img_id"),
+                    rs.getDouble("hourly_rate")
             );
 
     private final JdbcTemplate jdbcTemplate;
@@ -38,15 +40,16 @@ public class VehicleJdbcDao implements VehicleDao {
     }
 
     @Override
-    public Vehicle create(long driverId, String plateNumber, double volume, String description) {
+    public Vehicle create(long driverId, String plateNumber, double volume, String description, double rate) {
         Map<String, Object> vehicleData = Map.of(
                 "driver_id", driverId,
                 "plate_number", plateNumber.toUpperCase(),
                 "volume_m3", volume,
-                "description", description
+                "description", description,
+                "hourly_rate", rate
         );
         final Number generatedId = jdbcVehicleInsert.executeAndReturnKey(vehicleData);
-        return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description);
+        return new Vehicle(generatedId.longValue(), driverId, plateNumber, volume, description, null, rate);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class VehicleJdbcDao implements VehicleDao {
 
         for (Vehicle vehicle : vehicles) {
             vehicle.setWeeklyAvailability(
-                    weeklyAvailabilityDao.getVehicleWeeklyAvailability(vehicle.getId())
+                    weeklyAvailabilityDao.getVehicleWeeklyAvailabilityZoneAgnostic(vehicle.getId())
             );
         }
         return vehicles;
@@ -127,10 +130,10 @@ public class VehicleJdbcDao implements VehicleDao {
     public boolean updateVehicle(long driverId, Vehicle v) {
         return jdbcTemplate.update("""
                         UPDATE vehicle
-                        SET plate_number = ?, volume_m3 = ?, description = ?
+                        SET plate_number = ?, volume_m3 = ?, description = ?, hourly_rate = ?
                         WHERE driver_id = ? and id = ?""",
-                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), driverId, v.getId()},
-                new int[]{Types.VARCHAR, Types.DOUBLE, Types.VARCHAR, Types.BIGINT, Types.BIGINT}
+                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), v.getRate(), driverId, v.getId()},
+                new int[]{Types.VARCHAR, Types.DOUBLE, Types.VARCHAR, Types.DOUBLE, Types.BIGINT, Types.BIGINT}
         ) > 0;
     }
 }

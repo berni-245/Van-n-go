@@ -106,20 +106,22 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public int uploadVehicleImage(byte[] bin, String fileName, int vehicleId) {
         Integer key = uploadImage(fileName,bin);
-        return jdbcTemplate.update("""
+        jdbcTemplate.update("""
                     update vehicle set img_id = ?
                     where id = ?""",
                 new Object[]{key,vehicleId},
                 new int[]{Types.BIGINT,Types.BIGINT});
+        return key;
     }
 
     @Override
     public int uploadPfp(byte[] bin, String fileName, int userId) {
         Integer key = uploadImage(fileName,bin);
-        return jdbcTemplate.update("""
+        jdbcTemplate.update("""
                     update app_user set pfp = ?
                     where id = ?""",
                 new Object[]{key,userId},
                 new int[]{Types.BIGINT,Types.BIGINT});
+        return key;
     }
 }
