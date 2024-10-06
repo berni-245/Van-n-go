@@ -94,10 +94,6 @@ public class PublicController {
     @RequestMapping(path = "/profile")
     public ModelAndView profile(@ModelAttribute("loggedUser") User loggedUser) {
         ModelAndView mav = new ModelAndView("public/profile");
-        Image pfp = is.getPfp((int) loggedUser.getId());
-        if (pfp != null) {
-            mav.addObject("profilePic", pfp);
-        }
         Optional<Driver> test = ds.findById(loggedUser.getId());
         test.ifPresent(driver -> mav.addObject("loggedDriver", driver));
         mav.addObject("loggedUser", loggedUser);
