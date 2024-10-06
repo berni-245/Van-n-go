@@ -108,7 +108,9 @@ public class ClientController {
             @RequestParam("driverMail") String driverMail,
             @RequestParam("bookingDate") String date
     ) {
-        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date));
+        //TODO cambiar driverId to vehicleId
+        // TODO add HourInterval logc
+        Optional<Booking> booking = cs.appointBooking(driverId, clientId, date, new HourInterval(0, 24));
         if (booking.isPresent()) {
             mailService.sendRequestedHauler(clientMail, driverMail, clientName, driverName, jobDescription);
             return new ModelAndView("redirect:/bookings");
