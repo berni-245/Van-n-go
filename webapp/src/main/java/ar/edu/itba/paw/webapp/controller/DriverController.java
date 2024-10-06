@@ -237,9 +237,11 @@ public class DriverController {
                 form.getRate()
         ));
         Image aux = is.getVehicleImage((int) form.getId());
-        if(vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
+        if(vehicleImg != null && !vehicleImg.isEmpty())
             try{
-                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
+                //If they have exactly the same length and filename, they are most likely the same image
+                if (aux != null && !(aux.getFileName().equals(vehicleImg.getOriginalFilename()) && aux.getData().length==vehicleImg.getBytes().length))
+                    is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
