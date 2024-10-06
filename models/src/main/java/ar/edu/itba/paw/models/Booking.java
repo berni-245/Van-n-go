@@ -1,41 +1,72 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class Booking {
     private final long bookingId;
-    private final Client user;
+    private final Client client;
     private final Driver driver;
+    private final Vehicle vehicle;
     private final LocalDate date;
-    private final boolean confirmed;
+    private final HourInterval hourInterval;
+    private final BookingState bookingState;
+    private final Image proofOfPayment;
     private final Integer rating;
+    private final String review;
 
-    public Booking(long bookingId, Client user, LocalDate date, boolean confirmed, Driver driver, Integer rating) {
+    public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
+                   LocalDate date, HourInterval hourInterval, BookingState bookingState,
+                   Image proofOfPayment, Integer rating, String review) {
         this.bookingId = bookingId;
-        this.user = user;
+        this.client = client;
         this.driver = driver;
+        this.vehicle = vehicle;
         this.date = date;
-        this.confirmed = confirmed;
+        this.hourInterval = hourInterval;
+        this.bookingState = bookingState;
+        this.proofOfPayment = proofOfPayment;
         this.rating = rating;
+        this.review = review;
     }
 
     public long getBookingId() {
         return bookingId;
     }
 
-    public Client getClient() {
-        return user;
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public boolean getConfirmed() {
-        return confirmed;
+    public HourInterval getHourInterval() {
+        return hourInterval;
     }
 
-    public Driver getDriver() {return driver;}
+    public BookingState getBookingState() {
+        return bookingState;
+    }
 
-    public Integer getRating() {return rating;}
+    public Client getClient() {
+        return client;
+    }
+
+    public Optional<Image> getProofOfPayment() {
+        return Optional.ofNullable(proofOfPayment);
+    }
+
+    public Optional<Integer> getRating() {
+        return Optional.ofNullable(rating);
+    }
+
+    public Optional<String> getReview() {
+        return Optional.ofNullable(review);
+    }
 }
