@@ -101,11 +101,19 @@ public class PublicController {
     }
 
 
+    @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getUserPicture(@RequestParam("userId") int userId ,@ModelAttribute("loggedUser") User loggedUser) {
+        return getValidatedPfp(is.getPfp((int) userId));
+    }
 
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
-        Image pfp = is.getPfp((int) loggedUser.getId());
+        return getValidatedPfp(is.getPfp((int) loggedUser.getId()));
+    }
+
+    private ResponseEntity<byte[]> getValidatedPfp(Image pfp) {
         if (pfp != null && pfp.getData() != null) {
             String fileName = pfp.getFileName();
             String contentType;
@@ -126,6 +134,4 @@ public class PublicController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
 }
