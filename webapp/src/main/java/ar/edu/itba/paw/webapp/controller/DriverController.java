@@ -190,6 +190,7 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("ogPlateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
+            @RequestParam("vehicleImg") MultipartFile vehicleImg,
             BindingResult errors
     ) {
         // Clearly hay que buscar la manera correcta de ignorar un error particular.
@@ -215,7 +216,13 @@ public class DriverController {
                 null,
                 form.getRate()
         ));
-
+        Image aux = is.getVehicleImage((int) form.getId());
+        if(vehicleImg != null && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
+            try{
+                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
