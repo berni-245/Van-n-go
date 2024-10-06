@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.HourInterval;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +18,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     private static final RowMapper<WeeklyAvailability> ROW_MAPPER =
             (rs, rowNum) -> new WeeklyAvailability(
                     rs.getInt("week_day"),
-                    rs.getString("t_start"),
+                    new HourInterval(rs.getString("t_start"),rs.getString("t_end")),
                     rs.getLong("zone_id"),
                     rs.getLong("vehicle_id")
             );
@@ -72,7 +73,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     @Override
     public List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId) {
         return jdbcTemplate.query("""
-                        select week_day, t_start, zone_id, vehicle_id
+                        select week_day, t_start, t_end, zone_id, vehicle_id
                         from hour_block hb
                         join weekly_availability wa on hb.id = wa.hour_block_id
                         join vehicle vh on vh.id = wa.vehicle_id
@@ -87,7 +88,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
        List<List<WeeklyAvailability>> availabilityByDays = new ArrayList<>();
         for (int day = MIN_DAY; day <= MAX_DAY; day++) {
             List<WeeklyAvailability> dayAvailability = jdbcTemplate.query("""
-                    select week_day, t_start, zone_id, vehicle_id
+                    select week_day, t_start, t_end, zone_id, vehicle_id
                     from hour_block hb
                     join weekly_availability wa on hb.id = wa.hour_block_id
                     join vehicle vh on vh.id = wa.vehicle_id
@@ -102,7 +103,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     @Override
     public List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId) {
         return jdbcTemplate.query("""
-                        select week_day, t_start, zone_id, vehicle_id
+                        select week_day, t_start, t_end, zone_id, vehicle_id
                         from hour_block hb
                         join weekly_availability wa on hb.id = wa.hour_block_id
                         where vehicle_id = ?""",
@@ -114,7 +115,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     @Override
     public List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId, long zoneId) {
         return jdbcTemplate.query("""
-                        select week_day, t_start, zone_id, vehicle_id
+                        select week_day, t_start, t_end, zone_id, vehicle_id
                         from weekly_availability as wa join
                         hour_block as hb on hb.id = wa.hour_block_id
                         where vehicle_id = ? and zone_id = ?""",
