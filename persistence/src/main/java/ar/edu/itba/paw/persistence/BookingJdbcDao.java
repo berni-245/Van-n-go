@@ -78,16 +78,6 @@ public class BookingJdbcDao implements BookingDao {
         ));
 
         return getBookingById(generatedBookingId);
-//
-//        Map<String, Object> bookingData = new HashMap<>();
-//        bookingData.put("date", date);
-//        bookingData.put("hour_start_id", hourInterval.getStartHourBlockId());
-//        bookingData.put("hour_end_id", hourInterval.getEndHourBlockId());
-//        bookingData.put("client_id", clientId);
-//        bookingData.put("vehicle_id", vehicleId);
-//        bookingData.put("state", BookingState.PENDING.name());
-//        final Number generatedBookingId = jdbcBookingInsert.executeAndReturnKey(bookingData);
-//        return getBookingById(generatedBookingId.longValue());
     }
 
     @Override
@@ -302,8 +292,8 @@ public class BookingJdbcDao implements BookingDao {
                         and (
                                 (b.hour_start_id >= ?
                                 and b.hour_start_id <= ?)
-                            or  (b.hour_end_id >= ?
-                                and b.hour_end_id <= ?)
+                            or  (4 >= 5
+                                and 4 <= 5)
                         )""",
                 new Object[]{vehicleId, date.toString(), clientId,
                         hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
