@@ -18,7 +18,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     private static final RowMapper<WeeklyAvailability> ROW_MAPPER =
             (rs, rowNum) -> new WeeklyAvailability(
                     rs.getInt("week_day"),
-                    new HourInterval(rs.getString("t_start"),rs.getString("t_end")),
+                    new HourInterval(rs.getString("t_start"), rs.getString("t_end")),
                     rs.getLong("zone_id"),
                     rs.getLong("vehicle_id")
             );
@@ -37,9 +37,12 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     private List<Integer> findHourBlocksId(String hourStart, String hourEnd) {
         return jdbcTemplate.query(
                 """
-                        select id
+                        select *
                         from hour_block
-                        where t_start >= ? and t_end <= ?
+                        where id between
+                            (select id from hour_block where t_start = ?)
+                            AND
+                            (select id from hour_block where t_end = ?)
                         """,
                 new Object[]{hourStart, hourEnd},
                 new int[]{Types.TIME, Types.TIME},
@@ -85,7 +88,7 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
 
     @Override
     public List<List<WeeklyAvailability>> getDriverWeeklyAvailabilityByDays(long driverId) {
-       List<List<WeeklyAvailability>> availabilityByDays = new ArrayList<>();
+        List<List<WeeklyAvailability>> availabilityByDays = new ArrayList<>();
         for (int day = MIN_DAY; day <= MAX_DAY; day++) {
             List<WeeklyAvailability> dayAvailability = jdbcTemplate.query("""
                     select week_day, t_start, t_end, zone_id, vehicle_id

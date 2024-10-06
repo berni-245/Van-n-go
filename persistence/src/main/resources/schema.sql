@@ -56,8 +56,7 @@ create table if not exists hour_block
     constraint hour_blocks_start_time_on_the_hour check (
         extract(minute from t_start) = 0 and extract(second from t_start) = 0
         ),
-    constraint hour_blocks_one_hour_interval check (t_end = t_start + interval '1 hour' or
-                                                    (t_start = '23:00:00' and t_end = '23:59:00'))
+    constraint hour_blocks_one_hour_interval check (t_end = t_start + interval '1 hour')
 );
 
 create table if not exists country
