@@ -14,6 +14,7 @@ public class Booking {
     private final Image proofOfPayment;
     private final Integer rating;
     private final String review;
+    private final boolean confirmed;
 
     public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
                    LocalDate date, HourInterval hourInterval, BookingState bookingState,
@@ -28,6 +29,7 @@ public class Booking {
         this.proofOfPayment = proofOfPayment;
         this.rating = rating;
         this.review = review;
+        this.confirmed = bookingState.equals(BookingState.ACCEPTED);
     }
 
     public long getBookingId() {
@@ -68,5 +70,9 @@ public class Booking {
 
     public Optional<String> getReview() {
         return Optional.ofNullable(review);
+    }
+
+    public boolean getConfirmed() {
+        return confirmed;
     }
 }
