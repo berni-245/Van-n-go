@@ -37,8 +37,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image getPop(int driverId, int bookingId) {
-        return imgDao.getPop(driverId, bookingId);
+    public Image getPop(int bookingId) {
+        return imgDao.getPop(bookingId);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
-        return imgDao.uploadPop(bin, fileName, driverId, bookingId);
+    public int uploadPop(byte[] bin, String fileName, int bookingId) {
+        return imgDao.uploadPop(bin, fileName, bookingId);
     }
 }

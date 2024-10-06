@@ -11,9 +11,9 @@ public interface ImageDao {
 
     Image getVehicleImage(int vehicleId);
 
-    Image getPop(int driverId, int bookingId);
+    Image getPop(int bookingId);
 
-    int uploadPop(byte[] bin, String fileName, int driverId, int bookingId);
+    int uploadPop(byte[] bin, String fileName, int bookingId);
 
     int uploadVehicleImage(byte[] bin, String fileName, int vehicleId);
 

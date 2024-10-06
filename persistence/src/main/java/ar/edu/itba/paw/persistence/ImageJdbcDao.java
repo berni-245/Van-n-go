@@ -66,8 +66,8 @@ public class ImageJdbcDao implements ImageDao {
     @Override
     public Image getVehicleImage(int vehicleId) {
         List<Image> img = jdbcTemplate.query("""
-                SELECT id, bin, file_name
-                FROM image AS i JOIN vehicle AS v ON v.img_id = i.id 
+                SELECT i.id, bin, file_name
+                FROM image AS i JOIN vehicle AS v ON v.img_id = i.id
                 WHERE v.id = ?""",
                 new Object[]{vehicleId},
                 new int[]{Types.BIGINT},
@@ -78,14 +78,14 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public Image getPop(int driverId, int bookingId) {
+    public Image getPop(int bookingId) {
         List<Image> img;
         img = jdbcTemplate.query("""
-                SELECT id, bin, file_name
-                FROM image AS i JOIN reservation AS r ON r.proof_of_payment = i.id 
-                WHERE r.driver_id = ? AND r.booking_id = ?""",
-                new Object[]{driverId, bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT},
+                SELECT i.id, i.bin, i.file_name
+                FROM image i JOIN booking b ON b.proof_of_payment = i.id
+                WHERE b.id = ?""",
+                new Object[]{bookingId},
+                new int[]{Types.BIGINT},
                 ROW_MAPPER);
         if(img.isEmpty())
             return null;
@@ -93,13 +93,14 @@ public class ImageJdbcDao implements ImageDao {
     }
 
     @Override
-    public int uploadPop(byte[] bin, String fileName, int driverId, int bookingId) {
+    public int uploadPop(byte[] bin, String fileName, int bookingId) {
         Integer key = uploadImage(fileName,bin);
         return jdbcTemplate.update("""
-                    update reservation set proof_of_payment = ?
-                    where driver_id = ? and booking_id = ?""",
-                new Object[]{key,driverId,bookingId},
-                new int[]{Types.BIGINT,Types.BIGINT,Types.BIGINT});
+                update booking
+                set proof_of_payment = ?
+                where id = ?""",
+                new Object[]{key, bookingId},
+                new int[]{Types.BIGINT, Types.BIGINT});
     }
 
     @Override
