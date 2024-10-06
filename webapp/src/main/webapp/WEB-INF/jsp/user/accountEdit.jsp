@@ -51,7 +51,7 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="user.editUser.edit"/>
                     </h5>
-                    <c:url var="postUrl" value="/profile/edit"/>
+                    <c:url var="postUrl" value="/account/edit"/>
                     <form:form action="${postUrl}" method="post" modelAttribute="changeUserInfoForm" id="changeUserInfoForm">
                     <div class="mb-3">
                         <label class="form-label">

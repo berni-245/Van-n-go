@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Image;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.UserRole;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
@@ -25,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PublicController {
@@ -100,6 +98,8 @@ public class PublicController {
         if (pfp != null) {
             mav.addObject("profilePic", pfp);
         }
+        Optional<Driver> test = ds.findById(loggedUser.getId());
+        test.ifPresent(driver -> mav.addObject("loggedDriver", driver));
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }

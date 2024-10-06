@@ -21,4 +21,6 @@ public interface DriverDao {
     void updateDriverRating(long driverId);
 
     Optional<Driver> findByUsername(String username);
+
+    void editProfile(long id, String extra1, String cbu);
 }

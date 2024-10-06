@@ -147,4 +147,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public boolean updateVehicle(long driverId, Vehicle vehicle) {
         return vehicleDao.updateVehicle(driverId, vehicle);
     }
+
+    @Override
+    public void editProfile(long id, String extra1, String cbu) {
+        driverDao.editProfile(id,extra1,cbu);
+    }
 }

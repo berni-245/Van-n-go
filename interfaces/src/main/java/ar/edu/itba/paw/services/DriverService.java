@@ -54,4 +54,6 @@ public interface DriverService {
     public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
 
     public boolean updateVehicle(long driverId, Vehicle vehicle);
+
+    void editProfile(long id, String extra1, String cbu);
 }

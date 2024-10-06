@@ -24,16 +24,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(path = "/profile/edit")
+    @RequestMapping(path = "/account/edit")
     public ModelAndView profileEdit(@ModelAttribute("loggedUser") User loggedUser, @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form) {
-        ModelAndView mav = new ModelAndView("user/profileEdit");
+        ModelAndView mav = new ModelAndView("user/accountEdit");
 
 
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }
 
-    @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
+    @RequestMapping(path = "/account/edit", method = RequestMethod.POST)
     public ModelAndView profileEditSummit(@ModelAttribute("loggedUser") User loggedUser, @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form, BindingResult errors) {
         if(errors.hasErrors()){
             LOGGER.warn("has errors");

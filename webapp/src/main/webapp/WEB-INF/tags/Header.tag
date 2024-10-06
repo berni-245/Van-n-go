@@ -102,6 +102,22 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li class="dropdown-item">
+                                    <c:url value='/account/edit' var="accountEditUrl"/>
+                                    <a href="${accountEditUrl}"
+                                       class="nav-link icon-link text-body-emphasis"
+                                       aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-gear-fill dropdown-icon"
+                                             viewBox="0 0 16 16">
+                                            <path d="M8 0a2 2 0 0 0-2 2v.41c-.741.124-1.45.357-2.102.693L3.5 2.5a2 2 0 1 0-2 3.464l.41.237a6.992 6.992 0 0 0 0 3.598l-.41.237a2 2 0 1 0 2 3.464l.398-.603a6.992 6.992 0 0 0 2.102.693V14a2 2 0 1 0 4 0v-.41a6.992 6.992 0 0 0 2.102-.693l.398.603a2 2 0 1 0 2-3.464l-.41-.237a6.992 6.992 0 0 0 0-3.598l.41-.237a2 2 0 1 0-2-3.464l-.398.603a6.992 6.992 0 0 0-2.102-.693V2a2 2 0 0 0-2-2zm0 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"></path>
+                                        </svg>
+                                        <spring:message code="user.editUser.edit"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-item">
                                     <c:url value='/logout' var="logoutUrl"/>
                                     <a href="${logoutUrl}"
                                        class="nav-link icon-link icon-link-hover text-body-emphasis"
