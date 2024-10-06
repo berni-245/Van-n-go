@@ -49,8 +49,8 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public Optional<Booking> appointBooking(long vehicleId, long clientId, LocalDate date, HourInterval hourInterval) {
-        return bookingDao.appointBooking(vehicleId, clientId, date, hourInterval);
+    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval) {
+        return bookingDao.appointBooking(vehicleId, clientId, zoneId, date, hourInterval);
     }
 
     @Override

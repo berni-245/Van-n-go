@@ -13,10 +13,10 @@ public interface ClientService {
 
     Optional<Client> findById(long id);
 
-    Optional<Booking> appointBooking(long vehicleId, long clientId, LocalDate date, HourInterval hourInterval);
+    Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval);
 
-    default Optional<Booking> appointBooking(long vehicleId, long clientId, String date, HourInterval hourInterval) {
-        return appointBooking(vehicleId, clientId, LocalDate.parse(date), hourInterval);
+    default Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, String date, HourInterval hourInterval) {
+        return appointBooking(vehicleId, clientId, zoneId, LocalDate.parse(date), hourInterval);
     }
 
     List<Booking> getBookings(long id);
