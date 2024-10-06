@@ -28,7 +28,10 @@
                             <p class="card-text"><c:out value="${booking.driver.mail}"/></p>
                             <c:if test="${booking.confirmed}">
                                 <p><spring:message code="driver.home.bookingConfirmed"/></p>
-                                <c:if test="${empty booking.pop or booking.pop == 0}">
+                                <c:choose>
+                                <c:when test="${empty booking.pop or booking.pop == 0}">
+                                    <spring:message code="client.bookings.transfer"/>
+                                    <c:out value="${booking.driver.cbu}"/>
                                     <form id="uploadProofOfPaymentForm_${booking.bookingId}" method="post" action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
                                         <input type="hidden" name="bookingId" value="${booking.bookingId}">
                                         <input type="hidden" name="driverId" value="${booking.driver.id}">
@@ -37,12 +40,13 @@
                                             <spring:message code="client.bookings.clickHereToPop"/>
                                         </label>
                                     </form>
-                                </c:if>
-                                <c:if test="${not empty booking.pop and booking.pop != 0}">
+                                </c:when>
+                                <c:otherwise>
                                     <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />" target="_blank">
                                         <spring:message code="client.bookings.popProvided"/>
                                     </a>
-                                </c:if>
+                                </c:otherwise>
+                                </c:choose>
                             </c:if>
                             <c:if test="${!booking.confirmed}">
                                 <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
