@@ -100,10 +100,10 @@ public class DriverJdbcDao implements DriverDao {
                             update driver
                             set rating = (
                                 select avg(rating)
-                                from booking b join reservation r on b.id = r.booking_id
-                                where driver_id = driver.user_id
+                                from booking b join vehicle v on b.vehicle_id = v.id
+                                where v.driver_id = ?
                             )
                             where user_id = ?
-                """, new Object[]{driverId}, new int[]{Types.BIGINT});
+                """, new Object[]{driverId, driverId}, new int[]{Types.BIGINT, Types.BIGINT});
     }
 }

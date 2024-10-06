@@ -199,15 +199,6 @@ public class BookingJdbcDao implements BookingDao {
         }
     }
 
-    @Override
-    public Double getDriverRating(long driverID) {
-        return jdbcTemplate.queryForObject("""
-                select avg(rating)
-                from booking b join vehicle v on b.vehicle_id = v.id
-                where v.driver_id = ?
-                """, new Object[]{driverID}, new int[]{Types.BIGINT}, Double.class);
-    }
-
     private HourInterval getHourInterval(long hour_start_id, long hour_end_id) {
         int startHour = Objects.requireNonNull(jdbcTemplate.queryForObject("""
                             select t_start
