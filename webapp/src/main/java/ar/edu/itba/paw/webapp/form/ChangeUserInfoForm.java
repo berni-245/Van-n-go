@@ -3,9 +3,9 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
 
-import javax.validation.constraints.NotNull;
 
-
+@ValidChangeUsername
+@ValidChangeMail
 public class ChangeUserInfoForm {
 
 
@@ -14,13 +14,12 @@ public class ChangeUserInfoForm {
 
     private boolean usernameChanged;
 
-    @NotNull
-   // @Size(min = 5, max = 20)
-    @ValidChangeUsername
+
+
     private String username;
 
-    @NotNull
-    @ValidChangeMail
+
+
     private String mail;
 
    /* @Nullable

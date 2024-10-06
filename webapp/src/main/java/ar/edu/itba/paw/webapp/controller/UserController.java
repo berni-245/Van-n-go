@@ -32,8 +32,7 @@ public class UserController {
 
     @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
     public ModelAndView profileEditSummit(@ModelAttribute("loggedUser") User loggedUser, @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form, BindingResult errors) {
-        if((errors.hasFieldErrors("username") && form.getUsernameChanged()) ||
-                (errors.hasFieldErrors("mail") && form.getMailChanged())){
+        if(errors.hasErrors()){
             return profileEdit(loggedUser,form);
         }
         if(form.getMailChanged()){
