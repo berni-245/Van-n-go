@@ -52,18 +52,20 @@ create table if not exists booking
     hour_end_id      int     not null references hour_block (id) on delete cascade,
     client_id        int     not null references client (user_id) on delete cascade,
     vehicle_id       int     not null references vehicle (id) on delete cascade,
+    zone_id          int     not null references zone (id) on delete cascade,
     state            state   not null,
     proof_of_payment int     references image (id) on delete set null,
     rating           int,
     review           text
 );
 
-insert into booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, state)
+insert into booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, zone_id, state)
 select bo.date,
        min(wa.hour_block_id) as hour_start_id,
        min(wa.hour_block_id) as hour_end_id,
        re.client_id,
        ve.id            as vehicle_id,
+       wa.zone_id,
        CASE
            WHEN re.is_confirmed THEN
                CASE
@@ -89,6 +91,12 @@ where wa.week_day = (select case
                where ve2.driver_id = ve.driver_id
                  and wa2.week_day = wa.week_day)
 
-group by bo.id, bo.date, client_id, re.is_confirmed, ve.id
+  and wa.zone_id = (select min(wa3.zone_id)
+                    from weekly_availability wa3
+                    where wa3.vehicle_id = ve.id
+                      and wa3.week_day = wa.week_day
+)
+
+group by bo.id, bo.date, client_id, re.is_confirmed, ve.id, wa.zone_id
 order by date
 ;
