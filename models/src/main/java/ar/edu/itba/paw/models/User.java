@@ -2,8 +2,8 @@ package ar.edu.itba.paw.models;
 
 public abstract class User {
     private final long id;
-    private final String username;
-    private final String mail;
+    private String username;
+    private String mail;
     private final String password;
     private int pfp;
 
@@ -31,12 +31,19 @@ public abstract class User {
         return username;
     }
 
+    public void setUsername(String username){
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public String getMail() {
         return mail;
+    }
+    public void setMail(String mail){
+        this.mail = mail;
     }
 
     public void setPfp(int pfp) {this.pfp = pfp;}

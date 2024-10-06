@@ -46,4 +46,19 @@ public class UserServiceImpl implements UserService {
     public boolean usernameExists(String username) {
         return userDao.usernameExists(username);
     }
+
+    @Override
+    public int updateMail(long userId, String updatedMail) {
+        return userDao.updateMail(userId, updatedMail);
+    }
+
+    @Override
+    public int updatePassword(long userId, String updatedPassword) {
+        return userDao.updatePassword(userId, passwordEncoder.encode(updatedPassword));
+    }
+
+    @Override
+    public int updateUsername(long userId, String updatedUsername){
+        return userDao.updateUsername(userId,updatedUsername);
+    }
 }

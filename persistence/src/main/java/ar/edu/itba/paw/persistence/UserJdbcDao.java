@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,5 +65,32 @@ public class UserJdbcDao implements UserDao {
         if (user.isPresent()) return user;
         user = clientDao.findByUsername(username);
         return user;
+    }
+
+    @Override
+    public int updateMail(long userId, String updatedMail) {
+        return jdbcTemplate.update("""
+                update app_user
+                set mail = ?
+                where id = ?
+                """, new Object[]{updatedMail, userId}, new int[]{Types.VARCHAR, Types.BIGINT}) ;
+    }
+
+    @Override
+    public int updatePassword(long userId, String updatedPassword){
+        return jdbcTemplate.update("""
+                update app_user
+                set password = ?
+                where id = ?
+                """, new Object[]{updatedPassword, userId}, new int[]{Types.VARCHAR, Types.BIGINT}) ;
+    }
+
+    @Override
+    public int updateUsername(long userId, String updatedUsername) {
+        return jdbcTemplate.update("""
+                update app_user
+                set username = ?
+                where id = ?
+                """, new Object[]{updatedUsername, userId}, new int[]{Types.VARCHAR, Types.BIGINT}) ;
     }
 }

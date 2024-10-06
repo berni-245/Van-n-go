@@ -16,20 +16,32 @@
         </div>
         <div class="card-body">
             <div class="text-center mb-4">
-                <form id="uploadProfilePicForm" method="post" action="<c:url value='/upload/pfp'/>" enctype="multipart/form-data">
-                    <input type="file" id="profilePicInput" name="profilePicture" class="d-none" accept="image/png, image/jpeg" onchange="document.getElementById('uploadProfilePicForm').submit();">
+                <form id="uploadProfilePicForm" method="post" action="<c:url value='/upload/pfp'/>"
+                      enctype="multipart/form-data">
+                    <input type="file" id="profilePicInput" name="profilePicture" class="d-none"
+                           accept="image/png, image/jpeg"
+                           onchange="document.getElementById('uploadProfilePicForm').submit();">
                     <label for="profilePicInput" style="cursor: pointer;">
                         <c:if test="${empty profilePic}">
-                            <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">
+                            <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                                 alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">
                         </c:if>
                         <c:if test="${not empty profilePic}">
-                            <img src="<c:url value='/profile/picture'/>" alt="Profile Picture" class="rounded-circle border" width="150" height="150">
+                            <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
+                                 class="rounded-circle border" width="150" height="150">
                         </c:if>
                     </label>
                 </form>
             </div>
             <div class="user-info text-center">
                 <p class="mb-1"><strong>Email:</strong> <c:out value="${loggedUser.mail}"/></p>
+            </div>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a class="btn btn-primary btn-lg px-4 gap-3"
+                   href="${pageContext.request.contextPath}/profile/edit"
+                   role="button">
+                    <spring:message code="user.editUser.edit"/>
+                </a>
             </div>
         </div>
     </div>

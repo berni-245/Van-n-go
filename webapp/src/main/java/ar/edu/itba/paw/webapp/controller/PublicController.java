@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +108,8 @@ public class PublicController {
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }
+
+
 
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody
