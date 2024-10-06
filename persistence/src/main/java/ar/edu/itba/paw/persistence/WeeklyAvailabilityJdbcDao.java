@@ -12,7 +12,8 @@ import java.util.*;
 
 @Repository
 public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
-
+    private static final int MIN_DAY = 1;
+    private static final int MAX_DAY = 7;
     private static final RowMapper<WeeklyAvailability> ROW_MAPPER =
             (rs, rowNum) -> new WeeklyAvailability(
                     rs.getInt("week_day"),
@@ -79,6 +80,22 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
+    }
+
+    @Override
+    public List<List<WeeklyAvailability>> getDriverWeeklyAvailabilityByDays(long driverId) {
+       List<List<WeeklyAvailability>> availabilityByDays = new ArrayList<>();
+        for (int day = MIN_DAY; day <= MAX_DAY; day++) {
+            List<WeeklyAvailability> dayAvailability = jdbcTemplate.query("""
+                    select week_day, t_start, zone_id, vehicle_id
+                    from hour_block hb
+                    join weekly_availability wa on hb.id = wa.hour_block_id
+                    join vehicle vh on vh.id = wa.vehicle_id
+                    where vh.driver_id = ? and week_day = ?
+                    """, new Object[]{driverId, day}, new int[]{Types.BIGINT, Types.INTEGER}, ROW_MAPPER);
+            availabilityByDays.add(dayAvailability);
+        }
+        return availabilityByDays;
     }
 
 
