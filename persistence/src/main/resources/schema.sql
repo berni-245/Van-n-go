@@ -39,16 +39,6 @@ create table if not exists vehicle
     hourly_rate  double precision not null default 0
 );
 
-create table if not exists weekly_availability
-(
-    id            serial primary key,
-    week_day      int not null,
-    hour_block_id int not null references hour_block (id) on delete cascade,
-    zone_id       int not null references zone (id) on delete cascade,
-    vehicle_id    int not null references vehicle (id) on delete cascade,
-    unique (week_day, hour_block_id, zone_id, vehicle_id)
-);
-
 create table if not exists hour_block
 (
     id      serial primary key,
@@ -58,7 +48,11 @@ create table if not exists hour_block
     constraint hour_blocks_start_time_on_the_hour check (
         extract(minute from t_start) = 0 and extract(second from t_start) = 0
         ),
-    constraint hour_blocks_one_hour_interval check (t_end = t_start + interval '1 hour')
+    constraint hour_blocks_one_hour_interval check (
+        extract(hour from t_end) = extract(hour from t_start) + 1
+            or
+        extract(hour from t_end) = 0 and extract(hour from t_start) = 23
+        )
 );
 
 create table if not exists country
@@ -89,6 +83,16 @@ create table if not exists zone
     unique (country_id, province_id, neighborhood_id)
 );
 
+create table if not exists weekly_availability
+(
+    id            serial primary key,
+    week_day      int not null,
+    hour_block_id int not null references hour_block (id) on delete cascade,
+    zone_id       int not null references zone (id) on delete cascade,
+    vehicle_id    int not null references vehicle (id) on delete cascade,
+    unique (week_day, hour_block_id, zone_id, vehicle_id)
+);
+
 create table if not exists booking
 (
     id               serial primary key,
@@ -97,6 +101,7 @@ create table if not exists booking
     hour_end_id      int   not null references hour_block (id) on delete cascade,
     client_id        int   not null references client (user_id) on delete cascade,
     vehicle_id       int   not null references vehicle (id) on delete cascade,
+    zone_id          int   not null references zone (id) on delete cascade,
     state            state not null,
     proof_of_payment int   references image (id) on delete set null,
     rating           int,

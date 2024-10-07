@@ -1,0 +1,94 @@
+INSERT INTO hour_block (id, t_start, t_end)
+VALUES (1, '00:00:00', '01:00:00'),
+       (2, '01:00:00', '02:00:00'),
+       (3, '02:00:00', '03:00:00'),
+       (4, '03:00:00', '04:00:00'),
+       (5, '04:00:00', '05:00:00'),
+       (6, '05:00:00', '06:00:00'),
+       (7, '06:00:00', '07:00:00'),
+       (8, '07:00:00', '08:00:00'),
+       (9, '08:00:00', '09:00:00'),
+       (10, '09:00:00', '10:00:00'),
+       (11, '10:00:00', '11:00:00'),
+       (12, '11:00:00', '12:00:00'),
+       (13, '12:00:00', '13:00:00'),
+       (14, '13:00:00', '14:00:00'),
+       (15, '14:00:00', '15:00:00'),
+       (16, '15:00:00', '16:00:00'),
+       (17, '16:00:00', '17:00:00'),
+       (18, '17:00:00', '18:00:00'),
+       (19, '18:00:00', '19:00:00'),
+       (20, '19:00:00', '20:00:00'),
+       (21, '20:00:00', '21:00:00'),
+       (22, '21:00:00', '22:00:00'),
+       (23, '22:00:00', '23:00:00'),
+       (24, '23:00:00', '00:00:00');
+
+insert into country
+values (1, 'Argentina', 'AR');
+
+insert into province
+values (1, 'Capital Federal'),
+       (2, 'Buenos Aires');
+
+insert into neighborhood
+values (1, 'Palermo'),
+       (2, 'Belgrano'),
+       (3, 'Adrogué'),
+       (4, 'Agronomía'),
+       (5, 'Almagro'),
+       (6, 'Balvanera'),
+       (7, 'Barracas'),
+       (8, 'Boedo'),
+       (9, 'Caballito'),
+       (10, 'Chacarita'),
+       (11, 'Coghlan'),
+       (12, 'Colegiales'),
+       (13, 'Constitución'),
+       (14, 'Flores'),
+       (15, 'Floresta'),
+       (16, 'La Boca'),
+       (17, 'La Paternal'),
+       (18, 'Liniers'),
+       (19, 'Mataderos'),
+       (20, 'Monte Castro'),
+       (21, 'Montserrat'),
+       (22, 'Nueva Pompeya'),
+       (23, 'Nuñez'),
+       (24, 'Parque Avellaneda'),
+       (25, 'Parque Chacabuco'),
+       (26, 'Parque Chas'),
+       (27, 'Parque Patricios'),
+       (28, 'Puerto Madero'),
+       (29, 'Recoleta'),
+       (30, 'Retiro'),
+       (31, 'Saavedra'),
+       (32, 'San Cristóbal'),
+       (33, 'San Nicolás'),
+       (34, 'San Telmo'),
+       (35, 'Versalles'),
+       (36, 'Villa Crespo'),
+       (37, 'Villa Devoto'),
+       (38, 'Villa General Mitre'),
+       (39, 'Villa Lugano'),
+       (40, 'Villa Luro'),
+       (41, 'Villa Ortúzar'),
+       (42, 'Villa Pueyrredón'),
+       (43, 'Villa Real'),
+       (44, 'Villa Riachuelo'),
+       (45, 'Villa Santa Rita'),
+       (46, 'Villa Soldati'),
+       (47, 'Villa Urquiza'),
+       (48, 'Villa del Parque'),
+       (49, 'Vélez Sarsfield');
+
+insert into zone (id, country_id, province_id, neighborhood_id)
+values (1, 1, 2, 3),
+       (2, 1, 1, 1),
+       (3, 1, 1, 2);
+insert into zone (id, country_id, province_id, neighborhood_id)
+select id, 1, 1, id
+from neighborhood
+where id > 3
+  and id <= 49;
+

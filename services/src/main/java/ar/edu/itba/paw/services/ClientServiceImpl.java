@@ -26,10 +26,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             UserDao userDao,
             ClientDao clientDao,
             PasswordEncoder passwordEncoder,
-            MailService mailService
+            MailService mailService,
+            BookingDao bookingDao
     ) {
         super(userDao, passwordEncoder, mailService);
         this.clientDao = clientDao;
+        this.bookingDao = bookingDao;
     }
 
     //@Transactional
@@ -38,7 +40,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         long id = createUser(username, mail, password);
         // Client instance will be created with unencrypted password.
         // Is that a problem tho?
-        Client client = clientDao.create(id, username, mail, password);
+        Client client = clientDao.create(id);
         mailService.sendClientWelcomeMail(mail, username);
         return client;
     }

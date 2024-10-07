@@ -20,12 +20,10 @@ import java.util.Optional;
 @Repository
 public class BookingJdbcDao implements BookingDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcBookingInsert;
 
     private final ClientDao clientDao;
     private final DriverDao driverDao;
     private final VehicleDao vehicleDao;
-    private final ImageDao imageDao;
     private final ZoneDao zoneDao;
 
     private final RowMapper<Booking> ROW_MAPPER;
@@ -34,13 +32,9 @@ public class BookingJdbcDao implements BookingDao {
         clientDao = new ClientJdbcDao(ds);
         driverDao = new DriverJdbcDao(ds);
         vehicleDao = new VehicleJdbcDao(ds);
-        imageDao = new ImageJdbcDao(ds);
         zoneDao = new ZoneJdbcDao(ds);
 
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcBookingInsert = new SimpleJdbcInsert(ds)
-                .usingGeneratedKeyColumns("id")
-                .withTableName("booking");
 
         ROW_MAPPER = (rs, rowNum) -> {
             Vehicle vehicle = vehicleDao.findById(rs.getLong("vehicle_id")).orElseThrow();
@@ -71,17 +65,66 @@ public class BookingJdbcDao implements BookingDao {
         )
             return Optional.empty();
 
-        Long generatedBookingId = Objects.requireNonNull(jdbcTemplate.queryForObject(
+        jdbcTemplate.update(
                 """
-                        INSERT INTO booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, zone_id, state, job_description)
-                        VALUES (?, ?, ?, ?, ?, ?, ?::state, ?)
-                        RETURNING id""",
-                new Object[]{date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(), clientId, vehicleId, zoneId, BookingState.PENDING.name(), jobDesription},
-                new int[]{Types.DATE, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.VARCHAR},
-                Long.class
-        ));
+                INSERT INTO booking (
+                    date,
+                    hour_start_id,
+                    hour_end_id,
+                    client_id,
+                    vehicle_id,
+                    zone_id,
+                    state,
+                    job_description
+                )
+                VALUES (?, ?, ?, ?, ?, ?, cast(? as state), ?)""",
+                new Object[]{
+                        date.toString(),
+                        hourInterval.getStartHourBlockId(),
+                        hourInterval.getEndHourBlockId(),
+                        clientId,
+                        vehicleId,
+                        zoneId,
+                        BookingState.PENDING.name(),
+                        jobDesription
+                },
+                new int[]{
+                        Types.DATE,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.VARCHAR,
+                        Types.VARCHAR
+                }
+        );
 
-        return getBookingById(generatedBookingId);
+        return jdbcTemplate.query("""
+                select *
+                from booking
+                where date = ? and hour_start_id = ? and hour_end_id = ?
+                and client_id = ? and vehicle_id = ? and zone_id = ?
+                and state = cast(? as state)""",
+                new Object[]{
+                        date.toString(),
+                        hourInterval.getStartHourBlockId(),
+                        hourInterval.getEndHourBlockId(),
+                        clientId,
+                        vehicleId,
+                        zoneId,
+                        BookingState.PENDING.name()
+                },
+                new int[]{
+                        Types.DATE,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.BIGINT,
+                        Types.VARCHAR
+                },
+                ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -98,7 +141,11 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getBookings(long driverId) {
         return jdbcTemplate.query("""
-                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review, b.job_description
+                        select b.id, b.date, b.hour_start_id,
+                        b.hour_end_id, b.client_id, b.vehicle_id,
+                        b.zone_id, b.state,
+                        b.proof_of_payment, b.rating,
+                        b.review, b.job_description
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where driver_id = ?
                         order by b.date, b.hour_start_id, b.hour_end_id""",
@@ -110,7 +157,10 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return jdbcTemplate.query("""
-                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review, b.job_description
+                        select b.id, b.date, b.hour_start_id, b.hour_end_id,
+                        b.client_id, b.vehicle_id,
+                        b.zone_id, b.state, b.proof_of_payment,
+                        b.rating, b.review, b.job_description
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where driver_id = ? and date = ?""",
                 new Object[]{driverId, date.toString()},
@@ -177,36 +227,44 @@ public class BookingJdbcDao implements BookingDao {
             !booking.getBookingState().equals(BookingState.PENDING))
             return;
         jdbcTemplate.update("""
-                        update booking
-                        set state = ?::state
-                        where id = ?""",
+                    update booking
+                    set state = cast(? as state)
+                    where id = ?""",
                 new Object[]{BookingState.ACCEPTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
         jdbcTemplate.update("""
-                        update booking
-                        set state = ?::state
-                        where id != ?
-                        and date = ?
-                        and vehicle_id = ?
-                        and (
-                                (hour_start_id >= ?
-                                and hour_start_id <= ?)
-                            or  (hour_end_id >= ?
-                                and hour_end_id <= ?))""",
+                update booking
+                set state = cast(? as state)
+                where id != ?
+                and date = ?
+                and vehicle_id = ?
+                and (
+                        (hour_start_id >= ?
+                        and hour_start_id <= ?)
+                    or  (hour_end_id >= ?
+                        and hour_end_id <= ?))
+                    or  (hour_start_id < ?
+                        and hour_end_id > ?)""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId,
                         booking.getDate().toString(), booking.getVehicle().getId(),
                         bookingHI.getStartHourBlockId(), bookingHI.getEndHourBlockId(),
+                        bookingHI.getStartHourBlockId(), bookingHI.getEndHourBlockId(),
                         bookingHI.getStartHourBlockId(), bookingHI.getEndHourBlockId()},
-                new int[]{Types.VARCHAR, Types.BIGINT, Types.DATE, Types.BIGINT,
-                        Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT});
+                new int[]{
+                        Types.VARCHAR, Types.BIGINT,
+                        Types.DATE, Types.BIGINT,
+                        Types.BIGINT, Types.BIGINT,
+                        Types.BIGINT, Types.BIGINT,
+                        Types.BIGINT, Types.BIGINT
+                 });
     }
 
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                        update booking
-                        set state = ?::state
-                        where id = ?""",
+                    update booking
+                    set state = cast(? as state)
+                    where id = ?""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
     }
@@ -258,11 +316,17 @@ public class BookingJdbcDao implements BookingDao {
                                 from weekly_availability wa
                                 where wa.vehicle_id = ?
                                     and wa.zone_id = ?
-                                    and wa.week_day = extract(dow from ?::date)
+                                    and wa.week_day = {fn DAYOFWEEK(cast(? as date))} - 1
                                     and wa.hour_block_id >= ?
                                     and wa.hour_block_id <= ?
                         """,
-                new Object[]{vehicleId, zoneId, date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
+                new Object[]{
+                        vehicleId,
+                        zoneId,
+                        date.toString(),
+                        hourInterval.getStartHourBlockId(),
+                        hourInterval.getEndHourBlockId()
+                },
                 new int[]{Types.BIGINT, Types.BIGINT, Types.DATE, Types.BIGINT, Types.BIGINT},
                 Integer.class
         );
@@ -273,17 +337,21 @@ public class BookingJdbcDao implements BookingDao {
         Integer count = jdbcTemplate.queryForObject("""
                         select count(*)
                         from booking b
-                        where b.vehicle_id = ? and b.date = ? and b.state = ?::state
+                        where b.vehicle_id = ? and b.date = ? and b.state = cast(? as state)
                         and (
                                 (b.hour_start_id >= ?
                                 and b.hour_start_id <= ?)
                             or  (b.hour_end_id >= ?
                                 and b.hour_end_id <= ?)
+                            or  (b.hour_start_id < ?
+                                and b.hour_end_id > ?)
                         )""",
                 new Object[]{vehicleId, date.toString(), BookingState.ACCEPTED.toString(),
                         hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
+                        hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
                         hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
                 new int[]{Types.BIGINT, Types.DATE, Types.VARCHAR,
+                        Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT},
                 Integer.class);
@@ -301,11 +369,15 @@ public class BookingJdbcDao implements BookingDao {
                                 and b.hour_start_id <= ?)
                             or  (b.hour_end_id >= ?
                                 and b.hour_end_id <= ?)
+                            or  (b.hour_start_id < ?
+                                and b.hour_end_id > ?)
                         )""",
                 new Object[]{vehicleId, date.toString(), clientId, zoneId,
                         hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
+                        hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
                         hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
                 new int[]{Types.BIGINT, Types.DATE, Types.BIGINT, Types.BIGINT,
+                        Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT},
                 Integer.class);
