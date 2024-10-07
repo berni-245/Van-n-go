@@ -1,7 +1,8 @@
 insert into app_user (id, username, mail, password) values
     (1, 'JuanClient', 'juanC@mail.com', '123321'),
     (2, 'AnotherJuanClient', 'AjuanC@mail.com', '123321'),
-    (3, 'JuanDriver', 'juanD@mail.com', '123321');
+    (3, 'JuanDriver', 'juanD@mail.com', '123321'),
+    (420,'Pepsiman','jmail@gmail.com','42069');
 
 
 insert into client (user_id) values (1), (2);
