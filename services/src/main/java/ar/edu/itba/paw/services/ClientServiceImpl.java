@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -33,12 +34,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     //@Transactional
     @Override
-    public Client create(String username, String mail, String password) {
+    public Client create(String username, String mail, String password, Locale locale) {
         long id = createUser(username, mail, password);
         // Client instance will be created with unencrypted password.
         // Is that a problem tho?
         Client client = clientDao.create(id, username, mail, password);
-        mailService.sendClientWelcomeMail(mail, username);
+        mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }
 
@@ -48,10 +49,10 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date, String jobDescription) {
+    public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date, String jobDescription, Locale locale) {
         Optional<Booking> booking = bookingDao.appointBooking(driverId, clientId, date);
         if(booking.isPresent()){
-            mailService.sendRequestedDriverService(driverId,clientId,date,jobDescription);
+            mailService.sendRequestedDriverService(driverId,clientId,date,jobDescription,locale);
         }
         return booking;
     }

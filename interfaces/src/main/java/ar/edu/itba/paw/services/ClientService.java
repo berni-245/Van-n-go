@@ -5,14 +5,15 @@ import ar.edu.itba.paw.models.Client;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public interface ClientService {
-    Client create(String username, String mail, String password);
+    Client create(String username, String mail, String password, Locale locale);
 
     Optional<Client> findById(long id);
 
-    Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date,String jobDescription);
+    Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date,String jobDescription, Locale locale);
 
     List<Booking> getBookings(long id);
 

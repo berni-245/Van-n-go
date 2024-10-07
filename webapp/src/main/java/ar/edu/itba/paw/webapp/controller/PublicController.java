@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.form.UserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,9 +62,9 @@ public class PublicController {
         }
         final User user;
         if (userForm.getUserType().equals(UserRole.DRIVER.name()))
-            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
+            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "", LocaleContextHolder.getLocale());
         else
-            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");

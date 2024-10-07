@@ -22,6 +22,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -118,9 +119,9 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendClientWelcomeMail(String to, String userName) {
+    public void sendClientWelcomeMail(String to, String userName, Locale locale) {
         Message message = getMessage();
-        Context context = new Context();
+        Context context = new Context(locale);
         context.setVariable("userName", userName);
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
@@ -137,9 +138,9 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendDriverWelcomeMail(String to, String userName) {
+    public void sendDriverWelcomeMail(String to, String userName, Locale locale) {
         Message message = getMessage();
-        Context context = new Context();
+        Context context = new Context(locale);
         context.setVariable("driverName", userName);
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
@@ -155,11 +156,11 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription) {
+    public void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription, Locale locale) {
         Optional<Driver> driver = driverDao.findById(driverId);
         Optional<Client> client = clientDao.findById(clientId);
         if(driver.isPresent() && client.isPresent()){
-            Context context = new Context();
+            Context context = new Context(locale);
             String clientMail = client.get().getMail();
             String driverMail = driver.get().getMail();
             context.setVariable("driverName", driver.get().getUsername());

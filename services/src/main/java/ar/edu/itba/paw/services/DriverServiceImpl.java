@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -43,12 +44,12 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     //@Transactional
     @Override
-    public Driver create(String username, String mail, String password, String extra1) {
+    public Driver create(String username, String mail, String password, String extra1, Locale locale) {
         long id = createUser(username, mail, password);
         // Driver instance will be created with unencrypted password.
         // Is that a problem tho?
         Driver driver = driverDao.create(id, username, mail, password, extra1);
-        mailService.sendDriverWelcomeMail(mail, username);
+        mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
 

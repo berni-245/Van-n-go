@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.form.BookingReviewForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -131,7 +132,7 @@ public class ClientController {
             @RequestParam("driverId") long driverId,
             @RequestParam("bookingDate") String date
     ) {
-        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date),jobDescription);
+        Optional<Booking> booking = cs.appointBooking(driverId, clientId, LocalDate.parse(date),jobDescription, LocaleContextHolder.getLocale() );
         if (booking.isPresent()) {
             return new ModelAndView("redirect:/bookings");
         }

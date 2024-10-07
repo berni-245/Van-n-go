@@ -4,10 +4,11 @@ import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public interface DriverService {
-    Driver create(String username, String mail, String password, String extra1);
+    Driver create(String username, String mail, String password, String extra1, Locale locale);
 
     Optional<Driver> findById(long id);
 
