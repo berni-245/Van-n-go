@@ -15,7 +15,15 @@
                 <h1 class="text-left"><spring:message code="generic.word.history"/></h1>
             </div>
         </div>
-
+        <c:choose>
+            <c:when test="${empty history}">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.client_history"/></p>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
         <div class="row row-cols-3">
             <c:forEach var="booking" items="${history}">
                 <div class="col mb-4">
@@ -90,7 +98,8 @@
                 </div>
             </c:forEach>
         </div>
-
+            </c:otherwise>
+        </c:choose>
     </div>
 </main>
 

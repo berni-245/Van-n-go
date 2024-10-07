@@ -21,6 +21,15 @@
 <comp:Header inVehicles="true"/>
 <div class="container mt-4">
     <h3 class="mb-3"><spring:message code="generic.phrase.your_vehicles"/></h3>
+    <c:choose>
+    <c:when test="${empty vehicles}">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.driver_vehicles"/></p>
+            </div>
+        </div>
+    </c:when>
+    <c:otherwise>
     <ul class="list-group">
         <c:forEach items="${vehicles}" var="v">
             <c:url var="vUrl" value="/driver/vehicle/edit"/>
@@ -36,6 +45,8 @@
             </a>
         </c:forEach>
     </ul>
+    </c:otherwise>
+    </c:choose>
     <div class="mt-4">
         <a class="btn btn-primary"
            href="${pageContext.request.contextPath}/driver/vehicle/add"

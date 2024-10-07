@@ -9,7 +9,15 @@
 <body>
 <comp:Header inAvailability="true"/>
 <div class="container">
-
+    <c:choose>
+        <c:when test="${empty vehicles}">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.driver_availability"/></p>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
     <c:forEach var="v" items="${vehicles}">
         <div>
             <h6 class="card-subtitle mb-2 mt-2">
@@ -34,6 +42,8 @@
             </ul>
         </div>
     </c:forEach>
+        </c:otherwise>
+    </c:choose>
 
     <div class="mt-4 navbar sticky-bottom">
         <a class="btn btn-primary mb-4"
