@@ -5,13 +5,13 @@
     flex-wrap: wrap;
 }
 
-.weekday-toggle-item {
+.square-toggle-item {
     min-width: 2.5rem;
     max-width: 3.5rem;
     padding: 0;
 }
 
-.weekday-toggle-label {
+.square-toggle-label {
     padding: 0;
     aspect-ratio: 1 / 1;
     display: flex;
@@ -22,7 +22,7 @@
     border-color: var(--bs-gray-600);
 }
 
-.weekday-toggle-label:hover {
+.square-toggle-label:hover {
     background-color: var(--bs-gray-700);
     border-color: var(--bs-gray-800);
 }
@@ -32,7 +32,7 @@ This is necessary because spring's form:checkbox adds an unnecessary hidden inpu
 element after the checkbox, and bootstrap uses next sibling selector to select the
 label so it doesn't find it.
 */
-.btn-check:checked ~ .weekday-toggle-label {
+.btn-check:checked ~ .square-toggle-label {
     color: var(--bs-btn-active-color);
     background-color: var(--bs-btn-active-bg);
     border-color: var(--bs-btn-active-border-color);

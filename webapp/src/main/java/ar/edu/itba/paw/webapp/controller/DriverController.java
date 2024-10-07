@@ -5,6 +5,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
+import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class DriverController {
@@ -60,10 +61,10 @@ public class DriverController {
                 vehicleForm.getDescription(),
                 vehicleForm.getRate()
         );
-        if(vehicleImg != null) {
-            try{
-                is.uploadVehicleImage(vehicleImg.getBytes(),vehicleImg.getOriginalFilename(),(int) vehicle.getId());
-            } catch (Exception e){
+        if (vehicleImg != null) {
+            try {
+                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(), (int) vehicle.getId());
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
         }
@@ -74,18 +75,18 @@ public class DriverController {
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
-    @RequestMapping(path="/vehicle/image", method = RequestMethod.GET)
+    @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("vehicleId") int vehicleId, @ModelAttribute("loggedUser") User loggedUser){
+    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("vehicleId") int vehicleId, @ModelAttribute("loggedUser") User loggedUser) {
         Image vehicleImg = is.getVehicleImage(vehicleId);
-        if(vehicleImg==null){
+        if (vehicleImg == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         String fileName = vehicleImg.getFileName();
         String contentType;
-        if(fileName == null)
+        if (fileName == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        if(fileName.toLowerCase().endsWith(".png"))
+        if (fileName.toLowerCase().endsWith(".png"))
             contentType = "image/png";
         else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
             contentType = "image/jpeg";
@@ -116,7 +117,7 @@ public class DriverController {
         ds.addWeeklyAvailability(
                 loggedUser.getId(),
                 form.getWeekDays(),
-                form.getIntervals(),
+                form.getHourBlocks(),
                 form.getZoneIds(),
                 form.getVehicleIds()
         );
@@ -132,8 +133,6 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
     ) {
-        Optional<Driver> driver = ds.findById(loggedUser.getId());
-
         final ModelAndView mav = new ModelAndView("driver/add_availability");
         mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
         mav.addObject("zones", zs.getAllZones());
@@ -216,30 +215,50 @@ public class DriverController {
                 form.getRate()
         ));
         Image aux = is.getVehicleImage((int) form.getId());
-        if(vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
-            try{
-                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
+        if (vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
+            try {
+                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(), (int) form.getId());
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
+    @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.POST)
+    public ModelAndView editAvailabilityPost(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam(name = "plateNumber") String plateNumber,
+            @RequestParam(name = "vehicleId") long vehicleId,
+            @Valid @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form,
+            BindingResult errors
+    ) {
+        if (errors.hasErrors()) {
+            return editAvailabilityGet(loggedUser, plateNumber, form);
+        }
+        ds.updateWeeklyAvailability(
+                loggedUser.getId(), form.getWeekDay(),
+                form.getHourBlocks(), form.getZoneId(),vehicleId
+        );
+        return editAvailabilityGet(loggedUser, plateNumber, form);
+    }
+
     @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.GET)
     public ModelAndView editAvailabilityGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "availabilityId") long availabilityId,
-            @ModelAttribute("vehicleForm") VehicleForm form
+            @RequestParam(name = "plateNumber") String plateNumber,
+            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
     ) {
-//        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), availabilityId);
-//        if (vehicle.isPresent()) {
+        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
+        if (vehicle.isPresent()) {
 //            form.setAll(vehicle.get());
-//            var mav = new ModelAndView("driver/edit_vehicle");
-//            mav.addObject("plateNumber", availabilityId);
-//            return mav;
-//        } else {
-        return new ModelAndView();
-//        }
+            var mav = new ModelAndView("driver/edit_availability");
+            mav.addObject("vehicle", vehicle.get());
+            mav.addObject("zones", zs.getAllZones());
+            mav.addObject("plateNumber", plateNumber);
+            return mav;
+        } else {
+            return new ModelAndView();
+        }
     }
 
 
@@ -261,12 +280,12 @@ public class DriverController {
 
     @RequestMapping(value = "/driver/pop", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser){
+    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser) {
         Image pop = is.getPop((int) bookingId);
-        if(pop!=null&&pop.getFileName().endsWith(".pdf")){
+        if (pop != null && pop.getFileName().endsWith(".pdf")) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            return new ResponseEntity<>(pop.getData(),headers,HttpStatus.OK);
+            return new ResponseEntity<>(pop.getData(), headers, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

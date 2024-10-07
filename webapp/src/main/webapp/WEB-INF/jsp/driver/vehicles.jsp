@@ -5,6 +5,8 @@
 
 <html>
 <comp:Head titleCode="components.header.vehicles">
+    <c:url value="/css/availability.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <style>
         .vehicle-description {
             display: -webkit-box;
@@ -21,21 +23,32 @@
 <comp:Header inVehicles="true"/>
 <div class="container mt-4">
     <h3 class="mb-3"><spring:message code="generic.phrase.your_vehicles"/></h3>
-    <ul class="list-group">
+    <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+        <c:url var="vUrl" value="/driver/vehicle/edit"/>
         <c:forEach items="${vehicles}" var="v">
-            <c:url var="vUrl" value="/driver/vehicle/edit"/>
-            <a href="${vUrl}?plateNumber=${v.plateNumber}" class="list-group-item list-group-item-action vehicle-item">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong><c:out value="${v.plateNumber}"/></strong> - <c:out value="${v.volume}"/>m&sup3
-                        <span class="vehicle-description">
-                            <c:out value="${v.description}"/>
-                        </span>
+            <div class="col mb-4">
+                <a href="${vUrl}?plateNumber=${v.plateNumber}" class="text-decoration-none">
+                    <div class="card anchor-card h-100">
+                        <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${v.id}' />"
+                             alt="Vehicle Image Preview" class="card-img-top"/>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <strong><c:out value="${v.plateNumber}"/></strong> -
+                                <c:out value="${v.volume}"/>m&sup3
+                            </h5>
+                            <p class="card-text">
+                                <span class="vehicle-description">
+                                    <c:out value="${v.description}"/>
+                                </span>
+                            </p>
+                            <span class="stretched-link"></span>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
+
         </c:forEach>
-    </ul>
+    </div>
     <div class="mt-4">
         <a class="btn btn-primary"
            href="${pageContext.request.contextPath}/driver/vehicle/add"

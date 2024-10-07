@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
@@ -34,7 +35,6 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
     }
 
 
-
     private Integer findHourBlockId(String hourStart) {
         return jdbcTemplate.queryForObject(
                 """
@@ -50,21 +50,29 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
 
 
     @Override
-    public boolean create(
-            int weekDay, List<String> hours, long zoneId, long vehicleId
+    public int create(
+            int weekDay, String[] hourBlocks, long zoneId, long vehicleId
     ) {
-
         int changedRows = 0;
-        for (String hour : hours) {
-            Map<String, Object> availability = new HashMap<>();
-            availability.put("week_day", weekDay);
-            availability.put("hour_block_id", findHourBlockId(hour));
-            availability.put("zone_id", zoneId);
-            availability.put("vehicle_id", vehicleId);
-            changedRows += jdbcAvailabilityInsert.execute(availability);
+        for (String hour : hourBlocks) {
+            changedRows += jdbcTemplate.update("""
+                            insert into weekly_availability (
+                                week_day, hour_block_id, zone_id, vehicle_id
+                            ) VALUES (?, ?, ?, ?) on conflict do nothing
+                            """,
+                    new Object[]{weekDay, findHourBlockId(hour), zoneId, vehicleId},
+                    new int[]{Types.INTEGER, Types.BIGINT, Types.BIGINT, Types.BIGINT}
+            );
         }
-        return changedRows == hours.size();
+        return changedRows;
+    }
 
+    @Override
+    public void removeAll(int weekDay, long zoneId, long vehicleId) {
+        jdbcTemplate.update("""
+                        delete from weekly_availability
+                        where week_day = ? and zone_id = ? and vehicle_id = ?""",
+                weekDay, zoneId, vehicleId);
     }
 
     @Override

@@ -64,12 +64,16 @@ public class VehicleJdbcDao implements VehicleDao {
 
     @Override
     public Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber) {
-        return jdbcTemplate.query(
+        Optional<Vehicle> vehicle = jdbcTemplate.query(
                         "SELECT * FROM vehicle where driver_id = ? and plate_number = ?",
                         new Object[]{driverId, plateNumber},
                         new int[]{Types.BIGINT, Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
+        vehicle.ifPresent(v -> v.setWeeklyAvailability(
+                weeklyAvailabilityDao.getVehicleWeeklyAvailability(v.getId())
+        ));
+        return vehicle;
     }
 
     @Override

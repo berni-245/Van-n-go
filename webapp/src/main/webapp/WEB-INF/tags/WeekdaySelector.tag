@@ -1,4 +1,5 @@
 <%@ attribute name="path" required="true" type="java.lang.String" %>
+<%@ attribute name="radio" required="false" type="java.lang.Boolean" %>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
@@ -16,13 +17,20 @@
 <spring:message code="driver.add_availability.sunday" var="sun"/>
 
 <div class="row weekday-toggle-group mt-3">
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(mon, 0, 1)}" tooltip="${mon}" value="1"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(tue, 0, 1)}" tooltip="${tue}" value="2"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(wed, 0, 1)}" tooltip="${wed}" value="3"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(thu, 0, 1)}" tooltip="${thu}" value="4"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(fri, 0, 1)}" tooltip="${fri}" value="5"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(sat, 0, 1)}" tooltip="${sat}" value="6"/>
-    <comp:SquareToggleButton path="${path}" content="${fn:substring(sun, 0, 1)}" tooltip="${sun}" value="7"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(mon, 0, 1)}"
+                             tooltip="${mon}" value="1"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(tue, 0, 1)}"
+                             tooltip="${tue}" value="2"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(wed, 0, 1)}"
+                             tooltip="${wed}" value="3"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(thu, 0, 1)}"
+                             tooltip="${thu}" value="4"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(fri, 0, 1)}"
+                             tooltip="${fri}" value="5"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sat, 0, 1)}"
+                             tooltip="${sat}" value="6"/>
+    <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sun, 0, 1)}"
+                             tooltip="${sun}" value="7"/>
 </div>
 
 <script>

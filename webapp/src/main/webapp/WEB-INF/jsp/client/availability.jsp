@@ -68,15 +68,17 @@
                                             <c:choose>
                                                 <c:when test="${driver.rating != null}">
 
-                                                    <span class="fw-bold text-warning" >
+                                                    <span class="fw-bold text-warning">
                                                            <c:out value="${driver.rating}"/>
                                                     </span>
 
 
                                                     <div class="ms-2">
-                                                        <c:set var="fullStars" value="${driver.rating.intValue()}" />
-                                                        <c:set var="halfStar" value="${(driver.rating - driver.rating.intValue() >= 0.5) ? true : false}" />
-                                                        <c:set var="emptyStars" value="${5 - fullStars - (halfStar ? 1 : 0)}" />
+                                                        <c:set var="fullStars" value="${driver.rating.intValue()}"/>
+                                                        <c:set var="halfStar"
+                                                               value="${(driver.rating - driver.rating.intValue() >= 0.5) ? true : false}"/>
+                                                        <c:set var="emptyStars"
+                                                               value="${5 - fullStars - (halfStar ? 1 : 0)}"/>
 
 
                                                         <c:forEach var="i" begin="1" end="${fullStars}">
@@ -85,12 +87,12 @@
 
 
                                                         <c:if test="${halfStar}">
-                                                            <i class="bi bi-star-half text-warning" ></i>
+                                                            <i class="bi bi-star-half text-warning"></i>
                                                         </c:if>
 
 
                                                         <c:forEach var="i" begin="1" end="${emptyStars}">
-                                                            <i class="bi bi-star text-secondary" ></i>
+                                                            <i class="bi bi-star text-secondary"></i>
                                                         </c:forEach>
                                                     </div>
                                                 </c:when>

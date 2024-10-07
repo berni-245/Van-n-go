@@ -133,6 +133,11 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload-version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.10.1</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>

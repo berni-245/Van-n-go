@@ -1,20 +1,23 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class HourInterval {
+    private final String startHourString;
     private final int startHour;
     private final int endHour;
     private final int hourCount;
 
     public HourInterval(int startHour, int endHour) {
-        if(endHour == 0)
+        if (endHour == 0)
             endHour = 24;
-        if(! ((0 <= startHour) && (startHour < endHour) && (endHour <= 24)) )
+        if (!((0 <= startHour) && (startHour < endHour) && (endHour <= 24)))
             throw new IllegalArgumentException("Start time must be before end time");
         this.startHour = startHour;
         this.endHour = endHour;
         this.hourCount = endHour - startHour;
+        startHourString = LocalTime.of(startHour, 0).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
 
     // Only uses the hours for interval
@@ -45,5 +48,9 @@ public class HourInterval {
 
     public int getEndHourBlockId() {
         return endHour;
+    }
+
+    public String getStartHourString() {
+        return startHourString;
     }
 }

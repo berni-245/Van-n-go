@@ -24,21 +24,14 @@
         <div class="mb-3">
             <label class="form-label"><spring:message code="driver.add_availability.timeRange"/></label>
             <div class="row">
-                <div class="col">
-                    <form:input path="timeStart" cssClass="form-control" type="time"/>
-                    <form:errors path="timeStart" element="p" cssStyle="color: red"/>
-                </div>
-                <div class="col">
-                    <form:input path="timeEnd" cssClass="form-control" type="time"/>
-                    <form:errors path="timeEnd" element="p" cssStyle="color: red"/>
-                </div>
-                <form:errors element="div" cssClass="alert alert-danger"/>
+                <comp:HourBlockSelector path="hourBlocks"/>
+                <form:errors path="hourBlocks" cssStyle="color: red"/>
             </div>
         </div>
 
         <div class="mb-3">
             <c:choose>
-                <c:when test="${vehicles.isEmpty()}">
+                <c:when test="${empty vehicles}">
                     <a class="btn btn-primary"
                        href="${pageContext.request.contextPath}/driver/vehicle/add"
                        role="button"><spring:message code="driver.add_availability.noVehicles"/></a>

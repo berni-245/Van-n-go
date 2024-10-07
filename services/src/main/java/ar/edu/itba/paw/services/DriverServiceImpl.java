@@ -83,7 +83,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public void addWeeklyAvailability(
             long driverId,
             int[] weekDays,
-            List<String> hours,
+            String[] hourBlocks,
             long[] zoneIds,
             long[] vehicleIds
     ) {
@@ -91,11 +91,21 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             for (long vehicleId : vehicleIds) {
                 for (long zoneId : zoneIds) {
                     weeklyAvailabilityDao.create(
-                            weekDay, hours, zoneId, vehicleId
+                            weekDay, hourBlocks, zoneId, vehicleId
                     );
                 }
             }
         }
+    }
+
+    // @Transactional
+    @Override
+    public void updateWeeklyAvailability(long driverId, int weekDay, String[] hourBlocks, long zoneId, long vehicleId) {
+        weeklyAvailabilityDao.removeAll(weekDay, zoneId, vehicleId);
+        addWeeklyAvailability(
+                driverId, new int[]{weekDay}, hourBlocks,
+                new long[]{zoneId}, new long[]{vehicleId}
+        );
     }
 
     @Override

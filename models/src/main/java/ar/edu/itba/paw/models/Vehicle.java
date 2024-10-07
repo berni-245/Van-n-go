@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 public class Vehicle {
@@ -12,6 +14,8 @@ public class Vehicle {
     private final double rate;
 
     private List<WeeklyAvailability> weeklyAvailability;
+
+    private static final Gson gson = new Gson();
 
     public Vehicle(
             long id,
@@ -70,9 +74,19 @@ public class Vehicle {
         this.weeklyAvailability = weeklyAvailability;
     }
 
-    public Integer getImg() {return img;}
+    public Integer getImg() {
+        return img;
+    }
 
-    public void setImg(Integer img) {this.img=img;}
+    public void setImg(Integer img) {
+        this.img = img;
+    }
 
-    public double getRate() {return rate;}
+    public double getRate() {
+        return rate;
+    }
+
+    public String toJson() {
+        return gson.toJson(this);
+    }
 }
