@@ -10,10 +10,10 @@
             <pattern>${defaultPattern:-}</pattern>
         </encoder>
     </appender>
-    <appender name="paw-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="vanngo-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <maxHistory>5</maxHistory>
-            <fileNamePattern>logs/paw.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/info.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>${defaultPattern:-}</pattern>
@@ -22,4 +22,7 @@
     <root level="WARN">
         <appender-ref ref="root-appender"/>
     </root>
+    <logger name="ar.edu.itba" level="INFO" additivity="false">
+        <appender-ref ref="vanngo-appender"/>
+    </logger>
 </configuration>
