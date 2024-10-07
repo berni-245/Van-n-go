@@ -37,6 +37,7 @@ public class MailServiceImpl implements MailService {
 
 
     private final TemplateEngine templateEngine;
+    private final ResourceBundleMessageSource messageSource;
 
     private final String FROM = "van.n.go.paw@gmail.com";
     private final String password = "lrbe ukez jvkk fleu";
@@ -55,14 +56,16 @@ public class MailServiceImpl implements MailService {
                 return new PasswordAuthentication(FROM, password);
             }
         };
+        messageSource = messageSource();
         templateEngine = emailTemplateEngine();
+
     }
 
 
     private TemplateEngine emailTemplateEngine() {
         final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.addTemplateResolver(htmlTemplateResolver());
-        templateEngine.setMessageSource(messageSource());
+        templateEngine.setMessageSource(messageSource);
         return templateEngine;
     }
 
@@ -126,7 +129,7 @@ public class MailServiceImpl implements MailService {
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Welcome " + userName);
+            message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
             //logger
@@ -145,7 +148,7 @@ public class MailServiceImpl implements MailService {
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Welcome " + userName);
+            message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
             //logger
@@ -168,20 +171,20 @@ public class MailServiceImpl implements MailService {
             context.setVariable("dateRequested", new java.util.Date());
             context.setVariable("clientName", driverMail);
             context.setVariable("clientMail", clientMail );
-            sendClientRequestedServiceMail(clientMail, context);
-            sendDriverRequestedMail(driverMail, context, jobDescription);
+            sendClientRequestedServiceMail(clientMail, context, locale);
+            sendDriverRequestedMail(driverMail, context, jobDescription, locale);
 
         }
 
     }
 
 
-    private void sendClientRequestedServiceMail(String clientMail, Context context) {
+    private void sendClientRequestedServiceMail(String clientMail, Context context,Locale locale) {
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject("You requested a Van N' Go driver");
+            message.setSubject(messageSource.getMessage("subject.serviceRequired",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
@@ -190,13 +193,13 @@ public class MailServiceImpl implements MailService {
         sendMail(message);
     }
 
-    private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription) {
+    private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription, Locale locale) {
         context.setVariable("jobDescription", jobDescription);
         Message message = getMessage();
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
             String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
-            message.setSubject("You received a request for your service");
+            message.setSubject(messageSource.getMessage("subject.serviceRequested",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {
         }
