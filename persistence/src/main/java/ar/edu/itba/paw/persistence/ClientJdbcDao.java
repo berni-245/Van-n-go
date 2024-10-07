@@ -32,9 +32,9 @@ public class ClientJdbcDao implements ClientDao {
     }
 
     @Override
-    public Client create(long id, String username, String mail, String password) {
+    public Client create(long id) {
         jdbcClientInsert.execute(Map.of("user_id", id));
-        return new Client(id, username, mail, password,0);
+        return findById(id).orElseThrow();
     }
 
     @Override
