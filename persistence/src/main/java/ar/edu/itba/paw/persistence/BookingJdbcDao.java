@@ -141,7 +141,7 @@ public class BookingJdbcDao implements BookingDao {
                         select *
                         from booking
                         where client_id = ? AND date >= CURRENT_DATE
-                        order by b.date, b.hour_start_id, b.hour_end_id""",
+                        order by date, hour_start_id, hour_end_id""",
                 new Object[]{clientId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
@@ -153,7 +153,7 @@ public class BookingJdbcDao implements BookingDao {
                         select *
                         from booking
                         where client_id = ? AND date < CURRENT_DATE
-                        order by b.date, b.hour_start_id, b.hour_end_id""",
+                        order by date, hour_start_id, hour_end_id""",
                 new Object[]{clientId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
