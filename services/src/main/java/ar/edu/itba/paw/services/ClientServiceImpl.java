@@ -26,10 +26,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             UserDao userDao,
             ClientDao clientDao,
             PasswordEncoder passwordEncoder,
-            MailService mailService
+            MailService mailService,
+            BookingDao bookingDao
     ) {
         super(userDao, passwordEncoder, mailService);
         this.clientDao = clientDao;
+        this.bookingDao = bookingDao;
     }
 
     //@Transactional

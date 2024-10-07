@@ -99,7 +99,6 @@ public class WebConfig implements WebMvcConfigurer {
     private DatabasePopulator dsPopulator() {
         ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
-//        dbp.addScript(triggersSql);
         return dbp;
     }
 
