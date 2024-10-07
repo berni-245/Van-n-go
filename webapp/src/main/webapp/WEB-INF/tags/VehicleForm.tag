@@ -16,12 +16,14 @@
         </label>
         <div class="form-group mt-4 d-flex align-items-center">
             <div class="me-3">
-                <c:if test="${not empty vehicleId}">
-                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${vehicleId}' />" alt="Vehicle Image Preview" class="img-fluid border rounded" style="max-width: 150px;" />
-                </c:if>
-                <c:if test="${empty vehicleId}">
+                <c:choose>
+                <c:when test="${not empty vehicleId}">
+                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${vehicleId}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
+                </c:when>
+                <c:otherwise>
                     <img id="vehicleImagePreview" src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="Vehicle Image Preview" class="img-fluid border rounded" style="max-width: 150px;" />
-                </c:if>
+                </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
