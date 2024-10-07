@@ -8,6 +8,8 @@
 <comp:Head titleCode="components.header.availability">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <%--TODO: Move to css file--%>
+    <c:url value="/css/weekdaySelector.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <style>
         .calendar-container {
             max-width: 800px;
@@ -59,22 +61,20 @@
 </comp:Head>
 <body>
 <comp:Header/>
-<h1 class="text-center">
-    <spring:message code="generic.word.${size}" var="sizeMsg"/>
+<h1 class="text-center mb-5">
+    <spring:message code="generic.word.${sizeLowerCase}" var="sizeMsg"/>
     <spring:message
             code="generic.phrase.userAvailability"
             arguments="${driver.username},${zone.neighborhoodName},${sizeMsg}"
     />
 </h1>
 
-<div class="calendar-container mt-5">
-    <div id="calendar"></div>
-</div>
+<div class="row">
+    <div class="calendar-container">
+        <div id="calendar"></div>
+    </div>
 
-<div id="confirmForm" class="form-control mt-5">
-    <form action="${pageContext.request.contextPath}/availability/contact"
-          method="post">
-
+    <div id="confirmForm" class="form-control">
         <div class="accordion" id="accordionExample">
             <c:forEach var="v" items="${vehicles}">
                 <div class="accordion-item">
@@ -83,7 +83,9 @@
                                 class="accordion-button collapsed"
                                 type="button" data-bs-toggle="collapse"
                                 data-bs-target="#${v.plateNumber}" aria-expanded="false"
-                                aria-controls="${v.plateNumber}" disabled
+                                aria-controls="${v.plateNumber}"
+                                vehicleId="${v.id}" plateNumber="${v.plateNumber}"
+                                disabled
                         >
                             <strong><c:out value="${v.plateNumber}"/></strong> -
                             <c:out value="${v.volume}"/>m&sup3
@@ -92,37 +94,78 @@
                     <div id="${v.plateNumber}" class="accordion-collapse collapse"
                          data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${v.id}' />"
-                                 alt="Vehicle Image Preview" class="card-img-top"/>
+                            <figure class="figure">
+                                <c:if test="${v.img <= 0}">
+                                    <c:url value='/images/defaultVehicle.png' var="imgUrl"/>
+                                    <img id="vehicleImagePreview" src="${imgUrl}"
+                                         alt=" Vehicle Image Preview" class="card-img-top"/>
+                                </c:if>
+                                <c:if test="${v.img > 0}">
+                                    <c:url value='/vehicle/image?vehicleId=${v.id}' var="imgUrl"/>
+                                    <img id="vehicleImagePreview" src="${imgUrl}"
+                                         alt="Vehicle Image Preview" class="card-img-top"/>
+                                </c:if>
+                                <figcaption class="figure-caption">
+                                    <c:out value="${v.description}"/>
+                                </figcaption>
+                            </figure>
                             <c:url var="postUrl"
-                                   value="/driver/availability/edit?plateNumber=${plateNumber}&vehicleId=${vehicle.id}"/>
-                            <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
+                                   value="/availability/${driverId}?size=${size}"/>
+                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
+                                <input type="hidden" name="vehicleId" value="${v.id}">
+                                <input type="hidden" name="zoneId" value="${zone.id}">
+                                <input id="bookingDate" type="hidden" name="date" value=""/>
+                                <%--                                <input type="hidden" name="timeStart" value=""/>--%>
+                                <%--                                <input type="hidden" name="timeEnd" value=""/>--%>
+
+
+                                <div>
+                                    <label for="hb-availability">
+                                        <spring:message code="components.header.availability"/>
+                                    </label>
+                                    <div id="hb-availability" class="row weekday-toggle-group mt-3 fs-6">
+                                        <c:forEach var="i" begin="0" end="23">
+                                            <comp:SquareToggleButton
+                                                    path="timeStart"
+                                                    radio="true"
+                                                    id="hb-${i}-${v.plateNumber}"
+                                                    labelClass="fs-6"
+                                                    inputClass="${v.plateNumber}"
+                                                    content="${i} - ${i < 23 ? i + 1 : 0}"
+                                                    value="${i < 10 ? 0 : \"\"}${i}:00:00"
+                                            />
+                                        </c:forEach>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label for="jobDescription">
+                                        <spring:message code="form.jobDescription"/>
+                                    </label>
+                                    <textarea id="jobDescription" name="jobDescription"
+                                              rows="4" cols="50" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-2">
+                                    <spring:message code="components.availability.Reserve"/>
+                                </button>
                             </form:form>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
-        <input type="hidden" name="clientId" value="${loggedUser.id}">
-        <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
-        <textarea id="jobDescription" name="jobDescription" rows="4"
-                  cols="50" required></textarea>
-        <input type="hidden" name="driverId" value="${driver.id}"/>
-        <input id="bookingDate" type="hidden" name="bookingDate" value=""/>
-        <button type="submit" class="btn btn-primary mt-2">
-            <spring:message code="components.availability.Reserve"/>
-        </button>
-    </form>
+    </div>
+    <comp:ToastManager toasts="${toasts}"/>
 </div>
 
 <script type="text/javascript">
-    const reservedDates = [
-        <c:forEach var="booking" items="${bookings}">
-        <c:if test="${booking.confirmed}">
-        "<c:out value='${booking.date}'/>",
-        </c:if>
-        </c:forEach>
-    ];
+    <%--const reservedDates = [--%>
+    <%--    <c:forEach var="booking" items="${bookings}">--%>
+    <%--    <c:if test="${booking.confirmed}">--%>
+    <%--    "<c:out value='${booking.date}'/>",--%>
+    <%--    </c:if>--%>
+    <%--    </c:forEach>--%>
+    <%--];--%>
 
     let workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
@@ -133,6 +176,7 @@
     const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));
 
     let selectedDate = null;
+    let selectedDateString = null;
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
         const today = new Date();
@@ -163,25 +207,27 @@
                 prevButton.disabled = dateInfo.start <= currentDate;
             },
 
-            events: reservedDates.map(function (date) {
-                return {
-                    start: date,
-                    display: 'background',
-                    backgroundColor: 'red'
-                }
-            }),
+            // events: reservedDates.map(function (date) {
+            //     return {
+            //         start: date,
+            //         display: 'background',
+            //         backgroundColor: 'red'
+            //     }
+            // }),
 
             dateClick: function (info) {
-                if (reservedDates.includes(info.dateStr)) {
-                    // alert("Este día ya está reservado. Por favor, selecciona otro día.");
-                    // document.getElementById('confirmForm').style.display = 'none';
-                    return;
-                }
+                // if (reservedDates.includes(info.dateStr)) {
+                //     // alert("Este día ya está reservado. Por favor, selecciona otro día.");
+                //     // document.getElementById('confirmForm').style.display = 'none';
+                //     return;
+                // }
 
                 updateSelected(info);
 
                 document.getElementById('confirmForm').style.display = 'block';
-                document.getElementById('bookingDate').value = info.dateStr;
+                document.querySelectorAll('input[name="date"]').forEach(
+                    input => input.value = info.dateStr
+                );
             }
 
         });
@@ -202,6 +248,7 @@
         }
         newDay.dayEl.classList.add('active-cell')
         selectedDate = newDay.dayEl;
+        selectedDateString = newDay.date.toISOString().slice(0, 10);
         const weekDay = newDay.date.getDay();
         vehicles.forEach(v => {
             const accordionButton = document.getElementById('ab-' + v.plateNumber);
@@ -214,6 +261,29 @@
                 accordionBody.classList.remove('show');
             }
         });
+        updateActiveAvailability();
+    }
+
+    function updateActiveAvailability() {
+        const activeVehicleBtns = document.querySelectorAll('button.accordion-button:not(:disabled)')
+        activeVehicleBtns.forEach(btn => {
+            const plateNumber = btn.getAttribute('plateNumber');
+            const vehicleId = btn.getAttribute('vehicleId');
+            const url = new URL('http://localhost:8080/availability/active');
+            url.searchParams.append('vehicleId', vehicleId);
+            url.searchParams.append('zoneId', ${zone.id});
+            url.searchParams.append('date', selectedDateString);
+            fetch(url.toString()).then(res => res.json()).then(activeAv => {
+                const hourBlockInputs = Array.from(
+                    document.querySelectorAll('input[name="timeStart"]' + '.' + plateNumber)
+                );
+                hourBlockInputs.forEach(input => input.disabled = true);
+                activeAv.forEach(av => {
+                    const input = hourBlockInputs.find(input => input.value === av.hourInterval.startHourString);
+                    if (input) input.disabled = false;
+                })
+            })
+        })
     }
 </script>
 

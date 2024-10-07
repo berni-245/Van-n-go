@@ -30,6 +30,14 @@ public class HourInterval {
         this(LocalTime.parse(startTime), LocalTime.parse(endTime));
     }
 
+    public HourInterval(LocalTime startTime) {
+        this(startTime.getHour(), startTime.getHour() + 1);
+    }
+
+    public HourInterval(String startTime) {
+        this(LocalTime.parse(startTime));
+    }
+
     public int getStartHour() {
         return startHour;
     }

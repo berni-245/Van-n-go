@@ -28,11 +28,15 @@
                             <c:if test="${booking.confirmed}">
                                 <p><spring:message code="driver.home.bookingConfirmed"/></p>
                                 <c:if test="${empty booking.pop or booking.pop == 0}">
-                                    <form id="uploadProofOfPaymentForm_${booking.bookingId}" method="post" action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
+                                    <form id="uploadProofOfPaymentForm_${booking.bookingId}" method="post"
+                                          action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
                                         <input type="hidden" name="bookingId" value="${booking.bookingId}">
                                         <input type="hidden" name="driverId" value="${booking.driver.id}">
-                                        <input type="file" id="proofInput_${booking.bookingId}" name="proofOfPayment" class="d-none" accept="application/pdf" onchange="document.getElementById('uploadProofOfPaymentForm_${booking.bookingId}').submit();">
-                                        <label for="proofInput_${booking.bookingId}" style="cursor: pointer; text-decoration: underline;">
+                                        <input type="file" id="proofInput_${booking.bookingId}" name="proofOfPayment"
+                                               class="d-none" accept="application/pdf"
+                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.bookingId}').submit();">
+                                        <label for="proofInput_${booking.bookingId}"
+                                               style="cursor: pointer; text-decoration: underline;">
                                             <spring:message code="client.bookings.clickHereToPop"/>
                                         </label>
                                     </form>
@@ -50,7 +54,7 @@
             </c:forEach>
         </div>
 
-
+        <comp:ToastManager toasts="${toasts}"/>
     </div>
 </main>
 

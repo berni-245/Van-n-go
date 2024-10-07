@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.models.BookingState;
+import ar.edu.itba.paw.models.HourInterval;
+import ar.edu.itba.paw.models.Vehicle;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,7 +13,9 @@ import javax.sql.DataSource;
 import java.sql.Time;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class BookingJdbcDao implements BookingDao {
@@ -60,9 +65,9 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDesription) {
         if (date.isBefore(LocalDate.now()) ||
-                !isVehicleAvailableInThatTimeAndZone(vehicleId, zoneId, date, hourInterval) ||
-                isVehicleBookedForThatTime(vehicleId, date, hourInterval) ||
-                isClientAlreadyAppointedForThatTimeAndZone(vehicleId, clientId, zoneId, date, hourInterval)
+            !isVehicleAvailableInThatTimeAndZone(vehicleId, zoneId, date, hourInterval) ||
+            isVehicleBookedForThatTime(vehicleId, date, hourInterval) ||
+            isClientAlreadyAppointedForThatTimeAndZone(vehicleId, clientId, zoneId, date, hourInterval)
         )
             return Optional.empty();
 
@@ -169,7 +174,7 @@ public class BookingJdbcDao implements BookingDao {
         Booking booking = bookingOptional.get();
         HourInterval bookingHI = booking.getHourInterval();
         if (isVehicleBookedForThatTime(booking.getVehicle().getId(), booking.getDate(), booking.getHourInterval()) ||
-                !booking.getBookingState().equals(BookingState.PENDING))
+            !booking.getBookingState().equals(BookingState.PENDING))
             return;
         jdbcTemplate.update("""
                         update booking
@@ -257,8 +262,8 @@ public class BookingJdbcDao implements BookingDao {
                                     and wa.hour_block_id >= ?
                                     and wa.hour_block_id <= ?
                         """,
-                new Object[]{vehicleId, zoneId, date.toString(), date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
-                new int[]{Types.BIGINT, Types.BIGINT, Types.DATE, Types.DATE, Types.BIGINT, Types.BIGINT},
+                new Object[]{vehicleId, zoneId, date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.DATE, Types.BIGINT, Types.BIGINT},
                 Integer.class
         );
         return count != null && count == hourInterval.getHourCount();

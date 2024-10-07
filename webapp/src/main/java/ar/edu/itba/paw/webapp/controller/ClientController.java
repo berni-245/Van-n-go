@@ -6,21 +6,24 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
+import ar.edu.itba.paw.webapp.form.BookingForm;
 import ar.edu.itba.paw.webapp.form.BookingReviewForm;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
 public class ClientController {
@@ -33,6 +36,8 @@ public class ClientController {
     private ClientService cs;
     @Autowired
     private ImageService is;
+
+    private static final Gson gson = new Gson();
 
     public ClientController(DriverService ds, ClientService cs, ZoneService zs, ImageService is) {
         this.ds = ds;
@@ -55,8 +60,14 @@ public class ClientController {
     }
 
     @RequestMapping("/bookings")
-    public ModelAndView bookings(@ModelAttribute("loggedUser") Client loggedUser) {
+    public ModelAndView bookings(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            Model model
+    ) {
         ModelAndView mav = new ModelAndView("client/bookings");
+        if (model.containsAttribute("toasts")) {
+            mav.addObject("toasts", model.getAttribute("toasts"));
+        }
         mav.addObject("bookings", cs.getBookings(loggedUser.getId()));
         return mav;
     }
@@ -73,7 +84,9 @@ public class ClientController {
     @RequestMapping(path = "/client/history", method = RequestMethod.POST)
     public ModelAndView sendReview(
             @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form, BindingResult errors) {
+            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
+            BindingResult errors
+    ) {
         if (errors.hasErrors()) {
             return clientHistory(loggedUser, form);
         }
@@ -109,16 +122,34 @@ public class ClientController {
         return mav;
     }
 
-    @RequestMapping("/availability/{id:\\d+}")
+    @ResponseBody
+    @RequestMapping(path = "/availability/active", method = RequestMethod.GET)
+    public String vehicleActiveAvailability(
+            @RequestParam(name = "vehicleId") long vehicleId,
+            @RequestParam(name = "zoneId") long zoneId,
+            @RequestParam(name = "date") String date
+    ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date2 = LocalDate.parse(date, formatter);
+        return gson.toJson(ds.activeAvailabilities(vehicleId, zoneId, date2));
+    }
+
+    @RequestMapping(path = "/availability/{id:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
             @PathVariable(name = "id") long id,
             @RequestParam(name = "zoneId") long zoneId,
             @RequestParam(name = "size") Size size,
-            @ModelAttribute("loggedUser") Client loggedUser
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingForm") BookingForm form
+//            @ModelAttribute("toasts") List<Toast> toasts
     ) {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
+//            if (toasts != null && !toasts.isEmpty()) {
+//                mav.addObject("toasts", toasts);
+//            }
+            mav.addObject("driverId", id);
             Set<Integer> workingDays = new HashSet<>();
             var wa = ds.getWeeklyAvailability(id, zoneId, size);
             wa.forEach(
@@ -133,32 +164,59 @@ public class ClientController {
             Optional<Zone> zone = zs.getZone(zoneId);
             if (zone.isEmpty()) return new ModelAndView();
             mav.addObject("zone", zone.get());
-            mav.addObject("size", size.name().toLowerCase());
+            mav.addObject("size", size.name());
+            mav.addObject("sizeLowerCase", size.name().toLowerCase());
             return mav;
         } else {
             return new ModelAndView("redirect:/403");
         }
     }
 
-    @RequestMapping(path = "/availability/contact", method = RequestMethod.POST)
+    @RequestMapping(path = "/availability/{id:\\d+}", method = RequestMethod.POST)
     public ModelAndView appointbooking(
-            @RequestParam("clientId") long clientId,
-            @RequestParam("jobDescription") String jobDescription,
-            @RequestParam("driverId") long driverId,
-            @RequestParam("bookingDate") String date
+            @PathVariable(name = "id") long id,
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam(name = "size") Size size,
+            @ModelAttribute("bookingForm") BookingForm form,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
-        // TODO cambiar driverId to vehicleId
-        long vehicleId = driverId;
-        // TODO add zoneId logic
-        long zoneId = 1;
-        // TODO add HourInterval logc
-        HourInterval hourInterval = new HourInterval(0, 24);
-
-        Optional<Booking> booking = cs.appointBooking(vehicleId, clientId, zoneId, date, hourInterval, jobDescription);
-        if (booking.isPresent()) {
-            return new ModelAndView("redirect:/bookings");
+        List<Toast> toasts = new ArrayList<>();
+        if (errors.hasErrors()) {
+//            toasts.add(new Toast(
+//                    ToastType.danger, "toast.booking.error"
+//            ));
+            return driverAvailability(id, form.getZoneId(), size, loggedUser, form);
         }
-        return new ModelAndView("redirect:/bookings");
+
+        try {
+            HourInterval hourInterval = new HourInterval(form.getTimeStart());
+            Optional<Booking> booking = cs.appointBooking(
+                    form.getVehicleId(),
+                    loggedUser.getId(),
+                    form.getZoneId(),
+                    form.getDate(),
+                    hourInterval,
+                    form.getJobDescription()
+            );
+            if (booking.isEmpty()) {
+                toasts.add(new Toast(
+                        ToastType.danger, "toast.booking.error"
+                ));
+                redirectAttributes.addFlashAttribute("toasts", toasts);
+                return new ModelAndView("redirect:/availability/" + id);
+            }
+            toasts.add(new Toast(
+                    ToastType.danger, "toast.booking.success"
+            ));
+            return new ModelAndView("redirect:/bookings");
+        } catch (Exception e) {
+            toasts.add(new Toast(
+                    ToastType.danger, "toast.booking.error"
+            ));
+            redirectAttributes.addFlashAttribute("toasts", toasts);
+            return new ModelAndView("redirect:/availability/" + id);
+        }
     }
 
 }

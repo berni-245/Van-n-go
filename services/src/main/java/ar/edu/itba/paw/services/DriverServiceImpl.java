@@ -173,4 +173,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public boolean updateVehicle(long driverId, Vehicle vehicle) {
         return vehicleDao.updateVehicle(driverId, vehicle);
     }
+
+    @Override
+    public List<WeeklyAvailability> activeAvailabilities(long vehicleId, long zoneId, LocalDate date) {
+        return weeklyAvailabilityDao.getVehicleActiveAvailability(vehicleId, zoneId, date);
+    }
 }

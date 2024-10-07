@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface WeeklyAvailabilityDao {
@@ -20,4 +21,5 @@ public interface WeeklyAvailabilityDao {
 
     List<WeeklyAvailability> getVehicleWeeklyAvailability(long vehicleId, long zoneId);
 
+    List<WeeklyAvailability> getVehicleActiveAvailability(long vehicleId, long zoneId, LocalDate date);
 }

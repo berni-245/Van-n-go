@@ -68,4 +68,6 @@ public interface DriverService {
     Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
 
     boolean updateVehicle(long driverId, Vehicle vehicle);
+
+    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
 }

@@ -24,19 +24,19 @@ create table if not exists driver
 (
     user_id int primary key references app_user (id) on delete cascade,
     extra1  text,
-    rating double precision,
-    CBU varchar(32)
+    rating  double precision,
+    CBU     varchar(32)
 );
 
 create table if not exists vehicle
 (
     id           serial primary key,
-    driver_id    int not null references driver (user_id) on delete cascade,
+    driver_id    int              not null references driver (user_id) on delete cascade,
     plate_number text unique,
     volume_m3    double precision,
     description  text,
-    img_id int references image (id) on delete set null,
-    hourly_rate double precision not null default 0
+    img_id       int              references image (id) on delete set null,
+    hourly_rate  double precision not null default 0
 );
 
 create table if not exists weekly_availability
@@ -93,13 +93,13 @@ create table if not exists booking
 (
     id               serial primary key,
     date             date,
-    hour_start_id    int     not null references hour_block (id) on delete cascade,
-    hour_end_id      int     not null references hour_block (id) on delete cascade,
-    client_id        int     not null references client (user_id) on delete cascade,
-    vehicle_id       int     not null references vehicle (id) on delete cascade,
-    state            state   not null,
-    proof_of_payment int     references image (id) on delete set null,
+    hour_start_id    int   not null references hour_block (id) on delete cascade,
+    hour_end_id      int   not null references hour_block (id) on delete cascade,
+    client_id        int   not null references client (user_id) on delete cascade,
+    vehicle_id       int   not null references vehicle (id) on delete cascade,
+    state            state not null,
+    proof_of_payment int   references image (id) on delete set null,
     rating           int,
     review           text,
-    job_description varchar(255)
+    job_description  text
 );

@@ -4,7 +4,9 @@
 <%@ attribute name="tooltip" required="false" type="java.lang.String" %>
 <%@ attribute name="id" required="false" type="java.lang.String" %>
 <%@ attribute name="labelClass" required="false" type="java.lang.String" %>
+<%@ attribute name="inputClass" required="false" type="java.lang.String" %>
 <%@ attribute name="radio" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="disabled" required="false" type="java.lang.Boolean" %>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -24,17 +26,19 @@
         <c:when test="${radio}">
             <form:radiobutton path="${path}"
                               value="${value}"
-                              cssClass="btn-check"
+                              cssClass="btn-check ${empty inputClass ? \"\" : inputClass}"
                               id="${finalId}"
                               element="div"
+                              disabled="${disabled}"
             />
         </c:when>
         <c:otherwise>
             <form:checkbox path="${path}"
                            value="${value}"
-                           cssClass="btn-check"
+                           cssClass="btn-check ${empty inputClass ? \"\" : inputClass}"
                            id="${finalId}"
                            element="div"
+                           disabled="${disabled}"
             />
         </c:otherwise>
     </c:choose>

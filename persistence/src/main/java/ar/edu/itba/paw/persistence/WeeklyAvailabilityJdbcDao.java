@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,5 +141,30 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
                 new Object[]{vehicleId, zoneId},
                 new int[]{Types.BIGINT, Types.BIGINT},
                 ROW_MAPPER);
+    }
+
+    @Override
+    public List<WeeklyAvailability> getVehicleActiveAvailability(long vehicleId, long zoneId, LocalDate date) {
+        var a = jdbcTemplate.query("""
+                        select week_day, t_start, t_end, zone_id, vehicle_id, hb.id
+                        from hour_block hb
+                                 join weekly_availability wa on hb.id = wa.hour_block_id
+                                    and {fn DAYOFWEEK(cast(? as date))} - 1 = wa.week_day
+                                 join vehicle v on v.id = wa.vehicle_id 
+                        where v.id = ? and wa.zone_id = ?
+                          and not exists(select *
+                                         from booking b
+                                         where b.date = ?
+                                           and {fn DAYOFWEEK(b.date)} - 1 = wa.week_day
+                                           and b.vehicle_id = v.id
+                                           and b.zone_id = wa.zone_id
+                                           and b.state = cast('ACCEPTED' as state)
+                                           and hb.id between b.hour_start_id and b.hour_end_id);
+                        """,
+                new Object[]{date, vehicleId, zoneId, date},
+                new int[]{Types.DATE, Types.BIGINT, Types.BIGINT, Types.DATE},
+                ROW_MAPPER);
+        System.out.println(a);
+        return a;
     }
 }
