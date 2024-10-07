@@ -66,6 +66,7 @@
         </button>
     </form>
 </div>
+<div id="reservedMessage" class="alert alert-danger" style="display: none;"><spring:message code="client.availability.unavailable"/></div>
 
 <script type="text/javascript">
     const reservedDates = [
@@ -138,15 +139,22 @@
             }),
 
             dateClick: function (info) {
+                const reservedMessage = document.getElementById('reservedMessage');
+                const confirmForm = document.getElementById('confirmForm');
+
                 if (reservedDates.includes(info.dateStr)) {
-                    alert("Este día ya está reservado. Por favor, selecciona otro día.");
-                    document.getElementById('confirmForm').style.display = 'none';
+                    // Show the reserved message
+                    reservedMessage.style.display = 'block';
+                    confirmForm.style.display = 'none';
+                    updateSelected(info.dayEl);
                     return;
                 }
 
-                updateSelected(info.dayEl)
+                // Hide the reserved message
+                reservedMessage.style.display = 'none';
+                updateSelected(info.dayEl);
 
-                document.getElementById('confirmForm').style.display = 'block';
+                confirmForm.style.display = 'block';
                 document.getElementById('bookingDate').value = info.dateStr;
             }
 
