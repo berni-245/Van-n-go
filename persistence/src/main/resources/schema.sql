@@ -100,5 +100,6 @@ create table if not exists booking
     state            state   not null,
     proof_of_payment int     references image (id) on delete set null,
     rating           int,
-    review           text
+    review           text,
+    job_description varchar(255)
 );

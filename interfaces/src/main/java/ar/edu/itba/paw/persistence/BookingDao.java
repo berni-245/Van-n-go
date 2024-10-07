@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingDao {
-    Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval);
+    Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription);
 
     void acceptBooking(long bookingId);
 

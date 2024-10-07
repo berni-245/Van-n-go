@@ -38,8 +38,8 @@ public class ClientController {
         this.is = is;
     }
 
-    @RequestMapping(path =  "/upload/pop", method = RequestMethod.POST)
-    public String submit(@RequestParam("proofOfPayment")MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
+    @RequestMapping(path = "/upload/pop", method = RequestMethod.POST)
+    public String submit(@RequestParam("proofOfPayment") MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
         if (file == null || file.isEmpty()) {
             return "redirect:/bookings";
         }
@@ -72,7 +72,7 @@ public class ClientController {
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form, BindingResult errors) {
         if (errors.hasErrors()) {
-            return clientHistory(loggedUser,form);
+            return clientHistory(loggedUser, form);
         }
         cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
         return new ModelAndView("redirect:/client/history");
@@ -138,7 +138,7 @@ public class ClientController {
         // TODO add HourInterval logc
         HourInterval hourInterval = new HourInterval(0, 24);
 
-        Optional<Booking> booking = cs.appointBooking(vehicleId, clientId, zoneId, date, hourInterval);
+        Optional<Booking> booking = cs.appointBooking(vehicleId, clientId, zoneId, date, hourInterval, jobDescription);
         if (booking.isPresent()) {
             return new ModelAndView("redirect:/bookings");
         }

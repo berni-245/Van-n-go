@@ -51,27 +51,28 @@ public class BookingJdbcDao implements BookingDao {
                     BookingState.valueOf(rs.getString("state").toUpperCase()),
                     rs.getObject("rating", Integer.class),
                     rs.getString("review"),
-                    rs.getObject("proof_of_payment", Integer.class)
+                    rs.getObject("proof_of_payment", Integer.class),
+                    rs.getString("job_description")
             );
         };
     }
 
     @Override
-    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval) {
+    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDesription) {
         if (date.isBefore(LocalDate.now()) ||
-                ! isVehicleAvailableInThatTimeAndZone(vehicleId, zoneId, date, hourInterval) ||
+                !isVehicleAvailableInThatTimeAndZone(vehicleId, zoneId, date, hourInterval) ||
                 isVehicleBookedForThatTime(vehicleId, date, hourInterval) ||
                 isClientAlreadyAppointedForThatTimeAndZone(vehicleId, clientId, zoneId, date, hourInterval)
-                )
+        )
             return Optional.empty();
 
         Long generatedBookingId = Objects.requireNonNull(jdbcTemplate.queryForObject(
                 """
-                INSERT INTO booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, zone_id, state)
-                VALUES (?, ?, ?, ?, ?, ?, ?::state)
-                RETURNING id""",
-                new Object[]{date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(), clientId, vehicleId, zoneId, BookingState.PENDING.name()},
-                new int[]{Types.DATE, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.VARCHAR},
+                        INSERT INTO booking (date, hour_start_id, hour_end_id, client_id, vehicle_id, zone_id, state, job_description)
+                        VALUES (?, ?, ?, ?, ?, ?, ?::state, ?)
+                        RETURNING id""",
+                new Object[]{date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(), clientId, vehicleId, zoneId, BookingState.PENDING.name(), jobDesription},
+                new int[]{Types.DATE, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.VARCHAR},
                 Long.class
         ));
 
@@ -81,9 +82,9 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public Optional<Booking> getBookingById(long bookingId) {
         return jdbcTemplate.query("""
-                    select *
-                    from booking
-                    where id = ?""",
+                        select *
+                        from booking
+                        where id = ?""",
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER).stream().findFirst();
@@ -92,7 +93,7 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getBookings(long driverId) {
         return jdbcTemplate.query("""
-                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review
+                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review, b.job_description
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where driver_id = ?
                         order by b.date, b.hour_start_id, b.hour_end_id""",
@@ -104,7 +105,7 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
         return jdbcTemplate.query("""
-                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review
+                        select b.id, b.date, b.hour_start_id, b.hour_end_id, b.client_id, b.vehicle_id, b.zone_id, b.state, b.proof_of_payment, b.rating, b.review, b.job_description
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where driver_id = ? and date = ?""",
                 new Object[]{driverId, date.toString()},
@@ -162,31 +163,31 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public void acceptBooking(long bookingId) {
         Optional<Booking> bookingOptional = getBookingById(bookingId);
-        if(bookingOptional.isEmpty()) {
+        if (bookingOptional.isEmpty()) {
             return;
         }
         Booking booking = bookingOptional.get();
         HourInterval bookingHI = booking.getHourInterval();
-        if(isVehicleBookedForThatTime(booking.getVehicle().getId(), booking.getDate(), booking.getHourInterval()) ||
-                ! booking.getBookingState().equals(BookingState.PENDING))
+        if (isVehicleBookedForThatTime(booking.getVehicle().getId(), booking.getDate(), booking.getHourInterval()) ||
+                !booking.getBookingState().equals(BookingState.PENDING))
             return;
         jdbcTemplate.update("""
-                    update booking
-                    set state = ?::state
-                    where id = ?""",
+                        update booking
+                        set state = ?::state
+                        where id = ?""",
                 new Object[]{BookingState.ACCEPTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
         jdbcTemplate.update("""
-                update booking
-                set state = ?::state
-                where id != ?
-                and date = ?
-                and vehicle_id = ?
-                and (
-                        (hour_start_id >= ?
-                        and hour_start_id <= ?)
-                    or  (hour_end_id >= ?
-                        and hour_end_id <= ?))""",
+                        update booking
+                        set state = ?::state
+                        where id != ?
+                        and date = ?
+                        and vehicle_id = ?
+                        and (
+                                (hour_start_id >= ?
+                                and hour_start_id <= ?)
+                            or  (hour_end_id >= ?
+                                and hour_end_id <= ?))""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId,
                         booking.getDate().toString(), booking.getVehicle().getId(),
                         bookingHI.getStartHourBlockId(), bookingHI.getEndHourBlockId(),
@@ -198,9 +199,9 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                    update booking
-                    set state = ?::state
-                    where id = ?""",
+                        update booking
+                        set state = ?::state
+                        where id = ?""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
     }
@@ -208,17 +209,17 @@ public class BookingJdbcDao implements BookingDao {
     @Override
     public void setRatingAndReview(long bookingId, int rating, String review) {
         jdbcTemplate.update("""
-                    update booking
-                    set rating = ?, review = ?
-                    where id = ?
-                """,
+                            update booking
+                            set rating = ?, review = ?
+                            where id = ?
+                        """,
                 new Object[]{rating, review, bookingId},
                 new int[]{Types.INTEGER, Types.VARCHAR, Types.BIGINT});
         Long driverId = jdbcTemplate.queryForObject("""
-                select driver_id
-                from booking b join vehicle v on b.vehicle_id = v.id
-                where b.id = ?
-                """,
+                        select driver_id
+                        from booking b join vehicle v on b.vehicle_id = v.id
+                        where b.id = ?
+                        """,
                 new Object[]{bookingId},
                 new int[]{Types.BIGINT},
                 Long.class);
@@ -229,16 +230,16 @@ public class BookingJdbcDao implements BookingDao {
 
     private HourInterval getHourInterval(long hour_start_id, long hour_end_id) {
         int startHour = Objects.requireNonNull(jdbcTemplate.queryForObject("""
-                            select t_start
-                            from hour_block
-                            where id = ?""",
+                        select t_start
+                        from hour_block
+                        where id = ?""",
                 new Object[]{hour_start_id},
                 new int[]{Types.BIGINT},
                 Time.class)).toLocalTime().getHour();
         int endHour = Objects.requireNonNull(jdbcTemplate.queryForObject("""
-                            select t_end
-                            from hour_block
-                            where id = ?""",
+                        select t_end
+                        from hour_block
+                        where id = ?""",
                 new Object[]{hour_end_id},
                 new int[]{Types.BIGINT},
                 Time.class)).toLocalTime().getHour();
@@ -248,20 +249,20 @@ public class BookingJdbcDao implements BookingDao {
 
     private boolean isVehicleAvailableInThatTimeAndZone(long vehicleId, long zoneId, LocalDate date, HourInterval hourInterval) {
         Integer count = jdbcTemplate.queryForObject("""
-                        select count(*)
-                        from weekly_availability wa
-                        where wa.vehicle_id = ?
-                            and wa.zone_id = ?
-                            and wa.week_day = (
-                                select case when extract(dow from ?::date) = 0 then 7
-                                            else extract(dow from ?::date) end)
-                            and wa.hour_block_id >= ?
-                            and wa.hour_block_id <= ?
-                """,
+                                select count(*)
+                                from weekly_availability wa
+                                where wa.vehicle_id = ?
+                                    and wa.zone_id = ?
+                                    and wa.week_day = (
+                                        select case when extract(dow from ?::date) = 0 then 7
+                                                    else extract(dow from ?::date) end)
+                                    and wa.hour_block_id >= ?
+                                    and wa.hour_block_id <= ?
+                        """,
                 new Object[]{vehicleId, zoneId, date.toString(), date.toString(), hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId()},
                 new int[]{Types.BIGINT, Types.BIGINT, Types.DATE, Types.DATE, Types.BIGINT, Types.BIGINT},
                 Integer.class
-                );
+        );
         return count != null && count == hourInterval.getHourCount();
     }
 

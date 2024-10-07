@@ -49,11 +49,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval) {
-        Optional<Booking> booking = bookingDao.appointBooking(vehicleId, clientId, zoneId, date, hourInterval);
-        if (booking.isPresent()) {
-            mailService.sendRequestedDriverService(booking.get().getDriver().getId(), booking.get().getClient().getId(), date, "jobDescription");
-        }
+    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription) {
+        Optional<Booking> booking = bookingDao.appointBooking(vehicleId, clientId, zoneId, date, hourInterval, jobDescription);
+        booking.ifPresent(value -> mailService.sendRequestedDriverService(value.getDriver().getId(), value.getClient().getId(), date, jobDescription));
         return booking;
     }
 
@@ -69,6 +67,6 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Override
     public void setBookingRatingAndReview(long bookingId, int rating, String review) {
-        bookingDao.setRatingAndReview(bookingId, rating,review);
+        bookingDao.setRatingAndReview(bookingId, rating, review);
     }
 }
