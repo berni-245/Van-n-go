@@ -47,7 +47,7 @@ select   wa.week_day,
          vwz.zone_id,
          vwz.vehicle_id
 from weekly_availability_old wa join hour_block hb on extract(hour from wa.t_start) = extract(hour from hb.t_start)
-                                join vehicle_weekly_zone vwz on wa.id = vwz.availability_id
+                                join vehicle_weekly_zone_old vwz on wa.id = vwz.availability_id
 where extract(hour from wa.t_start) = extract(hour from wa.t_end)
 on conflict do nothing;
 
@@ -98,9 +98,7 @@ from booking_old bo
          join reservation_old re on bo.id = re.booking_id
          join vehicle ve on re.driver_id = ve.driver_id
          join weekly_availability wa on ve.id = wa.vehicle_id
-where wa.week_day = (select case
-                                when extract(dow from bo.date) = 0 then 7
-                                else extract(dow from bo.date) end)
+where wa.week_day = extract(dow from bo.date)
   and ve.id = (select min(ve2.id)
                from vehicle ve2
                         join weekly_availability wa2 on ve2.id = wa2.vehicle_id
@@ -116,3 +114,7 @@ where wa.week_day = (select case
 group by bo.id, bo.date, client_id, re.is_confirmed, ve.id, wa.zone_id
 order by date
 ;
+
+UPDATE weekly_availability
+SET week_day = 0
+WHERE week_day = 7;

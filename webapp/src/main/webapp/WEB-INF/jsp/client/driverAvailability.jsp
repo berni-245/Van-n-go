@@ -42,11 +42,30 @@
         .fc-day:not(.fc-day-disabled):not(.active-cell):hover {
             background-color: var(--bs-tertiary-bg)
         }
+
+        .reserved {
+            background: red;
+            pointer-events: none;
+        }
+
+        .available {
+            cursor: pointer;
+        }
+
+        .accordion-button:disabled {
+            opacity: 0.5;
+        }
     </style>
 </comp:Head>
 <body>
 <comp:Header/>
-<h1 class="text-center"><c:out value="${driver.username}"/></h1>
+<h1 class="text-center">
+    <spring:message code="generic.word.${size}" var="sizeMsg"/>
+    <spring:message
+            code="generic.phrase.userAvailability"
+            arguments="${driver.username},${zone.neighborhoodName},${sizeMsg}"
+    />
+</h1>
 
 <div class="calendar-container mt-5">
     <div id="calendar"></div>
@@ -55,6 +74,35 @@
 <div id="confirmForm" class="form-control mt-5">
     <form action="${pageContext.request.contextPath}/availability/contact"
           method="post">
+
+        <div class="accordion" id="accordionExample">
+            <c:forEach var="v" items="${vehicles}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button id="ab-${v.plateNumber}"
+                                class="accordion-button collapsed"
+                                type="button" data-bs-toggle="collapse"
+                                data-bs-target="#${v.plateNumber}" aria-expanded="false"
+                                aria-controls="${v.plateNumber}" disabled
+                        >
+                            <strong><c:out value="${v.plateNumber}"/></strong> -
+                            <c:out value="${v.volume}"/>m&sup3
+                        </button>
+                    </h2>
+                    <div id="${v.plateNumber}" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${v.id}' />"
+                                 alt="Vehicle Image Preview" class="card-img-top"/>
+                            <c:url var="postUrl"
+                                   value="/driver/availability/edit?plateNumber=${plateNumber}&vehicleId=${vehicle.id}"/>
+                            <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
+                            </form:form>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
         <input type="hidden" name="clientId" value="${loggedUser.id}">
         <label for="jobDescription"><spring:message code="form.jobDescription"/></label>
         <textarea id="jobDescription" name="jobDescription" rows="4"
@@ -70,33 +118,19 @@
 <script type="text/javascript">
     const reservedDates = [
         <c:forEach var="booking" items="${bookings}">
+        <c:if test="${booking.confirmed}">
         "<c:out value='${booking.date}'/>",
+        </c:if>
         </c:forEach>
     ];
-
-    const daysOfWeekMap = {
-        'Sunday': 0,
-        'Monday': 1,
-        'Tuesday': 2,
-        'Wednesday': 3,
-        'Thursday': 4,
-        'Friday': 5,
-        'Saturday': 6
-    };
 
     let workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
-        "<c:out value='${workDay}'/>",
+        ${workDay},
         </c:forEach>
     ];
-    workingDays = [...new Set(workingDays)];
-    const visibleDays = workingDays.map(function (day) {
-        return daysOfWeekMap[day];
-    });
     const allDays = [0, 1, 2, 3, 4, 5, 6];
-    const hiddenDays = allDays.filter(function (dayIndex) {
-        return !visibleDays.includes(dayIndex);
-    });
+    const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));
 
     let selectedDate = null;
     document.addEventListener('DOMContentLoaded', function () {
@@ -139,12 +173,12 @@
 
             dateClick: function (info) {
                 if (reservedDates.includes(info.dateStr)) {
-                    alert("Este día ya está reservado. Por favor, selecciona otro día.");
-                    document.getElementById('confirmForm').style.display = 'none';
+                    // alert("Este día ya está reservado. Por favor, selecciona otro día.");
+                    // document.getElementById('confirmForm').style.display = 'none';
                     return;
                 }
 
-                updateSelected(info.dayEl)
+                updateSelected(info);
 
                 document.getElementById('confirmForm').style.display = 'block';
                 document.getElementById('bookingDate').value = info.dateStr;
@@ -155,12 +189,31 @@
         calendar.render();
     });
 
+    const vehicles = [
+        <c:forEach var="v" items="${vehicles}">
+        ${v.toJson()},
+        </c:forEach>
+    ]
+    const accordionButtons = document.querySelectorAll('.accordion-button');
+
     function updateSelected(newDay) {
         if (selectedDate != null) {
             selectedDate.classList.remove('active-cell')
         }
-        newDay.classList.add('active-cell')
-        selectedDate = newDay;
+        newDay.dayEl.classList.add('active-cell')
+        selectedDate = newDay.dayEl;
+        const weekDay = newDay.date.getDay();
+        vehicles.forEach(v => {
+            const accordionButton = document.getElementById('ab-' + v.plateNumber);
+            const accordionBody = document.getElementById(v.plateNumber);
+            if (v.weeklyAvailability.some(wa => wa.weekDay === weekDay)) {
+                accordionButton.disabled = false;
+            } else {
+                accordionButton.disabled = true;
+                accordionButton.classList.add('collapsed');
+                accordionBody.classList.remove('show');
+            }
+        });
     }
 </script>
 

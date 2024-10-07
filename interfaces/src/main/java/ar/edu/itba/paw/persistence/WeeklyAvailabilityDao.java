@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface WeeklyAvailabilityDao {
     public void removeAll(int weekDay, long zoneId, long vehicleId);
 
     List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId);
+
+    List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId, long zoneId, Size size);
 
     List<List<WeeklyAvailability>> getDriverWeeklyAvailabilityByDays(long driverId);
 

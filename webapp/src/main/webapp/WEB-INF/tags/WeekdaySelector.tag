@@ -30,7 +30,7 @@
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sat, 0, 1)}"
                              tooltip="${sat}" value="6"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sun, 0, 1)}"
-                             tooltip="${sun}" value="7"/>
+                             tooltip="${sun}" value="0"/>
 </div>
 
 <script>

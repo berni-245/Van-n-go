@@ -72,8 +72,18 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
+    public List<Vehicle> getVehiclesFull(long id, long zoneId, Size size) {
+        return vehicleDao.getDriverVehicles(id, zoneId, size);
+    }
+
+    @Override
     public List<WeeklyAvailability> getWeeklyAvailability(long id) {
         return weeklyAvailabilityDao.getDriverWeeklyAvailability(id);
+    }
+
+    @Override
+    public List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size) {
+        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id, zoneId, size);
     }
 
     // This should probably be handled better. Right now we won't know
@@ -87,6 +97,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             long[] zoneIds,
             long[] vehicleIds
     ) {
+        if (hourBlocks.length == 0) return;
         for (int weekDay : weekDays) {
             for (long vehicleId : vehicleIds) {
                 for (long zoneId : zoneIds) {

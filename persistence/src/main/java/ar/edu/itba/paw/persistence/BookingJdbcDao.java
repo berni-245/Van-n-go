@@ -253,9 +253,7 @@ public class BookingJdbcDao implements BookingDao {
                                 from weekly_availability wa
                                 where wa.vehicle_id = ?
                                     and wa.zone_id = ?
-                                    and wa.week_day = (
-                                        select case when extract(dow from ?::date) = 0 then 7
-                                                    else extract(dow from ?::date) end)
+                                    and wa.week_day = extract(dow from ?::date)
                                     and wa.hour_block_id >= ?
                                     and wa.hour_block_id <= ?
                         """,

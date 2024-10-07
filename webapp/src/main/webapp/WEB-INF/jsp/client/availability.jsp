@@ -101,7 +101,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-                                        <a href="${pageContext.request.contextPath}/availability/${driver.id}"
+                                        <a href="${pageContext.request.contextPath}/availability/${driver.id}?zoneId=${zoneId}&size=${size}"
                                            class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>
                                         </a>

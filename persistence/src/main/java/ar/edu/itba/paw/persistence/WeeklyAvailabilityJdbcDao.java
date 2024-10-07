@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.HourInterval;
+import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.WeeklyAvailability;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,8 +15,8 @@ import java.util.List;
 
 @Repository
 public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
-    private static final int MIN_DAY = 1;
-    private static final int MAX_DAY = 7;
+    private static final int MIN_DAY = 0;
+    private static final int MAX_DAY = 6;
     private static final RowMapper<WeeklyAvailability> ROW_MAPPER =
             (rs, rowNum) -> new WeeklyAvailability(
                     rs.getInt("week_day"),
@@ -85,6 +86,19 @@ public class WeeklyAvailabilityJdbcDao implements WeeklyAvailabilityDao {
                         where vh.driver_id = ?""",
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
+                ROW_MAPPER);
+    }
+
+    @Override
+    public List<WeeklyAvailability> getDriverWeeklyAvailability(long driverId, long zoneId, Size size) {
+        return jdbcTemplate.query("""
+                        select week_day, t_start, t_end, zone_id, vehicle_id
+                        from hour_block hb
+                        join weekly_availability wa on hb.id = wa.hour_block_id
+                        join vehicle v on v.id = wa.vehicle_id
+                        where v.driver_id = ? and wa.zone_id = ? and volume_m3 between ? and ?""",
+                new Object[]{driverId, zoneId, size.getMinVolume(), size.getMaxVolume()},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.INTEGER, Types.INTEGER},
                 ROW_MAPPER);
     }
 

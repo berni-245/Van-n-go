@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
 import ar.edu.itba.paw.webapp.form.BookingReviewForm;
 import org.slf4j.Logger;
@@ -14,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class ClientController {
@@ -101,23 +104,36 @@ public class ClientController {
         List<Zone> zones = zs.getAllZones();
         mav.addObject("drivers", drivers);
         mav.addObject("zones", zones);
+        mav.addObject("zoneId", zoneId);
+        mav.addObject("size", size);
         return mav;
     }
 
     @RequestMapping("/availability/{id:\\d+}")
     public ModelAndView driverAvailability(
             @PathVariable(name = "id") long id,
+            @RequestParam(name = "zoneId") long zoneId,
+            @RequestParam(name = "size") Size size,
             @ModelAttribute("loggedUser") Client loggedUser
     ) {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
-            List<String> workingDays = new ArrayList<>();
-            ds.getWeeklyAvailability(id).forEach(weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDayString()));
-
+            Set<Integer> workingDays = new HashSet<>();
+            var wa = ds.getWeeklyAvailability(id, zoneId, size);
+            wa.forEach(
+                    weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDay())
+            );
             mav.addObject("workingDays", workingDays);
-            mav.addObject("bookings", ds.getBookings(driver.get().getId()));
+            var vehicles = ds.getVehiclesFull(id, zoneId, size);
+            mav.addObject("vehicles", vehicles);
+            var bookings = ds.getBookings(driver.get().getId());
+            mav.addObject("bookings", bookings);
             mav.addObject("driver", driver.get());
+            Optional<Zone> zone = zs.getZone(zoneId);
+            if (zone.isEmpty()) return new ModelAndView();
+            mav.addObject("zone", zone.get());
+            mav.addObject("size", size.name().toLowerCase());
             return mav;
         } else {
             return new ModelAndView("redirect:/403");

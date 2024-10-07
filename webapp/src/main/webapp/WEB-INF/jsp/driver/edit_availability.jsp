@@ -12,7 +12,12 @@
 <body>
 <comp:Header/>
 <div class="container mt-2 p-3 border border-primary rounded">
-    <h2 class="mb-4"><spring:message code="driver.add_availability.title"/></h2>
+    <h2 class="mb-4">
+        <spring:message
+                code="generic.phrase.edit_vehicle"
+                arguments="${vehicle.plateNumber}"
+        />
+    </h2>
     <c:url var="postUrl" value="/driver/availability/edit?plateNumber=${plateNumber}&vehicleId=${vehicle.id}"/>
     <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
 
@@ -48,35 +53,39 @@
     </form:form>
 </div>
 <script>
-    const zoneSelect = new TomSelect("#select-zones");
-    const vehicle = ${vehicle.toJson()};
+    document.addEventListener('DOMContentLoaded', function () {
+        const zoneSelect = new TomSelect("#select-zones");
+        const vehicle = ${vehicle.toJson()};
 
-    const hourBlockInputs = document.querySelectorAll('input[name="hourBlocks"]');
+        const hourBlockInputs = document.querySelectorAll('input[name="hourBlocks"]');
 
-    function setHourBlocks(waFiltered) {
-        hourBlockInputs.forEach(input => {
-            input.removeAttribute("checked");
-            if (waFiltered.find(wa => wa.hourInterval.startHourString == input.value)) {
-                input.setAttribute("checked", "checked");
-            }
-        })
-    }
+        function setHourBlocks(waFiltered) {
+            hourBlockInputs.forEach(input => {
+                input.removeAttribute("checked");
+                input.checked = false;
+                if (waFiltered.find(wa => wa.hourInterval.startHourString == input.value)) {
+                    input.setAttribute("checked", "checked");
+                    input.checked = true;
+                }
+            })
+        }
 
-    zoneSelect.on("change", (zoneId) => {
-        const weekDay = document.querySelector('input[name="weekDay"]:checked').value
-        const waFiltered = vehicle.weeklyAvailability.filter(
-            wa => wa.zoneId == zoneId && wa.weekDay == weekDay
-        );
-        setHourBlocks(waFiltered);
+        zoneSelect.on("change", (zoneId) => {
+            const weekDay = document.querySelector('input[name="weekDay"]:checked').value
+            const waFiltered = vehicle.weeklyAvailability.filter(
+                wa => wa.zoneId == zoneId && wa.weekDay == weekDay
+            );
+            setHourBlocks(waFiltered);
+        });
+
+        const weekDayInputs = document.querySelectorAll('input[name="weekDay"]');
+        weekDayInputs.forEach(input => input.addEventListener('change', (ev) => {
+            const waFiltered = vehicle.weeklyAvailability.filter(
+                wa => wa.zoneId == zoneSelect.getValue() && wa.weekDay == ev.target.value
+            );
+            setHourBlocks(waFiltered);
+        }))
     });
-
-    const weekDayInputs = document.querySelectorAll('input[name="weekDay"]');
-    weekDayInputs.forEach(input => input.addEventListener('change', (ev) => {
-        const waFiltered = vehicle.weeklyAvailability.filter(
-            wa => wa.zoneId == zoneSelect.getValue() && wa.weekDay == ev.target.value
-        );
-        setHourBlocks(waFiltered);
-    }))
 </script>
 </body>
 

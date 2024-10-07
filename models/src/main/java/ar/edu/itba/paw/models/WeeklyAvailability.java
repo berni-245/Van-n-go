@@ -25,13 +25,13 @@ public class WeeklyAvailability {
     // Clearly should find a better way and we also need to use the message.properties
     public String getWeekDayString() {
         return switch (weekDay) {
+            case 0 -> "Sunday";
             case 1 -> "Monday";
             case 2 -> "Tuesday";
             case 3 -> "Wednesday";
             case 4 -> "Thursday";
             case 5 -> "Friday";
             case 6 -> "Saturday";
-            case 7 -> "Sunday";
             default -> "";
         };
     }

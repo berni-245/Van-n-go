@@ -10,11 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
 
 public class IndividualVehicleAvailabilityForm {
-    @Min(1)
-    @Max(7)
+    @Min(0)
+    @Max(6)
     private int weekDay;
 
-    @NotEmpty
     @ArrayAllMatch(regexp = "\\d{2}:00:00")
     private String[] hourBlocks;
 

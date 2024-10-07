@@ -8,8 +8,8 @@ import javax.validation.constraints.NotEmpty;
 
 public class AvailabilityForm {
     @NotEmpty
-    @ArrayAllMin(1)
-    @ArrayAllMax(7)
+    @ArrayAllMin(0)
+    @ArrayAllMax(6)
     private int[] weekDays;
 
     @ArrayAllMatch(regexp = "\\d{2}:00:00")

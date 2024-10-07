@@ -17,7 +17,11 @@ public interface DriverService {
 
     List<Vehicle> getVehiclesFull(long id);
 
+    List<Vehicle> getVehiclesFull(long id, long zoneId, Size size);
+
     List<WeeklyAvailability> getWeeklyAvailability(long id);
+
+    List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size);
 
     void addWeeklyAvailability(
             long driverId,

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ZoneServiceImpl implements ZoneService {
@@ -20,6 +21,11 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public List<Zone> getAllZones() {
         return zoneDao.getAllZones();
+    }
+
+    @Override
+    public Optional<Zone> getZone(long id) {
+        return zoneDao.getZone(id);
     }
 
     @Override
