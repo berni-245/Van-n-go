@@ -269,7 +269,8 @@
         activeVehicleBtns.forEach(btn => {
             const plateNumber = btn.getAttribute('plateNumber');
             const vehicleId = btn.getAttribute('vehicleId');
-            const url = new URL('http://localhost:8080/availability/active');
+            const path = '/availability/active';
+            const url = new URL(path, window.location.origin);
             url.searchParams.append('vehicleId', vehicleId);
             url.searchParams.append('zoneId', ${zone.id});
             url.searchParams.append('date', selectedDateString);
