@@ -42,7 +42,6 @@ public class BookingJdbcDaoTest {
     private static final long ANOTHER_PREEXISTING_PENDING_BOOK = 502;
     private static final long BOOKING_COUNT = 3;
 
-
     private static final long VEHICLE_ID = 1;
     private static final long CLIENT_ID = 1;
     private static final long CLIENT_ID_TWO = 2;
@@ -53,6 +52,7 @@ public class BookingJdbcDaoTest {
     private static final LocalDate ALREADY_ACCEPTED_BOOKED_DATE = LocalDate.of(2030, 5, 2);
     private static final LocalDate ALREADY_PENDING_BOOKED_DATE = LocalDate.of(2030, 5, 3);
     private static final int RATING = 5;
+    private static final String JOB_DESCRIPTION = "This is a job description";
 
     @Autowired
     private BookingJdbcDao bookingDao;
@@ -70,16 +70,16 @@ public class BookingJdbcDaoTest {
     @Test
     public void testSuccessfulAppointBooking() {
         HourInterval hourInterval = new HourInterval(0, 4);
-        Optional<Booking> optionalBooking = bookingDao.appointBooking(VEHICLE_ID, CLIENT_ID, ZONE_ID, DATE_FREE_TO_APPOINT, hourInterval);
+        Optional<Booking> optionalBooking = bookingDao.appointBooking(VEHICLE_ID, CLIENT_ID, ZONE_ID, DATE_FREE_TO_APPOINT, hourInterval, JOB_DESCRIPTION);
 
         assertTrue(optionalBooking.isPresent());
         Booking booking = optionalBooking.get();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "booking",
                 String.format("""
-                             id = '%d' and date = '%s' and hour_start_id = '%d' and
-                             hour_end_id = '%d' and client_id = '%d' and vehicle_id = '%d' and
-                              zone_id = '%d' and state = '%s'""",
+                                id = '%d' and date = '%s' and hour_start_id = '%d' and
+                                hour_end_id = '%d' and client_id = '%d' and vehicle_id = '%d' and
+                                 zone_id = '%d' and state = '%s'""",
                         booking.getBookingId(), DATE_FREE_TO_APPOINT, hourInterval.getStartHourBlockId(), hourInterval.getEndHourBlockId(),
                         CLIENT_ID, VEHICLE_ID, ZONE_ID, BookingState.PENDING)));
     }
@@ -89,7 +89,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingOnTopOfAnotherAcceptedBooking() {
         Optional<Booking> onTopOfAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(0, 4)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(0, 4), JOB_DESCRIPTION
         );
         assertTrue(onTopOfAnotherBooking.isEmpty());
     }
@@ -97,7 +97,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingEqualsToAnotherAcceptedBooking() {
         Optional<Booking> equalsToAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(1, 3)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(1, 3), JOB_DESCRIPTION
         );
         assertTrue(equalsToAnotherBooking.isEmpty());
     }
@@ -105,7 +105,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingInsideOfAnotherAcceptedBooking() {
         Optional<Booking> insideOfAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(1, 2)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(1, 2), JOB_DESCRIPTION
         );
         assertTrue(insideOfAnotherBooking.isEmpty());
     }
@@ -113,7 +113,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingExactlyBeforeAnotherAcceptedBooking() {
         Optional<Booking> exactlyBeforeAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(0, 1)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(0, 1), JOB_DESCRIPTION
         );
         assertTrue(exactlyBeforeAnotherBooking.isPresent());
     }
@@ -121,7 +121,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingExactlyAfterAnotherAcceptedBooking() {
         Optional<Booking> exactlyAfterAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(3, 4)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_ACCEPTED_BOOKED_DATE, new HourInterval(3, 4), JOB_DESCRIPTION
         );
         assertTrue(exactlyAfterAnotherBooking.isPresent());
     }
@@ -131,7 +131,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingOnTopOfAnotherBookingByTheSameClient() {
         Optional<Booking> onTopOfAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 4)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 4), JOB_DESCRIPTION
         );
         assertTrue(onTopOfAnotherBooking.isEmpty());
     }
@@ -139,7 +139,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingEqualsToAnotherBookingByTheSameClient() {
         Optional<Booking> equalsToAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(1, 3)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(1, 3), JOB_DESCRIPTION
         );
         assertTrue(equalsToAnotherBooking.isEmpty());
     }
@@ -147,7 +147,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingInsideOfAnotherBookingByTheSameClient() {
         Optional<Booking> insideOfAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(1, 2)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(1, 2), JOB_DESCRIPTION
         );
         assertTrue(insideOfAnotherBooking.isEmpty());
     }
@@ -155,7 +155,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingExactlyBeforeAnotherBookingByTheSameClient() {
         Optional<Booking> exactlyBeforeAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 1)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 1), JOB_DESCRIPTION
         );
         assertTrue(exactlyBeforeAnotherBooking.isPresent());
     }
@@ -163,7 +163,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingExactlyAfterAnotherBookingByTheSameClient() {
         Optional<Booking> exactlyAfterAnotherBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(3, 4)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(3, 4), JOB_DESCRIPTION
         );
         assertTrue(exactlyAfterAnotherBooking.isPresent());
     }
@@ -175,7 +175,7 @@ public class BookingJdbcDaoTest {
         //Two different clients can appoint for the same time, as long as there's no accepted booking for those intervals
 
         Booking secondBooking = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID_TWO, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 4)
+                VEHICLE_ID, CLIENT_ID_TWO, ZONE_ID, ALREADY_PENDING_BOOKED_DATE, new HourInterval(0, 4), JOB_DESCRIPTION
         ).orElseThrow();
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -187,7 +187,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingWrongTimeForVehicle() {
         Optional<Booking> wrongTime = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_ID, DATE_FREE_TO_APPOINT, new HourInterval(0, 24)
+                VEHICLE_ID, CLIENT_ID, ZONE_ID, DATE_FREE_TO_APPOINT, new HourInterval(0, 24), JOB_DESCRIPTION
         );
         assertTrue(wrongTime.isEmpty());
     }
@@ -195,7 +195,7 @@ public class BookingJdbcDaoTest {
     @Test
     public void testAppointBookingWrongZoneForVehicle() {
         Optional<Booking> wrongZone = bookingDao.appointBooking(
-                VEHICLE_ID, CLIENT_ID, ZONE_THAT_DRIVER_DOES_NOT_WORK, DATE_FREE_TO_APPOINT, new HourInterval(0, 1)
+                VEHICLE_ID, CLIENT_ID, ZONE_THAT_DRIVER_DOES_NOT_WORK, DATE_FREE_TO_APPOINT, new HourInterval(0, 1), JOB_DESCRIPTION
         );
         assertTrue(wrongZone.isEmpty());
     }
@@ -204,7 +204,6 @@ public class BookingJdbcDaoTest {
     @Test
     public void testGetBookingById() {
         Optional<Booking> optionalBooking = bookingDao.getBookingById(PREEXISTING_ACCEPTED_BOOK);
-
         assertTrue(optionalBooking.isPresent());
         Booking booking = optionalBooking.get();
         assertEquals(PREEXISTING_ACCEPTED_BOOK, booking.getBookingId());

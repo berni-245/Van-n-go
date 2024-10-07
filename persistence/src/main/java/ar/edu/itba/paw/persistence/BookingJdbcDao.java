@@ -6,7 +6,6 @@ import ar.edu.itba.paw.models.HourInterval;
 import ar.edu.itba.paw.models.Vehicle;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -67,17 +66,17 @@ public class BookingJdbcDao implements BookingDao {
 
         jdbcTemplate.update(
                 """
-                INSERT INTO booking (
-                    date,
-                    hour_start_id,
-                    hour_end_id,
-                    client_id,
-                    vehicle_id,
-                    zone_id,
-                    state,
-                    job_description
-                )
-                VALUES (?, ?, ?, ?, ?, ?, cast(? as state), ?)""",
+                        INSERT INTO booking (
+                            date,
+                            hour_start_id,
+                            hour_end_id,
+                            client_id,
+                            vehicle_id,
+                            zone_id,
+                            state,
+                            job_description
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, cast(? as state), ?)""",
                 new Object[]{
                         date.toString(),
                         hourInterval.getStartHourBlockId(),
@@ -101,11 +100,11 @@ public class BookingJdbcDao implements BookingDao {
         );
 
         return jdbcTemplate.query("""
-                select *
-                from booking
-                where date = ? and hour_start_id = ? and hour_end_id = ?
-                and client_id = ? and vehicle_id = ? and zone_id = ?
-                and state = cast(? as state)""",
+                        select *
+                        from booking
+                        where date = ? and hour_start_id = ? and hour_end_id = ?
+                        and client_id = ? and vehicle_id = ? and zone_id = ?
+                        and state = cast(? as state)""",
                 new Object[]{
                         date.toString(),
                         hourInterval.getStartHourBlockId(),
@@ -227,24 +226,24 @@ public class BookingJdbcDao implements BookingDao {
             !booking.getBookingState().equals(BookingState.PENDING))
             return;
         jdbcTemplate.update("""
-                    update booking
-                    set state = cast(? as state)
-                    where id = ?""",
+                        update booking
+                        set state = cast(? as state)
+                        where id = ?""",
                 new Object[]{BookingState.ACCEPTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
         jdbcTemplate.update("""
-                update booking
-                set state = cast(? as state)
-                where id != ?
-                and date = ?
-                and vehicle_id = ?
-                and (
-                        (hour_start_id >= ?
-                        and hour_start_id <= ?)
-                    or  (hour_end_id >= ?
-                        and hour_end_id <= ?))
-                    or  (hour_start_id < ?
-                        and hour_end_id > ?)""",
+                        update booking
+                        set state = cast(? as state)
+                        where id != ?
+                        and date = ?
+                        and vehicle_id = ?
+                        and (
+                                (hour_start_id >= ?
+                                and hour_start_id <= ?)
+                            or  (hour_end_id >= ?
+                                and hour_end_id <= ?))
+                            or  (hour_start_id < ?
+                                and hour_end_id > ?)""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId,
                         booking.getDate().toString(), booking.getVehicle().getId(),
                         bookingHI.getStartHourBlockId(), bookingHI.getEndHourBlockId(),
@@ -256,15 +255,15 @@ public class BookingJdbcDao implements BookingDao {
                         Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT,
                         Types.BIGINT, Types.BIGINT
-                 });
+                });
     }
 
     @Override
     public void rejectBooking(long bookingId) {
         jdbcTemplate.update("""
-                    update booking
-                    set state = cast(? as state)
-                    where id = ?""",
+                        update booking
+                        set state = cast(? as state)
+                        where id = ?""",
                 new Object[]{BookingState.REJECTED.toString(), bookingId},
                 new int[]{Types.VARCHAR, Types.BIGINT});
     }
