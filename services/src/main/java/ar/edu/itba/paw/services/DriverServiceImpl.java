@@ -5,6 +5,7 @@ import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         this.bookingDao = bookingDao;
     }
 
-    //@Transactional
+    @Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
         long id = createUser(username, mail, password);
@@ -129,11 +130,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getBookingsByDate(driverId, date);
     }
 
+    @Transactional
     @Override
     public void acceptBooking(long bookingId) {
         bookingDao.acceptBooking(bookingId);
     }
 
+    @Transactional
     @Override
     public void rejectBooking(long bookingId) {
         bookingDao.rejectBooking(bookingId);

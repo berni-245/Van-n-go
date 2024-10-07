@@ -8,6 +8,7 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         this.clientDao = clientDao;
     }
 
-    //@Transactional
+    @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
         long id = createUser(username, mail, password);
@@ -48,6 +49,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         return clientDao.findById(id);
     }
 
+    @Transactional
     @Override
     public Optional<Booking> appointBooking(long driverId, long clientId, LocalDate date, String jobDescription, Locale locale) {
         Optional<Booking> booking = bookingDao.appointBooking(driverId, clientId, date);
