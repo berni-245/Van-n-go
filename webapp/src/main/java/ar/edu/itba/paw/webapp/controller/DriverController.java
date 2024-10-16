@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
+import ar.edu.itba.paw.webapp.form.ProfileForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,6 +184,25 @@ public class DriverController {
         }
     }
 
+    @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
+    public ModelAndView editProfile(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @Valid @ModelAttribute("profileForm") ProfileForm form,
+            BindingResult errors
+    ) {
+        ds.editProfile(loggedUser.getId(),form.getExtra1(),form.getcbu());
+        return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(path = "profile/edit", method = RequestMethod.GET)
+    public ModelAndView editProfileForm(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @ModelAttribute("profileForm") ProfileForm form){
+        form.setcbu(loggedUser.getcbu());
+        form.setExtra1(loggedUser.getExtra1());
+        return new ModelAndView("driver/edit_profile");
+    }
+
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.POST)
     public ModelAndView editVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,
@@ -215,9 +235,11 @@ public class DriverController {
                 form.getRate()
         ));
         Image aux = is.getVehicleImage((int) form.getId());
-        if (vehicleImg != null && !vehicleImg.isEmpty() && (aux == null || !aux.getFileName().equals(vehicleImg.getOriginalFilename())))
-            try {
-                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(), (int) form.getId());
+        if(vehicleImg != null && !vehicleImg.isEmpty())
+            try{
+                //If they have exactly the same length and filename, they are most likely the same image
+                if (aux != null && !(aux.getFileName().equals(vehicleImg.getOriginalFilename()) && aux.getData().length==vehicleImg.getBytes().length))
+                    is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
             } catch (Exception e) {
                 log.error(e.getMessage());
             }

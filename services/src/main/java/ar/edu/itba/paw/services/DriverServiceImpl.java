@@ -5,9 +5,11 @@ import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -40,14 +42,14 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         this.bookingDao = bookingDao;
     }
 
-    //@Transactional
+    @Transactional
     @Override
-    public Driver create(String username, String mail, String password, String extra1) {
+    public Driver create(String username, String mail, String password, String extra1, Locale locale) {
         long id = createUser(username, mail, password);
         // Driver instance will be created with unencrypted password.
         // Is that a problem tho?
         Driver driver = driverDao.create(id, extra1);
-        mailService.sendDriverWelcomeMail(mail, username);
+        mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
 
@@ -109,7 +111,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         }
     }
 
-    // @Transactional
+
+    @Transactional
     @Override
     public void updateWeeklyAvailability(long driverId, int weekDay, String[] hourBlocks, long zoneId, long vehicleId) {
         weeklyAvailabilityDao.removeAll(weekDay, zoneId, vehicleId);
@@ -117,7 +120,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
                 driverId, new int[]{weekDay}, hourBlocks,
                 new long[]{zoneId}, new long[]{vehicleId}
         );
-    }
+}
 
     @Override
     public List<Driver> getAll() {
@@ -154,11 +157,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getBookingsByVehicleAndDate(vehicleId, date);
     }
 
+    @Transactional
     @Override
     public void acceptBooking(long bookingId) {
         bookingDao.acceptBooking(bookingId);
     }
 
+    @Transactional
     @Override
     public void rejectBooking(long bookingId) {
         bookingDao.rejectBooking(bookingId);
@@ -172,6 +177,11 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public boolean updateVehicle(long driverId, Vehicle vehicle) {
         return vehicleDao.updateVehicle(driverId, vehicle);
+    }
+
+    @Override
+    public void editProfile(long id, String extra1, String cbu) {
+        driverDao.editProfile(id,extra1,cbu);
     }
 
     @Override

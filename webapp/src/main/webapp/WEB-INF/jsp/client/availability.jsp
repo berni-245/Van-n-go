@@ -51,7 +51,7 @@
 
     <div class="d-flex justify-content-center">
         <c:choose>
-            <c:when test="${drivers.isEmpty()}">
+            <c:when test="${empty drivers}">
                 <p class="text-center mt-4"><spring:message code="availability.posts.noPosts"/></p>
             </c:when>
             <c:otherwise>
@@ -60,9 +60,10 @@
                         <c:forEach var="driver" items="${drivers}" varStatus="status">
                             <div class="col mb-4">
                                 <div class="card anchor-card h-100">
-                                    <div class="card-body">
+                                    <div class="card-body d-flex justify-content-between">
+                                        <div>
                                         <h5 class="card-title">${driver.username}</h5>
-                                        <p class="card-text">Details about the driver can go here.</p>
+                                        <p class="card-text">${driver.extra1}</p>
                                         <div class="d-flex align-items-center">
 
                                             <c:choose>
@@ -105,6 +106,15 @@
                                            class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>
                                         </a>
+                                        </div>
+                                        <c:choose>
+                                            <c:when test="${driver.pfp==0}">
+                                                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="${pageContext.request.contextPath}/user/pfp?userId=${driver.id}" alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>

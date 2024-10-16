@@ -5,6 +5,8 @@ public class Driver extends User {
 
     private final Double rating;
 
+    private final String cbu;
+
     public Driver(
             long id,
             String username,
@@ -12,11 +14,13 @@ public class Driver extends User {
             String password,
             int pfp,
             String extra1,
-            Double rating
+            Double rating,
+            String cbu
     ) {
         super(id, username, mail, password,pfp);
         this.extra1 = extra1;
         this.rating = rating;
+        this.cbu = cbu;
     }
 
     public String getExtra1() {
@@ -27,6 +31,8 @@ public class Driver extends User {
         return rating;
     }
 
+    public String getcbu() {return cbu;}
+
     @Override
     public boolean isDriver() {
         return true;
@@ -34,8 +40,8 @@ public class Driver extends User {
 
     @Override
     public String toString() {
-        return "Driver{id=%d, username='%s', mail='%s', extra1='%s'".formatted(
-                getId(), getUsername(), getMail(), extra1
+        return "Driver{id=%d, username='%s', mail='%s', extra1='%s', cbu='%s'".formatted(
+                getId(), getUsername(), getMail(), extra1, cbu
         );
     }
 }

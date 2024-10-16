@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.form.UserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PublicController {
@@ -65,9 +67,9 @@ public class PublicController {
         }
         final User user;
         if (userForm.getUserType().equals(UserRole.DRIVER.name()))
-            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "");
+            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "", LocaleContextHolder.getLocale());
         else
-            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword());
+            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         return new ModelAndView("redirect:/");
@@ -98,20 +100,26 @@ public class PublicController {
     @RequestMapping(path = "/profile")
     public ModelAndView profile(@ModelAttribute("loggedUser") User loggedUser) {
         ModelAndView mav = new ModelAndView("public/profile");
-        Image pfp = is.getPfp((int) loggedUser.getId());
-        if (pfp != null) {
-            mav.addObject("profilePic", pfp);
-        }
+        Optional<Driver> test = ds.findById(loggedUser.getId());
+        test.ifPresent(driver -> mav.addObject("loggedDriver", driver));
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }
 
 
+    @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getUserPicture(@RequestParam("userId") int userId ,@ModelAttribute("loggedUser") User loggedUser) {
+        return getValidatedPfp(is.getPfp(userId));
+    }
 
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
-        Image pfp = is.getPfp((int) loggedUser.getId());
+        return getValidatedPfp(is.getPfp((int) loggedUser.getId()));
+    }
+
+    private ResponseEntity<byte[]> getValidatedPfp(Image pfp) {
         if (pfp != null && pfp.getData() != null) {
             String fileName = pfp.getFileName();
             String contentType;
@@ -132,6 +140,4 @@ public class PublicController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
 }

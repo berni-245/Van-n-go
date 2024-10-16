@@ -22,8 +22,16 @@
 <body>
 <comp:Header inAvailability="true"/>
 <div class="container">
-
     <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+        <c:choose>
+        <c:when test="${empty vehicles}">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.driver_availability"/></p>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
         <c:url var="vUrl" value="/driver/availability/edit"/>
         <c:forEach items="${vehicles}" var="v">
             <div class="col mb-4">
@@ -47,6 +55,9 @@
                 </a>
             </div>
         </c:forEach>
+        </c:otherwise>
+        </c:choose>
+
     </div>
 
     <%--    <c:forEach var="v" items="${vehicles}">--%>

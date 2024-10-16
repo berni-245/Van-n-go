@@ -22,11 +22,11 @@
                            accept="image/png, image/jpeg"
                            onchange="document.getElementById('uploadProfilePicForm').submit();">
                     <label for="profilePicInput" style="cursor: pointer;">
-                        <c:if test="${empty profilePic}">
+                        <c:if test="${loggedUser.pfp == 0}">
                             <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
                                  alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">
                         </c:if>
-                        <c:if test="${not empty profilePic}">
+                        <c:if test="${loggedUser.pfp != 0}">
                             <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
                                  class="rounded-circle border" width="150" height="150">
                         </c:if>
@@ -34,14 +34,14 @@
                 </form>
             </div>
             <div class="user-info text-center">
-                <p class="mb-1"><strong>Email:</strong> <c:out value="${loggedUser.mail}"/></p>
-            </div>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a class="btn btn-primary btn-lg px-4 gap-3"
-                   href="${pageContext.request.contextPath}/profile/edit"
-                   role="button">
-                    <spring:message code="user.editUser.edit"/>
-                </a>
+                <p class="mb-1"><strong><spring:message code="generic.word.email"/>: </strong> <c:out value="${loggedUser.mail}"/></p>
+                <c:if test="${loggedUser.isDriver}">
+                    <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong> <c:out value="${loggedDriver.extra1}"/></p>
+                    <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong> <c:out value="${loggedDriver.cbu}"/></p>
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="<c:url value='/profile/edit'/>" class="btn btn-primary"><spring:message code="generic.word.edit"/></a>
+                    </div>
+                </c:if>
             </div>
         </div>
     </div>

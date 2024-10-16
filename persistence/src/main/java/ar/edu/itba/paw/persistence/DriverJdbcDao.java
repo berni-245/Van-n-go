@@ -24,7 +24,8 @@ public class DriverJdbcDao implements DriverDao {
                     rs.getString("password"),
                     rs.getInt("pfp"),
                     rs.getString("extra1"),
-                    rs.getObject("rating", Double.class)
+                    rs.getObject("rating", Double.class),
+                    rs.getString("cbu")
             );
 
     protected final JdbcTemplate jdbcTemplate;
@@ -92,6 +93,14 @@ public class DriverJdbcDao implements DriverDao {
                         new int[]{Types.VARCHAR},
                         ROW_MAPPER)
                 .stream().findFirst();
+    }
+
+    @Override
+    public void editProfile(long id, String extra1, String cbu) {
+        jdbcTemplate.update("""
+            update driver set extra1 = ?, cbu = ?
+            where user_id = ?
+        """, new Object[]{extra1, cbu, id}, new int[]{Types.VARCHAR, Types.VARCHAR, Types.BIGINT});
     }
 
 

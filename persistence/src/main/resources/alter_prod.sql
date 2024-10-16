@@ -110,7 +110,6 @@ where wa.week_day = extract(dow from bo.date)
                     where wa3.vehicle_id = ve.id
                       and wa3.week_day = wa.week_day
 )
-
 group by bo.id, bo.date, client_id, re.is_confirmed, ve.id, wa.zone_id
 order by date
 ;

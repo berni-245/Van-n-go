@@ -9,18 +9,22 @@
 
 <c:url var="postUrl" value="${action}"/>
 <form:form action="${postUrl}" method="post" modelAttribute="${modelAttribute}" enctype="multipart/form-data">
-    <div class="mb-3">
+    <div class="mb-4">
         <label class="form-label">
             <spring:message code="driver.add_vehicle.image"/>
-            <input type="file" id="vehicleImg" name="vehicleImg" accept="image/png, image/jpeg" onchange="previewVehicleImage(event)"/>
+            <input type="file" id="vehicleImg" name="vehicleImg" accept="image/png, image/jpeg" class="form-control mt-2" onchange="previewVehicleImage(event)" />
         </label>
-        <div class="form-group mt-3">
-            <c:if test="${not empty vehicleId}">
-                <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${vehicleId}' />" alt="Vehicle Image Preview" style="max-width: 300px;" />
-            </c:if>
-            <c:if test="${empty vehicleId}">
-                <img id="vehicleImagePreview" src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="Vehicle Image Preview" style="max-width: 300px;" />
-            </c:if>
+        <div class="form-group mt-4 d-flex align-items-center">
+            <div class="me-3">
+                <c:choose>
+                <c:when test="${not empty vehicleId}">
+                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${vehicleId}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
+                </c:when>
+                <c:otherwise>
+                    <img id="vehicleImagePreview" src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="Vehicle Image Preview" class="img-fluid border rounded" style="max-width: 150px;" />
+                </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </div>
     <div>

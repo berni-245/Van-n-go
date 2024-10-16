@@ -16,12 +16,21 @@
                 <h1 class="text-left"><spring:message code="driver.home.yourBookings"/></h1>
             </div>
         </div>
-
+<c:choose>
+    <c:when test="${empty bookings}">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.driver_bookings"/></p>
+            </div>
+        </div>
+    </c:when>
+    <c:otherwise>
         <div class="row row-cols-3">
             <c:forEach var="booking" items="${bookings}">
                 <div class="col mb-4">
                     <div class="card mb-3">
-                        <div class="card-body">
+                        <div class="card-body d-flex justify-content-between">
+                            <div>
                             <h5 class="card-title"><c:out
                                     value="${booking.date}"/></h5>
                             <p class="card-text"><c:out
@@ -34,7 +43,7 @@
                                     <spring:message code="driver.home.unpaid"/>
                                 </c:if>
                                 <c:if test="${not empty booking.pop and booking.pop != 0}">
-                                    <a href="<c:url value='/driver/pop?bookingId=${booking.bookingId}' />" target="_blank">
+                                    <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />" target="_blank">
                                         <spring:message code="driver.home.paid"/>
                                     </a>
                                 </c:if>
@@ -55,11 +64,22 @@
                                     </form>
                                 </div>
                             </c:if>
+                            </div>
+                            <c:choose>
+                                <c:when test="${booking.client.pfp==0}">
+                                    <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Client Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/user/pfp?userId=${booking.client.id}" alt="ClientPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
+    </c:otherwise>
+</c:choose>
     </div>
 
 

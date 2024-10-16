@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:remove="all">Driver welcome mail</title>
+    <title th:remove="all">Rejected Booking </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="http://pawserver.it.itba.edu.ar/paw-2024b-01/css/bootstrap.min.css">
     <style>
@@ -35,34 +35,22 @@
         }
     </style>
 </head>
+<body style="background-color: #f8f9fa; font-family: Arial, sans-serif; padding: 20px;">
+<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">
 
-<body style="background-color: #f8f9fa; font-family: Arial, sans-serif;">
-<div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">
-    <div class="text-center" style="margin-bottom: 20px;">
-        <img src="http://pawserver.it.itba.edu.ar/paw-2024b-01/favicon.ico" alt="Logo" style="max-width: 100px;">
-    </div>
 
-    <h2 class="text-center display-4 "  th:text="#{mail.welcome.greetingUser(${driverName})}">User</h2>
-
-    <p class="text-center text-secondary"  th:text="#{mail.welcome.driver.greetingMessage}">Greeting</p>
-
+    <h1 th:text="#{mail.rejectedBooking.head}" class="text-center m-2">Your Van N' Go booking was rejected</h1>
+    <p th:text="#{mail.rejectedBooking.rejectedBy(${date}, ${driverName})}" style="color: #343a40;">Your booking for {date} was rejected by driver {driverName}</p>
+    <p th:text="#{mail.rejectedBooking.newReservation.text}" style="color: #343a40;">Don't worry, you can make a new reservation right away at Van N' Go</p>
 
     <div class="text-center">
         <button class="button-primary">
-        <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/login"
-           th:text="#{mail.welcome.driver.addVehicle}">Add Vehicle</a>
+            <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/login" style="color: white"
+               th:text="#{mail.rejectedBooking.newReservations}">Make a new reservation</a>
         </button>
     </div>
 
-    <div class="text-center" style="margin: 30px 0;">
-        <button class="button-primary">
-        <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/login"
-           th:text="#{mail.welcome.driver.addAvailability}">Add Availability</a>
-        </button>
-    </div>
 
-    <div class="text-center">
-        <p th:text="#{mail.footer}">Van N' Go</p>
-    </div>
+    <footer th:text="#{mail.footer}" class= "text-center m-2" style="color: #6c757d; font-size: 12px;">Thanks for using Van N' Go</footer>
 </div>
 </body>

@@ -9,9 +9,11 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -34,14 +36,14 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         this.bookingDao = bookingDao;
     }
 
-    //@Transactional
+    @Transactional
     @Override
-    public Client create(String username, String mail, String password) {
+    public Client create(String username, String mail, String password, Locale locale) {
         long id = createUser(username, mail, password);
         // Client instance will be created with unencrypted password.
         // Is that a problem tho?
         Client client = clientDao.create(id);
-        mailService.sendClientWelcomeMail(mail, username);
+        mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }
 
@@ -50,10 +52,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         return clientDao.findById(id);
     }
 
+    @Transactional
     @Override
-    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription) {
+    public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription, Locale locale) {
         Optional<Booking> booking = bookingDao.appointBooking(vehicleId, clientId, zoneId, date, hourInterval, jobDescription);
-        booking.ifPresent(value -> mailService.sendRequestedDriverService(value.getDriver().getId(), value.getClient().getId(), date, jobDescription));
+        booking.ifPresent(booking -> mailService.sendRequestedDriverService(booking.getDriver().getId(), clientId,date,jobDescription,locale));
+);
         return booking;
     }
 

@@ -4,10 +4,11 @@ import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public interface DriverService {
-    Driver create(String username, String mail, String password, String extra1);
+    Driver create(String username, String mail, String password, String extra1, Locale locale);
 
     Optional<Driver> findById(long id);
 
@@ -66,6 +67,8 @@ public interface DriverService {
     void rejectBooking(long bookingId);
 
     Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
+
+    void editProfile(long id, String extra1, String cbu);
 
     boolean updateVehicle(long driverId, Vehicle vehicle);
 
