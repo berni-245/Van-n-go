@@ -3,6 +3,8 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="ar.edu.itba.paw.models.BookingState" %>
+
 <html>
 <comp:Head titleCode="siteName"/>
 
@@ -16,87 +18,101 @@
                 <h1 class="text-left"><spring:message code="driver.home.yourBookings"/></h1>
             </div>
         </div>
-<c:choose>
-    <c:when test="${empty bookings}">
-        <div class="row">
-            <div class="col-12 text-center">
-                <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.driver_bookings"/></p>
-            </div>
-        </div>
-    </c:when>
-    <c:otherwise>
-        <div class="row row-cols-3">
-            <c:forEach var="booking" items="${bookings}">
-                <div class="col mb-4">
-                    <div class="card mb-3">
-                        <div class="card-body d-flex justify-content-between">
-                            <div>
-                            <h5 class="card-title"><c:out
-                                    value="${booking.date}"/></h5>
-                            <p class="card-text"><c:out
-                                    value="${booking.client.username}"/></p>
-                            <p class="card-text"><c:out
-                                    value="${booking.client.mail}"/></p>
-                            <c:if test="${booking.confirmed}">
-                                <p><spring:message code="driver.home.bookingConfirmed"/></p>
-                                <c:if test="${empty booking.pop or booking.pop == 0}">
-                                    <spring:message code="driver.home.unpaid"/>
-                                </c:if>
-                                <c:if test="${not empty booking.pop and booking.pop != 0}">
-                                    <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />" target="_blank">
-                                        <spring:message code="driver.home.paid"/>
-                                    </a>
-                                </c:if>
-                            </c:if>
-                            <c:if test="${!booking.confirmed}">
-                                <div class="d-flex justify-content-between">
-                                    <form action="${pageContext.request.contextPath}/driver/acceptBooking"
-                                          method="POST">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
-                                        <button type="submit" class="btn btn-success"><spring:message
-                                                code="driver.home.accept"/></button>
-                                    </form>
-                                    <form action="${pageContext.request.contextPath}/driver/rejectBooking"
-                                          method="POST">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
-                                        <button type="submit" class="btn btn-danger"><spring:message
-                                                code="driver.home.reject"/></button>
-                                    </form>
-                                </div>
-                            </c:if>
-                            </div>
-                            <c:choose>
-                                <c:when test="${booking.client.pfp==0}">
-                                    <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Client Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="${pageContext.request.contextPath}/user/pfp?userId=${booking.client.id}" alt="ClientPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+        <c:choose>
+            <c:when test="${empty bookings}">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="mt-5 display-4 font-weight-bold"><spring:message
+                                code="call_to_action.driver_bookings"/></p>
                     </div>
                 </div>
-            </c:forEach>
-        </div>
-        <c:if test="${totalPages > 1}">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                        <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
-                    </li>
-                    <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                        <li class="page-item ${i == currentPage ? 'active' : ''}">
-                            <a class="page-link" href="?page=${i}">${i + 1}</a>
-                        </li>
+            </c:when>
+            <c:otherwise>
+                <div class="row row-cols-3">
+                    <c:forEach var="booking" items="${bookings}">
+                        <div class="col mb-4">
+                            <div class="card mb-3 shadow h-100">
+                                <c:choose>
+                                    <c:when test="${booking.client.pfp==0}">
+                                        <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                                             alt="Client Profile Picture" style="width: 60px; height: 60px;"
+                                             class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                                        />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/user/pfp?userId=${booking.client.id}"
+                                             alt="ClientPfp" style="width: 60px; height: 60px;"
+                                             class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                                        />
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <h5 class="card-title"><c:out value="${booking.date}"/></h5>
+                                        <p class="card-text"><c:out value="${booking.client.username}"/></p>
+                                        <p class="card-text"><c:out value="${booking.client.mail}"/></p>
+                                    </div>
+                                    <c:if test="${booking.state eq BookingState.PENDING}">
+                                        <div class="d-flex justify-content-around mt-2">
+                                            <form action="${pageContext.request.contextPath}/driver/acceptBooking"
+                                                  method="POST" class="mb-1">
+                                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                                <button type="submit" class="btn btn-success"><spring:message
+                                                        code="driver.home.booking.accept"/></button>
+                                            </form>
+                                            <form action="${pageContext.request.contextPath}/driver/rejectBooking"
+                                                  method="POST" class="mb-1">
+                                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                                <button type="submit" class="btn btn-danger"><spring:message
+                                                        code="driver.home.booking.reject"/></button>
+                                            </form>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${booking.state eq BookingState.ACCEPTED}">
+                                        <div>
+                                            <p><spring:message code="driver.home.booking.confirmed"/></p>
+                                            <c:if test="${empty booking.pop or booking.pop == 0}">
+                                                <spring:message code="driver.home.unpaid"/>
+                                            </c:if>
+                                            <c:if test="${not empty booking.pop and booking.pop != 0}">
+                                                <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />"
+                                                   target="_blank">
+                                                    <spring:message code="driver.home.paid"/>
+                                                </a>
+                                            </c:if>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${booking.state eq BookingState.REJECTED}">
+                                        <div>
+                                            <p><spring:message code="driver.home.booking.rejected"/></p>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
                     </c:forEach>
-                    <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="?page=${currentPage + 1}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
-                    </li>
-                </ul>
-            </nav>
-        </c:if>
-    </c:otherwise>
-</c:choose>
+                </div>
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1"
+                                   aria-disabled="${currentPage == 0}">&laquo; Previous</a>
+                            </li>
+                            <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link" href="?page=${i}">${i + 1}</a>
+                                </li>
+                            </c:forEach>
+                            <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" href="?page=${currentPage + 1}"
+                                   aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
 
 
