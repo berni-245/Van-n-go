@@ -9,7 +9,7 @@ alter table vehicle
 alter table driver
     add column rating double precision;
 alter table driver
-    add column CBU varchar(32);
+    add column cbu varchar(32);
 
 alter table vehicle_weekly_zone rename to vehicle_weekly_zone_old;
 

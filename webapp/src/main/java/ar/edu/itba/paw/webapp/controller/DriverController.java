@@ -300,7 +300,7 @@ public class DriverController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/driver/pop", method = RequestMethod.GET)
+    @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser) {
         Image pop = is.getPop((int) bookingId);

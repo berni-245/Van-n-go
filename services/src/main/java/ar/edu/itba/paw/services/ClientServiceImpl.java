@@ -56,8 +56,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Override
     public Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription, Locale locale) {
         Optional<Booking> booking = bookingDao.appointBooking(vehicleId, clientId, zoneId, date, hourInterval, jobDescription);
-        booking.ifPresent(booking -> mailService.sendRequestedDriverService(booking.getDriver().getId(), clientId,date,jobDescription,locale));
-);
+        booking.ifPresent(book -> mailService.sendRequestedDriverService(book.getDriver().getId(), clientId, date, jobDescription, locale));
         return booking;
     }
 

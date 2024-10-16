@@ -16,6 +16,10 @@ public interface ClientService {
 
     Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription, Locale locale);
 
+    default Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, String date, HourInterval hourInterval, String jobDescription, Locale locale) {
+        return appointBooking(vehicleId, clientId, zoneId, LocalDate.parse(date), hourInterval, jobDescription, locale);
+    }
+
     List<Booking> getBookings(long id);
 
     List<Booking> getHistory(long id);

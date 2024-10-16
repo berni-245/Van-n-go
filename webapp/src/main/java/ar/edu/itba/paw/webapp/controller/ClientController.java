@@ -206,7 +206,7 @@ public class ClientController {
                         ToastType.danger, "toast.booking.error"
                 ));
                 redirectAttributes.addFlashAttribute("toasts", toasts);
-                return new ModelAndView("redirect:/availability/" + id);
+                return new ModelAndView("redirect:/availability/%d?zoneId=%d&size=%s".formatted(id, form.getZoneId(), size.name()));
             }
             toasts.add(new Toast(
                     ToastType.danger, "toast.booking.success"
