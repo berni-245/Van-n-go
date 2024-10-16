@@ -288,7 +288,7 @@ public class BookingJdbcDao implements BookingDao {
         Booking booking = bookingOptional.get();
         HourInterval bookingHI = booking.getHourInterval();
         if (isVehicleBookedForThatTime(booking.getVehicle().getId(), booking.getDate(), booking.getHourInterval()) ||
-            !booking.getBookingState().equals(BookingState.PENDING))
+            !booking.getState().equals(BookingState.PENDING))
             return;
         jdbcTemplate.update("""
                         update booking

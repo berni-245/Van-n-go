@@ -11,7 +11,7 @@ public class Booking {
     private final Zone zone;
     private final LocalDate date;
     private final HourInterval hourInterval;
-    private final BookingState bookingState;
+    private final BookingState state;
     private final Integer rating;
     private final String review;
     private final boolean confirmed;
@@ -20,7 +20,7 @@ public class Booking {
 
     public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
                    Zone zone, LocalDate date, HourInterval hourInterval,
-                   BookingState bookingState, Integer rating,
+                   BookingState state, Integer rating,
                    String review, Integer pop, String jobDescription) {
         this.bookingId = bookingId;
         this.client = client;
@@ -29,10 +29,10 @@ public class Booking {
         this.zone = zone;
         this.date = date;
         this.hourInterval = hourInterval;
-        this.bookingState = bookingState;
+        this.state = state;
         this.rating = rating;
         this.review = review;
-        this.confirmed = bookingState.equals(BookingState.ACCEPTED);
+        this.confirmed = state.equals(BookingState.ACCEPTED);
         this.pop = pop;
         this.jobDescription = jobDescription;
     }
@@ -61,8 +61,8 @@ public class Booking {
         return hourInterval;
     }
 
-    public BookingState getBookingState() {
-        return bookingState;
+    public BookingState getState() {
+        return state;
     }
 
     public Client getClient() {

@@ -35,7 +35,7 @@
                             <p class="card-text"><c:out value="${booking.driver.username}"/></p>
                             <p class="card-text"><c:out value="${booking.driver.mail}"/></p>
                             <c:if test="${booking.confirmed}">
-                                <p><spring:message code="driver.home.bookingConfirmed"/></p>
+                                <p><spring:message code="driver.home.booking.confirmed"/></p>
                                 <c:choose>
                                 <c:when test="${empty booking.pop or booking.pop == 0}">
                                 <spring:message code="client.bookings.transfer"/>
