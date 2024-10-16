@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.models.Size;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -54,7 +55,7 @@ public class DriverJdbcDao implements DriverDao {
     }
 
     @Override
-    public List<Driver> getAll(Long zoneId, Size size) {
+    public List<Driver> getAll(Long zoneId, Size size, int offset) {
         return jdbcTemplate.query("""
                         select * from driver d join app_user on d.user_id = app_user.id
                         where exists (select * from weekly_availability wa
@@ -63,12 +64,21 @@ public class DriverJdbcDao implements DriverDao {
                                 where v.driver_id = d.user_id and v.id = wa.vehicle_id
                                 and v.volume_m3 between ? and ?
                             )
-                        )
+                        ) order by d.user_id desc limit ? offset ?
                         """,
-                new Object[]{zoneId, size.getMinVolume(), size.getMaxVolume()},
-                new int[]{Types.BIGINT, Types.INTEGER, Types.INTEGER},
+                new Object[]{zoneId, size.getMinVolume(), size.getMaxVolume(), Pagination.SEARCH_PAGE_SIZE, offset},
+                new int[]{Types.BIGINT, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER},
                 ROW_MAPPER
         );
+    }
+
+    @Override
+    public int getSearchCount(long zoneId, Size size) {
+        String sql = "SELECT COUNT(*) FROM driver d JOIN app_user a ON d.user_id = a.id where exists (select * from vehicle_weekly_zone vwz where vwz.zone_id = ? and exists (select * from vehicle v where v.driver_id = d.user_id and v.id = vwz.vehicle_id and v.volume_m3 between ? and ?))";
+        Integer aux = jdbcTemplate.queryForObject(sql, Integer.class, zoneId, size.getMinVolume(), size.getMaxVolume());
+        if(aux == null)
+            return 0;
+        return aux;
     }
 
     @Override

@@ -78,6 +78,23 @@
                 </div>
             </c:forEach>
         </div>
+        <c:if test="${totalPages > 1}">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
+                    </li>
+                    <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" href="?page=${i}">${i + 1}</a>
+                        </li>
+                    </c:forEach>
+                    <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="?page=${currentPage + 1}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </c:if>
     </c:otherwise>
 </c:choose>
     </div>

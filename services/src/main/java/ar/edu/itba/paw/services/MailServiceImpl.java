@@ -1,10 +1,13 @@
 package ar.edu.itba.paw.services;
 
 
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
@@ -35,7 +38,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private final ClientDao clientDao;
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
     private final TemplateEngine templateEngine;
     private final ResourceBundleMessageSource messageSource;
 
@@ -102,8 +105,8 @@ public class MailServiceImpl implements MailService {
         try {
             message.setSentDate(new java.util.Date());
             Transport.send(message);
-        } catch (MessagingException ignored) {
-            //logger
+        } catch (MessagingException e) {
+            LOGGER.error("Error sending mail");
         }
     }
 
@@ -131,11 +134,47 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
-            //logger
+            sendMail(message);
+        } catch (Exception e) {
+            LOGGER.error("Error sending welcome client mail to {}", userName);
         }
+    }
 
+    @Async
+    @Override
+    public void sendAcceptedBooking(long bookingId, Locale locale){
+        Booking booking = null; //= bookingDao.getBooking(id);
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("date", booking.getDate());
+        context.setVariable("driverName",booking.getDriver().getUsername());
+        String mailBodyProcessed = templateEngine.process("acceptedBooking", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(booking.getClient().getMail()));
+            message.setSubject(messageSource.getMessage("subject.bookingAccepted",null,locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception ignored) {
 
+        }
+        sendMail(message);
+    }
+
+    @Async
+    @Override
+    public void sendRejectedBooking(long bookingId, Locale locale){
+        Booking booking = null ;//bookingDao.getBooking(id);
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("date", booking.getDate());
+        context.setVariable("driverName",booking.getDriver().getUsername());
+        String mailBodyProcessed = templateEngine.process("rejectedBooking", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(booking.getClient().getMail()));
+            message.setSubject(messageSource.getMessage("subject.bookingRejected",null,locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception ignored) {
+
+        }
         sendMail(message);
     }
 
@@ -151,9 +190,8 @@ public class MailServiceImpl implements MailService {
             message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
-            //logger
+            LOGGER.error("Error sending welcome driver mail to {}", userName);
         }
-
         sendMail(message);
     }
 
@@ -188,8 +226,6 @@ public class MailServiceImpl implements MailService {
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
-
-
         sendMail(message);
     }
 
@@ -203,9 +239,6 @@ public class MailServiceImpl implements MailService {
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {
         }
-
         sendMail(message);
     }
-
-
 }

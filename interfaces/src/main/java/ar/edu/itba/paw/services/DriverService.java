@@ -40,19 +40,17 @@ public interface DriverService {
             long vehicleId
     );
 
-    List<Driver> getAll();
+    List<Driver> getAll(long zoneId, Size size, int page);
 
-    List<Driver> getAll(long zoneId);
+    List<Booking> getBookings(long driverId, int page);
 
-    List<Driver> getAll(long zoneId, Size size);
+    public List<Booking> getHistory(long driverId, int page);
 
-    List<Booking> getBookings(long driverId);
+    int totalMatches(long zoneId, Size size);
 
-    List<Booking> getBookingsByDate(long driverId, LocalDate date);
+    int getTotalBookingCount(long driverId);
 
-    default List<Booking> getBookingsByDate(long driverId, String date) {
-        return getBookingsByDate(driverId, LocalDate.parse(date));
-    }
+    int getTotalHistoryCount(long driverId);
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 
@@ -73,4 +71,6 @@ public interface DriverService {
     boolean updateVehicle(long driverId, Vehicle vehicle);
 
     List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
+
+    List<Booking> getAllBookings(long id);
 }

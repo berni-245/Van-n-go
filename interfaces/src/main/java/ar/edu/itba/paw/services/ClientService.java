@@ -20,9 +20,13 @@ public interface ClientService {
         return appointBooking(vehicleId, clientId, zoneId, LocalDate.parse(date), hourInterval, jobDescription, locale);
     }
 
-    List<Booking> getBookings(long id);
+    List<Booking> getBookings(long id, int page);
 
-    List<Booking> getHistory(long id);
+    List<Booking> getHistory(long id, int page);
+
+    int getTotalHistoryCount(long id);
+
+    int getTotalBookingCount(long id);
 
     void setBookingRatingAndReview(long bookingId, int rating, String review);
 }

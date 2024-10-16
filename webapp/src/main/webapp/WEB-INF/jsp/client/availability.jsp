@@ -2,6 +2,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -70,7 +71,7 @@
                                                 <c:when test="${driver.rating != null}">
 
                                                     <span class="fw-bold text-warning">
-                                                           <c:out value="${driver.rating}"/>
+                                                           <fmt:formatNumber value="${driver.rating}" type="number" maxFractionDigits="2" />
                                                     </span>
 
 
@@ -98,7 +99,7 @@
                                                     </div>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span>No rating available</span>
+                                                    <span><spring:message code="client.availability.no_rating"/></span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
@@ -120,6 +121,23 @@
                             </div>
                         </c:forEach>
                     </div>
+                    <c:if test="${totalPages > 1}">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
+                                </li>
+                                <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                        <a class="page-link" href="?page=${i}">${i + 1}</a>
+                                    </li>
+                                </c:forEach>
+                                <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" href="?page=${currentPage + 1}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </c:if>
                 </div>
             </c:otherwise>
         </c:choose>

@@ -53,7 +53,7 @@ public class ClientController {
             return "redirect:/bookings";
         }
         try {
-            long img_id = is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
+            is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -63,22 +63,31 @@ public class ClientController {
     @RequestMapping("/bookings")
     public ModelAndView bookings(
             @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam(value = "page", defaultValue = "0") int page,
             Model model
     ) {
         ModelAndView mav = new ModelAndView("client/bookings");
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
-        mav.addObject("bookings", cs.getBookings(loggedUser.getId()));
+        mav.addObject("bookings", cs.getBookings(loggedUser.getId(),page));
+        mav.addObject("currentPage", page);
+        mav.addObject("totalPages", (int) Math.ceil((double)cs.getTotalBookingCount(loggedUser.getId()) / Pagination.BOOKINGS_PAGE_SIZE));
         return mav;
     }
 
     @RequestMapping("/client/history")
     public ModelAndView clientHistory(
             @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingReviewForm") BookingReviewForm form) {
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        List<Booking> paginatedHistory = cs.getHistory(loggedUser.getId(), page);
+        int totalRecords = cs.getTotalHistoryCount(loggedUser.getId());
+        int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
         ModelAndView mav = new ModelAndView("client/history");
-        mav.addObject("history", cs.getHistory(loggedUser.getId()));
+        mav.addObject("history", paginatedHistory);
+        mav.addObject("currentPage", page);
+        mav.addObject("totalPages", totalPages);
         return mav;
     }
 
@@ -86,10 +95,11 @@ public class ClientController {
     public ModelAndView sendReview(
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult errors
+            BindingResult errors,
+            @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         if (errors.hasErrors()) {
-            return clientHistory(loggedUser, form);
+            return clientHistory(loggedUser, form, page);
         }
         cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
         return new ModelAndView("redirect:/client/history");
@@ -101,7 +111,8 @@ public class ClientController {
             @RequestParam(name = "zoneId", required = false) Long zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
-            BindingResult errors
+            BindingResult errors,
+            @RequestParam(name = "page", defaultValue = "0") int page
     ) {
         // The default should be the client's zone.
         if (zoneId == null) {
@@ -114,10 +125,12 @@ public class ClientController {
         }
         if (errors.hasErrors()) return new ModelAndView();
         final ModelAndView mav = new ModelAndView("client/availability");
-        List<Driver> drivers = ds.getAll(zoneId, size);
+        List<Driver> drivers = ds.getAll(zoneId, size, page);
         List<Zone> zones = zs.getAllZones();
         mav.addObject("drivers", drivers);
         mav.addObject("zones", zones);
+        mav.addObject("currentPage", page);
+        mav.addObject("totalPages", (int) Math.ceil((double) ds.totalMatches(zoneId,size) / Pagination.SEARCH_PAGE_SIZE));
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
         return mav;
@@ -147,9 +160,6 @@ public class ClientController {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
-//            if (toasts != null && !toasts.isEmpty()) {
-//                mav.addObject("toasts", toasts);
-//            }
             mav.addObject("driverId", id);
             Set<Integer> workingDays = new HashSet<>();
             var wa = ds.getWeeklyAvailability(id, zoneId, size);
@@ -159,7 +169,7 @@ public class ClientController {
             mav.addObject("workingDays", workingDays);
             var vehicles = ds.getVehiclesFull(id, zoneId, size);
             mav.addObject("vehicles", vehicles);
-            var bookings = ds.getBookings(driver.get().getId());
+            var bookings = ds.getAllBookings(driver.get().getId());
             mav.addObject("bookings", bookings);
             mav.addObject("driver", driver.get());
             Optional<Zone> zone = zs.getZone(zoneId);
@@ -184,9 +194,6 @@ public class ClientController {
     ) {
         List<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-//            toasts.add(new Toast(
-//                    ToastType.danger, "toast.booking.error"
-//            ));
             return driverAvailability(id, form.getZoneId(), size, loggedUser, form);
         }
 

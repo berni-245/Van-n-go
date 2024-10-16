@@ -123,28 +123,38 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 }
 
     @Override
-    public List<Driver> getAll() {
-        return driverDao.getAll();
+    public List<Driver> getAll(long zoneId, Size size, int page) {
+        return driverDao.getAll(zoneId, size, page*Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Override
-    public List<Driver> getAll(long zoneId) {
-        return List.of();
+    public List<Booking> getBookings(long driverId, int page) {
+        return bookingDao.getDriverBookings(driverId, page*Pagination.BOOKINGS_PAGE_SIZE);
     }
 
     @Override
-    public List<Driver> getAll(long zoneId, Size size) {
-        return driverDao.getAll(zoneId, size);
+    public List<Booking> getAllBookings(long id) {
+        return bookingDao.getAllDriverBookings(id);
     }
 
     @Override
-    public List<Booking> getBookings(long driverId) {
-        return bookingDao.getBookings(driverId);
+    public List<Booking> getHistory(long driverId, int page) {
+        return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE*page);
     }
 
     @Override
-    public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
-        return bookingDao.getBookingsByDate(driverId, date);
+    public int totalMatches(long zoneId, Size size) {
+        return driverDao.getSearchCount(zoneId, size);
+    }
+
+    @Override
+    public int getTotalBookingCount(long driverId) {
+        return bookingDao.getDriverBookingCount(driverId);
+    }
+
+    @Override
+    public int getTotalHistoryCount(long driverId) {
+        return bookingDao.getDriverHistoryCount(driverId);
     }
 
     @Override

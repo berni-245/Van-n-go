@@ -16,11 +16,13 @@ public interface DriverDao {
 
     List<Driver> getAll(long zoneId);
 
-    List<Driver> getAll(Long zoneId, Size size);
+    List<Driver> getAll(Long zoneId, Size size, int offset);
 
     void updateDriverRating(long driverId);
 
     Optional<Driver> findByUsername(String username);
 
     void editProfile(long id, String extra1, String cbu);
+
+    int getSearchCount(long zoneId, Size size);
 }

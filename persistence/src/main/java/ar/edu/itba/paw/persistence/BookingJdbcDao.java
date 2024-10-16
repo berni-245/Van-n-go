@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.BookingState;
-import ar.edu.itba.paw.models.HourInterval;
-import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.models.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -138,7 +135,39 @@ public class BookingJdbcDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getBookings(long driverId) {
+    public List<Booking> getDriverBookings(long driverId, int offset) {
+        return jdbcTemplate.query("""
+                        select b.id, b.date, b.hour_start_id,
+                        b.hour_end_id, b.client_id, b.vehicle_id,
+                        b.zone_id, b.state,
+                        b.proof_of_payment, b.rating,
+                        b.review, b.job_description
+                        from booking b join vehicle v on b.vehicle_id = v.id
+                        where driver_id = ?
+                        order by b.date, b.hour_start_id, b.hour_end_id limit ? offset ?""",
+                new Object[]{driverId, Pagination.BOOKINGS_PAGE_SIZE, offset},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT},
+                ROW_MAPPER);
+    }
+
+    @Override
+    public List<Booking> getDriverHistory(long driverId, int offset) {
+        return jdbcTemplate.query("""
+                        select b.id, b.date, b.hour_start_id,
+                        b.hour_end_id, b.client_id, b.vehicle_id,
+                        b.zone_id, b.state,
+                        b.proof_of_payment, b.rating,
+                        b.review, b.job_description
+                        from booking b join vehicle v on b.vehicle_id = v.id
+                        where driver_id = ? AND b.date < CURRENT_DATE
+                        order by b.date, b.hour_start_id, b.hour_end_id limit ? offset ?""",
+                new Object[]{driverId, Pagination.BOOKINGS_PAGE_SIZE, offset},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT},
+                ROW_MAPPER);
+    }
+
+    @Override
+    public List<Booking> getAllDriverBookings(long driverId) {
         return jdbcTemplate.query("""
                         select b.id, b.date, b.hour_start_id,
                         b.hour_end_id, b.client_id, b.vehicle_id,
@@ -151,6 +180,32 @@ public class BookingJdbcDao implements BookingDao {
                 new Object[]{driverId},
                 new int[]{Types.BIGINT},
                 ROW_MAPPER);
+    }
+
+    @Override
+    public int getDriverBookingCount(long driverId) {
+        String sql = """
+                select count(*)
+                from booking b
+                join vehicle v on b.vehicle_id = v.id
+                where driver_id = ?""";
+        Integer aux = jdbcTemplate.queryForObject(sql, new Object[]{driverId}, Integer.class);
+        if(aux == null)
+            return 0;
+        return aux;
+    }
+
+    @Override
+    public int getDriverHistoryCount(long driverId) {
+        String sql = """
+                select count(*)
+                from booking b
+                join vehicle v on b.vehicle_id = v.id
+                where driver_id = ? AND b.date < CURRENT_DATE""";
+        Integer aux = jdbcTemplate.queryForObject(sql, new Object[]{driverId}, Integer.class);
+        if(aux == null)
+            return 0;
+        return aux;
     }
 
     @Override
@@ -191,27 +246,51 @@ public class BookingJdbcDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getClientBookings(long clientId) {
+    public List<Booking> getClientBookings(long clientId, int offset) {
         return jdbcTemplate.query("""
                         select *
                         from booking
                         where client_id = ? AND date >= CURRENT_DATE
-                        order by date, hour_start_id, hour_end_id""",
-                new Object[]{clientId},
-                new int[]{Types.BIGINT},
+                        order by date, hour_start_id, hour_end_id limit ? offset ?""",
+                new Object[]{clientId, Pagination.BOOKINGS_PAGE_SIZE, offset},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT},
                 ROW_MAPPER);
     }
 
     @Override
-    public List<Booking> getClientHistory(long clientId) {
+    public int getClientBookingCount(long clientId) {
+        String sql = """
+                select count(*)
+                from booking
+                where client_id = ? AND date >= CURRENT_DATE""";
+        Integer aux = jdbcTemplate.queryForObject(sql, new Object[]{clientId}, Integer.class);
+        if(aux == null)
+            return 0;
+        return aux;
+    }
+
+    @Override
+    public List<Booking> getClientHistory(long clientId, int offset) {
         return jdbcTemplate.query("""
                         select *
                         from booking
                         where client_id = ? AND date < CURRENT_DATE
-                        order by date, hour_start_id, hour_end_id""",
-                new Object[]{clientId},
-                new int[]{Types.BIGINT},
+                        order by date, hour_start_id, hour_end_id limit ? offset ?""",
+                new Object[]{clientId, Pagination.BOOKINGS_PAGE_SIZE, offset},
+                new int[]{Types.BIGINT, Types.BIGINT, Types.BIGINT},
                 ROW_MAPPER);
+    }
+
+    @Override
+    public int getClientHistoryCount(long clientId) {
+        String sql = """
+                select count(*)
+                from booking
+                where client_id = ? AND date < CURRENT_DATE""";
+        Integer aux = jdbcTemplate.queryForObject(sql, new Object[]{clientId}, Integer.class);
+        if(aux == null)
+            return 0;
+        return aux;
     }
 
     @Override

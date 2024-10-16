@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.HourInterval;
+import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -61,13 +62,23 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public List<Booking> getBookings(long id) {
-        return bookingDao.getClientBookings(id);
+    public List<Booking> getBookings(long id, int page) {
+        return bookingDao.getClientBookings(id, Pagination.BOOKINGS_PAGE_SIZE*page);
     }
 
     @Override
-    public List<Booking> getHistory(long id) {
-        return bookingDao.getClientHistory(id);
+    public List<Booking> getHistory(long id, int page) {
+        return bookingDao.getClientHistory(id, Pagination.BOOKINGS_PAGE_SIZE*page);
+    }
+
+    @Override
+    public int getTotalHistoryCount(long id) {
+        return bookingDao.getClientHistoryCount(id);
+    }
+
+    @Override
+    public int getTotalBookingCount(long id) {
+        return bookingDao.getClientBookingCount(id);
     }
 
     @Override

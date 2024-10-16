@@ -211,7 +211,7 @@ public class BookingJdbcDaoTest {
 
     @Test
     public void testGetBookingsByDriver() {
-        List<Booking> bookings = bookingDao.getBookings(DRIVER_ID);
+        List<Booking> bookings = bookingDao.getDriverBookings(DRIVER_ID,0);
 
         assertEquals(BOOKING_COUNT, bookings.size());
         Iterator<Booking> iterator = bookings.iterator();
@@ -222,8 +222,7 @@ public class BookingJdbcDaoTest {
 
     @Test
     public void testGetBookingsByClient() {
-        List<Booking> bookings = bookingDao.getClientBookings(CLIENT_ID);
-
+        List<Booking> bookings = bookingDao.getClientBookings(CLIENT_ID,0);
         assertEquals(BOOKING_COUNT, bookings.size());
         Iterator<Booking> iterator = bookings.iterator();
         assertEquals(PREEXISTING_ACCEPTED_BOOK, iterator.next().getBookingId());

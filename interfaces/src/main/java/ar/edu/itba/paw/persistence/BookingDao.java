@@ -16,17 +16,27 @@ public interface BookingDao {
 
     Optional<Booking> getBookingById(long bookingId);
 
-    List<Booking> getBookings(long driverId);
+    List<Booking> getDriverBookings(long driverId, int offset);
 
-    List<Booking> getBookingsByDate(long driverId, LocalDate date);
+    List<Booking> getDriverHistory(long driverId, int offset);
+
+    int getDriverBookingCount(long driverId);
+
+    int getDriverHistoryCount(long driverId);
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 
     List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date);
 
-    List<Booking> getClientBookings(long clientId);
+    List<Booking> getClientBookings(long clientId, int offset);
 
-    List<Booking> getClientHistory(long clientId);
+    int getClientBookingCount(long clientId);
+
+    List<Booking> getClientHistory(long clientId, int offset);
+
+    int getClientHistoryCount(long clientId);
 
     void setRatingAndReview(long bookingId, int rating, String review);
+
+    List<Booking> getAllDriverBookings(long id);
 }
