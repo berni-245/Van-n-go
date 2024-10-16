@@ -50,17 +50,17 @@ public class ClientController {
     @RequestMapping(path = "/upload/pop", method = RequestMethod.POST)
     public String submit(@RequestParam("proofOfPayment") MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
         if (file == null || file.isEmpty()) {
-            return "redirect:/bookings";
+            return "redirect:/client/bookings";
         }
         try {
             is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return "redirect:/bookings";
+        return "redirect:/client/bookings";
     }
 
-    @RequestMapping("/bookings")
+    @RequestMapping("/client/bookings")
     public ModelAndView bookings(
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -218,7 +218,7 @@ public class ClientController {
             toasts.add(new Toast(
                     ToastType.danger, "toast.booking.success"
             ));
-            return new ModelAndView("redirect:/bookings");
+            return new ModelAndView("redirect:/client/bookings");
         } catch (Exception e) {
             toasts.add(new Toast(
                     ToastType.danger, "toast.booking.error"
