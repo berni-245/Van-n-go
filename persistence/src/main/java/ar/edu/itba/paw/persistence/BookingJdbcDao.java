@@ -209,20 +209,6 @@ public class BookingJdbcDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getBookingsByDate(long driverId, LocalDate date) {
-        return jdbcTemplate.query("""
-                        select b.id, b.date, b.hour_start_id, b.hour_end_id,
-                        b.client_id, b.vehicle_id,
-                        b.zone_id, b.state, b.proof_of_payment,
-                        b.rating, b.review, b.job_description
-                        from booking b join vehicle v on b.vehicle_id = v.id
-                        where driver_id = ? and date = ?""",
-                new Object[]{driverId, date.toString()},
-                new int[]{Types.BIGINT, Types.DATE},
-                ROW_MAPPER);
-    }
-
-    @Override
     public List<Booking> getBookingsByVehicle(long vehicleId) {
         return jdbcTemplate.query("""
                         select *
