@@ -198,7 +198,7 @@ public class DriverController {
     public ModelAndView editProfileForm(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @ModelAttribute("profileForm") ProfileForm form){
-        form.setcbu(loggedUser.getcbu());
+        form.setcbu(loggedUser.getCbu());
         form.setExtra1(loggedUser.getExtra1());
         return new ModelAndView("driver/edit_profile");
     }

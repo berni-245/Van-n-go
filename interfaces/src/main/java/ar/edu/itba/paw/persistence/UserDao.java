@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.User;
 import java.util.Optional;
 
 public interface UserDao {
-    long create(String username, String mail, String password);
+    //long create(String username, String mail, String password);
 
     boolean mailExists(String mail);
 

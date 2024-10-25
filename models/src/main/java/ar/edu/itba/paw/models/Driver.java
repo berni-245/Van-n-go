@@ -1,26 +1,35 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
 public class Driver extends User {
-    private final String extra1;
 
-    private final Double rating;
+    @Column
+    private  String extra1;
 
-    private final String cbu;
+    @Column(precision = 3)
+    private  Double rating;
+
+    @Column(length = 32)
+    private  String cbu;
 
     public Driver(
-            long id,
             String username,
             String mail,
             String password,
-            int pfp,
             String extra1,
             Double rating,
             String cbu
     ) {
-        super(id, username, mail, password,pfp);
+        super(username, mail, password);
         this.extra1 = extra1;
         this.rating = rating;
         this.cbu = cbu;
+    }
+
+    Driver(){
+
     }
 
     public String getExtra1() {
@@ -31,12 +40,18 @@ public class Driver extends User {
         return rating;
     }
 
-    public String getcbu() {return cbu;}
+    public String getCbu() {return cbu;}
 
     @Override
     public boolean isDriver() {
         return true;
     }
+
+    public void setExtra1(String extra1) { this.extra1 = extra1; }
+
+    public void setCbu(String cbu) { this.cbu = cbu; }
+
+
 
     @Override
     public String toString() {

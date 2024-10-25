@@ -1,26 +1,37 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "app_users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
-    private final long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
+    @SequenceGenerator(sequenceName = "app_user_id_seq", name = "app_user_id_seq", allocationSize = 1)
+    private long id;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false, unique = true)
     private String mail;
-    private final String password;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
     private long pfp;
 
-    public User(long id, String username, String mail, String password) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.pfp = 0;
+    User(){
+        //This is used by hibernate. Do not remove.
     }
 
-    public User(long id, String username, String mail, String password, int pfp) {
-        this.id = id;
+    public User( String username, String mail, String password) {
         this.username = username;
         this.mail = mail;
         this.password = password;
-        this.pfp = pfp;
     }
 
     public long getId() {
@@ -34,10 +45,12 @@ public abstract class User {
     public void setUsername(String username){
         this.username = username;
     }
+    public void setPassword(String password) { this.password = password; }
 
     public String getPassword() {
         return password;
     }
+
 
     public String getMail() {
         return mail;
