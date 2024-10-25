@@ -1,36 +1,30 @@
 package ar.edu.itba.paw.models;
 
+
+import javax.persistence.*;
+
+@Entity
 public class Zone {
-    private final long id;
 
-    private final long countryId;
-    private final String countryCode;
-    private final String countryName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "zone_id_seq")
+    @SequenceGenerator(sequenceName = "zone_id_seq", name = "zone_id_seq", allocationSize = 1)
+    private long id;
 
-    private final long provinceId;
-    private final String provinceName;
+    @JoinColumn(nullable = false, name = "country_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Country country;
 
-    private final long neighborhoodId;
-    private final String neighborhoodName;
+    @JoinColumn(nullable = false, name = "province_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Province province;
 
-    public Zone(
-            long id,
-            long countryId,
-            String countryCode,
-            String countryName,
-            long provinceId,
-            String provinceName,
-            long neighborhoodId,
-            String neighborhoodName
-    ) {
-        this.id = id;
-        this.countryId = countryId;
-        this.countryCode = countryCode;
-        this.countryName = countryName;
-        this.provinceId = provinceId;
-        this.provinceName = provinceName;
-        this.neighborhoodId = neighborhoodId;
-        this.neighborhoodName = neighborhoodName;
+    @JoinColumn(nullable = false, name = "neighborhood_id")
+    @ManyToOne()
+    private Neighborhood neighborhood;
+
+    Zone() {
+
     }
 
     public long getId() {
@@ -38,35 +32,36 @@ public class Zone {
     }
 
     public long getCountryId() {
-        return countryId;
+        return country.getId();
     }
 
     public String getCountryCode() {
-        return countryCode;
+        return country.getCode();
     }
 
     public String getCountryName() {
-        return countryName;
+        return country.getName();
     }
 
     public long getProvinceId() {
-        return provinceId;
+        return province.getId();
     }
 
     public String getProvinceName() {
-        return provinceName;
+        return province.getName();
     }
 
     public long getNeighborhoodId() {
-        return neighborhoodId;
+        return neighborhood.getId();
     }
 
     public String getNeighborhoodName() {
-        return neighborhoodName;
+        return neighborhood.getName();
     }
 
     @Override
     public String toString() {
-        return "%s, %s, %s".formatted(neighborhoodName, provinceName, countryCode);
+        return "%s, %s, %s".formatted(neighborhood.getName(),
+                province.getName(), country.getName());
     }
 }
