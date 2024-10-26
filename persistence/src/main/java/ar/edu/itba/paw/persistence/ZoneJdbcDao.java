@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
-/*
+
 @Repository
 public class ZoneJdbcDao implements ZoneDao {
 
@@ -71,4 +71,3 @@ public class ZoneJdbcDao implements ZoneDao {
                 ROW_MAPPER);
     }
 }
-*/
