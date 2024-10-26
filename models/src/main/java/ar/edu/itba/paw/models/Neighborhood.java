@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Table(name = "neighborhood")
 public class Neighborhood {
     @Id
     @Column(name = "id", nullable = false)
