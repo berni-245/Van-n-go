@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-
+/*
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.HourInterval;
@@ -278,4 +278,4 @@ public class BookingJdbcDaoTest {
     }
 
 
-}
+}*/

@@ -127,6 +127,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return driverDao.getAll(zoneId, size, page*Pagination.SEARCH_PAGE_SIZE);
     }
 
+    @Transactional
     @Override
     public List<Booking> getBookings(long driverId, int page) {
         return bookingDao.getDriverBookings(driverId, page*Pagination.BOOKINGS_PAGE_SIZE);
