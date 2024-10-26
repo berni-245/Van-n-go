@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
-/*
+
 @Repository
 public class ZoneJpaDao implements ZoneDao {
 
@@ -34,4 +34,3 @@ public class ZoneJpaDao implements ZoneDao {
         return em.createQuery("From Zone", Zone.class).getResultList();
     }
 }
-*/

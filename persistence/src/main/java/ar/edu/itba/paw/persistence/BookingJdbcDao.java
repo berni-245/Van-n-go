@@ -28,7 +28,7 @@ public class BookingJdbcDao implements BookingDao {
         clientDao = new ClientJdbcDao(ds);
         driverDao = new DriverJdbcDao(ds);
         vehicleDao = new VehicleJdbcDao(ds);
-        zoneDao = new ZoneJdbcDao(ds);
+        zoneDao = new ZoneJpaDao();       //Deberian ser con autowired...
 
         jdbcTemplate = new JdbcTemplate(ds);
 
