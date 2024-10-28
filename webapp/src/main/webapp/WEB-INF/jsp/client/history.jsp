@@ -36,7 +36,7 @@
                             <p class="card-text"><c:out
                                     value="${booking.driver.mail}"/></p>
 
-                            <c:if test="${booking.rating == null}">
+                            <c:if test="${booking.rating.isEmpty()}">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#reviewModal${booking.bookingId}">
                                     <spring:message code="client.review"/>

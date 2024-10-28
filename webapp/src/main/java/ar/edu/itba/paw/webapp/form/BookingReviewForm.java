@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class BookingReviewForm {
 
@@ -15,7 +15,8 @@ public class BookingReviewForm {
     @Length(min = 6, max = 255)
     private String review;
 
-    @NotEmpty
+    @NotNull
+    @Min(0)
     private  long bookingID;
 
 
