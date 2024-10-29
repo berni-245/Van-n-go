@@ -40,10 +40,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
-        long id = createUser(username, mail, password);
-        // Client instance will be created with unencrypted password.
+               // Client instance will be created with unencrypted password.
         // Is that a problem tho?
-        Client client = clientDao.create(id);
+        Client client = clientDao.create(username,username,password);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }

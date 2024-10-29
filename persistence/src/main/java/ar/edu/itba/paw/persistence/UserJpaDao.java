@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public abstract class UserJpaDao implements UserDao{
+public class UserJpaDao implements UserDao{
 
     @PersistenceContext
     private EntityManager em;

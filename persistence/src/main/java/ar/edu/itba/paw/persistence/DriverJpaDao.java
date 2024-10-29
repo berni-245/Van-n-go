@@ -27,8 +27,9 @@ public class DriverJpaDao implements DriverDao {
     }
 
     @Override
-    public List<Driver> getAll() {
-        return List.of();
+    public List<Driver> getAll() { //TODO: paginar
+        return em.createQuery("From Driver", Driver.class)
+                .getResultList();
     }
 
 
