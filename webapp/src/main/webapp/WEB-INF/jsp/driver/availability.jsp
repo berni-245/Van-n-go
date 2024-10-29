@@ -37,8 +37,8 @@
             <div class="col mb-4">
                 <a href="${vUrl}?plateNumber=${v.plateNumber}" class="text-decoration-none">
                     <div class="card anchor-card h-100">                        <c:choose>
-                        <c:when test="${v.img != 0}">
-                            <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${v.img}' />"
+                        <c:when test="${v.imgId != 0}">
+                            <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${v.imgId}' />"
                                  alt="Vehicle Image Preview" class="card-img-top"/>
                         </c:when>
                         <c:otherwise>

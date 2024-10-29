@@ -5,7 +5,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
+//import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
@@ -24,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -110,8 +109,12 @@ public class DriverController {
         return new ModelAndView("driver/add_vehicle");
     }
 
-    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.POST)
+    @RequestMapping(
+            path = "/driver/vehicle/{vehicleId:\\\\d+}/add/availability",
+            method = RequestMethod.POST
+    )
     public ModelAndView addAvailability(
+            @PathVariable(name = "vehicleId") long vehicleId,
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
             BindingResult errors,
@@ -120,12 +123,11 @@ public class DriverController {
         if (errors.hasErrors()) {
             return addAvailabilityForm(loggedUser, form);
         }
-        ds.addWeeklyAvailability(
+        ds.addAvailability(
                 loggedUser.getId(),
                 form.getWeekDays(),
-                form.getHourBlocks(),
-                form.getZoneIds(),
-                form.getVehicleIds()
+                form.getShiftPeriods(),
+                vehicleId
         );
         List<Toast> toasts = Collections.singletonList(new Toast(
                 ToastType.success, "toast.availability.add.success"
@@ -164,7 +166,7 @@ public class DriverController {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/availability");
-        mav.addObject("vehicles", ds.getVehiclesFull(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -183,7 +185,7 @@ public class DriverController {
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
             mav.addObject("vehicleId", vehicle.get().getId());
-            mav.addObject("vehicleImg", vehicle.get().getImg());
+            mav.addObject("vehicleImg", vehicle.get().getImgId());
             return mav;
         } else {
             return new ModelAndView();
@@ -196,14 +198,14 @@ public class DriverController {
             @Valid @ModelAttribute("profileForm") ProfileForm form,
             BindingResult errors
     ) {
-        ds.editProfile(loggedUser.getId(),form.getExtra1(),form.getcbu());
+        ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
         return new ModelAndView("redirect:/profile");
     }
 
     @RequestMapping(path = "profile/edit", method = RequestMethod.GET)
     public ModelAndView editProfileForm(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("profileForm") ProfileForm form){
+            @ModelAttribute("profileForm") ProfileForm form) {
         form.setcbu(loggedUser.getcbu());
         form.setExtra1(loggedUser.getExtra1());
         return new ModelAndView("driver/edit_profile");
@@ -258,24 +260,25 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "plateNumber") String plateNumber,
             @RequestParam(name = "vehicleId") long vehicleId,
-            @Valid @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form,
+//            @Valid @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) {
-            return editAvailabilityGet(loggedUser, plateNumber, form);
-        }
-        ds.updateWeeklyAvailability(
-                loggedUser.getId(), form.getWeekDay(),
-                form.getHourBlocks(), form.getZoneId(),vehicleId
-        );
-        return editAvailabilityGet(loggedUser, plateNumber, form);
+//        if (errors.hasErrors()) {
+//            return editAvailabilityGet(loggedUser, plateNumber, form);
+//        }
+//        ds.updateWeeklyAvailability(
+//                loggedUser.getId(), form.getWeekDay(),
+//                form.getHourBlocks(), form.getZoneId(), vehicleId
+//        );
+//        return editAvailabilityGet(loggedUser, plateNumber, form);
+        return new ModelAndView();
     }
 
     @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.GET)
     public ModelAndView editAvailabilityGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "plateNumber") String plateNumber,
-            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
+            @RequestParam(name = "plateNumber") String plateNumber
+//            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
         if (vehicle.isPresent()) {

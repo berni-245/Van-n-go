@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.WeeklyAvailabilityDao;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
@@ -28,7 +27,6 @@ import java.util.Optional;
 
 @Controller
 public class PublicController {
-
     private static final Logger log = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private ClientService cs;
@@ -37,14 +35,10 @@ public class PublicController {
     @Autowired
     private ImageService is;
 
-    @Autowired
-    private WeeklyAvailabilityDao wa;
-
-    public PublicController(ClientService cs, DriverService ds, ImageService is, WeeklyAvailabilityDao wa) {
+    public PublicController(ClientService cs, DriverService ds, ImageService is) {
         this.cs = cs;
         this.ds = ds;
         this.is = is;
-        this.wa = wa;
     }
 
     @RequestMapping(path = {"/", "/home"})

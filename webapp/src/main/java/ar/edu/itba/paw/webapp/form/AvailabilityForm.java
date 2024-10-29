@@ -1,55 +1,30 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.webapp.validation.ArrayAllMatch;
-import ar.edu.itba.paw.webapp.validation.ArrayAllMax;
-import ar.edu.itba.paw.webapp.validation.ArrayAllMin;
+import ar.edu.itba.paw.models.ShiftPeriod;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.DayOfWeek;
 
 public class AvailabilityForm {
     @NotEmpty
-    @ArrayAllMin(0)
-    @ArrayAllMax(6)
-    private int[] weekDays;
-
-    @ArrayAllMatch(regexp = "\\d{2}:00:00")
-    private String[] hourBlocks;
+    private DayOfWeek[] weekDays;
 
     @NotEmpty
-    private long[] vehicleIds;
+    ShiftPeriod[] shiftPeriods;
 
-    @NotEmpty
-    private long[] zoneIds;
-
-    public int[] getWeekDays() {
+    public DayOfWeek[] getWeekDays() {
         return weekDays;
     }
 
-    public void setWeekDays(int[] weekDays) {
+    public void setWeekDays(DayOfWeek[] weekDays) {
         this.weekDays = weekDays;
     }
 
-    public long[] getVehicleIds() {
-        return vehicleIds;
+    public ShiftPeriod[] getShiftPeriods() {
+        return shiftPeriods;
     }
 
-    public void setVehicleIds(long[] vehicleIds) {
-        this.vehicleIds = vehicleIds;
-    }
-
-    public long[] getZoneIds() {
-        return zoneIds;
-    }
-
-    public void setZoneIds(long[] zoneIds) {
-        this.zoneIds = zoneIds;
-    }
-
-    public String[] getHourBlocks(){
-        return hourBlocks;
-    }
-
-    public void setHourBlocks(String[] hourBlocks){
-        this.hourBlocks = hourBlocks;
+    public void setShiftPeriods(ShiftPeriod[] shiftPeriods) {
+        this.shiftPeriods = shiftPeriods;
     }
 }
