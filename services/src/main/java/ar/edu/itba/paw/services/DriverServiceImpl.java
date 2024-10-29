@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,7 +170,15 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         // No se si lo correcto es conseguir el entity de booking desde el service
         // o desde el dao...
         Optional<Booking> booking = bookingDao.getBookingById(bookingId);
-        booking.ifPresent(bookingDao::acceptBooking);
+        //TODO move this try catch somewhere else
+        booking.ifPresent(book -> {
+            try {
+                bookingDao.acceptBooking(book);
+            } catch (VehicleAlreadyAcceptedException e) {
+                // TODO LOGGEAR
+            }
+        });
+
     }
 
     @Transactional

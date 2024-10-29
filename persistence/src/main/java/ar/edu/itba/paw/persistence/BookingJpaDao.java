@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -43,8 +44,16 @@ public class BookingJpaDao implements BookingDao {
     // hechos a la entity
     @Transactional
     @Override
-    public void acceptBooking(Booking booking) {
+    public void acceptBooking(Booking booking) throws VehicleAlreadyAcceptedException {
+        if(isVehicleAlreadyAccepted(booking)) {
+            throw new VehicleAlreadyAcceptedException();
+        }
         booking.setState(BookingState.ACCEPTED);
+
+        for(Booking bookingToReject : getBookingsByVehicle(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod(), BookingState.PENDING))
+            bookingToReject.setState(BookingState.REJECTED);
+
+        em.persist(booking);
     }
 
     @Override
@@ -115,5 +124,22 @@ public class BookingJpaDao implements BookingDao {
     @Override
     public List<Booking> getAllDriverBookings(long id) {
         return List.of();
+    }
+
+    private boolean isVehicleAlreadyAccepted(Booking booking) {
+        return ! getBookingsByVehicle(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod(), booking.getState()).isEmpty();
+    }
+
+    private List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date, ShiftPeriod sp, BookingState bs) {
+        TypedQuery<Booking> query = em.createQuery(
+                """
+                from Booking as b
+                where b.vehicle = :vehicle and b.date = :date and b.shiftPeriod = :sp and b.state = :bs
+                """, Booking.class);
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("date", date);
+        query.setParameter("sp", sp);
+        query.setParameter("bs", bs);
+        return query.getResultList();
     }
 }
