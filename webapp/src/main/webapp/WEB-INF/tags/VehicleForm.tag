@@ -17,8 +17,8 @@
         <div class="form-group mt-4 d-flex align-items-center">
             <div class="me-3">
                 <c:choose>
-                <c:when test="${not empty vehicleId}">
-                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${vehicleId}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
+                <c:when test="${not empty vehicleImg and vehicleImg != 0}">
+                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${vehicleImg}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
                 </c:when>
                 <c:otherwise>
                     <img id="vehicleImagePreview" src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="Vehicle Image Preview" class="img-fluid border rounded" style="max-width: 150px;" />

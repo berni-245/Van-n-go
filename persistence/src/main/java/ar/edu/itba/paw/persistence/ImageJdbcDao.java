@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -47,49 +46,6 @@ public class ImageJdbcDao implements ImageDao {
         toInsert.put("bin", imgData);
         final Number imgId = jdbcImageInsert.executeAndReturnKey(toInsert);
         return imgId.intValue();
-    }
-
-    @Override
-    public Image getpfp(long userId) {
-        List<Image> images = jdbcTemplate.query("""
-                        SELECT i.id, bin, file_name
-                        FROM image AS i JOIN app_user AS u ON u.pfp = i.id
-                        WHERE u.id = ?""",
-                new Object[]{userId},
-                new int[]{Types.BIGINT},
-                ROW_MAPPER);
-        if(images.isEmpty())
-            return null;
-        return images.getFirst();
-    }
-
-    @Override
-    public Image getVehicleImage(long vehicleId) {
-        List<Image> img = jdbcTemplate.query("""
-                SELECT i.id, bin, file_name
-                FROM image AS i JOIN vehicle AS v ON v.img_id = i.id
-                WHERE v.id = ?""",
-                new Object[]{vehicleId},
-                new int[]{Types.BIGINT},
-                ROW_MAPPER);
-        if(img.isEmpty())
-            return null;
-        return img.getFirst();
-    }
-
-    @Override
-    public Image getPop(long bookingId) {
-        List<Image> img;
-        img = jdbcTemplate.query("""
-                SELECT i.id, i.bin, i.file_name
-                FROM image i JOIN booking b ON b.proof_of_payment = i.id
-                WHERE b.id = ?""",
-                new Object[]{bookingId},
-                new int[]{Types.BIGINT},
-                ROW_MAPPER);
-        if(img.isEmpty())
-            return null;
-        return img.getFirst();
     }
 
     @Override

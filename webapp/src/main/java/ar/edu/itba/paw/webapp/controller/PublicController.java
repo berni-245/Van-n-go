@@ -115,14 +115,14 @@ public class PublicController {
 
     @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getUserPicture(@RequestParam("userId") int userId ,@ModelAttribute("loggedUser") User loggedUser) {
-        return getValidatedPfp(is.getPfp(userId));
+    public ResponseEntity<byte[]> getUserPicture(@RequestParam("userPfp") int userPfp ,@ModelAttribute("loggedUser") User loggedUser) {
+        return getValidatedPfp(is.getImage(userPfp));
     }
 
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
-        return getValidatedPfp(is.getPfp((int) loggedUser.getId()));
+        return getValidatedPfp(is.getImage((int) loggedUser.getPfp()));
     }
 
     private ResponseEntity<byte[]> getValidatedPfp(Image pfp) {
@@ -145,5 +145,17 @@ public class PublicController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("popId") long popId, @ModelAttribute("loggedUser") User loggedUser) {
+        Image pop = is.getImage(popId);
+        if (pop != null && pop.getFileName().endsWith(".pdf")) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            return new ResponseEntity<>(pop.getData(), headers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

@@ -21,5 +21,5 @@ public interface VehicleDao {
 
     boolean plateNumberExists(String plateNumber);
 
-    boolean updateVehicle(long driverId, Vehicle vehicle);
+    boolean updateVehicle(long driverId, String plateNumber, double volume, String description, double rate, long vehicleId);
 }

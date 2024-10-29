@@ -113,7 +113,7 @@
                                                 <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${pageContext.request.contextPath}/user/pfp?userId=${driver.id}" alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
+                                                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${driver.pfp}" alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>

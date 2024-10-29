@@ -55,20 +55,25 @@ public class DriverController {
         if (errors.hasErrors()) {
             return addVehicleGet(vehicleForm);
         }
+        String imgFilename = null;
+        byte[] imgData = null;
+        if (vehicleImg != null) {
+            imgFilename = vehicleImg.getOriginalFilename();
+            try {
+                imgData = vehicleImg.getBytes();
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
         final Vehicle vehicle = ds.addVehicle(
                 loggedUser.getId(),
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
                 vehicleForm.getDescription(),
-                vehicleForm.getRate()
+                vehicleForm.getRate(),
+                imgFilename,
+                imgData
         );
-        if (vehicleImg != null) {
-            try {
-                is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(), (int) vehicle.getId());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        }
         List<Toast> toasts = Collections.singletonList(new Toast(
                 ToastType.success, "toast.vehicle.add.success"
         ));
@@ -78,8 +83,8 @@ public class DriverController {
 
     @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("vehicleId") int vehicleId, @ModelAttribute("loggedUser") User loggedUser) {
-        Image vehicleImg = is.getVehicleImage(vehicleId);
+    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("imgId") int imgId, @ModelAttribute("loggedUser") User loggedUser) {
+        Image vehicleImg = is.getImage(imgId);
         if (vehicleImg == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -178,6 +183,7 @@ public class DriverController {
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
             mav.addObject("vehicleId", vehicle.get().getId());
+            mav.addObject("vehicleImg", vehicle.get().getImg());
             return mav;
         } else {
             return new ModelAndView();
@@ -225,24 +231,25 @@ public class DriverController {
                 return editVehicleGet(loggedUser, ogPlateNumber, form);
             }
         }
-        boolean success = ds.updateVehicle(loggedUser.getId(), new Vehicle(
-                form.getId(),
-                loggedUser.getId(),
-                form.getPlateNumber(),
-                form.getVolume(),
-                form.getDescription(),
-                null,
-                form.getRate()
-        ));
-        Image aux = is.getVehicleImage((int) form.getId());
-        if(vehicleImg != null && !vehicleImg.isEmpty())
-            try{
-                //If they have exactly the same length and filename, they are most likely the same image
-                if (aux != null && !(aux.getFileName().equals(vehicleImg.getOriginalFilename()) && aux.getData().length==vehicleImg.getBytes().length))
-                    is.uploadVehicleImage(vehicleImg.getBytes(), vehicleImg.getOriginalFilename(),(int) form.getId());
+        String imgFilename = null;
+        byte[] imgData = null;
+        if(vehicleImg != null) {
+            imgFilename = vehicleImg.getOriginalFilename();
+            try {
+                imgData = vehicleImg.getBytes();
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
+        }
+        boolean success = ds.updateVehicle(loggedUser.getId(),
+                form.getId(),
+                form.getPlateNumber(),
+                form.getVolume(),
+                form.getDescription(),
+                form.getRate(),
+                imgFilename,
+                imgData
+        );
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
@@ -298,17 +305,5 @@ public class DriverController {
     ) {
         ds.rejectBooking(bookingId);
         return new ModelAndView("redirect:/");
-    }
-
-    @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("bookingId") long bookingId, @ModelAttribute("loggedUser") User loggedUser) {
-        Image pop = is.getPop((int) bookingId);
-        if (pop != null && pop.getFileName().endsWith(".pdf")) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            return new ResponseEntity<>(pop.getData(), headers, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

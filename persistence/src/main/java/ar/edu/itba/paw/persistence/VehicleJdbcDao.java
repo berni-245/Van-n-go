@@ -131,12 +131,12 @@ public class VehicleJdbcDao implements VehicleDao {
     }
 
     @Override
-    public boolean updateVehicle(long driverId, Vehicle v) {
+    public boolean updateVehicle(long driverId, String plateNumber, double volume, String description, double rate, long vehicleId) {
         return jdbcTemplate.update("""
-                        UPDATE vehicle
-                        SET plate_number = ?, volume_m3 = ?, description = ?, hourly_rate = ?
-                        WHERE driver_id = ? and id = ?""",
-                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), v.getRate(), driverId, v.getId()},
+                           UPDATE vehicle
+                           SET plate_number = ?, volume_m3 = ?, description = ?, hourly_rate = ?, img_id = ?
+                           WHERE driver_id = ? and id = ?""",
+                new Object[]{plateNumber, volume, description, rate, driverId, vehicleId},
                 new int[]{Types.VARCHAR, Types.DOUBLE, Types.VARCHAR, Types.DOUBLE, Types.BIGINT, Types.BIGINT}
         ) > 0;
     }

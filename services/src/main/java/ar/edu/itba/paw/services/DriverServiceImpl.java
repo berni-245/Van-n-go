@@ -26,6 +26,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Autowired
     private final BookingDao bookingDao;
 
+    @Autowired
+    private final ImageDao imageDao;
+
     public DriverServiceImpl(
             UserDao userDao,
             PasswordEncoder passwordEncoder,
@@ -33,21 +36,21 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             DriverDao driverDao,
             VehicleDao vehicleDao,
             WeeklyAvailabilityDao weeklyAvailabilityDao,
-            BookingDao bookingDao
+            BookingDao bookingDao,
+            ImageDao imageDao
     ) {
         super(userDao, passwordEncoder, mailService);
         this.driverDao = driverDao;
         this.vehicleDao = vehicleDao;
         this.weeklyAvailabilityDao = weeklyAvailabilityDao;
         this.bookingDao = bookingDao;
+        this.imageDao = imageDao;
     }
 
     @Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
         long id = createUser(username, mail, password);
-        // Driver instance will be created with unencrypted password.
-        // Is that a problem tho?
         Driver driver = driverDao.create(id, extra1);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
@@ -59,8 +62,21 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate) {
-        return vehicleDao.create(driverId, plateNumber, volume, description, rate);
+    public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
+        Vehicle v = vehicleDao.create(driverId, plateNumber, volume, description, rate);
+        if(imgFilename != null && imgData != null)
+            imageDao.uploadVehicleImage(imgData,imgFilename,v.getId());
+        return v;
+    }
+
+    @Override
+    public boolean updateVehicle(long driverId, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
+        if(imgFilename != null && imgData != null){
+            Image aux = imageDao.getImage(vehicleDao.findById(vehicleId).get().getId());
+            if (aux != null && !(aux.getFileName().equals(imgFilename) && aux.getData().length==imgData.length))
+                imageDao.uploadVehicleImage(imgData,imgFilename,vehicleId);
+        }
+        return vehicleDao.updateVehicle(driverId,plateNumber,volume,description,rate,vehicleId);
     }
 
     @Override
@@ -183,11 +199,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber) {
         return vehicleDao.findByPlateNumber(driverId, plateNumber);
-    }
-
-    @Override
-    public boolean updateVehicle(long driverId, Vehicle vehicle) {
-        return vehicleDao.updateVehicle(driverId, vehicle);
     }
 
     @Override

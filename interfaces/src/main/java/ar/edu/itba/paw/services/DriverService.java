@@ -12,7 +12,7 @@ public interface DriverService {
 
     Optional<Driver> findById(long id);
 
-    Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate);
+    Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
 
     List<Vehicle> getVehicles(long id);
 
@@ -68,9 +68,9 @@ public interface DriverService {
 
     void editProfile(long id, String extra1, String cbu);
 
-    boolean updateVehicle(long driverId, Vehicle vehicle);
-
     List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
 
     List<Booking> getAllBookings(long id);
+
+    boolean updateVehicle(long driverId, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
 }

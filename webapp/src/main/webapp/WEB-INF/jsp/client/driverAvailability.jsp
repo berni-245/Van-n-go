@@ -101,7 +101,7 @@
                                          alt=" Vehicle Image Preview" class="card-img-top"/>
                                 </c:if>
                                 <c:if test="${v.img > 0}">
-                                    <c:url value='/vehicle/image?vehicleId=${v.id}' var="imgUrl"/>
+                                    <c:url value='/vehicle/image?imgId=${v.img}' var="imgUrl"/>
                                     <img id="vehicleImagePreview" src="${imgUrl}"
                                          alt="Vehicle Image Preview" class="card-img-top"/>
                                 </c:if>

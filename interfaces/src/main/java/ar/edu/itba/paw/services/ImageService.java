@@ -3,11 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Image;
 
 public interface ImageService {
-    Image getPfp(long userId);
 
-    Image getVehicleImage(long vehicleId);
-
-    Image getPop(long bookingId);
+    Image getImage(long imgId);
 
     long uploadPfp(byte[] bin, String fileName, long userId);
 

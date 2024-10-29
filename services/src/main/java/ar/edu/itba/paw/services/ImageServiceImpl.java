@@ -17,28 +17,9 @@ public class ImageServiceImpl implements ImageService {
         this.imgDao = imgDao;
     }
 
-    private int saveImage(byte[] bin, String fileName) {
-        return imgDao.uploadImage(fileName, bin);
-    }
-
-    private Image getImage(long id) {
-        return imgDao.getImage(id);
-    }
-
-
     @Override
-    public Image getPfp(long userId) {
-        return imgDao.getpfp(userId);
-    }
-
-    @Override
-    public Image getVehicleImage(long vehicleId) {
-        return imgDao.getVehicleImage(vehicleId);
-    }
-
-    @Override
-    public Image getPop(long bookingId) {
-        return imgDao.getPop(bookingId);
+    public Image getImage(long imgId) {
+        return imgDao.getImage(imgId);
     }
 
     @Override
