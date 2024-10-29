@@ -72,7 +72,7 @@ public class VehicleJpaDao implements VehicleDao {
                 Vehicle.class
         );
         query.setParameter("plateNumber", plateNumber);
-        return query.getSingleResult() != null;
+        return !query.getResultList().isEmpty();
     }
 
     @Override
