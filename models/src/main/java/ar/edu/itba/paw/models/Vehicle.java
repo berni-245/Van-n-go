@@ -2,43 +2,73 @@ package ar.edu.itba.paw.models;
 
 import com.google.gson.Gson;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Table(name = "vehicle")
+@Entity
 public class Vehicle {
-    private final long id;
-    private final long driverId;
-    private final String plateNumber;
-    private final double volume;
-    private final String description;
-    private Integer img;
-    private final double rate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vehicle_id_seq")
+    @SequenceGenerator(sequenceName = "vehicle_id_seq", name = "vehicle_id_seq", allocationSize = 1)
+    private Long id;
 
-    private List<WeeklyAvailability> weeklyAvailability;
+    @Column(name = "driver_id", nullable = false)
+    private long driverId;
+    @Column(name = "plate_number", nullable = false)
+    private String plateNumber;
+    @Column(name = "volume_m3", nullable = false)
+    private double volume;
+    @Column(nullable = false)
+    private String description;
+    @Column(name = "img_id", nullable = false)
+    private Integer imgId;
+    @Column(name = "hourly_rate", nullable = false)
+    private double hourlyRate;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "vehicle_zone",
+            joinColumns = @JoinColumn(name = "vehicle_id"),
+            inverseJoinColumns = @JoinColumn(name = "zone_id")
+    )
+    private List<Zone> zones;
+
+    // private Map<WeekDay, List<Availability>> weeklyAvailability
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Availability> availabilitiy;
 
     private static final Gson gson = new Gson();
 
+    Vehicle() {}
+
     public Vehicle(
-            long id,
+            Long id,
             long driverId,
             String plateNumber,
             double volume,
             String description,
-            List<WeeklyAvailability> weeklyAvailability,
-            Integer img,
-            double rate
+            Integer imgId,
+            double hourlyRate
     ) {
         this.id = id;
         this.driverId = driverId;
         this.plateNumber = plateNumber;
         this.volume = volume;
         this.description = description;
-        this.weeklyAvailability = weeklyAvailability;
-        this.img = img;
-        this.rate = rate;
+        this.imgId = imgId;
+        this.hourlyRate = hourlyRate;
     }
 
-    public Vehicle(long id, long driverId, String plateNumber, double volume, String description, Integer img, double rate) {
-        this(id, driverId, plateNumber, volume, description, null, img, rate);
+    public Vehicle(
+            long driverId,
+            String plateNumber,
+            double volume,
+            String description,
+            Integer imgId,
+            double hourlyRate
+    ) {
+        this(null, driverId, plateNumber, volume, description, imgId, hourlyRate);
     }
 
     public long getId() {
@@ -66,24 +96,20 @@ public class Vehicle {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);
     }
 
-    public List<WeeklyAvailability> getWeeklyAvailability() {
-        return weeklyAvailability;
+    public Integer getImgId() {
+        return imgId;
     }
 
-    public void setWeeklyAvailability(List<WeeklyAvailability> weeklyAvailability) {
-        this.weeklyAvailability = weeklyAvailability;
+    public void setImgId(Integer imgId) {
+        this.imgId = imgId;
     }
 
-    public Integer getImg() {
-        return img;
+    public double getHourlyRate() {
+        return hourlyRate;
     }
 
-    public void setImg(Integer img) {
-        this.img = img;
-    }
-
-    public double getRate() {
-        return rate;
+    public List<Availability> getAvailabilitiy() {
+        return availabilitiy;
     }
 
     public String toJson() {

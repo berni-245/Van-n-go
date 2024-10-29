@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -16,27 +17,23 @@ public interface DriverService {
 
     List<Vehicle> getVehicles(long id);
 
-    List<Vehicle> getVehiclesFull(long id);
+    List<Vehicle> getVehicles(long id, long zoneId, Size size);
 
-    List<Vehicle> getVehiclesFull(long id, long zoneId, Size size);
+//    List<WeeklyAvailability> getWeeklyAvailability(long id);
+//
+//    List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size);
 
-    List<WeeklyAvailability> getWeeklyAvailability(long id);
-
-    List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size);
-
-    void addWeeklyAvailability(
+    void addAvailability(
             long driverId,
-            int[] weekDays,
-            String[] hourBlocks,
-            long[] zoneIds,
-            long[] vehicleIds
+            DayOfWeek[] weekDays,
+            ShiftPeriod[] periods,
+            long vehicleId
     );
 
     void updateWeeklyAvailability(
             long driverId,
-            int weekDay,
-            String[] hourBlocks,
-            long zoneId,
+            DayOfWeek weekDay,
+            ShiftPeriod[] periods,
             long vehicleId
     );
 
@@ -70,7 +67,7 @@ public interface DriverService {
 
     boolean updateVehicle(long driverId, Vehicle vehicle);
 
-    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
+//    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
 
     List<Booking> getAllBookings(long id);
 }

@@ -136,7 +136,7 @@ public class VehicleJdbcDao implements VehicleDao {
                         UPDATE vehicle
                         SET plate_number = ?, volume_m3 = ?, description = ?, hourly_rate = ?
                         WHERE driver_id = ? and id = ?""",
-                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), v.getRate(), driverId, v.getId()},
+                new Object[]{v.getPlateNumber(), v.getVolume(), v.getDescription(), v.getHourlyRate(), driverId, v.getId()},
                 new int[]{Types.VARCHAR, Types.DOUBLE, Types.VARCHAR, Types.DOUBLE, Types.BIGINT, Types.BIGINT}
         ) > 0;
     }

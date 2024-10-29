@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -21,10 +22,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     private final VehicleDao vehicleDao;
 
     @Autowired
-    private final WeeklyAvailabilityDao weeklyAvailabilityDao;
+    private final BookingDao bookingDao;
 
     @Autowired
-    private final BookingDao bookingDao;
+    private final ZoneDao zoneDao;
+
+    @Autowired
+    private final AvailabilityDao availabilityDao;
 
     public DriverServiceImpl(
             UserDao userDao,
@@ -32,14 +36,16 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             MailService mailService,
             DriverDao driverDao,
             VehicleDao vehicleDao,
-            WeeklyAvailabilityDao weeklyAvailabilityDao,
-            BookingDao bookingDao
+            BookingDao bookingDao,
+            ZoneDao zoneDao,
+            AvailabilityDao availabilityDao
     ) {
         super(userDao, passwordEncoder, mailService);
         this.driverDao = driverDao;
         this.vehicleDao = vehicleDao;
-        this.weeklyAvailabilityDao = weeklyAvailabilityDao;
         this.bookingDao = bookingDao;
+        this.zoneDao = zoneDao;
+        this.availabilityDao = availabilityDao;
     }
 
     @Transactional
@@ -69,44 +75,32 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Vehicle> getVehiclesFull(long id) {
-        return vehicleDao.getDriverVehiclesFull(id);
+    public List<Vehicle> getVehicles(long id, long zoneId, Size size) {
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        return vehicleDao.getDriverVehicles(id, zone, size);
     }
 
-    @Override
-    public List<Vehicle> getVehiclesFull(long id, long zoneId, Size size) {
-        return vehicleDao.getDriverVehicles(id, zoneId, size);
-    }
+//    @Override
+//    public List<WeeklyAvailability> getWeeklyAvailability(long id) {
+//        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id);
+//    }
+//
+//    @Override
+//    public List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size) {
+//        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id, zoneId, size);
+//    }
 
     @Override
-    public List<WeeklyAvailability> getWeeklyAvailability(long id) {
-        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id);
-    }
-
-    @Override
-    public List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size) {
-        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id, zoneId, size);
-    }
-
-    // This should probably be handled better. Right now we won't know
-    // which insertions failed.
-    // And we Should probably use batch insertion.
-    @Override
-    public void addWeeklyAvailability(
+    public void addAvailability(
             long driverId,
-            int[] weekDays,
-            String[] hourBlocks,
-            long[] zoneIds,
-            long[] vehicleIds
+            DayOfWeek[] weekDays,
+            ShiftPeriod[] periods,
+            long vehicleId
     ) {
-        if (hourBlocks.length == 0) return;
-        for (int weekDay : weekDays) {
-            for (long vehicleId : vehicleIds) {
-                for (long zoneId : zoneIds) {
-                    weeklyAvailabilityDao.create(
-                            weekDay, hourBlocks, zoneId, vehicleId
-                    );
-                }
+        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
+        for (DayOfWeek weekDay : weekDays) {
+            for (ShiftPeriod period : periods) {
+                availabilityDao.create(v, weekDay, period);
             }
         }
     }
@@ -114,23 +108,24 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public void updateWeeklyAvailability(long driverId, int weekDay, String[] hourBlocks, long zoneId, long vehicleId) {
-        weeklyAvailabilityDao.removeAll(weekDay, zoneId, vehicleId);
-        addWeeklyAvailability(
-                driverId, new int[]{weekDay}, hourBlocks,
-                new long[]{zoneId}, new long[]{vehicleId}
-        );
-}
+    public void updateWeeklyAvailability(
+            long driverId,
+            DayOfWeek weekDay,
+            ShiftPeriod[] periods,
+            long vehicleId
+    ) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public List<Driver> getAll(long zoneId, Size size, int page) {
-        return driverDao.getAll(zoneId, size, page*Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getAll(zoneId, size, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Transactional
     @Override
     public List<Booking> getBookings(long driverId, int page) {
-        return bookingDao.getDriverBookings(driverId, page*Pagination.BOOKINGS_PAGE_SIZE);
+        return bookingDao.getDriverBookings(driverId, page * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
     @Override
@@ -140,7 +135,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Booking> getHistory(long driverId, int page) {
-        return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE*page);
+        return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE * page);
     }
 
     @Override
@@ -192,11 +187,11 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public void editProfile(long id, String extra1, String cbu) {
-        driverDao.editProfile(id,extra1,cbu);
+        driverDao.editProfile(id, extra1, cbu);
     }
 
-    @Override
-    public List<WeeklyAvailability> activeAvailabilities(long vehicleId, long zoneId, LocalDate date) {
-        return weeklyAvailabilityDao.getVehicleActiveAvailability(vehicleId, zoneId, date);
-    }
+//    @Override
+//    public List<WeeklyAvailability> activeAvailabilities(long vehicleId, long zoneId, LocalDate date) {
+//        return weeklyAvailabilityDao.getVehicleActiveAvailability(vehicleId, zoneId, date);
+//    }
 }

@@ -145,7 +145,8 @@ public class ClientController {
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date2 = LocalDate.parse(date, formatter);
-        return gson.toJson(ds.activeAvailabilities(vehicleId, zoneId, date2));
+//        return gson.toJson(ds.activeAvailabilities(vehicleId, zoneId, date2));
+        return gson.toJson("{}");
     }
 
     @RequestMapping(path = "/availability/{id:\\d+}", method = RequestMethod.GET)
@@ -162,12 +163,12 @@ public class ClientController {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", id);
             Set<Integer> workingDays = new HashSet<>();
-            var wa = ds.getWeeklyAvailability(id, zoneId, size);
-            wa.forEach(
-                    weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDay())
-            );
+//            var wa = ds.getWeeklyAvailability(id, zoneId, size);
+//            wa.forEach(
+//                    weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDay())
+//            );
             mav.addObject("workingDays", workingDays);
-            var vehicles = ds.getVehiclesFull(id, zoneId, size);
+            var vehicles = ds.getVehicles(id, zoneId, size);
             mav.addObject("vehicles", vehicles);
             var bookings = ds.getAllBookings(driver.get().getId());
             mav.addObject("bookings", bookings);
