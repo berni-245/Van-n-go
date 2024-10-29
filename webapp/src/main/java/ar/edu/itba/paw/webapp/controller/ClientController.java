@@ -197,36 +197,36 @@ public class ClientController {
         if (errors.hasErrors()) {
             return driverAvailability(id, form.getZoneId(), size, loggedUser, form);
         }
+        throw new UnsupportedOperationException("Fix bookings form");
 
-        try {
-            HourInterval hourInterval = new HourInterval(form.getTimeStart());
-            Optional<Booking> booking = cs.appointBooking(
-                    form.getVehicleId(),
-                    loggedUser.getId(),
-                    form.getZoneId(),
-                    form.getDate(),
-                    hourInterval,
-                    form.getJobDescription(),
-                    LocaleContextHolder.getLocale()
-            );
-            if (booking.isEmpty()) {
-                toasts.add(new Toast(
-                        ToastType.danger, "toast.booking.error"
-                ));
-                redirectAttributes.addFlashAttribute("toasts", toasts);
-                return new ModelAndView("redirect:/availability/%d?zoneId=%d&size=%s".formatted(id, form.getZoneId(), size.name()));
-            }
-            toasts.add(new Toast(
-                    ToastType.danger, "toast.booking.success"
-            ));
-            return new ModelAndView("redirect:/client/bookings");
-        } catch (Exception e) {
-            toasts.add(new Toast(
-                    ToastType.danger, "toast.booking.error"
-            ));
-            redirectAttributes.addFlashAttribute("toasts", toasts);
-            return new ModelAndView("redirect:/availability/" + id);
-        }
+//        try {
+//            Optional<Booking> booking = cs.appointBooking(
+//                    form.getVehicleId(),
+//                    loggedUser,
+//                    form.getZoneId(),
+//                    form.getDate(),
+//                    form.getShiftPeriod(), --> Fix in form
+//                    form.getJobDescription(),
+//                    LocaleContextHolder.getLocale()
+//            );
+//            if (booking.isEmpty()) {
+//                toasts.add(new Toast(
+//                        ToastType.danger, "toast.booking.error"
+//                ));
+//                redirectAttributes.addFlashAttribute("toasts", toasts);
+//                return new ModelAndView("redirect:/availability/%d?zoneId=%d&size=%s".formatted(id, form.getZoneId(), size.name()));
+//            }
+//            toasts.add(new Toast(
+//                    ToastType.danger, "toast.booking.success"
+//            ));
+//            return new ModelAndView("redirect:/client/bookings");
+//        } catch (Exception e) {
+//            toasts.add(new Toast(
+//                    ToastType.danger, "toast.booking.error"
+//            ));
+//            redirectAttributes.addFlashAttribute("toasts", toasts);
+//            return new ModelAndView("redirect:/availability/" + id);
+//        }
     }
 
 }

@@ -40,21 +40,21 @@
                                 <c:when test="${empty booking.pop or booking.pop == 0}">
                                 <spring:message code="client.bookings.transfer"/>
                                 <c:out value="${booking.driver.cbu}"/>
-                                    <form id="uploadProofOfPaymentForm_${booking.bookingId}" method="post"
+                                    <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
                                           action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                        <input type="hidden" name="bookingId" value="${booking.id}">
                                         <input type="hidden" name="driverId" value="${booking.driver.id}">
-                                        <input type="file" id="proofInput_${booking.bookingId}" name="proofOfPayment"
+                                        <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
                                                class="d-none" accept="application/pdf"
-                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.bookingId}').submit();">
-                                        <label for="proofInput_${booking.bookingId}"
+                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.id}').submit();">
+                                        <label for="proofInput_${booking.id}"
                                                style="cursor: pointer; text-decoration: underline;">
                                             <spring:message code="client.bookings.clickHereToPop"/>
                                         </label>
                                     </form>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />" target="_blank">
+                                    <a href="<c:url value='/booking/pop?bookingId=${booking.id}' />" target="_blank">
                                         <spring:message code="client.bookings.popProvided"/>
                                     </a>
                                 </c:otherwise>

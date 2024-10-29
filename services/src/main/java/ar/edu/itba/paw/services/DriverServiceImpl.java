@@ -166,7 +166,10 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Transactional
     @Override
     public void acceptBooking(long bookingId) {
-        bookingDao.acceptBooking(bookingId);
+        // No se si lo correcto es conseguir el entity de booking desde el service
+        // o desde el dao...
+        Optional<Booking> booking = bookingDao.getBookingById(bookingId);
+        booking.ifPresent(bookingDao::acceptBooking);
     }
 
     @Transactional

@@ -33,17 +33,18 @@ create table if not exists vehicle_availability
 
 create table if not exists booking
 (
-    id               serial primary key,
-    date             date,
-    shift_period     ShiftPeriod not null,
-    client_id        int         not null references client (user_id) on delete cascade,
-    vehicle_id       int         not null references vehicle (id) on delete cascade,
-    zone_id          int         not null references zone (id) on delete cascade,
-    state            state       not null,
-    proof_of_payment int         references image (id) on delete set null,
-    rating           int,
-    review           text,
-    job_description  text
+    id                  serial primary key,
+    date                date,
+    shift_period        ShiftPeriod not null,
+    client_id           int         not null references client (user_id) on delete cascade,
+    vehicle_id          int         not null references vehicle (id) on delete cascade,
+    origin_zone_id      int         not null references zone (id) on delete cascade,
+    destination_zone_id int references zone (id) on delete cascade,
+    state               state       not null,
+    proof_of_payment    int         references image (id) on delete set null,
+    rating              int,
+    review              text,
+    job_description     text
 );
 
 insert into vehicle_zone (vehicle_id, zone_id)
@@ -61,18 +62,18 @@ select distinct vehicle_id,
                     WHEN week_day = 4 THEN 'THURSDAY'::WeekDay
                     WHEN week_day = 5 THEN 'FRIDAY'::WeekDay
                     WHEN week_day = 6 THEN 'SATURDAY'::WeekDay
-                END as week_day,
+                    END as week_day,
                 case
                     when t_start >= '04:00:00' and t_end <= '12:00:00' then 'MORNING'::ShiftPeriod
                     when t_start >= '12:00:00' and t_end <= '16:00:00' then 'AFTERNOON'::ShiftPeriod
                     when (t_start >= '16:00:00' and (t_end <= '23:59:59' or t_end = '00:00:00'))
                         or (t_start >= '00:00:00' and t_end <= '04:00:00') then 'EVENING'::ShiftPeriod
-                end as shift_period
+                    end as shift_period
 from weekly_availability
          join hour_block on weekly_availability.hour_block_id = hour_block.id
 order by vehicle_id, week_day;
 
-insert into booking (date, shift_period, client_id, vehicle_id, zone_id, state, proof_of_payment, rating, review,
+insert into booking (date, shift_period, client_id, vehicle_id, origin_zone_id, state, proof_of_payment, rating, review,
                      job_description)
 select date,
        case -- esto funciona porque los intervalos son de una hora
@@ -89,7 +90,7 @@ select date,
        rating,
        review,
        job_description
-from booking_old2
-         join hour_block start_block on booking_old2.hour_start_id = start_block.id
-         join hour_block end_block on booking_old2.hour_end_id = end_block.id
-order by booking_old2.id;
+from booking_old2 bo2
+         join hour_block start_block on bo2.hour_start_id = start_block.id
+         join hour_block end_block on bo2.hour_end_id = end_block.id
+order by bo2.id;

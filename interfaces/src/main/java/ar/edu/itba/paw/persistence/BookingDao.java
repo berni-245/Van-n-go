@@ -1,16 +1,22 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.HourInterval;
+import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface BookingDao {
-    Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription);
+    Booking appointBooking(
+            Vehicle vehicle,
+            Client client,
+            Zone zone,
+            LocalDate date,
+            ShiftPeriod period,
+            String jobDescription
+    );
 
-    void acceptBooking(long bookingId);
+    void acceptBooking(Booking booking);
 
     void rejectBooking(long bookingId);
 

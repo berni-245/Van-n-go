@@ -56,13 +56,13 @@
                                         <div class="d-flex justify-content-around mt-2">
                                             <form action="${pageContext.request.contextPath}/driver/acceptBooking"
                                                   method="POST" class="mb-1">
-                                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                                <input type="hidden" name="bookingId" value="${booking.id}">
                                                 <button type="submit" class="btn btn-success"><spring:message
                                                         code="driver.home.booking.accept"/></button>
                                             </form>
                                             <form action="${pageContext.request.contextPath}/driver/rejectBooking"
                                                   method="POST" class="mb-1">
-                                                <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                                <input type="hidden" name="bookingId" value="${booking.id}">
                                                 <button type="submit" class="btn btn-danger"><spring:message
                                                         code="driver.home.booking.reject"/></button>
                                             </form>
@@ -75,7 +75,7 @@
                                                 <spring:message code="driver.home.unpaid"/>
                                             </c:if>
                                             <c:if test="${not empty booking.pop and booking.pop != 0}">
-                                                <a href="<c:url value='/booking/pop?bookingId=${booking.bookingId}' />"
+                                                <a href="<c:url value='/booking/pop?bookingId=${booking.id}' />"
                                                    target="_blank">
                                                     <spring:message code="driver.home.paid"/>
                                                 </a>

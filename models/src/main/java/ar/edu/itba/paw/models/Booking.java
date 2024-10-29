@@ -1,34 +1,63 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Entity
 public class Booking {
-    private final long bookingId;
-    private final Client client;
-    private final Driver driver;
-    private final Vehicle vehicle;
-    private final Zone zone;
-    private final LocalDate date;
-    private final HourInterval hourInterval;
-    private final BookingState state;
-    private final Integer rating;
-    private final String review;
-    private final boolean confirmed;
-    private final Integer pop;
-    private final String jobDescription;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_id_seq")
+    @SequenceGenerator(sequenceName = "booking_id_seq", name = "booking_id_seq", allocationSize = 1)
+    private Long id;
 
-    public Booking(long bookingId, Client client, Driver driver, Vehicle vehicle,
-                   Zone zone, LocalDate date, HourInterval hourInterval,
+    // Prolly tengan que ser los ids hasta que pasemos User a hibernate.
+    private Client client;
+    private Driver driver;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Vehicle vehicle;
+
+    @JoinColumn(name = "origin_zone_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Zone originZone;
+    @JoinColumn(name = "destination_zone_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    private Zone destinationZone;
+
+    @Column
+    private LocalDate date;
+    @Column(name = "shift_period")
+    @Enumerated(EnumType.STRING)
+    private ShiftPeriod shiftPeriod;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private BookingState state;
+    @Column
+    private Integer rating;
+    @Column
+    private String review;
+    @Column(name = "proof_of_payment")
+    private Integer pop;
+    @Column(name = "job_description")
+    private String jobDescription;
+
+    private boolean confirmed;
+
+    Booking() {
+    }
+
+    public Booking(Long id, Client client, Driver driver, Vehicle vehicle,
+                   Zone originZone, LocalDate date, ShiftPeriod shiftPeriod,
                    BookingState state, Integer rating,
                    String review, Integer pop, String jobDescription) {
-        this.bookingId = bookingId;
+        this.id = id;
         this.client = client;
         this.driver = driver;
         this.vehicle = vehicle;
-        this.zone = zone;
+        this.originZone = originZone;
         this.date = date;
-        this.hourInterval = hourInterval;
+        this.shiftPeriod = shiftPeriod;
         this.state = state;
         this.rating = rating;
         this.review = review;
@@ -37,8 +66,8 @@ public class Booking {
         this.jobDescription = jobDescription;
     }
 
-    public long getBookingId() {
-        return bookingId;
+    public long getId() {
+        return id;
     }
 
     public Driver getDriver() {
@@ -49,20 +78,24 @@ public class Booking {
         return vehicle;
     }
 
-    public Zone getZone() {
-        return zone;
+    public Zone getOriginZone() {
+        return originZone;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public HourInterval getHourInterval() {
-        return hourInterval;
+    public ShiftPeriod getShiftPeriod() {
+        return shiftPeriod;
     }
 
     public BookingState getState() {
         return state;
+    }
+
+    public void setState(BookingState state) {
+        this.state = state;
     }
 
     public Client getClient() {
