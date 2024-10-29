@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ public class VehicleJpaDao implements VehicleDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional
     @Override
     public Vehicle create(long driverId, String plateNumber, double volume, String description, double hourlyRate) {
         Vehicle v = new Vehicle(driverId, plateNumber, volume, description, null, hourlyRate);
