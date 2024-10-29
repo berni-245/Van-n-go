@@ -70,6 +70,15 @@
         <servlet-name>dispatcher</servlet-name>
     </filter-mapping>
 
+    <filter>
+        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+        <filter-name>openEntityManagerInView</filter-name>
+    </filter>
+    <filter-mapping>
+        <filter-name>openEntityManagerInView</filter-name>
+        <servlet-name>dispatcher</servlet-name>
+    </filter-mapping>
+
     <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/jsp/error/404.jsp</location>

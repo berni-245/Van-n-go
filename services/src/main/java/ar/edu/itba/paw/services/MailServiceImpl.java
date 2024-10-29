@@ -197,12 +197,11 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription, Locale locale) {
+    public void sendRequestedDriverService(long driverId, Client client, LocalDate date, String jobDescription, Locale locale) {
         Optional<Driver> driver = driverDao.findById(driverId);
-        Optional<Client> client = clientDao.findById(clientId);
-        if(driver.isPresent() && client.isPresent()){
+        if(driver.isPresent()){
             Context context = new Context(locale);
-            String clientMail = client.get().getMail();
+            String clientMail = client.getMail();
             String driverMail = driver.get().getMail();
             context.setVariable("driverName", driver.get().getUsername());
             context.setVariable("driverMail", driver.get().getMail());

@@ -35,7 +35,7 @@ public class VehicleForm {
         this.description = vehicle.getDescription();
         this.volume = vehicle.getVolume();
         this.plateNumber = vehicle.getPlateNumber();
-        this.rate = vehicle.getRate();
+        this.rate = vehicle.getHourlyRate();
     }
 
     public void setId(long id) {

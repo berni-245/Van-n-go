@@ -95,12 +95,12 @@
                          data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <figure class="figure">
-                                <c:if test="${v.img <= 0}">
+                                <c:if test="${v.imgId <= 0}">
                                     <c:url value='/images/defaultVehicle.png' var="imgUrl"/>
                                     <img id="vehicleImagePreview" src="${imgUrl}"
                                          alt=" Vehicle Image Preview" class="card-img-top"/>
                                 </c:if>
-                                <c:if test="${v.img > 0}">
+                                <c:if test="${v.imgId > 0}">
                                     <c:url value='/vehicle/image?vehicleId=${v.id}' var="imgUrl"/>
                                     <img id="vehicleImagePreview" src="${imgUrl}"
                                          alt="Vehicle Image Preview" class="card-img-top"/>
@@ -172,6 +172,9 @@
         ${workDay},
         </c:forEach>
     ];
+    let avList = {
+        ${vehicle.plateNumber}: [${vehicle.avList}].map(),
+    }
     const allDays = [0, 1, 2, 3, 4, 5, 6];
     const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));
 

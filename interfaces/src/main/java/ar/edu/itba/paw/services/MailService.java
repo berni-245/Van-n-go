@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Client;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDate;
@@ -16,6 +17,6 @@ public interface MailService {
 
     void sendDriverWelcomeMail(String to, String userName, Locale locale);
 
-    void sendRequestedDriverService(long driverId, long clientId, LocalDate date, String jobDescription, Locale locale);
+    void sendRequestedDriverService(long driverId, Client client, LocalDate date, String jobDescription, Locale locale);
 
 }

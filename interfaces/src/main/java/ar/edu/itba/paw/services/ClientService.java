@@ -2,7 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.HourInterval;
+import ar.edu.itba.paw.models.ShiftPeriod;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,10 +14,26 @@ public interface ClientService {
 
     Optional<Client> findById(long id);
 
-    Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, LocalDate date, HourInterval hourInterval, String jobDescription, Locale locale);
+    Booking appointBooking(
+            long vehicleId,
+            Client client,
+            long zoneId,
+            LocalDate date,
+            ShiftPeriod shiftPeriod,
+            String jobDescription,
+            Locale locale
+    );
 
-    default Optional<Booking> appointBooking(long vehicleId, long clientId, long zoneId, String date, HourInterval hourInterval, String jobDescription, Locale locale) {
-        return appointBooking(vehicleId, clientId, zoneId, LocalDate.parse(date), hourInterval, jobDescription, locale);
+    default Booking appointBooking(
+            long vehicleId,
+            Client client,
+            long zoneId,
+            String date,
+            ShiftPeriod period,
+            String jobDescription,
+            Locale locale
+    ) {
+        return appointBooking(vehicleId, client, zoneId, LocalDate.parse(date), period, jobDescription, locale);
     }
 
     List<Booking> getBookings(long id, int page);

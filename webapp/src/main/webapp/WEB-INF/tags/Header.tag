@@ -52,7 +52,7 @@
                             <li class="nav-item">
                                 <a href="${pageContext.request.contextPath}/availability"
                                    class="nav-link ${inAvailability ? 'active' : ''}">
-                                    <spring:message code="components.header.availability"/>
+                                    <spring:message code="components.header.search"/>
                                 </a>
                             </li>
                             <li class="nav-item">
