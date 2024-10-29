@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "vehicle")
 @Entity
@@ -114,5 +115,15 @@ public class Vehicle {
 
     public String toJson() {
         return gson.toJson(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Vehicle vehicle && vehicle.id.equals(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

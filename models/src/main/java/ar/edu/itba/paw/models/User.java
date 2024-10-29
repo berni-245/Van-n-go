@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import java.util.Objects;
+
 public abstract class User {
     private final long id;
     private String username;
@@ -59,5 +61,16 @@ public abstract class User {
     @Override
     public String toString() {
         return "User{id = %d, username='%s', mail='%s'}".formatted(id, username, mail);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User user && id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
