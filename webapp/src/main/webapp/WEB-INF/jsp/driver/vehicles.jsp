@@ -38,8 +38,15 @@
             <div class="col mb-4">
                 <a href="${vUrl}?plateNumber=${v.plateNumber}" class="text-decoration-none">
                     <div class="card anchor-card h-100">
+                        <c:choose>
+                            <c:when test="${v.img != 0}">
                         <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?vehicleId=${v.id}' />"
                              alt="Vehicle Image Preview" class="card-img-top"/>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="DefaultVehiclePicture">
+                            </c:otherwise>
+                        </c:choose>
                         <div class="card-body">
                             <h5 class="card-title">
                                 <strong><c:out value="${v.plateNumber}"/></strong> -

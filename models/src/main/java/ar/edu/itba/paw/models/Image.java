@@ -1,9 +1,26 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Table(name = "image")
+@Entity
 public class Image {
-    private final long id;
-    private final byte[] data;
-    private final String fileName;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "img_id_seq")
+    @SequenceGenerator(sequenceName = "img_id_seq", name = "img_id_seq", allocationSize = 1)
+    private long id;
+
+    @Lob
+    @Column(nullable = false)
+    private byte[] data;
+
+    @Column(length = 255, nullable = false)
+    private String fileName;
+
+    public Image() {
+
+    }
 
     public Image(long id, byte[] data, String fileName) {
         this.id = id;
@@ -21,5 +38,13 @@ public class Image {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setData(byte[] imgData) {
+        this.data = imgData;
     }
 }
