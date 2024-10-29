@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
@@ -28,5 +29,11 @@ public class GlobalControllerAdvice {
             return pud.getUser();
         }
         return null;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex, Model model) {
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error/500";
     }
 }
