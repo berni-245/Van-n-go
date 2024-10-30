@@ -226,7 +226,7 @@
     const vehicles_data = [
         <c:forEach var="v" items="${vehicles}">
             {
-                "plateNumber"  : ${v.plateNumber},
+                "plateNumber"  : "${v.plateNumber}",
                 "availability_days" : [
                     <c:forEach var="av" items="${v.availabilitiy}">
                         ${av.weekDay.value % 7},
