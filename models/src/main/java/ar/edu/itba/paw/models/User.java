@@ -1,26 +1,38 @@
 package ar.edu.itba.paw.models;
 
-public abstract class User {
-    private final long id;
-    private String username;
-    private String mail;
-    private final String password;
-    private long pfp;
+import javax.persistence.*;
+import java.util.Objects;
 
-    public User(long id, String username, String mail, String password) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.pfp = 0;
+@Entity
+@Table(name = "app_user")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
+    @SequenceGenerator(sequenceName = "app_user_id_seq", name = "app_user_id_seq", allocationSize = 1)
+    private long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String mail;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private Long pfp;
+
+    User() {
+        //This is used by hibernate. Do not remove.
     }
 
-    public User(long id, String username, String mail, String password, int pfp) {
-        this.id = id;
+    public User(String username, String mail, String password) {
         this.username = username;
         this.mail = mail;
         this.password = password;
-        this.pfp = pfp;
     }
 
     public long getId() {
@@ -31,26 +43,40 @@ public abstract class User {
         return username;
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPassword() {
         return password;
     }
 
+
     public String getMail() {
         return mail;
     }
-    public void setMail(String mail){
+
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
-    public void setPfp(long pfp) {this.pfp = pfp;}
+    public void setPfp(Long pfp) {
+        this.pfp = pfp;
+    }
 
-    public long getPfp() {return pfp;}
+    public Long getPfp() {
+        return pfp;
+    }
 
-    public abstract boolean isDriver();
+    public boolean isDriver() {
+        return false;
+    }
+
+    ;
 
     public boolean getIsDriver() {
         return isDriver();
@@ -59,5 +85,16 @@ public abstract class User {
     @Override
     public String toString() {
         return "User{id = %d, username='%s', mail='%s'}".formatted(id, username, mail);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User user && id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

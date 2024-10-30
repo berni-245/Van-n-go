@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
-        long id = createUser(username, mail, password);
-        Driver driver = driverDao.create(id, extra1);
+        // Driver instance will be created with unencrypted password.
+        // Is that a problem tho?
+        Driver driver = driverDao.create(username, mail, password, extra1);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
@@ -70,30 +72,20 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
         Vehicle v = vehicleDao.create(driverId, plateNumber, volume, description, rate);
-        if(imgFilename != null && imgData != null)
-            imageDao.uploadVehicleImage(imgData,imgFilename,v.getId());
+        if (imgFilename != null && imgData != null)
+            imageDao.uploadVehicleImage(imgData, imgFilename, v.getId());
         return v;
     }
 
     @Override
-    public boolean updateVehicle(long driverId, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
-        if(imgFilename != null && imgData != null){
-            Image aux = imageDao.getImage(vehicleDao.findById(vehicleId).get().getId());
-            if (aux != null && !(aux.getFileName().equals(imgFilename) && aux.getData().length==imgData.length))
-                imageDao.uploadVehicleImage(imgData,imgFilename,vehicleId);
-        }
-        return vehicleDao.updateVehicle(driverId,plateNumber,volume,description,rate,vehicleId);
+    public List<Vehicle> getVehicles(Driver driver) {
+        return vehicleDao.getDriverVehicles(driver);
     }
 
     @Override
-    public List<Vehicle> getVehicles(long id) {
-        return vehicleDao.getDriverVehicles(id);
-    }
-
-    @Override
-    public List<Vehicle> getVehicles(long id, long zoneId, Size size) {
+    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return vehicleDao.getDriverVehicles(id, zone, size);
+        return vehicleDao.getDriverVehicles(driver, zone, size);
     }
 
 //    @Override
@@ -135,7 +127,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Driver> getAll(long zoneId, Size size, int page) {
-        return driverDao.getAll(zoneId, size, page * Pagination.SEARCH_PAGE_SIZE);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        return driverDao.getAll(zone, size, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Transactional
@@ -182,7 +175,18 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Transactional
     @Override
     public void acceptBooking(long bookingId) {
-        bookingDao.acceptBooking(bookingId);
+        // No se si lo correcto es conseguir el entity de booking desde el service
+        // o desde el dao...
+        Optional<Booking> booking = bookingDao.getBookingById(bookingId);
+        //TODO move this try catch somewhere else
+        booking.ifPresent(book -> {
+            try {
+                bookingDao.acceptBooking(book);
+            } catch (VehicleAlreadyAcceptedException e) {
+                // TODO LOGGEAR
+            }
+        });
+
     }
 
     @Transactional
@@ -192,8 +196,21 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber) {
-        return vehicleDao.findByPlateNumber(driverId, plateNumber);
+    public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {
+        return vehicleDao.findByPlateNumber(driver, plateNumber);
+    }
+
+    @Override
+    public void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
+        // TODO: handle not present correctly.
+        Vehicle vehicle = vehicleDao.findById(vehicleId).get();
+        if (imgFilename != null && imgData != null) {
+            Image aux = imageDao.getImage(vehicle.getImgId());
+            if (aux != null && !(aux.getFileName().equals(imgFilename) && aux.getData().length == imgData.length))
+                imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
+        }
+
+        vehicleDao.updateVehicle(driver, vehicle);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
@@ -12,13 +13,13 @@ public interface VehicleDao {
 
     Optional<Vehicle> findById(long id);
 
-    Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber);
+    Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
-    List<Vehicle> getDriverVehicles(long driverId);
+    List<Vehicle> getDriverVehicles(Driver driver);
 
-    List<Vehicle> getDriverVehicles(long driverId, Zone zone, Size size);
+    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size);
 
     boolean plateNumberExists(String plateNumber);
 
-    boolean updateVehicle(long driverId, String plateNumber, double volume, String description, double rate, long vehicleId);
+    void updateVehicle(Driver driver, Vehicle vehicle);
 }

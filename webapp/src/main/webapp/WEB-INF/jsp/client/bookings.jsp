@@ -3,6 +3,8 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="ar.edu.itba.paw.models.BookingState" %>
+
 <html>
 <comp:Head titleCode="siteName"/>
 
@@ -20,7 +22,9 @@
             <c:when test="${empty bookings}">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <p class="mt-5 display-4 font-weight-bold"><spring:message code="call_to_action.client_bookings"/></p>
+                        <p class="mt-5 display-4 font-weight-bold">
+                            <spring:message code="call_to_action.client_bookings"/>
+                        </p>
                     </div>
                 </div>
             </c:when>
@@ -34,20 +38,20 @@
                             <h5 class="card-title"><c:out value="${booking.date}"/></h5>
                             <p class="card-text"><c:out value="${booking.driver.username}"/></p>
                             <p class="card-text"><c:out value="${booking.driver.mail}"/></p>
-                            <c:if test="${booking.confirmed}">
+                            <c:if test="${booking.state eq BookingState.ACCEPTED}">
                                 <p><spring:message code="driver.home.booking.confirmed"/></p>
                                 <c:choose>
                                 <c:when test="${empty booking.pop or booking.pop == 0}">
                                 <spring:message code="client.bookings.transfer"/>
                                 <c:out value="${booking.driver.cbu}"/>
-                                    <form id="uploadProofOfPaymentForm_${booking.bookingId}" method="post"
+                                    <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
                                           action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
-                                        <input type="hidden" name="bookingId" value="${booking.bookingId}">
+                                        <input type="hidden" name="bookingId" value="${booking.id}">
                                         <input type="hidden" name="driverId" value="${booking.driver.id}">
-                                        <input type="file" id="proofInput_${booking.bookingId}" name="proofOfPayment"
+                                        <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
                                                class="d-none" accept="application/pdf"
-                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.bookingId}').submit();">
-                                        <label for="proofInput_${booking.bookingId}"
+                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.id}').submit();">
+                                        <label for="proofInput_${booking.id}"
                                                style="cursor: pointer; text-decoration: underline;">
                                             <spring:message code="client.bookings.clickHereToPop"/>
                                         </label>
@@ -60,12 +64,12 @@
                                 </c:otherwise>
                                 </c:choose>
                             </c:if>
-                            <c:if test="${!booking.confirmed}">
+                            <c:if test="${booking.state eq BookingState.PENDING or booking.state eq BookingState.REJECTED}">
                                 <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
                             </c:if>
                             </div>
                             <c:choose>
-                                <c:when test="${booking.driver.pfp==0}">
+                                <c:when test="${booking.driver.pfp eq null}">
                                     <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
                                 </c:when>
                                 <c:otherwise>

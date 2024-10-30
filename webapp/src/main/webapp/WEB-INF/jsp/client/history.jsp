@@ -38,12 +38,12 @@
 
                             <c:if test="${booking.rating.isEmpty()}">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#reviewModal${booking.bookingId}">
+                                        data-bs-target="#reviewModal${booking.id}">
                                     <spring:message code="client.review"/>
                                 </button>
 
 
-                                <div class="modal fade" id="reviewModal${booking.bookingId}" tabindex="-1"
+                                <div class="modal fade" id="reviewModal${booking.id}" tabindex="-1"
                                      aria-labelledby="reviewModalLabel"
                                      aria-hidden="true">
                                     <div class="modal-dialog">
@@ -59,7 +59,7 @@
                                                            action="${pageContext.request.contextPath}">
 
                                                     <form:input type="hidden" path="bookingID"
-                                                                value="${booking.bookingId}"/>
+                                                                value="${booking.id}"/>
 
                                                     <div class="mb-3">
                                                         <form:label path="rating" cssClass="form-label">

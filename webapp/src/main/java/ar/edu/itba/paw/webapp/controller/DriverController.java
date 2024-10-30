@@ -5,7 +5,6 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-//import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
@@ -142,7 +141,7 @@ public class DriverController {
             @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
     ) {
         final ModelAndView mav = new ModelAndView("driver/add_availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         mav.addObject("zones", zs.getAllZones());
         return mav;
     }
@@ -153,7 +152,7 @@ public class DriverController {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -166,7 +165,7 @@ public class DriverController {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -179,13 +178,13 @@ public class DriverController {
             @RequestParam(name = "plateNumber") String plateNumber,
             @ModelAttribute("vehicleForm") VehicleForm form
     ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
+        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
             form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
             mav.addObject("vehicleId", vehicle.get().getId());
-            mav.addObject("vehicleImg", vehicle.get().getImgId());
+            mav.addObject("vehicleImgId", vehicle.get().getImgId());
             return mav;
         } else {
             return new ModelAndView();
@@ -206,7 +205,7 @@ public class DriverController {
     public ModelAndView editProfileForm(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @ModelAttribute("profileForm") ProfileForm form) {
-        form.setcbu(loggedUser.getcbu());
+        form.setcbu(loggedUser.getCbu());
         form.setExtra1(loggedUser.getExtra1());
         return new ModelAndView("driver/edit_profile");
     }
@@ -235,7 +234,7 @@ public class DriverController {
         }
         String imgFilename = null;
         byte[] imgData = null;
-        if(vehicleImg != null) {
+        if (vehicleImg != null) {
             imgFilename = vehicleImg.getOriginalFilename();
             try {
                 imgData = vehicleImg.getBytes();
@@ -243,7 +242,8 @@ public class DriverController {
                 log.error(e.getMessage());
             }
         }
-        boolean success = ds.updateVehicle(loggedUser.getId(),
+        ds.updateVehicle(
+                loggedUser,
                 form.getId(),
                 form.getPlateNumber(),
                 form.getVolume(),
@@ -280,7 +280,7 @@ public class DriverController {
             @RequestParam(name = "plateNumber") String plateNumber
 //            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
     ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
+        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
 //            form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_availability");

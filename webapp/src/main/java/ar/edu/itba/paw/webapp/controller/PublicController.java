@@ -116,7 +116,7 @@ public class PublicController {
     @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
-        return getValidatedPfp(is.getImage((int) loggedUser.getPfp()));
+        return getValidatedPfp(is.getImage(loggedUser.getPfp()));
     }
 
     private ResponseEntity<byte[]> getValidatedPfp(Image pfp) {

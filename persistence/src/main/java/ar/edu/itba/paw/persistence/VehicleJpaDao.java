@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
@@ -20,7 +21,8 @@ public class VehicleJpaDao implements VehicleDao {
     @Transactional
     @Override
     public Vehicle create(long driverId, String plateNumber, double volume, String description, double hourlyRate) {
-        Vehicle v = new Vehicle(driverId, plateNumber, volume, description, null, hourlyRate);
+        Driver driver = em.find(Driver.class, driverId);
+        Vehicle v = new Vehicle(driver, plateNumber, volume, description, null, hourlyRate);
         em.persist(v);
         return v;
     }
@@ -31,36 +33,36 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber) {
+    public Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber) {
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driverId = :driverId and v.plateNumber = :plateNumber",
+                "from Vehicle v where v.driver = :driver and v.plateNumber = :plateNumber",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         query.setParameter("plateNumber", plateNumber);
         return query.getResultList().stream().findFirst();
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(long driverId) {
+    public List<Vehicle> getDriverVehicles(Driver driver) {
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driverId = :driverId",
+                "from Vehicle v where v.driver = :driver",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         return query.getResultList();
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(long driverId, Zone zone, Size size) {
+    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size) {
         TypedQuery<Vehicle> query = em.createQuery(
                 """
-                        from Vehicle v where v.driverId = :driverId
+                        from Vehicle v where v.driver = :driver
                         and :zone in v.zones and
                         v.volume between :minVolume and :maxVolume""",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         query.setParameter("zone", zone);
         query.setParameter("minVolume", size.getMinVolume());
         query.setParameter("maxVolume", size.getMaxVolume());
@@ -77,8 +79,9 @@ public class VehicleJpaDao implements VehicleDao {
         return !query.getResultList().isEmpty();
     }
 
+    @Transactional
     @Override
-    public boolean updateVehicle(long driverId, String plateNumber, double volume, String description, double rate, long vehicleId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateVehicle(Driver driver, Vehicle vehicle) {
+        em.merge(vehicle);
     }
 }

@@ -15,9 +15,9 @@ public interface DriverService {
 
     Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
 
-    List<Vehicle> getVehicles(long id);
+    List<Vehicle> getVehicles(Driver driver);
 
-    List<Vehicle> getVehicles(long id, long zoneId, Size size);
+    List<Vehicle> getVehicles(Driver driver, long zoneId, Size size);
 
 //    List<WeeklyAvailability> getWeeklyAvailability(long id);
 //
@@ -61,7 +61,7 @@ public interface DriverService {
 
     void rejectBooking(long bookingId);
 
-    Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
+    Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
     void editProfile(long id, String extra1, String cbu);
 
@@ -69,5 +69,5 @@ public interface DriverService {
 
     List<Booking> getAllBookings(long id);
 
-    boolean updateVehicle(long driverId, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
 }

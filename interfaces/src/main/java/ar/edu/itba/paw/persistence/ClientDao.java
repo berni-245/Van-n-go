@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.Client;
 import java.util.Optional;
 
 public interface ClientDao {
-    Client create(long id);
+    Client create(String username, String mail, String password) ;
 
     Optional<Client> findById(long id);
 

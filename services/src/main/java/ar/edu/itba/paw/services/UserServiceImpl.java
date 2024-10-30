@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     protected long createUser(String username, String mail, String password) {
-        return userDao.create(username, mail, passwordEncoder.encode(password));
+        return 1;//userDao.create(username, mail, passwordEncoder.encode(password));
     }
 
     @Override
