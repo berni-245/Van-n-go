@@ -112,8 +112,9 @@ public class BookingJpaDao implements BookingDao {
         vehiclesQuery.setParameter("driver", driver);
         List<Vehicle> vehicles = vehiclesQuery.getResultList();
 
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE order by b.date desc", Booking.class); //TODO: revisar si hace el equals de java
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE and b.state = :state order by b.date desc", Booking.class); //TODO: revisar si hace el equals de java
         query.setParameter("vehicles", vehicles);
+        query.setParameter("state", BookingState.FINISHED);
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
         return query.getResultList();
