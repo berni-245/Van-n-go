@@ -12,7 +12,7 @@
     <div class="mb-4">
         <label class="form-label">
             <spring:message code="driver.add_vehicle.image"/>
-            <input type="file" id="vehicleImg" name="vehicleImg"
+            <input type="file" id="vehicle.imgId" name="vehicleImg"
                    accept="image/png, image/jpeg" class="form-control mt-2"
                    onchange="previewVehicleImage(event)"
             />
@@ -20,11 +20,15 @@
         <div class="form-group mt-4 d-flex align-items-center">
             <div class="me-3">
                 <c:choose>
-                <c:when test="${vehicleImgId ne null}">
-                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${vehicleImgId}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
+                <c:when test="${vehicle.imgId ne null}">
+                    <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${vehicle.imgId}' />" alt="" class="img-fluid border rounded" style="max-width: 150px;" />
                 </c:when>
                 <c:otherwise>
-                    <img id="vehicleImagePreview" src="${pageContext.request.contextPath}/images/defaultVehicle.png" alt="Vehicle Image Preview" class="img-fluid border rounded" style="max-width: 150px;" />
+                    <img id="vehicleImagePreview"
+                         src="${pageContext.request.contextPath}/images/defaultVehicle.png"
+                         alt="Vehicle Image Preview" class="img-fluid border rounded"
+                         style="max-width: 150px;"
+                    />
                 </c:otherwise>
                 </c:choose>
             </div>
@@ -51,7 +55,7 @@
         </label>
         <form:errors path="rate" element="p" cssStyle="color: red"/>
     </div>
-    <form:hidden path="imgId" value="${vehicleImgId}"/>
+    <form:hidden path="imgId" value="${vehicle.imgId}"/>
     <div>
         <label class="form-label">
             <spring:message code="driver.add_vehicle.description"/>

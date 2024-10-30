@@ -110,30 +110,36 @@ public class DriverController {
     }
 
     @RequestMapping(
-            path = "/driver/vehicle/{vehicleId:\\\\d+}/add/availability",
+            path = "/driver/vehicle/{plateNumber}/edit/availability",
             method = RequestMethod.POST
     )
     public ModelAndView addAvailability(
-            @PathVariable(name = "vehicleId") long vehicleId,
+            @PathVariable(name = "plateNumber") String plateNumber,
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
+        Optional<Vehicle> vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
+        if (vehicle.isEmpty()) return new ModelAndView();
         if (errors.hasErrors()) {
             return addAvailabilityForm(loggedUser, form);
         }
-        ds.addAvailability(
-                loggedUser.getId(),
-                form.getWeekDays(),
-                form.getShiftPeriods(),
-                vehicleId
+        ds.updateAvailability(
+                vehicle.get(),
+                form.getMondayShiftPeriods(),
+                form.getTuesdayShiftPeriods(),
+                form.getWednesdayShiftPeriods(),
+                form.getThursdayShiftPeriods(),
+                form.getFridayShiftPeriods(),
+                form.getSaturdayShiftPeriods(),
+                form.getSundayShiftPeriods()
         );
         List<Toast> toasts = Collections.singletonList(new Toast(
-                ToastType.success, "toast.availability.add.success"
+                ToastType.success, "toast.availability.edit.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        return new ModelAndView("redirect:/driver/availability");
+        return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
     }
 
     @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
@@ -196,15 +202,26 @@ public class DriverController {
     public ModelAndView editVehicleGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "plateNumber") String plateNumber,
-            @ModelAttribute("vehicleForm") VehicleForm form
+            @ModelAttribute("vehicleForm") VehicleForm form,
+            @ModelAttribute("availabilityForm") AvailabilityForm avForm,
+            Model model
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
             form.setAll(vehicle.get());
+            avForm.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("plateNumber", plateNumber);
-            mav.addObject("vehicleId", vehicle.get().getId());
-            mav.addObject("vehicleImgId", vehicle.get().getImgId());
+            mav.addObject("vehicle", vehicle.get());
+            String[] days = new String[]{
+                    "monday", "tuesday", "wednesday", "thursday",
+                    "friday", "saturday", "sunday"
+            };
+            mav.addObject("days", days);
+            mav.addObject("shiftPeriods", ShiftPeriod.values());
+            if (model.containsAttribute("toasts")) {
+                mav.addObject("toasts", model.getAttribute("toasts"));
+            }
             return mav;
         } else {
             return new ModelAndView();
@@ -217,7 +234,9 @@ public class DriverController {
             @RequestParam("ogPlateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
             BindingResult errors,
-            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg
+            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
+            @ModelAttribute("availabilityForm") AvailabilityForm avForm,
+            RedirectAttributes redirectAttributes
     ) {
         // Clearly hay que buscar la manera correcta de ignorar un error particular.
         if (errors.hasErrors()) {
@@ -230,7 +249,11 @@ public class DriverController {
                 }
             }
             if (!ignoreError) {
-                return editVehicleGet(loggedUser, ogPlateNumber, form);
+                List<Toast> toasts = Collections.singletonList(new Toast(
+                        ToastType.danger, "toast.vehicle.plateNumber.error"
+                ));
+                redirectAttributes.addFlashAttribute("toasts", toasts);
+                return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + ogPlateNumber);
             }
         }
         String imgFilename = null;
@@ -254,7 +277,11 @@ public class DriverController {
                 imgFilename,
                 imgData
         );
-        return new ModelAndView("redirect:/driver/vehicles");
+        List<Toast> toasts = Collections.singletonList(new Toast(
+                ToastType.success, "toast.vehicle.edit.success"
+        ));
+        redirectAttributes.addFlashAttribute("toasts", toasts);
+        return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + form.getPlateNumber());
     }
 
     @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.POST)

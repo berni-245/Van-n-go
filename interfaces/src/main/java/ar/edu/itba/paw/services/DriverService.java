@@ -23,11 +23,15 @@ public interface DriverService {
 //
 //    List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size);
 
-    void addAvailability(
-            long driverId,
-            DayOfWeek[] weekDays,
-            ShiftPeriod[] periods,
-            long vehicleId
+    void updateAvailability(
+            Vehicle vehicle,
+            ShiftPeriod[] mondayPeriods,
+            ShiftPeriod[] tuesdayPeriods,
+            ShiftPeriod[] wednesdayPeriods,
+            ShiftPeriod[] thursdayPeriods,
+            ShiftPeriod[] fridayPeriods,
+            ShiftPeriod[] saturdayPeriods,
+            ShiftPeriod[] sundayPeriods
     );
 
     void updateWeeklyAvailability(

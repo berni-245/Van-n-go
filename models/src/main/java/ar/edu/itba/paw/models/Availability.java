@@ -26,11 +26,11 @@ public class Availability {
 
     @Column(name = "week_day", nullable = false)
     @Enumerated(EnumType.STRING)
-    private DayOfWeek weekDay;//int not null,
+    private DayOfWeek weekDay;
 
     @Column(name = "shift_period", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ShiftPeriod shiftPeriod; //not null,
+    private ShiftPeriod shiftPeriod;
 
     Availability() {
     }

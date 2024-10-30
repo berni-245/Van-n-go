@@ -18,19 +18,19 @@
 
 <div class="row weekday-toggle-group mt-3">
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(mon, 0, 1)}"
-                             tooltip="${mon}" value="1"/>
+                             tooltip="${mon}" value="MONDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(tue, 0, 1)}"
-                             tooltip="${tue}" value="2"/>
+                             tooltip="${tue}" value="TUESDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(wed, 0, 1)}"
-                             tooltip="${wed}" value="3"/>
+                             tooltip="${wed}" value="MONDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(thu, 0, 1)}"
-                             tooltip="${thu}" value="4"/>
+                             tooltip="${thu}" value="MONDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(fri, 0, 1)}"
-                             tooltip="${fri}" value="5"/>
+                             tooltip="${fri}" value="MONDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sat, 0, 1)}"
-                             tooltip="${sat}" value="6"/>
+                             tooltip="${sat}" value="MONDAY"/>
     <comp:SquareToggleButton path="${path}" radio="${radio}" content="${fn:substring(sun, 0, 1)}"
-                             tooltip="${sun}" value="0"/>
+                             tooltip="${sun}" value="MONDAY"/>
 </div>
 
 <script>

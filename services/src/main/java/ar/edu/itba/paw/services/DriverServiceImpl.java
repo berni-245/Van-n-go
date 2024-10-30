@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DriverServiceImpl extends UserServiceImpl implements DriverService {
@@ -92,18 +90,25 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public void addAvailability(
-            long driverId,
-            DayOfWeek[] weekDays,
-            ShiftPeriod[] periods,
-            long vehicleId
+    public void updateAvailability(
+            Vehicle vehicle,
+            ShiftPeriod[] mondayPeriods,
+            ShiftPeriod[] tuesdayPeriods,
+            ShiftPeriod[] wednesdayPeriods,
+            ShiftPeriod[] thursdayPeriods,
+            ShiftPeriod[] fridayPeriods,
+            ShiftPeriod[] saturdayPeriods,
+            ShiftPeriod[] sundayPeriods
     ) {
-        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
-        for (DayOfWeek weekDay : weekDays) {
-            for (ShiftPeriod period : periods) {
-                availabilityDao.create(v, weekDay, period);
-            }
-        }
+        Map<DayOfWeek, ShiftPeriod[]> periods = new EnumMap<>(DayOfWeek.class);
+        periods.put(DayOfWeek.MONDAY, mondayPeriods);
+        periods.put(DayOfWeek.TUESDAY, tuesdayPeriods);
+        periods.put(DayOfWeek.WEDNESDAY, wednesdayPeriods);
+        periods.put(DayOfWeek.THURSDAY, thursdayPeriods);
+        periods.put(DayOfWeek.FRIDAY, fridayPeriods);
+        periods.put(DayOfWeek.SATURDAY, saturdayPeriods);
+        periods.put(DayOfWeek.SUNDAY, sundayPeriods);
+        availabilityDao.updateVehicleAvailability(vehicle, periods);
     }
 
 
@@ -196,8 +201,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData) {
-        Vehicle v = new Vehicle(vehicleId,driver,plateNumber,volume,description,oldImgId,rate);
-        if(imgFilename != null && imgData != null && imgData.length > 0){
+        Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
+        if (imgFilename != null && imgData != null && imgData.length > 0) {
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
             v.setImgId(imgId);
         }

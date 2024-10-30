@@ -5,9 +5,12 @@ import ar.edu.itba.paw.models.ShiftPeriod;
 import ar.edu.itba.paw.models.Vehicle;
 
 import java.time.DayOfWeek;
+import java.util.Map;
 
 public interface AvailabilityDao {
     public Availability create(Vehicle vehicle, DayOfWeek weekDay, ShiftPeriod period);
+
+    public void updateVehicleAvailability(Vehicle vehicle, Map<DayOfWeek, ShiftPeriod[]> periods);
 
 //    public void removeAll(int weekDay, long zoneId, long vehicleId);
 

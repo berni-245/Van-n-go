@@ -1,30 +1,89 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.Availability;
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.models.Vehicle;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.DayOfWeek;
 
 public class AvailabilityForm {
-    @NotEmpty
-    private DayOfWeek[] weekDays;
+    ShiftPeriod[] mondayShiftPeriods;
+    ShiftPeriod[] tuesdayShiftPeriods;
+    ShiftPeriod[] wednesdayShiftPeriods;
+    ShiftPeriod[] thursdayShiftPeriods;
+    ShiftPeriod[] fridayShiftPeriods;
+    ShiftPeriod[] saturdayShiftPeriods;
+    ShiftPeriod[] sundayShiftPeriods;
 
-    @NotEmpty
-    ShiftPeriod[] shiftPeriods;
-
-    public DayOfWeek[] getWeekDays() {
-        return weekDays;
+    public void setAll(Vehicle vehicle) {
+        mondayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.MONDAY);
+        tuesdayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.TUESDAY);
+        wednesdayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.WEDNESDAY);
+        thursdayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.THURSDAY);
+        fridayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.FRIDAY);
+        saturdayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.SATURDAY);
+        sundayShiftPeriods = getDayShiftPeriods(vehicle, DayOfWeek.SUNDAY);
     }
 
-    public void setWeekDays(DayOfWeek[] weekDays) {
-        this.weekDays = weekDays;
+    private ShiftPeriod[] getDayShiftPeriods(Vehicle vehicle, DayOfWeek day) {
+        return vehicle.getAvailabilitiy().stream().filter(
+                wa -> wa.getWeekDay() == day
+        ).map(Availability::getShiftPeriod).toArray(ShiftPeriod[]::new);
     }
 
-    public ShiftPeriod[] getShiftPeriods() {
-        return shiftPeriods;
+    public ShiftPeriod[] getMondayShiftPeriods() {
+        return mondayShiftPeriods;
     }
 
-    public void setShiftPeriods(ShiftPeriod[] shiftPeriods) {
-        this.shiftPeriods = shiftPeriods;
+    public void setMondayShiftPeriods(ShiftPeriod[] mondayShiftPeriods) {
+        this.mondayShiftPeriods = mondayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getTuesdayShiftPeriods() {
+        return tuesdayShiftPeriods;
+    }
+
+    public void setTuesdayShiftPeriods(ShiftPeriod[] tuesdayShiftPeriods) {
+        this.tuesdayShiftPeriods = tuesdayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getWednesdayShiftPeriods() {
+        return wednesdayShiftPeriods;
+    }
+
+    public void setWednesdayShiftPeriods(ShiftPeriod[] wednesdayShiftPeriods) {
+        this.wednesdayShiftPeriods = wednesdayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getThursdayShiftPeriods() {
+        return thursdayShiftPeriods;
+    }
+
+    public void setThursdayShiftPeriods(ShiftPeriod[] thursdayShiftPeriods) {
+        this.thursdayShiftPeriods = thursdayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getFridayShiftPeriods() {
+        return fridayShiftPeriods;
+    }
+
+    public void setFridayShiftPeriods(ShiftPeriod[] fridayShiftPeriods) {
+        this.fridayShiftPeriods = fridayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getSaturdayShiftPeriods() {
+        return saturdayShiftPeriods;
+    }
+
+    public void setSaturdayShiftPeriods(ShiftPeriod[] saturdayShiftPeriods) {
+        this.saturdayShiftPeriods = saturdayShiftPeriods;
+    }
+
+    public ShiftPeriod[] getSundayShiftPeriods() {
+        return sundayShiftPeriods;
+    }
+
+    public void setSundayShiftPeriods(ShiftPeriod[] sundayShiftPeriods) {
+        this.sundayShiftPeriods = sundayShiftPeriods;
     }
 }
