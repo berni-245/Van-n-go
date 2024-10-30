@@ -91,16 +91,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return vehicleDao.getDriverVehicles(driver, zone, size);
     }
 
-//    @Override
-//    public List<WeeklyAvailability> getWeeklyAvailability(long id) {
-//        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id);
-//    }
-//
-//    @Override
-//    public List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size) {
-//        return weeklyAvailabilityDao.getDriverWeeklyAvailability(id, zoneId, size);
-//    }
-
     @Override
     public void addAvailability(
             long driverId,

@@ -46,7 +46,7 @@ public class VehicleJpaDao implements VehicleDao {
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver) {
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driver = :driver",
+                "from Vehicle v where v.driver = :driver order by v.plateNumber",
                 Vehicle.class
         );
         query.setParameter("driver", driver);

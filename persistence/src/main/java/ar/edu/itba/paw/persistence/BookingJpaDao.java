@@ -70,7 +70,7 @@ public class BookingJpaDao implements BookingDao {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }
 
-    @Override //TODO: revisar al migrar Driver a JPA
+    @Override
     public List<Booking> getDriverBookings(long driverId, int offset) {
         Driver driver = em.find(Driver.class, driverId);
         if(driver == null) {
@@ -80,7 +80,7 @@ public class BookingJpaDao implements BookingDao {
         vehiclesQuery.setParameter("driver", driver);
         List<Vehicle> vehicles = vehiclesQuery.getResultList();
 
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles", Booking.class); //TODO: revisar si hace el equals de java
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles order by b.date", Booking.class); //TODO: revisar si hace el equals de java
         query.setParameter("vehicles", vehicles);
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
@@ -113,7 +113,7 @@ public class BookingJpaDao implements BookingDao {
         vehiclesQuery.setParameter("driver", driver);
         List<Vehicle> vehicles = vehiclesQuery.getResultList();
 
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE", Booking.class); //TODO: revisar si hace el equals de java
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE order by b.date desc", Booking.class); //TODO: revisar si hace el equals de java
         query.setParameter("vehicles", vehicles);
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
@@ -164,7 +164,7 @@ public class BookingJpaDao implements BookingDao {
         if(client == null) {
             //throws...
         }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT_DATE", Booking.class);
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT_DATE order by b.date", Booking.class);
         query.setParameter("client", client); //TODO: hacer equals driver
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
@@ -189,7 +189,7 @@ public class BookingJpaDao implements BookingDao {
         if(client == null) {
             //throws...
         }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE ", Booking.class);
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE order by b.date desc", Booking.class);
         query.setParameter("client", client);
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
