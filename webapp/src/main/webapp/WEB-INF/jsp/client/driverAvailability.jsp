@@ -172,9 +172,7 @@
         ${workDay},
         </c:forEach>
     ];
-    let avList = {
-        ${vehicle.plateNumber}: [${vehicle.avList}].map(),
-    }
+
     const allDays = [0, 1, 2, 3, 4, 5, 6];
     const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));
 
@@ -210,20 +208,7 @@
                 prevButton.disabled = dateInfo.start <= currentDate;
             },
 
-            // events: reservedDates.map(function (date) {
-            //     return {
-            //         start: date,
-            //         display: 'background',
-            //         backgroundColor: 'red'
-            //     }
-            // }),
-
             dateClick: function (info) {
-                // if (reservedDates.includes(info.dateStr)) {
-                //     // alert("Este día ya está reservado. Por favor, selecciona otro día.");
-                //     // document.getElementById('confirmForm').style.display = 'none';
-                //     return;
-                // }
 
                 updateSelected(info);
 
@@ -238,9 +223,16 @@
         calendar.render();
     });
 
-    const vehicles = [
+    const vehicles_data = [
         <c:forEach var="v" items="${vehicles}">
-        ${v.toJson()},
+            {
+                "plateNumber"  : ${v.plateNumber},
+                "availability_days" : [
+                    <c:forEach var="av" items="${v.availabilitiy}">
+                        ${av.weekDay.value % 7},
+                    </c:forEach>
+                ]
+            },
         </c:forEach>
     ]
     const accordionButtons = document.querySelectorAll('.accordion-button');
@@ -253,10 +245,10 @@
         selectedDate = newDay.dayEl;
         selectedDateString = newDay.date.toISOString().slice(0, 10);
         const weekDay = newDay.date.getDay();
-        vehicles.forEach(v => {
+        vehicles_data.forEach(v => {
             const accordionButton = document.getElementById('ab-' + v.plateNumber);
             const accordionBody = document.getElementById(v.plateNumber);
-            if (v.weeklyAvailability.some(wa => wa.weekDay === weekDay)) {
+            if (v.availability_days.some(av_day => av_day === weekDay)) {
                 accordionButton.disabled = false;
             } else {
                 accordionButton.disabled = true;
