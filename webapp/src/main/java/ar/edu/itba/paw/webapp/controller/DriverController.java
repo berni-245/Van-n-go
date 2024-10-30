@@ -215,6 +215,20 @@ public class DriverController {
         }
     }
 
+    @RequestMapping(path = "/driver/history")
+    public ModelAndView driverHistory(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        List<Booking> paginatedHistory = ds.getHistory(loggedUser.getId(), page);
+        int totalRecords = paginatedHistory.size();
+        int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
+        ModelAndView mav = new ModelAndView("driver/history");
+        mav.addObject("history", paginatedHistory);
+        mav.addObject("currentPage", page);
+        mav.addObject("totalPages", totalPages);
+        return mav;
+    }
+
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.POST)
     public ModelAndView editVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,

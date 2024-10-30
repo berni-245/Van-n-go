@@ -33,6 +33,12 @@
                                     <spring:message code="components.header.vehicles"/>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/driver/history"
+                                   class="nav-link ${inHistory ? 'active' : ''}">
+                                    <spring:message code="generic.word.history"/>
+                                </a>
+                            </li>
                         </ul>
                     </c:when>
                     <c:otherwise>
