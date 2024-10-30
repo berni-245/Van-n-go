@@ -51,7 +51,7 @@
         </label>
         <form:errors path="rate" element="p" cssStyle="color: red"/>
     </div>
-    <input type="hidden" name="imgId" value="${vehicleImgId}"/>
+    <form:hidden path="imgId" value="${vehicleImgId}"/>
     <div>
         <label class="form-label">
             <spring:message code="driver.add_vehicle.description"/>

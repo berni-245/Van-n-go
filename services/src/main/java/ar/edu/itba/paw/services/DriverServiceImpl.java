@@ -202,8 +202,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData) {
-        Vehicle v = new Vehicle(driver,plateNumber,volume,description,oldImgId,rate);
-        if(imgFilename != null && imgData != null){
+        Vehicle v = new Vehicle(vehicleId,driver,plateNumber,volume,description,oldImgId,rate);
+        if(imgFilename != null && imgData != null && imgData.length > 0){
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
             v.setImgId(imgId);
         }
