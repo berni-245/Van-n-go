@@ -26,6 +26,8 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Autowired
     private ZoneDao zoneDao;
 
+    private PasswordEncoder passwordEncoder;
+
     public ClientServiceImpl(
             UserDao userDao,
             ClientDao clientDao,
@@ -40,14 +42,13 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         this.bookingDao = bookingDao;
         this.vehicleDao = vehicleDao;
         this.zoneDao = zoneDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
-               // Client instance will be created with unencrypted password.
-        // Is that a problem tho?
-        Client client = clientDao.create(username,username,password);
+        Client client = clientDao.create(username,username,passwordEncoder.encode(password));
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }
