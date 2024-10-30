@@ -173,6 +173,25 @@ public class DriverController {
         return mav;
     }
 
+    @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
+    public ModelAndView editProfile(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @Valid @ModelAttribute("profileForm") ProfileForm form,
+            BindingResult errors
+    ) {
+        ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
+        return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(path = "/profile/edit", method = RequestMethod.GET)
+    public ModelAndView editProfileForm(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @ModelAttribute("profileForm") ProfileForm form) {
+        form.setcbu(loggedUser.getCbu());
+        form.setExtra1(loggedUser.getExtra1());
+        return new ModelAndView("/driver/edit_profile");
+    }
+
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.GET)
     public ModelAndView editVehicleGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
@@ -190,25 +209,6 @@ public class DriverController {
         } else {
             return new ModelAndView();
         }
-    }
-
-    @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("profileForm") ProfileForm form,
-            BindingResult errors
-    ) {
-        ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
-        return new ModelAndView("redirect:/profile");
-    }
-
-    @RequestMapping(path = "profile/edit", method = RequestMethod.GET)
-    public ModelAndView editProfileForm(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("profileForm") ProfileForm form) {
-        form.setcbu(loggedUser.getCbu());
-        form.setExtra1(loggedUser.getExtra1());
-        return new ModelAndView("driver/edit_profile");
     }
 
     @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.POST)

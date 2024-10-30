@@ -34,16 +34,18 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Autowired
     private final AvailabilityDao availabilityDao;
 
+    private final PasswordEncoder passwordEncoder;
+
     public DriverServiceImpl(
             UserDao userDao,
-            PasswordEncoder passwordEncoder,
             MailService mailService,
             DriverDao driverDao,
             VehicleDao vehicleDao,
             BookingDao bookingDao,
             ImageDao imageDao,
             ZoneDao zoneDao,
-            AvailabilityDao availabilityDao
+            AvailabilityDao availabilityDao,
+            PasswordEncoder passwordEncoder
     ) {
         super(userDao, passwordEncoder, mailService);
         this.driverDao = driverDao;
@@ -52,6 +54,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         this.imageDao = imageDao;
         this.zoneDao = zoneDao;
         this.availabilityDao = availabilityDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -59,7 +62,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
         // Driver instance will be created with unencrypted password.
         // Is that a problem tho?
-        Driver driver = driverDao.create(username, mail, password, extra1);
+        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), extra1);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
@@ -72,7 +75,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
         Vehicle v = vehicleDao.create(driverId, plateNumber, volume, description, rate);
-        if (imgFilename != null && imgData != null)
+        if (imgFilename != null && imgData != null && imgData.length > 0)
             imageDao.uploadVehicleImage(imgData, imgFilename, v.getId());
         return v;
     }
@@ -210,6 +213,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         vehicleDao.updateVehicle(driver, v);
     }
 
+    @Transactional
     @Override
     public void editProfile(long id, String extra1, String cbu) {
         driverDao.editProfile(id, extra1, cbu);
