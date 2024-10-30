@@ -235,9 +235,9 @@ public class BookingJpaDao implements BookingDao {
                 where b.vehicle = :vehicle and b.date = :date and b.shiftPeriod = :sp and b.state = :bs
                 """, Booking.class);
         query.setParameter("vehicle", vehicle);
-        query.setParameter("date", date.toString());
-        query.setParameter("sp", sp.toString());
-        query.setParameter("bs", bs.toString());
+        query.setParameter("date", date);
+        query.setParameter("sp", sp);
+        query.setParameter("bs", bs);
         return query.getResultList();
     }
 
