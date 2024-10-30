@@ -30,12 +30,15 @@ public class VehicleForm {
 
     private long id;
 
+    private Long imgId;
+
     public void setAll(Vehicle vehicle) {
         this.id = vehicle.getId();
         this.description = vehicle.getDescription();
         this.volume = vehicle.getVolume();
         this.plateNumber = vehicle.getPlateNumber();
         this.rate = vehicle.getHourlyRate();
+        this.imgId = vehicle.getImgId();
     }
 
     public void setId(long id) {
@@ -73,4 +76,8 @@ public class VehicleForm {
     public double getRate() {return rate;}
 
     public void setRate(double rate) {this.rate = rate;}
+
+    public Long getImgId() {return imgId;}
+
+    public void setImgId(Long imgId) {this.imgId = imgId;}
 }

@@ -1,4 +1,4 @@
-/*TODO: Descomentar cuando se haya hecho los entities de Booking y User
+/*TODO: Descomentar, refactorizar y testear cuando se haya hecho los entities de Booking y User
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Image;
@@ -35,7 +35,7 @@ public class ImageJpaDao implements ImageDao {
         em.createQuery("""
                 UPDATE Booking b
                 SET b.pop = :imageId
-                WHERE b.bookingId = :bookingId 
+                WHERE b.id = :bookingId
                 """)
                 .setParameter("imageId", imageId)
                 .setParameter("bookingId", bookingId)
