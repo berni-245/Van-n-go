@@ -6,7 +6,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public  class User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
@@ -23,13 +23,13 @@ public  class User {
     private String password;
 
     @Column
-    private long pfp;
+    private Long pfp;
 
-    User(){
+    User() {
         //This is used by hibernate. Do not remove.
     }
 
-    public User( String username, String mail, String password) {
+    public User(String username, String mail, String password) {
         this.username = username;
         this.mail = mail;
         this.password = password;
@@ -43,10 +43,13 @@ public  class User {
         return username;
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
-    public void setPassword(String password) { this.password = password; }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getPassword() {
         return password;
@@ -56,17 +59,24 @@ public  class User {
     public String getMail() {
         return mail;
     }
-    public void setMail(String mail){
+
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
-    public void setPfp(long pfp) {this.pfp = pfp;}
+    public void setPfp(Long pfp) {
+        this.pfp = pfp;
+    }
 
-    public long getPfp() {return pfp;}
+    public Long getPfp() {
+        return pfp;
+    }
 
-    public  boolean isDriver(){
+    public boolean isDriver() {
         return false;
-    };
+    }
+
+    ;
 
     public boolean getIsDriver() {
         return isDriver();

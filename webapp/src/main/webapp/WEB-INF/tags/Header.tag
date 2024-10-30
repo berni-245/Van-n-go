@@ -73,7 +73,7 @@
                             <a class="text-body-emphasis d-flex align-items-center text-decoration-none dropdown-toggle"
                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                 <c:choose>
-                                <c:when test="${loggedUser.pfp != 0}">
+                                <c:when test="${loggedUser.pfp ne null}">
                                     <c:url value='/profile/picture' var="pfpUrl"/>
                                 </c:when>
                                 <c:otherwise>

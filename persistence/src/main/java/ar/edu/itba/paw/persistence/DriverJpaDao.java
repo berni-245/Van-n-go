@@ -54,7 +54,7 @@ public class DriverJpaDao implements DriverDao {
 
     @Override
     public Optional<Driver> findByUsername(String username) {
-        final TypedQuery<Driver> query = em.createQuery("from Driver as u where u.username = :username", Driver.class);
+        final TypedQuery<Driver> query = em.createQuery("from Driver as d where d.username = :username", Driver.class);
         query.setParameter("username", username);
         final List<Driver> list = query.getResultList();
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());

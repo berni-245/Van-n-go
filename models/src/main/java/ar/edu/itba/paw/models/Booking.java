@@ -42,8 +42,6 @@ public class Booking {
     @Column(name = "job_description")
     private String jobDescription;
 
-    private boolean confirmed;
-
     Booking() {
     }
 
@@ -60,7 +58,6 @@ public class Booking {
         this.state = state;
         this.rating = rating;
         this.review = review;
-        this.confirmed = state.equals(BookingState.ACCEPTED);
         this.pop = pop;
         this.jobDescription = jobDescription;
     }
@@ -111,9 +108,5 @@ public class Booking {
 
     public Integer getPop() {
         return pop;
-    }
-
-    public boolean getConfirmed() {
-        return confirmed;
     }
 }

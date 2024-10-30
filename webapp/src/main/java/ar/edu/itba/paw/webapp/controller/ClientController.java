@@ -168,7 +168,7 @@ public class ClientController {
 //                    weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDay())
 //            );
             mav.addObject("workingDays", workingDays);
-            var vehicles = ds.getVehicles(id, zoneId, size);
+            var vehicles = ds.getVehicles(driver.get(), zoneId, size);
             mav.addObject("vehicles", vehicles);
             var bookings = ds.getAllBookings(driver.get().getId());
             mav.addObject("bookings", bookings);

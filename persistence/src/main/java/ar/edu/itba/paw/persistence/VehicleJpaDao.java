@@ -33,36 +33,36 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public Optional<Vehicle> findByPlateNumber(long driverId, String plateNumber) {
+    public Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber) {
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driverId = :driverId and v.plateNumber = :plateNumber",
+                "from Vehicle v where v.driver = :driver and v.plateNumber = :plateNumber",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         query.setParameter("plateNumber", plateNumber);
         return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(long driverId) {
+    public List<Vehicle> getDriverVehicles(Driver driver) {
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driverId = :driverId",
+                "from Vehicle v where v.driver = :driver",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         return query.getResultList();
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(long driverId, Zone zone, Size size) {
+    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size) {
         TypedQuery<Vehicle> query = em.createQuery(
                 """
-                        from Vehicle v where v.driverId = :driverId
+                        from Vehicle v where v.driver = :driver
                         and :zone in v.zones and
                         v.volume between :minVolume and :maxVolume""",
                 Vehicle.class
         );
-        query.setParameter("driverId", driverId);
+        query.setParameter("driver", driver);
         query.setParameter("zone", zone);
         query.setParameter("minVolume", size.getMinVolume());
         query.setParameter("maxVolume", size.getMaxVolume());
@@ -79,8 +79,9 @@ public class VehicleJpaDao implements VehicleDao {
         return query.getSingleResult() != null;
     }
 
+    @Transactional
     @Override
-    public boolean updateVehicle(long driverId, Vehicle vehicle) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateVehicle(Driver driver, Vehicle vehicle) {
+        em.merge(vehicle);
     }
 }

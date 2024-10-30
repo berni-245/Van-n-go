@@ -36,7 +36,7 @@ create table if not exists booking
     id                  serial primary key,
     date                date,
     shift_period        ShiftPeriod not null,
-    client_id           int         not null references client (user_id) on delete cascade,
+    client_id           int         not null references client (id) on delete cascade,
     vehicle_id          int         not null references vehicle (id) on delete cascade,
     origin_zone_id      int         not null references zone (id) on delete cascade,
     destination_zone_id int references zone (id) on delete cascade,

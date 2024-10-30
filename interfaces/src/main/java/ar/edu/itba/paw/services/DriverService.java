@@ -15,9 +15,9 @@ public interface DriverService {
 
     Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate);
 
-    List<Vehicle> getVehicles(long id);
+    List<Vehicle> getVehicles(Driver driver);
 
-    List<Vehicle> getVehicles(long id, long zoneId, Size size);
+    List<Vehicle> getVehicles(Driver driver, long zoneId, Size size);
 
 //    List<WeeklyAvailability> getWeeklyAvailability(long id);
 //
@@ -61,11 +61,11 @@ public interface DriverService {
 
     void rejectBooking(long bookingId);
 
-    Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber);
+    Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
     void editProfile(long id, String extra1, String cbu);
 
-    boolean updateVehicle(long driverId, Vehicle vehicle);
+    void updateVehicle(Driver driver, Vehicle vehicle);
 
 //    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
 

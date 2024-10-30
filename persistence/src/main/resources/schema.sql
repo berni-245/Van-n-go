@@ -31,7 +31,7 @@ create table if not exists driver
 create table if not exists vehicle
 (
     id           serial primary key,
-    driver_id    int              not null references driver (user_id) on delete cascade,
+    driver_id    int              not null references driver (id) on delete cascade,
     plate_number text unique,
     volume_m3    double precision,
     description  text,
@@ -99,7 +99,7 @@ create table if not exists booking
     date             date,
     hour_start_id    int   not null references hour_block (id) on delete cascade,
     hour_end_id      int   not null references hour_block (id) on delete cascade,
-    client_id        int   not null references client (user_id) on delete cascade,
+    client_id        int   not null references client (id) on delete cascade,
     vehicle_id       int   not null references vehicle (id) on delete cascade,
     zone_id          int   not null references zone (id) on delete cascade,
     state            state not null,

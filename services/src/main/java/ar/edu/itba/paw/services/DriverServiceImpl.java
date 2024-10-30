@@ -71,14 +71,14 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Vehicle> getVehicles(long id) {
-        return vehicleDao.getDriverVehicles(id);
+    public List<Vehicle> getVehicles(Driver driver) {
+        return vehicleDao.getDriverVehicles(driver);
     }
 
     @Override
-    public List<Vehicle> getVehicles(long id, long zoneId, Size size) {
+    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return vehicleDao.getDriverVehicles(id, zone, size);
+        return vehicleDao.getDriverVehicles(driver, zone, size);
     }
 
 //    @Override
@@ -189,13 +189,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public Optional<Vehicle> findVehicleByPlateNumber(long driverId, String plateNumber) {
-        return vehicleDao.findByPlateNumber(driverId, plateNumber);
+    public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {
+        return vehicleDao.findByPlateNumber(driver, plateNumber);
     }
 
     @Override
-    public boolean updateVehicle(long driverId, Vehicle vehicle) {
-        return vehicleDao.updateVehicle(driverId, vehicle);
+    public void updateVehicle(Driver driver, Vehicle vehicle) {
+        vehicleDao.updateVehicle(driver, vehicle);
     }
 
     @Override

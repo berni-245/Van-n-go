@@ -5,7 +5,6 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-//import ar.edu.itba.paw.webapp.form.IndividualVehicleAvailabilityForm;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
@@ -137,7 +136,7 @@ public class DriverController {
             @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
     ) {
         final ModelAndView mav = new ModelAndView("driver/add_availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         mav.addObject("zones", zs.getAllZones());
         return mav;
     }
@@ -148,7 +147,7 @@ public class DriverController {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -161,7 +160,7 @@ public class DriverController {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser.getId()));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser));
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -174,7 +173,7 @@ public class DriverController {
             @RequestParam(name = "plateNumber") String plateNumber,
             @ModelAttribute("vehicleForm") VehicleForm form
     ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
+        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
             form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
@@ -199,7 +198,7 @@ public class DriverController {
     @RequestMapping(path = "profile/edit", method = RequestMethod.GET)
     public ModelAndView editProfileForm(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("profileForm") ProfileForm form){
+            @ModelAttribute("profileForm") ProfileForm form) {
         form.setcbu(loggedUser.getCbu());
         form.setExtra1(loggedUser.getExtra1());
         return new ModelAndView("driver/edit_profile");
@@ -227,7 +226,7 @@ public class DriverController {
                 return editVehicleGet(loggedUser, ogPlateNumber, form);
             }
         }
-        boolean success = ds.updateVehicle(loggedUser.getId(), new Vehicle(
+        ds.updateVehicle(loggedUser, new Vehicle(
                 form.getId(),
                 loggedUser,
                 form.getPlateNumber(),
@@ -274,7 +273,7 @@ public class DriverController {
             @RequestParam(name = "plateNumber") String plateNumber
 //            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
     ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser.getId(), plateNumber);
+        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
 //            form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_availability");
