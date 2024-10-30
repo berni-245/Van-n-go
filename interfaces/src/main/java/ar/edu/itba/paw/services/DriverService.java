@@ -77,4 +77,6 @@ public interface DriverService {
     Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size);
 
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData);
+
+    void finishBooking(long bookingId);
 }

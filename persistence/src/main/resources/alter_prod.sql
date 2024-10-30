@@ -103,3 +103,6 @@ order by bo2.id;
 
 -- alter table client rename column user_id to id;
 -- alter table driver rename column user_id to id;
+
+ALTER TABLE booking ALTER COLUMN state DROP DEFAULT;
+ALTER TABLE booking ALTER COLUMN state TYPE text USING state::text;

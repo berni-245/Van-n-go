@@ -332,6 +332,14 @@ public class DriverController {
         return new ModelAndView("redirect:/");
     }
 
+    @RequestMapping(path = "/driver/finishBooking", method = RequestMethod.POST)
+    public ModelAndView finishBooking(
+            @RequestParam("bookingId") long bookingId
+    ) {
+        ds.finishBooking(bookingId);
+        return new ModelAndView("redirect:/");
+    }
+
     @RequestMapping(path = "/driver/rejectBooking", method = RequestMethod.POST)
     public ModelAndView denyBooking(
             @RequestParam("bookingId") long bookingId

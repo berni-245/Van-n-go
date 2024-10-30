@@ -80,6 +80,16 @@
                                                     <spring:message code="driver.home.paid"/>
                                                 </a>
                                             </c:if>
+                                            <c:if test="${booking.date.isBefore(currentDate)}">
+                                                <div class="d-flex justify-content-around mt-2">
+                                                    <form action="${pageContext.request.contextPath}/driver/finishBooking"
+                                                          method="POST" class="mb-1">
+                                                        <input type="hidden" name="bookingId" value="${booking.id}">
+                                                        <button type="submit" class="btn btn-success"><spring:message
+                                                                code="driver.home.booking.finish"/></button>
+                                                    </form>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </c:if>
                                     <c:if test="${booking.state eq BookingState.REJECTED}">

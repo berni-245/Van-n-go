@@ -235,6 +235,12 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         vehicleDao.updateVehicle(driver, v);
     }
 
+    @Override
+    public void finishBooking(long bookingId) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        bookingDao.finishBooking(booking);
+    }
+
     @Transactional
     @Override
     public void editProfile(long id, String extra1, String cbu) {

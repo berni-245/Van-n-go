@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,7 @@ public class PublicController {
             int totalPages = (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
             final ModelAndView mav = new ModelAndView("driver/home");
             mav.addObject("currentPage", page);
+            mav.addObject("currentDate", LocalDate.now());
             mav.addObject("totalPages", totalPages);
             mav.addObject("bookings",bookings);
             return mav;

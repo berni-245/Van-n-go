@@ -216,6 +216,13 @@ public class BookingJpaDao implements BookingDao {
         return List.of();
     }
 
+    @Transactional
+    @Override
+    public void finishBooking(Booking booking) {
+        booking.setState(BookingState.FINISHED);
+        em.merge(booking);
+    }
+
     private boolean isVehicleAlreadyAccepted(Vehicle vehicle, LocalDate date, ShiftPeriod shiftPeriod) {
         return ! getBookingsByVehicle(vehicle, date, shiftPeriod, BookingState.ACCEPTED).isEmpty();
     }

@@ -47,4 +47,6 @@ public interface BookingDao {
     void setRatingAndReview(long bookingId, int rating, String review);
 
     List<Booking> getAllDriverBookings(long id);
+
+    void finishBooking(Booking booking);
 }
