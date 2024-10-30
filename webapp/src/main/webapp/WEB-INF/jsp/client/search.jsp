@@ -13,26 +13,37 @@
 
 <body>
 <comp:Header inAvailability="true"/>
-<div class="container mt-4">
-  <c:url var="postUrl" value="/client/availability"/>
-  <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">
-    <div class="row g-3 mb-4">
-      <div class="col-sm-7">
+<div class="container d-flex justify-content-center mt-5">
+  <div class="col-md-6 col-lg-5 text-center">
+    <!-- Page Title -->
+    <h1 class="display-5 mb-5">
+      <spring:message code="siteName"/>
+    </h1>
+
+    <c:url var="postUrl" value="/client/availability"/>
+    <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">
+      <!-- Zone Selection -->
+      <div class="mb-4">
         <spring:message code="driver.add_availability.selectZones" var="selectZones"/>
         <spring:bind path="zoneId">
+          <label for="select-zones" class="form-label h4">${selectZones}</label>
           <form:select path="zoneId" id="select-zones" multiple="false"
-                       placeholder="${selectZones}..." autocomplete="off"
-                       cssClass="form-select ${status.error ? 'is-invalid' : ''}"
-          >
+                       cssClass="form-select form-select-lg ${status.error ? 'is-invalid' : ''}"
+                       autocomplete="off">
             <form:options items="${zones}" itemValue="id"/>
           </form:select>
+          <form:errors path="zoneId" element="p" cssClass="invalid-feedback"/>
         </spring:bind>
       </div>
-      <div class="col-sm">
+
+      <!-- Size Selection -->
+      <div class="mb-4">
+        <label for="select-size" class="form-label h4">
+          <spring:message code="generic.word.size"/>
+        </label>
         <form:select path="size" id="select-size" multiple="false"
-                     placeholder="${selectZones}..." autocomplete="off"
-                     cssClass="form-control"
-        >
+                     cssClass="form-select form-select-lg"
+                     autocomplete="off">
           <spring:message var="small" code="generic.word.small"/>
           <form:option value="SMALL" label="${small}"/>
           <spring:message var="medium" code="generic.word.medium"/>
@@ -40,18 +51,13 @@
           <spring:message var="large" code="generic.word.large"/>
           <form:option value="LARGE" label="${large}"/>
         </form:select>
-        <form:errors path="zoneId" element="p" cssClass="invalid-feedback"/>
       </div>
-      <div class="col-sm d-flex align-items-center">
-        <button type="submit" class="btn btn-primary">
-          <spring:message code="components.availability.Search"/>
-        </button>
-      </div>
-    </div>
-  </form:form>
 
-  <div class="d-flex justify-content-center">
-
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary btn-lg w-100">
+        <spring:message code="components.availability.Search"/>
+      </button>
+    </form:form>
   </div>
 </div>
 
