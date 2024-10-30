@@ -46,19 +46,33 @@ public class Booking {
     }
 
     public Booking(Long id, Client client,  Vehicle vehicle,
-                   Zone originZone, LocalDate date, ShiftPeriod shiftPeriod,
+                   Zone originZone, Zone destinationZone, LocalDate date, ShiftPeriod shiftPeriod,
                    BookingState state, Integer rating,
                    String review, Integer pop, String jobDescription) {
         this.id = id;
         this.client = client;
         this.vehicle = vehicle;
         this.originZone = originZone;
+        this.destinationZone = destinationZone;
         this.date = date;
         this.shiftPeriod = shiftPeriod;
         this.state = state;
         this.rating = rating;
         this.review = review;
         this.pop = pop;
+        this.jobDescription = jobDescription;
+    }
+
+    public Booking(Client client,  Vehicle vehicle,
+                   Zone originZone, Zone destinationZone, LocalDate date, ShiftPeriod shiftPeriod,
+                   BookingState state, String jobDescription) {
+        this.client = client;
+        this.vehicle = vehicle;
+        this.originZone = originZone;
+        this.destinationZone = destinationZone;
+        this.date = date;
+        this.shiftPeriod = shiftPeriod;
+        this.state = state;
         this.jobDescription = jobDescription;
     }
 
@@ -104,6 +118,14 @@ public class Booking {
 
     public Optional<String> getReview() {
         return Optional.ofNullable(review);
+    }
+
+    public Zone getDestinationZone() {
+        return destinationZone;
+    }
+
+    public String getJobDescription() {
+        return jobDescription;
     }
 
     public Integer getPop() {

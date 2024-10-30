@@ -17,35 +17,34 @@ public class BookingJpaDao implements BookingDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional
     @Override
     public Booking appointBooking(
             Vehicle vehicle,
             Client client,
             Zone originZone,
+            Zone destinationZone,
             LocalDate date,
             ShiftPeriod period,
             String jobDescription
     ) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(date.isBefore(LocalDate.now()) ||
+                !isVehicleAvailableInThatTimeAndZone(vehicle, originZone, date, period) ||
+                isVehicleAlreadyAccepted(vehicle, date, period) ||
+                hasClientAlreadyAppointedForThatDateTimeAndZone(vehicle, client, originZone, date, period)
+        )
+            throw new IllegalArgumentException("El booking no se pudo reservar");
+        // TODO add custom exceptions
 
-        // Check if booking is valid.
-
-        // Booking booking = new Booking(
-        //         null, client, driver, vehicle,
-        //         originZone, date, period,
-        //         BookingState.PENDING, null,
-        //         null, null, jobDescription
-        // );
-        // em.persist(booking);
-        // return booking;
+        Booking toReturn = new Booking(client, vehicle, originZone, destinationZone, date, period, BookingState.PENDING, jobDescription);
+        em.persist(toReturn);
+        return toReturn;
     }
 
-    // Creo que había que hacerlo transactional para que se persistan los cambios
-    // hechos a la entity
     @Transactional
     @Override
     public void acceptBooking(Booking booking) throws VehicleAlreadyAcceptedException {
-        if(isVehicleAlreadyAccepted(booking)) {
+        if(isVehicleAlreadyAccepted(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod())) {
             throw new VehicleAlreadyAcceptedException();
         }
         booking.setState(BookingState.ACCEPTED);
@@ -217,8 +216,8 @@ public class BookingJpaDao implements BookingDao {
         return List.of();
     }
 
-    private boolean isVehicleAlreadyAccepted(Booking booking) {
-        return ! getBookingsByVehicle(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod(), booking.getState()).isEmpty();
+    private boolean isVehicleAlreadyAccepted(Vehicle vehicle, LocalDate date, ShiftPeriod shiftPeriod) {
+        return ! getBookingsByVehicle(vehicle, date, shiftPeriod, BookingState.ACCEPTED).isEmpty();
     }
 
     private List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date, ShiftPeriod sp, BookingState bs) {
@@ -232,5 +231,38 @@ public class BookingJpaDao implements BookingDao {
         query.setParameter("sp", sp);
         query.setParameter("bs", bs);
         return query.getResultList();
+    }
+
+    private boolean isVehicleAvailableInThatTimeAndZone(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
+        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where :zone in v.zones and v.id = :vehicleId", Vehicle.class);
+        vehiclesQuery.setParameter("zone", zone);
+        vehiclesQuery.setParameter("vehicleId", vehicle.getId());
+        List<Vehicle> vehicles = vehiclesQuery.getResultList();
+        if(vehicles.isEmpty()) {
+            return false;
+        }
+
+        TypedQuery<Availability> avQuery = em.createQuery(
+                """
+                from Availability as av
+                where av.vehicle = :vehicle and av.weekDay = :weekDay and av.shiftPeriod = :sp
+                """, Availability.class);
+        avQuery.setParameter("vehicle", vehicle);
+        avQuery.setParameter("weekDay", date.getDayOfWeek());
+        avQuery.setParameter("sp", sp);
+        return ! avQuery.getResultList().isEmpty();
+    }
+
+    private boolean hasClientAlreadyAppointedForThatDateTimeAndZone(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
+        TypedQuery<Booking> bookingQuery = em.createQuery("""
+            From Booking b
+            where b.vehicle = :vehicle and b.client = :client and b.originZone = :zone and b.date = :date and b.shiftPeriod = :sp
+            """, Booking.class);
+        bookingQuery.setParameter("vehicle", vehicle);
+        bookingQuery.setParameter("client", client);
+        bookingQuery.setParameter("zone", zone);
+        bookingQuery.setParameter("date", date);
+        bookingQuery.setParameter("sp", sp);
+        return ! bookingQuery.getResultList().isEmpty();
     }
 }

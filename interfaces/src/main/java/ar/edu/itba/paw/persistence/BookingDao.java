@@ -11,7 +11,8 @@ public interface BookingDao {
     Booking appointBooking(
             Vehicle vehicle,
             Client client,
-            Zone zone,
+            Zone originZone,
+            Zone destinationZone,
             LocalDate date,
             ShiftPeriod period,
             String jobDescription
