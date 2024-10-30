@@ -69,5 +69,5 @@ public interface DriverService {
 
     List<Booking> getAllBookings(long id);
 
-    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 }

@@ -23,7 +23,7 @@ public class Vehicle {
     @Column(nullable = false)
     private String description;
     @Column(name = "img_id", nullable = false)
-    private Integer imgId;
+    private Long imgId;
     @Column(name = "hourly_rate", nullable = false)
     private double hourlyRate;
 
@@ -49,7 +49,7 @@ public class Vehicle {
             String plateNumber,
             double volume,
             String description,
-            Integer imgId,
+            Long imgId,
             double hourlyRate
     ) {
         this.id = id;
@@ -66,7 +66,7 @@ public class Vehicle {
             String plateNumber,
             double volume,
             String description,
-            Integer imgId,
+            Long imgId,
             double hourlyRate
     ) {
         this(null, driver, plateNumber, volume, description, imgId, hourlyRate);
@@ -97,11 +97,11 @@ public class Vehicle {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);
     }
 
-    public Integer getImgId() {
+    public Long getImgId() {
         return imgId;
     }
 
-    public void setImgId(Integer imgId) {
+    public void setImgId(Long imgId) {
         this.imgId = imgId;
     }
 
