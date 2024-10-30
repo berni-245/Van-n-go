@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.ShiftPeriod;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -22,6 +23,9 @@ public class BookingForm {
 
     @NotNull
     private String timeEnd;
+
+    @NotNull
+    private String shiftPeriod;
 
     @Length(min = 20, max = 500)
     private String jobDescription;
@@ -74,5 +78,13 @@ public class BookingForm {
 
     public void setJobDescription(@Length(min = 20, max = 500) String jobDescription) {
         this.jobDescription = jobDescription;
+    }
+
+    public @NotNull String getShiftPeriod() {
+        return shiftPeriod;
+    }
+
+    public void setShiftPeriod(@NotNull String shiftPeriod) {
+        this.shiftPeriod = shiftPeriod;
     }
 }

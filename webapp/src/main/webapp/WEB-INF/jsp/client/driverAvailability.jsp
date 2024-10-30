@@ -57,6 +57,14 @@
         .accordion-button:disabled {
             opacity: 0.5;
         }
+
+        .col-button {
+            width: 100px; /* Adjust this value as needed */
+            padding: 10px;
+            text-align: center;
+        }
+
+
     </style>
 </comp:Head>
 <body>
@@ -110,7 +118,7 @@
                                 </figcaption>
                             </figure>
                             <c:url var="postUrl"
-                                   value="/availability/${driverId}?size=${size}"/>
+                                   value="/client/availability/${driverId}?size=${size}"/>
                             <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
                                 <input type="hidden" name="vehicleId" value="${v.id}">
                                 <input type="hidden" name="zoneId" value="${zone.id}">
@@ -124,17 +132,39 @@
                                         <spring:message code="components.header.availability"/>
                                     </label>
                                     <div id="hb-availability" class="row weekday-toggle-group mt-3 fs-6">
-                                        <c:forEach var="i" begin="0" end="23">
+                                        <div class="col-button">
                                             <comp:SquareToggleButton
-                                                    path="timeStart"
+                                                    path="shiftPeriod"
                                                     radio="true"
-                                                    id="hb-${i}-${v.plateNumber}"
+                                                    id="hb-MORNING-${v.plateNumber}"
                                                     labelClass="fs-6"
                                                     inputClass="${v.plateNumber}"
-                                                    content="${i} - ${i < 23 ? i + 1 : 0}"
-                                                    value="${i < 10 ? 0 : \"\"}${i}:00:00"
+                                                    content="MORNING"
+                                                    value="MORNING"
                                             />
-                                        </c:forEach>
+                                        </div>
+                                        <div class="col-button">
+                                            <comp:SquareToggleButton
+                                                    path="shiftPeriod"
+                                                    radio="true"
+                                                    id="hb-AFTERNOON-${v.plateNumber}"
+                                                    labelClass="fs-6"
+                                                    inputClass="${v.plateNumber}"
+                                                    content="AFTERNOON"
+                                                    value="AFTERNOON"
+                                            />
+                                        </div>
+                                        <div class="col-button">
+                                            <comp:SquareToggleButton
+                                                    path="shiftPeriod"
+                                                    radio="true"
+                                                    id="hb-EVENING-${v.plateNumber}"
+                                                    labelClass="fs-6"
+                                                    inputClass="${v.plateNumber}"
+                                                    content="EVENING"
+                                                    value="EVENING"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -264,7 +294,7 @@
         activeVehicleBtns.forEach(btn => {
             const plateNumber = btn.getAttribute('plateNumber');
             const vehicleId = btn.getAttribute('vehicleId');
-            const path = '/availability/active';
+            const path = '/client/availability/active';
             const url = new URL(path, window.location.origin);
             url.searchParams.append('vehicleId', vehicleId);
             url.searchParams.append('zoneId', ${zone.id});

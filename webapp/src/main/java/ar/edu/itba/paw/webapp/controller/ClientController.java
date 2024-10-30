@@ -197,7 +197,7 @@ public class ClientController {
     }
 
     @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.POST)
-    public ModelAndView appointbooking(
+    public ModelAndView appointBooking(
             @PathVariable(name = "id") long id,
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "size") Size size,
