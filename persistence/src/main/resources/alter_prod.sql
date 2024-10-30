@@ -46,7 +46,7 @@ create table if not exists booking
     vehicle_id          int   not null references vehicle (id) on delete cascade,
     origin_zone_id      int   not null references zone (id) on delete cascade,
     destination_zone_id int references zone (id) on delete cascade,
-    state               state not null,
+    state               text not null,
     proof_of_payment    int   references image (id) on delete set null,
     rating              int,
     review              text,

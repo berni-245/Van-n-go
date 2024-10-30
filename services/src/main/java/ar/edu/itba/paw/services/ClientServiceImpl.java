@@ -48,7 +48,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
-        Client client = clientDao.create(username,username,passwordEncoder.encode(password));
+        Client client = clientDao.create(username, username, passwordEncoder.encode(password));
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }
@@ -74,13 +74,17 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         // TODO should not be null destinationZoneId
 //        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
-        Booking booking = bookingDao.appointBooking(
-                v, client, zone, null, date, shiftPeriod, jobDescription
-        );
-        mailService.sendRequestedDriverService(
-                booking.getDriver().getId(), client, date, jobDescription, locale
-        );
-        return booking;
+        try {
+            Booking booking = bookingDao.appointBooking(
+                    v, client, zone, null, date, shiftPeriod, jobDescription
+            );
+            mailService.sendRequestedDriverService(
+                    booking.getDriver().getId(), client, date, jobDescription, locale
+            );
+            return booking;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
