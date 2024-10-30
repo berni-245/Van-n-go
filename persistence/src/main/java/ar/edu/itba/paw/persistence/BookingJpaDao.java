@@ -164,7 +164,7 @@ public class BookingJpaDao implements BookingDao {
         if(client == null) {
             //throws...
         }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT DATE", Booking.class);
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT_DATE", Booking.class);
         query.setParameter("client", client); //TODO: hacer equals driver
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
