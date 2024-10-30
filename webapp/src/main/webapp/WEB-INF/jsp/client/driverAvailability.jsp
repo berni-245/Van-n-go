@@ -197,11 +197,25 @@
     <%--    </c:forEach>--%>
     <%--];--%>
 
+    function mapToFullCalendar(dayOfWeek) {
+        const dayMap = {
+            1: 1,  // Lunes a Lunes
+            2: 2,  // Martes a Martes
+            3: 3,  // Miércoles a Miércoles
+            4: 4,  // Jueves a Jueves
+            5: 5,  // Viernes a Viernes
+            6: 6,  // Sábado a Sábado
+            7: 0   // Domingo a Domingo (FullCalendar usa 0 para domingo)
+        };
+        return dayMap[dayOfWeek];
+    }
+
     let workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
-        ${workDay},
+         mapToFullCalendar(${workDay.value}),
         </c:forEach>
     ];
+
 
     const allDays = [0, 1, 2, 3, 4, 5, 6];
     const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));

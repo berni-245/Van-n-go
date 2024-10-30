@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.form;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class BookingForm {
     @NotNull
@@ -23,8 +24,8 @@ public class BookingForm {
     @Length(min = 20, max = 500)
     private String jobDescription;
 
-    public String getDate() {
-        return date;
+    public LocalDate getDate() {
+        return LocalDate.parse(date);
     }
 
     public void setDate(String date) {

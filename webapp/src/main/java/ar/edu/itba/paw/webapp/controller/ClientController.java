@@ -176,11 +176,7 @@ public class ClientController {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", id);
             var vehicles = ds.getVehicles(driver.get(), zoneId, size);
-            Set<Integer> workingDays = new HashSet<>();
-            // TODO en lugar de aceptar todos los días, aceptar los que tengan mismo zoneId y size (se necesita un método)
-            for(DayOfWeek dow : DayOfWeek.values())
-                workingDays.add(dow.getValue() % 7);
-
+            Set<DayOfWeek> workingDays = ds.getDriverWorkingDaysOnZoneWithSize(driver.get(),zoneId,size);
             mav.addObject("vehicles", vehicles);
             mav.addObject("workingDays", workingDays);
             var bookings = ds.getAllBookings(driver.get().getId());

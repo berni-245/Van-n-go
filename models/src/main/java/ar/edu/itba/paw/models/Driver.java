@@ -57,7 +57,17 @@ public class Driver extends User {
 
     public void setCbu(String cbu) { this.cbu = cbu; }
 
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
 
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
 
     @Override
     public String toString() {

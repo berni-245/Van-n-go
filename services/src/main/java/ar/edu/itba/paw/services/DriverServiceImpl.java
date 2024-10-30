@@ -140,6 +140,32 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getAllDriverBookings(id);
     }
 
+    @Transactional
+    @Override
+    public Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size) {
+        List<Vehicle> vehicles = vehicleDao.getDriverVehicles(driver);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+      // List<DayOfWeek> list = driverDao.getDriverWeekDaysOnZoneAndSize(driver,zone,size);
+      // return new HashSet<>(list);
+       Set<DayOfWeek> days = new HashSet<>();
+       vehicles.forEach(vehicle -> {
+           if(vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
+               vehicle.getAvailabilitiy().forEach(availability -> {
+                   days.add(availability.getWeekDay());
+               });
+           }
+       });
+       /* driver.getVehicles().forEach(vehicle -> {
+            if(vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
+                vehicle.getAvailabilitiy().forEach(availability -> {
+                    days.add(availability.getWeekDay());
+                });
+            }
+        });*/
+        return days;
+
+    }
+
     @Override
     public List<Booking> getHistory(long driverId, int page) {
         return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE * page);

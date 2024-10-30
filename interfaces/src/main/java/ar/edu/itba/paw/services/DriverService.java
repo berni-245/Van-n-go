@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 public interface DriverService {
     Driver create(String username, String mail, String password, String extra1, Locale locale);
@@ -72,6 +73,8 @@ public interface DriverService {
 //    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
 
     List<Booking> getAllBookings(long id);
+
+    Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size);
 
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 }
