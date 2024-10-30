@@ -2,6 +2,8 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Zone;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class DriverJpaDao implements DriverDao {
 
     @PersistenceContext
@@ -16,7 +19,7 @@ public class DriverJpaDao implements DriverDao {
 
     @Override
     public Driver create(String username, String mail, String password, String extra1) {
-        Driver driver = new Driver(username,mail,password,extra1,null,null);
+        Driver driver = new Driver(username, mail, password, extra1, null, null);
         em.persist(driver);
         return driver;
     }
@@ -34,8 +37,14 @@ public class DriverJpaDao implements DriverDao {
 
 
     @Override
-    public List<Driver> getAll(Long zoneId, Size size, int offset) {
-        return List.of();
+    public List<Driver> getAll(Zone zone, Size size, int offset) {
+        TypedQuery<Driver> query = em.createQuery("""
+                From Driver as d join Vehicle v where :zone in v.zones and
+                        v.volume between :minVolume and :maxVolume""", Driver.class);
+        query.setParameter("zone", zone);
+        query.setParameter("minVolume", size.getMinVolume());
+        query.setParameter("maxVolume", size.getMaxVolume());
+        return query.getResultList();
     }
 
     @Override
@@ -54,7 +63,7 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public void editProfile(long id, String extra1, String cbu) {
         Optional<Driver> driver = findById(id);
-        if(driver.isPresent()) {
+        if (driver.isPresent()) {
             Driver d = driver.get();
             d.setExtra1(extra1);
             d.setCbu(cbu);

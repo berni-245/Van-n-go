@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,9 +18,11 @@ public class VehicleJpaDao implements VehicleDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional
     @Override
     public Vehicle create(long driverId, String plateNumber, double volume, String description, double hourlyRate) {
-        Vehicle v = new Vehicle(driverId, plateNumber, volume, description, null, hourlyRate);
+        Driver driver = em.find(Driver.class, driverId);
+        Vehicle v = new Vehicle(driver, plateNumber, volume, description, null, hourlyRate);
         em.persist(v);
         return v;
     }

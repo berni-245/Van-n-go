@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "app_users")
+@Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public  class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
@@ -64,7 +64,9 @@ public abstract class User {
 
     public long getPfp() {return pfp;}
 
-    public abstract boolean isDriver();
+    public  boolean isDriver(){
+        return false;
+    };
 
     public boolean getIsDriver() {
         return isDriver();

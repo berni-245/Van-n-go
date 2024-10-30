@@ -229,7 +229,7 @@ public class DriverController {
         }
         boolean success = ds.updateVehicle(loggedUser.getId(), new Vehicle(
                 form.getId(),
-                loggedUser.getId(),
+                loggedUser,
                 form.getPlateNumber(),
                 form.getVolume(),
                 form.getDescription(),

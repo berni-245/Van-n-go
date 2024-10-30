@@ -12,8 +12,8 @@ public class Booking {
     private Long id;
 
     // Prolly tengan que ser los ids hasta que pasemos User a hibernate.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
-    private Driver driver;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Vehicle vehicle;
@@ -47,13 +47,12 @@ public class Booking {
     Booking() {
     }
 
-    public Booking(Long id, Client client, Driver driver, Vehicle vehicle,
+    public Booking(Long id, Client client,  Vehicle vehicle,
                    Zone originZone, LocalDate date, ShiftPeriod shiftPeriod,
                    BookingState state, Integer rating,
                    String review, Integer pop, String jobDescription) {
         this.id = id;
         this.client = client;
-        this.driver = driver;
         this.vehicle = vehicle;
         this.originZone = originZone;
         this.date = date;
@@ -71,7 +70,7 @@ public class Booking {
     }
 
     public Driver getDriver() {
-        return driver;
+        return vehicle.getDriver();
     }
 
     public Vehicle getVehicle() {

@@ -52,10 +52,10 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
-        long id = createUser(username, mail, password);
+
         // Driver instance will be created with unencrypted password.
         // Is that a problem tho?
-        Driver driver = driverDao.create(id, extra1);
+        Driver driver = driverDao.create(username, mail, password, extra1);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
@@ -120,7 +120,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Driver> getAll(long zoneId, Size size, int page) {
-        return driverDao.getAll(zoneId, size, page * Pagination.SEARCH_PAGE_SIZE);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        return driverDao.getAll(zone, size, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Transactional

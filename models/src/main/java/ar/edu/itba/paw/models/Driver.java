@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Driver extends User {
@@ -13,6 +14,9 @@ public class Driver extends User {
 
     @Column(length = 32)
     private  String cbu;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Vehicle> vehicles;
 
     public Driver(
             String username,
@@ -27,6 +31,8 @@ public class Driver extends User {
         this.rating = rating;
         this.cbu = cbu;
     }
+
+
 
     Driver(){
 

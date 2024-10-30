@@ -14,8 +14,8 @@ public class Vehicle {
     @SequenceGenerator(sequenceName = "vehicle_id_seq", name = "vehicle_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "driver_id", nullable = false)
-    private long driverId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Driver driver;
     @Column(name = "plate_number", nullable = false)
     private String plateNumber;
     @Column(name = "volume_m3", nullable = false)
@@ -45,7 +45,7 @@ public class Vehicle {
 
     public Vehicle(
             Long id,
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,
@@ -53,7 +53,7 @@ public class Vehicle {
             double hourlyRate
     ) {
         this.id = id;
-        this.driverId = driverId;
+        this.driver = driver;
         this.plateNumber = plateNumber;
         this.volume = volume;
         this.description = description;
@@ -62,22 +62,22 @@ public class Vehicle {
     }
 
     public Vehicle(
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,
             Integer imgId,
             double hourlyRate
     ) {
-        this(null, driverId, plateNumber, volume, description, imgId, hourlyRate);
+        this(null, driver, plateNumber, volume, description, imgId, hourlyRate);
     }
 
     public long getId() {
         return id;
     }
 
-    public long getDriverId() {
-        return driverId;
+    public Driver getDriver() {
+        return driver;
     }
 
     public String getPlateNumber() {
