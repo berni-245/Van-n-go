@@ -153,7 +153,7 @@ public class BookingJpaDao implements BookingDao {
         }
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle = :vehicle and b.date = :date", Booking.class);
         query.setParameter("vehicle", vehicle);
-        query.setParameter("date", date);
+        query.setParameter("date", date.toString());
         return query.getResultList();
     }
 
@@ -227,9 +227,9 @@ public class BookingJpaDao implements BookingDao {
                 where b.vehicle = :vehicle and b.date = :date and b.shiftPeriod = :sp and b.state = :bs
                 """, Booking.class);
         query.setParameter("vehicle", vehicle);
-        query.setParameter("date", date);
-        query.setParameter("sp", sp);
-        query.setParameter("bs", bs);
+        query.setParameter("date", date.toString());
+        query.setParameter("sp", sp.toString());
+        query.setParameter("bs", bs.toString());
         return query.getResultList();
     }
 
@@ -249,7 +249,7 @@ public class BookingJpaDao implements BookingDao {
                 """, Availability.class);
         avQuery.setParameter("vehicle", vehicle);
         avQuery.setParameter("weekDay", date.getDayOfWeek());
-        avQuery.setParameter("sp", sp);
+        avQuery.setParameter("sp", sp.toString());
         return ! avQuery.getResultList().isEmpty();
     }
 
@@ -261,8 +261,8 @@ public class BookingJpaDao implements BookingDao {
         bookingQuery.setParameter("vehicle", vehicle);
         bookingQuery.setParameter("client", client);
         bookingQuery.setParameter("zone", zone);
-        bookingQuery.setParameter("date", date);
-        bookingQuery.setParameter("sp", sp);
+        bookingQuery.setParameter("date", date.toString());
+        bookingQuery.setParameter("sp", sp.toString());
         return ! bookingQuery.getResultList().isEmpty();
     }
 }

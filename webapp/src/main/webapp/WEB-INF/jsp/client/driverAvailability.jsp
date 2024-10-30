@@ -300,7 +300,7 @@
                 accordionBody.classList.remove('show');
             }
         });
-        updateActiveAvailability();
+        // updateActiveAvailability();
     }
 
     function updateActiveAvailability() {
