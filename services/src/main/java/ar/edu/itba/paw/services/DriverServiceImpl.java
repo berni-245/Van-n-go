@@ -152,7 +152,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public int totalMatches(long zoneId, Size size) {
-        return driverDao.getSearchCount(zoneId, size);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        return driverDao.getSearchCount(zone, size);
     }
 
     @Override

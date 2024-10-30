@@ -71,7 +71,6 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override //TODO: revisar al migrar Driver a JPA
-    //TODO: Agregar paginacion!
     public List<Booking> getDriverBookings(long driverId, int offset) {
         Driver driver = em.find(Driver.class, driverId);
         if(driver == null) {
@@ -83,8 +82,26 @@ public class BookingJpaDao implements BookingDao {
 
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles", Booking.class); //TODO: revisar si hace el equals de java
         query.setParameter("vehicles", vehicles);
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
         return query.getResultList();
     }
+
+    @Override
+    public int getDriverBookingCount(long driverId) {
+        Driver driver = em.find(Driver.class, driverId);
+        if(driver == null) {
+            //throws...
+        }
+        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
+        vehiclesQuery.setParameter("driver", driver);
+        List<Vehicle> vehicles = vehiclesQuery.getResultList();
+
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles", Booking.class); //TODO: revisar si hace el equals de java
+        query.setParameter("vehicles", vehicles);
+        return query.getResultList().size();
+    }
+
 
     @Override
     public List<Booking> getDriverHistory(long driverId, int offset) {
@@ -98,17 +115,24 @@ public class BookingJpaDao implements BookingDao {
 
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE", Booking.class); //TODO: revisar si hace el equals de java
         query.setParameter("vehicles", vehicles);
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
         return query.getResultList();
     }
 
     @Override
-    public int getDriverBookingCount(long driverId) {
-        return getDriverBookings(driverId, 0).size(); //TODO: paginacion!
-    }
-
-    @Override
     public int getDriverHistoryCount(long driverId) {
-        return getDriverHistory(driverId, 0).size(); //TODO: paginacion!
+        Driver driver = em.find(Driver.class, driverId);
+        if(driver == null) {
+            //throws...
+        }
+        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
+        vehiclesQuery.setParameter("driver", driver);
+        List<Vehicle> vehicles = vehiclesQuery.getResultList();
+
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE", Booking.class); //TODO: revisar si hace el equals de java
+        query.setParameter("vehicles", vehicles);
+        return query.getResultList().size();
     }
 
     @Override
@@ -140,14 +164,23 @@ public class BookingJpaDao implements BookingDao {
         if(client == null) {
             //throws...
         }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client", Booking.class);
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT DATE", Booking.class);
         query.setParameter("client", client); //TODO: hacer equals driver
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
         return query.getResultList();
     }
 
     @Override
     public int getClientBookingCount(long clientId) {
-        return getClientBookings(clientId, 0).size();
+        Client client = em.find(Client.class, clientId);
+        if(client == null) {
+            //throws...
+        }
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT DATE", Booking.class);
+        query.setParameter("client", client); //TODO: hacer equals driver
+        //TODO: Hacer que estos counts no sean un asco
+        return query.getResultList().size();
     }
 
     @Override
@@ -158,12 +191,20 @@ public class BookingJpaDao implements BookingDao {
         }
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE ", Booking.class);
         query.setParameter("client", client);
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
         return query.getResultList();
     }
 
     @Override
     public int getClientHistoryCount(long clientId) {
-        return getClientHistory(clientId, 0).size();
+        Client client = em.find(Client.class, clientId);
+        if(client == null) {
+            //throws...
+        }
+        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE ", Booking.class);
+        query.setParameter("client", client);
+        return query.getResultList().size();
     }
 
     @Override

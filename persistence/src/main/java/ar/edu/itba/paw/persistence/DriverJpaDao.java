@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Vehicle;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -45,6 +42,8 @@ public class DriverJpaDao implements DriverDao {
         query.setParameter("zone", zone);
         query.setParameter("minVolume", (double) size.getMinVolume());
         query.setParameter("maxVolume", (double) size.getMaxVolume());
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
         return query.getResultList();
     }
 
@@ -73,7 +72,15 @@ public class DriverJpaDao implements DriverDao {
     }
 
     @Override
-    public int getSearchCount(long zoneId, Size size) {
-        return 0;
+    public int getSearchCount(Zone zone, Size size) {
+        Long count = em.createQuery("""
+            SELECT COUNT(v.driver) FROM Vehicle v JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
+            """, Long.class)
+                .setParameter("zone", zone)
+                .setParameter("minVolume", (double) size.getMinVolume())
+                .setParameter("maxVolume", (double) size.getMaxVolume())
+                .getSingleResult();
+
+        return count.intValue();
     }
 }

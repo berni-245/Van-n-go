@@ -23,5 +23,5 @@ public interface DriverDao {
 
     void editProfile(long id, String extra1, String cbu);
 
-    int getSearchCount(long zoneId, Size size);
+    int getSearchCount(Zone zone, Size size);
 }
