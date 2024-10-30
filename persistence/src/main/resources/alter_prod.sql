@@ -15,6 +15,12 @@ alter table booking
 alter table booking_old2
     rename to booking;
 
+alter table client
+    rename column user_id to id;
+
+alter table driver
+    rename column user_id to id;
+
 create table if not exists vehicle_zone
 (
     vehicle_id int not null references vehicle (id) on delete cascade,
