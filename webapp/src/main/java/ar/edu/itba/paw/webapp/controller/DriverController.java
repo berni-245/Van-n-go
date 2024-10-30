@@ -80,6 +80,11 @@ public class DriverController {
         return new ModelAndView("redirect:/driver/vehicles");
     }
 
+    @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
+    public ModelAndView addVehicleGet(@ModelAttribute("vehicleForm") VehicleForm vehicleForm) {
+        return new ModelAndView("driver/add_vehicle");
+    }
+
     @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getVehicleImage(@RequestParam("imgId") int imgId, @ModelAttribute("loggedUser") User loggedUser) {
@@ -102,11 +107,6 @@ public class DriverController {
         headers.setContentType(MediaType.parseMediaType(contentType));
         headers.setContentLength(vehicleImg.getData().length);
         return new ResponseEntity<>(vehicleImg.getData(), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
-    public ModelAndView addVehicleGet(@ModelAttribute("vehicleForm") VehicleForm vehicleForm) {
-        return new ModelAndView("driver/add_vehicle");
     }
 
     @RequestMapping(
