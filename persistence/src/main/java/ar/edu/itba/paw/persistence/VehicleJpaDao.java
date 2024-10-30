@@ -58,14 +58,14 @@ public class VehicleJpaDao implements VehicleDao {
         TypedQuery<Vehicle> query = em.createQuery(
                 """
                         from Vehicle v where v.driver = :driver
-                        and :zone in v.zones and
+                        and :zone member of v.zones and
                         v.volume between :minVolume and :maxVolume""",
                 Vehicle.class
         );
         query.setParameter("driver", driver);
         query.setParameter("zone", zone);
-        query.setParameter("minVolume", size.getMinVolume());
-        query.setParameter("maxVolume", size.getMaxVolume());
+        query.setParameter("minVolume", (double) size.getMinVolume());
+        query.setParameter("maxVolume", (double) size.getMaxVolume());
         return query.getResultList();
     }
 
