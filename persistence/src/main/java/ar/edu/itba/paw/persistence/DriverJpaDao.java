@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
@@ -39,11 +40,11 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public List<Driver> getAll(Zone zone, Size size, int offset) {
         TypedQuery<Driver> query = em.createQuery("""
-                From Driver as d join Vehicle v where :zone in v.zones and
-                        v.volume between :minVolume and :maxVolume""", Driver.class);
+                SELECT v.driver FROM Vehicle v  JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
+""", Driver.class);
         query.setParameter("zone", zone);
-        query.setParameter("minVolume", size.getMinVolume());
-        query.setParameter("maxVolume", size.getMaxVolume());
+        query.setParameter("minVolume", (double) size.getMinVolume());
+        query.setParameter("maxVolume", (double) size.getMaxVolume());
         return query.getResultList();
     }
 
