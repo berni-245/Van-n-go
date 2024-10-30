@@ -18,6 +18,7 @@ public interface ClientService {
             long vehicleId,
             Client client,
             long zoneId,
+            long destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
             String jobDescription,

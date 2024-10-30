@@ -1,12 +1,8 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.models.ShiftPeriod;
 import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class BookingForm {
     @NotNull
@@ -19,13 +15,10 @@ public class BookingForm {
     private long zoneId;
 
     @NotNull
-    private String timeStart;
-
-    @NotNull
-    private String timeEnd;
-
-    @NotNull
     private String shiftPeriod;
+
+    @NotNull
+    private long destinationId;
 
     @Length(min = 20, max = 500)
     private String jobDescription;
@@ -56,22 +49,6 @@ public class BookingForm {
         this.zoneId = zoneId;
     }
 
-    public @NotNull String getTimeStart() {
-        return timeStart;
-    }
-
-    public void setTimeStart(@NotNull String timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public @NotNull String getTimeEnd() {
-        return timeEnd;
-    }
-
-    public void setTimeEnd(@NotNull String timeEnd) {
-        this.timeEnd = timeEnd;
-    }
-
     public @Length(min = 20, max = 500) String getJobDescription() {
         return jobDescription;
     }
@@ -86,5 +63,14 @@ public class BookingForm {
 
     public void setShiftPeriod(@NotNull String shiftPeriod) {
         this.shiftPeriod = shiftPeriod;
+    }
+
+    @NotNull
+    public long getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(@NotNull long destinationId) {
+        this.destinationId = destinationId;
     }
 }

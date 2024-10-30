@@ -64,6 +64,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             long vehicleId,
             Client client,
             long zoneId,
+            long destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
             String jobDescription,
@@ -71,6 +72,8 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     ) {
         Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
+        //TODO: Berna aniadile el destination para que llame bien al Dao
         Booking booking = bookingDao.appointBooking(
                 v, client, zone, date, shiftPeriod, jobDescription
         );
