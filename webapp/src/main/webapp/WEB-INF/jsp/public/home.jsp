@@ -24,7 +24,7 @@
                 <p class="lead mb-4"><spring:message code="public.home.greeting"/></p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                     <a class="btn btn-primary btn-lg px-4 gap-3"
-                       href="${pageContext.request.contextPath}/availability"
+                       href="${pageContext.request.contextPath}/client/search"
                        role="button">
                         <spring:message code="public.home.search"/>
                     </a>

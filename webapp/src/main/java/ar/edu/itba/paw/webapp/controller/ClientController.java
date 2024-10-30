@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -105,7 +104,20 @@ public class ClientController {
         return new ModelAndView("redirect:/client/history");
     }
 
-    @RequestMapping("/availability")
+    @RequestMapping("/client/search")
+    public ModelAndView search(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
+            BindingResult errors
+    ) {
+        if (errors.hasErrors()) return new ModelAndView();
+        ModelAndView mav = new ModelAndView("client/search");
+        List<Zone> zones = zs.getAllZones();
+        mav.addObject("zones", zones);
+        return mav;
+    }
+
+    @RequestMapping("/client/availability")
     public ModelAndView availability(
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "zoneId", required = false) Long zoneId,
@@ -137,7 +149,7 @@ public class ClientController {
     }
 
     @ResponseBody
-    @RequestMapping(path = "/availability/active", method = RequestMethod.GET)
+    @RequestMapping(path = "/client/availability/active", method = RequestMethod.GET)
     public String vehicleActiveAvailability(
             @RequestParam(name = "vehicleId") long vehicleId,
             @RequestParam(name = "zoneId") long zoneId,
@@ -149,7 +161,7 @@ public class ClientController {
         return gson.toJson("{}");
     }
 
-    @RequestMapping(path = "/availability/{id:\\d+}", method = RequestMethod.GET)
+    @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
             @PathVariable(name = "id") long id,
             @RequestParam(name = "zoneId") long zoneId,
@@ -184,7 +196,7 @@ public class ClientController {
         }
     }
 
-    @RequestMapping(path = "/availability/{id:\\d+}", method = RequestMethod.POST)
+    @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.POST)
     public ModelAndView appointbooking(
             @PathVariable(name = "id") long id,
             @ModelAttribute("loggedUser") Client loggedUser,

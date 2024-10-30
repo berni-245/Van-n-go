@@ -72,7 +72,9 @@ public class PublicController {
             user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
-        return new ModelAndView("redirect:/");
+        if(user.isDriver())
+            return new ModelAndView("redirect:/driver/vehicles");
+        return new ModelAndView("redirect:/client/search");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
