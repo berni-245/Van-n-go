@@ -39,8 +39,7 @@ public class ImageJdbcDao implements ImageDao {
                 ROW_MAPPER).getFirst();
     }
 
-    @Override
-    public Integer uploadImage(String fileName, byte[] imgData){
+    private Integer uploadImage(String fileName, byte[] imgData){
         Map<String,Object> toInsert = new HashMap<>();
         toInsert.put("file_name", fileName);
         toInsert.put("bin", imgData);
