@@ -29,12 +29,13 @@ public interface ClientService {
             long vehicleId,
             Client client,
             long zoneId,
+            long destinationId,
             String date,
             ShiftPeriod period,
             String jobDescription,
             Locale locale
     ) {
-        return appointBooking(vehicleId, client, zoneId, String.valueOf(LocalDate.parse(date)), period, jobDescription, locale);
+        return appointBooking(vehicleId, client, zoneId, destinationId, LocalDate.parse(date), period, jobDescription, locale);
     }
 
     List<Booking> getBookings(long id, int page);
