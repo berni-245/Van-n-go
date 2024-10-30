@@ -219,9 +219,4 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public void editProfile(long id, String extra1, String cbu) {
         driverDao.editProfile(id, extra1, cbu);
     }
-
-//    @Override
-//    public List<WeeklyAvailability> activeAvailabilities(long vehicleId, long zoneId, LocalDate date) {
-//        return weeklyAvailabilityDao.getVehicleActiveAvailability(vehicleId, zoneId, date);
-//    }
 }

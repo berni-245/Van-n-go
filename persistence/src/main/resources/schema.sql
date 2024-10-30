@@ -16,13 +16,13 @@ create table if not exists app_user
 
 create table if not exists client
 (
-    user_id int primary key references app_user (id) on delete cascade
+    id int primary key references app_user (id) on delete cascade
     -- more client only props would go here
 );
 
 create table if not exists driver
 (
-    user_id int primary key references app_user (id) on delete cascade,
+    id int primary key references app_user (id) on delete cascade,
     extra1  text,
     rating  double precision,
     cbu     varchar(32)

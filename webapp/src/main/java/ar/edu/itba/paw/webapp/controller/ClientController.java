@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -168,20 +169,19 @@ public class ClientController {
             @RequestParam(name = "size") Size size,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
-//            @ModelAttribute("toasts") List<Toast> toasts
     ) {
         Optional<Driver> driver = ds.findById(id);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", id);
-            Set<Integer> workingDays = new HashSet<>();
-//            var wa = ds.getWeeklyAvailability(id, zoneId, size);
-//            wa.forEach(
-//                    weeklyAvailability -> workingDays.add(weeklyAvailability.getWeekDay())
-//            );
-            mav.addObject("workingDays", workingDays);
             var vehicles = ds.getVehicles(driver.get(), zoneId, size);
+            Set<Integer> workingDays = new HashSet<>();
+            // TODO en lugar de aceptar todos los días, aceptar los que tengan mismo zoneId y size (se necesita un método)
+            for(DayOfWeek dow : DayOfWeek.values())
+                workingDays.add(dow.getValue() % 7);
+
             mav.addObject("vehicles", vehicles);
+            mav.addObject("workingDays", workingDays);
             var bookings = ds.getAllBookings(driver.get().getId());
             mav.addObject("bookings", bookings);
             mav.addObject("driver", driver.get());

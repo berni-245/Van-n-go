@@ -113,10 +113,6 @@ public class Vehicle {
         return availabilitiy;
     }
 
-    public String toJson() {
-        return gson.toJson(this);
-    }
-
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Vehicle vehicle && vehicle.id.equals(id);
