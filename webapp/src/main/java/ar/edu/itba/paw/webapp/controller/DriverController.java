@@ -166,19 +166,6 @@ public class DriverController {
         return mav;
     }
 
-    @RequestMapping(path = "/driver/availability")
-    public ModelAndView availabilityDashboard(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            Model model
-    ) {
-        final ModelAndView mav = new ModelAndView("driver/availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser));
-        if (model.containsAttribute("toasts")) {
-            mav.addObject("toasts", model.getAttribute("toasts"));
-        }
-        return mav;
-    }
-
     @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(
             @ModelAttribute("loggedUser") Driver loggedUser,

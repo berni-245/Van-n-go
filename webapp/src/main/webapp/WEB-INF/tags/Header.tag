@@ -33,12 +33,6 @@
                                     <spring:message code="components.header.vehicles"/>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="${pageContext.request.contextPath}/driver/availability"
-                                   class="nav-link ${inAvailability ? 'active' : ''}">
-                                    <spring:message code="components.header.availability"/>
-                                </a>
-                            </li>
                         </ul>
                     </c:when>
                     <c:otherwise>
