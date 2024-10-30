@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
+import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +39,8 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public List<Driver> getAll(Zone zone, Size size, int offset) {
         TypedQuery<Driver> query = em.createQuery("""
-                SELECT v.driver FROM Vehicle v  JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
-""", Driver.class);
+                                SELECT v.driver FROM Vehicle v  JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
+                """, Driver.class);
         query.setParameter("zone", zone);
         query.setParameter("minVolume", (double) size.getMinVolume());
         query.setParameter("maxVolume", (double) size.getMaxVolume());
@@ -74,13 +76,26 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public int getSearchCount(Zone zone, Size size) {
         Long count = em.createQuery("""
-            SELECT COUNT(v.driver) FROM Vehicle v JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
-            """, Long.class)
+                        SELECT COUNT(v.driver) FROM Vehicle v JOIN v.zones z WHERE z = :zone AND v.volume BETWEEN :minVolume AND :maxVolume
+                        """, Long.class)
                 .setParameter("zone", zone)
                 .setParameter("minVolume", (double) size.getMinVolume())
                 .setParameter("maxVolume", (double) size.getMaxVolume())
                 .getSingleResult();
 
         return count.intValue();
+    }
+
+    @Override
+    public List<DayOfWeek> getDriverWeekDaysOnZoneAndSize(Driver driver, Zone zone, Size size) {
+
+        TypedQuery<DayOfWeek> query = em.createQuery("""
+                select a.weekDay from Driver d join Vehicle v join Availability a where :zone in v.zones and v.volume BETWEEN :minVolume AND :maxVolume and d = :driver
+                """, DayOfWeek.class);
+        query.setParameter("zone", zone);
+        query.setParameter("driver", driver);
+        query.setParameter("minVolume", (double) size.getMinVolume());
+        query.setParameter("maxVolume", (double) size.getMaxVolume());
+        return query.getResultList();
     }
 }

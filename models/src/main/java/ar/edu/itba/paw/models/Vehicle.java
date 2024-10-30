@@ -35,13 +35,22 @@ public class Vehicle {
     )
     private List<Zone> zones;
 
+    public List<Zone> getZones() {
+        return zones;
+    }
+
+    public void setZones(List<Zone> zones) {
+        this.zones = zones;
+    }
+
     // private Map<WeekDay, List<Availability>> weeklyAvailability
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Availability> availabilitiy;
 
     private static final Gson gson = new Gson();
 
-    Vehicle() {}
+    Vehicle() {
+    }
 
     public Vehicle(
             Long id,
@@ -121,5 +130,18 @@ public class Vehicle {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Size getSize() { //revisar.. no es muy lindo
+
+        if (volume >= Size.SMALL.getMinVolume() && volume < Size.MEDIUM.getMinVolume()) {
+            return Size.SMALL;
+        } else if (volume >= Size.MEDIUM.getMinVolume() && volume < Size.LARGE.getMinVolume()) {
+            return Size.MEDIUM;
+        } else if (volume >= Size.LARGE.getMinVolume() && volume <= Size.LARGE.getMaxVolume()) {
+            return Size.LARGE;
+        }
+        throw new IllegalArgumentException("Volume fuera del rango permitido");
+
     }
 }

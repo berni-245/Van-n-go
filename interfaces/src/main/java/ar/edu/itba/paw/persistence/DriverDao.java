@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Zone;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,6 @@ public interface DriverDao {
     void editProfile(long id, String extra1, String cbu);
 
     int getSearchCount(Zone zone, Size size);
+
+    List<DayOfWeek> getDriverWeekDaysOnZoneAndSize(Driver driver, Zone zone, Size size);
 }
