@@ -6,7 +6,12 @@
 <html>
 <comp:Head titleCode="components.header.vehicles">
     <style>
-        .btn-check:checked ~ .toggle-label {
+        .btn-check:not(:checked) ~ .toggle-label:hover {
+            background-color: var(--bs-primary-bg-subtle);
+            border-color: var(--bs-primary-bg-subtle);
+        }
+
+        .btn-check:checked ~ .toggle-label:not(:hover) {
             color: var(--bs-btn-active-color);
             background-color: var(--bs-btn-active-bg);
             border-color: var(--bs-btn-active-border-color);
@@ -17,7 +22,7 @@
 <body>
 <comp:Header/>
 <div class="container mt-3">
-<%--    <h2><spring:message code="driver.edit_vehicle.title" arguments="${loggedUser.username}"/></h2>--%>
+    <%--    <h2><spring:message code="driver.edit_vehicle.title" arguments="${loggedUser.username}"/></h2>--%>
     <div class="row">
         <div class="col-md-6">
             <comp:VehicleForm action="/driver/vehicle/edit" modelAttribute="vehicleForm">
