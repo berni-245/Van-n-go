@@ -1,4 +1,3 @@
-/*TODO: Descomentar, refactorizar y testear cuando se haya hecho los entities de Booking y User
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Image;
@@ -20,18 +19,18 @@ public class ImageJpaDao implements ImageDao {
         return em.find(Image.class, id);
     }
 
-    private Integer uploadImage(String fileName, byte[] imgData) {
+    private long uploadImage(String fileName, byte[] imgData) {
         Image image = new Image();
         image.setFileName(fileName);
         image.setData(imgData);
         em.persist(image);
         em.flush();
-        return (int) image.getId();
+        return image.getId();
     }
 
     @Override
     public long uploadPop(byte[] bin, String fileName, long bookingId) {
-        Integer imageId = uploadImage(fileName, bin);
+        long imageId = uploadImage(fileName, bin);
         em.createQuery("""
                 UPDATE Booking b
                 SET b.pop = :imageId
@@ -45,7 +44,7 @@ public class ImageJpaDao implements ImageDao {
 
     @Override
     public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
-        Integer imageId = uploadImage(fileName, bin);
+        long imageId = uploadImage(fileName, bin);
         em.createQuery("""
                 UPDATE Vehicle v
                 SET v.imgId = :imageId
@@ -59,7 +58,7 @@ public class ImageJpaDao implements ImageDao {
 
     @Override
     public long uploadPfp(byte[] bin, String fileName, long userId) {
-        Integer imageId = uploadImage(fileName, bin);
+        long imageId = uploadImage(fileName, bin);
         em.createQuery("""
                  UPDATE User u
                  SET u.pfp = :imageId
@@ -71,4 +70,3 @@ public class ImageJpaDao implements ImageDao {
         return imageId;
     }
 }
-*/

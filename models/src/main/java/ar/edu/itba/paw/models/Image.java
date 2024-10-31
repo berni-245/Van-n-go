@@ -11,11 +11,10 @@ public class Image {
     @SequenceGenerator(sequenceName = "img_id_seq", name = "img_id_seq", allocationSize = 1)
     private long id;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(name = "bin", nullable = false)
     private byte[] data;
 
-    @Column(length = 255, nullable = false)
+    @Column(name = "file_name", length = 255, nullable = false)
     private String fileName;
 
     public Image() {

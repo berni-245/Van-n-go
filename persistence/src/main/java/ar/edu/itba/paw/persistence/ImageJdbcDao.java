@@ -1,3 +1,4 @@
+/*
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Image;
@@ -80,3 +81,4 @@ public class ImageJdbcDao implements ImageDao {
         return key;
     }
 }
+*/

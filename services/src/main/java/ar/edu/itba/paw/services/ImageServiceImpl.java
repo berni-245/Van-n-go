@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -22,16 +23,19 @@ public class ImageServiceImpl implements ImageService {
         return imgDao.getImage(imgId);
     }
 
+    @Transactional
     @Override
     public long uploadPfp(byte[] bin, String fileName, long userId) {
         return imgDao.uploadPfp(bin, fileName, userId);
     }
 
+    @Transactional
     @Override
     public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
         return imgDao.uploadVehicleImage(bin, fileName, vehicleId);
     }
 
+    @Transactional
     @Override
     public long uploadPop(byte[] bin, String fileName, long bookingId) {
         return imgDao.uploadPop(bin, fileName, bookingId);
