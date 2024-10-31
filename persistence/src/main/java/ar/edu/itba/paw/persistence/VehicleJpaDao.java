@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Vehicle;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -83,5 +80,17 @@ public class VehicleJpaDao implements VehicleDao {
     @Override
     public void updateVehicle(Driver driver, Vehicle vehicle) {
         em.merge(vehicle);
+    }
+
+    @Override
+    public List<Vehicle> getDriverVehicles(Driver driver, int offset) {
+        TypedQuery<Vehicle> query = em.createQuery(
+                "from Vehicle v where v.driver = :driver order by v.plateNumber",
+                Vehicle.class
+        );
+        query.setParameter("driver", driver);
+        query.setFirstResult(offset);
+        query.setMaxResults(Pagination.VEHICLES_PAGE_SIZE);
+        return query.getResultList();
     }
 }

@@ -246,4 +246,12 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public void editProfile(long id, String extra1, String cbu) {
         driverDao.editProfile(id, extra1, cbu);
     }
+
+    @Override
+    public List<Vehicle> getVehicles(Driver driver, int page) {
+        return vehicleDao.getDriverVehicles(driver,page*Pagination.VEHICLES_PAGE_SIZE);
+    }
+
+    @Override
+    public int getVehicleCount(Driver driver){return vehicleDao.getDriverVehicles(driver).size();}
 }

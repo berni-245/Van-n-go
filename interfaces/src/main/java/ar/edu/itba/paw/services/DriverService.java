@@ -79,4 +79,8 @@ public interface DriverService {
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 
     void finishBooking(long bookingId);
+
+    List<Vehicle> getVehicles(Driver driver, int page);
+
+    int getVehicleCount(Driver driver);
 }

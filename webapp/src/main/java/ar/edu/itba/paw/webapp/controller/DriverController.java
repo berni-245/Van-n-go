@@ -156,10 +156,15 @@ public class DriverController {
     @RequestMapping(path = "/driver/vehicles")
     public ModelAndView vehiclesDashboard(
             @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam(value = "page",defaultValue = "0") int page,
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser,page));
+        int totalRecords = ds.getVehicleCount(loggedUser);
+        int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
+        mav.addObject("totalPages", totalPages);
+        mav.addObject("currentPage", page);
         if (model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
@@ -220,7 +225,7 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(value = "page", defaultValue = "0") int page) {
         List<Booking> paginatedHistory = ds.getHistory(loggedUser.getId(), page);
-        int totalRecords = paginatedHistory.size();
+        int totalRecords = ds.getTotalHistoryCount(loggedUser.getId());
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
         ModelAndView mav = new ModelAndView("driver/history");
         mav.addObject("history", paginatedHistory);

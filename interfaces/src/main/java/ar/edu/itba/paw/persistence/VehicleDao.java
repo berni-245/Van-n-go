@@ -22,4 +22,6 @@ public interface VehicleDao {
     boolean plateNumberExists(String plateNumber);
 
     void updateVehicle(Driver driver, Vehicle vehicle);
+
+    List<Vehicle> getDriverVehicles(Driver driver, int offset);
 }
