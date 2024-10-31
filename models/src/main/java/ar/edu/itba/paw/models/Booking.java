@@ -11,7 +11,7 @@ public class Booking {
     @SequenceGenerator(sequenceName = "booking_id_seq", name = "booking_id_seq", allocationSize = 1)
     private Long id;
 
-    // Prolly tengan que ser los ids hasta que pasemos User a hibernate.
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
 
@@ -130,5 +130,13 @@ public class Booking {
 
     public Integer getPop() {
         return pop;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
     }
 }

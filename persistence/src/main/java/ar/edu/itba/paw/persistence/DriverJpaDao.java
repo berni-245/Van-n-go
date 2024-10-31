@@ -49,10 +49,7 @@ public class DriverJpaDao implements DriverDao {
         return query.getResultList();
     }
 
-    @Override
-    public void updateDriverRating(long driverId) {
 
-    }
 
     @Override
     public Optional<Driver> findByUsername(String username) {

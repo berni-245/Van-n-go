@@ -104,8 +104,18 @@ order by bo2.id;
 -- alter table client rename column user_id to id;
 -- alter table driver rename column user_id to id;
 
+ALTER TABLE vehicle_availability ALTER COLUMN shift_period DROP DEFAULT;
+ALTER TABLE vehicle_availability ALTER COLUMN shift_period TYPE text USING shift_period::text;
+
+ALTER TABLE vehicle_availability ALTER COLUMN week_day DROP DEFAULT;
+ALTER TABLE vehicle_availability ALTER COLUMN week_day TYPE text USING week_day::text;
+
+ALTER TABLE booking ALTER COLUMN shift_period DROP DEFAULT;
+ALTER TABLE booking ALTER COLUMN shift_period TYPE text USING shift_period::text;
+
 ALTER TABLE booking ALTER COLUMN state DROP DEFAULT;
 ALTER TABLE booking ALTER COLUMN state TYPE text USING state::text;
+
 
 ALTER SEQUENCE booking_id_seq1 RENAME TO old_booking_id_seq;
 ALTER SEQUENCE booking_id_seq2 RENAME TO old_booking_id_seq2;
@@ -114,12 +124,12 @@ ALTER TABLE booking_old2 ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq
 ALTER TABLE booking ALTER COLUMN id SET DEFAULT nextval('booking_id_seq'::regclass);
 SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
 
--- command to check which sequence is mapped to a table
+-- command to check which sequence is mapped to a table only in psql console
 /*
  select column_default
  from information_schema.columns
- where table_name = <table> and column_name = <name of serial key>
- */
+ where table_name = booking and column_name = id;
+*/
 
 -- command to check last value of a sequence
 -- select last_value from <sequence>

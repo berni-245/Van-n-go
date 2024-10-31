@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -207,9 +208,28 @@ public class BookingJpaDao implements BookingDao {
         return query.getResultList().size();
     }
 
+
+    @Transactional
     @Override
     public void setRatingAndReview(long bookingId, int rating, String review) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Booking booking = getBookingById(bookingId).orElseThrow(); //TODO: revisar el manejo de exceptions y optionals
+        int finishedBookingsWithRating = getFinishedBookingsWithRatingCountByDriver(booking.getDriver());
+        booking.setReview(review);
+        booking.setRating(rating);
+        Driver driver = booking.getVehicle().getDriver();
+        Double oldRating = driver.getRating();
+        if(oldRating == null) {
+            oldRating = 0.0;
+        }
+        double newRating = ((oldRating * finishedBookingsWithRating) + rating ) / (finishedBookingsWithRating + 1 );
+        driver.setRating(newRating);
+    }
+
+    private int getFinishedBookingsWithRatingCountByDriver(Driver driver) {
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b join b.vehicle v where v.driver = :driver and b.state = :state and b.rating is not null", Booking.class);
+        query.setParameter("driver", driver);
+        query.setParameter("state", BookingState.FINISHED);
+        return query.getResultList().size();
     }
 
     @Override

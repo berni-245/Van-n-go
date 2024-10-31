@@ -107,8 +107,10 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         return bookingDao.getClientBookingCount(id);
     }
 
+    @Transactional
     @Override
     public void setBookingRatingAndReview(long bookingId, int rating, String review) {
+        //send mail!
         bookingDao.setRatingAndReview(bookingId, rating, review);
     }
 }
