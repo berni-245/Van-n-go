@@ -28,9 +28,9 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="row row-cols-3">
+                <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
                     <c:forEach var="booking" items="${bookings}">
-                        <div class="col mb-4">
+                        <div class="col">
                             <div class="card mb-3 shadow h-100">
                                 <c:choose>
                                     <c:when test="${booking.client.pfp==0}">
