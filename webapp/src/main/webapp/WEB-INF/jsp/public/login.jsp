@@ -28,7 +28,12 @@
                             <label for="password" class="form-label">
                                 <spring:message code="generic.word.password"/>
                             </label>
-                            <input id="password" name="j_password" type="password" class="form-control"/>
+                            <div class="input-group">
+                                <input id="password" name="j_password" type="password" class="form-control"/>
+                                <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                                    <spring:message code="public.login.showPassword"/>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3 form-check">
                             <input id="rememberMe" name="j_rememberme" type="checkbox" class="form-check-input"/>
@@ -41,10 +46,36 @@
                             <input type="submit" class="btn btn-primary" value="${login}">
                         </div>
                     </form>
+                    <c:if test="${not empty param.error}">
+                        <div class="alert alert-danger" role="alert">
+                            <c:choose>
+                                <c:when test="${param.error == 'user'}">
+                                    <spring:message code="public.login.error.userNotExist"/>
+                                </c:when>
+                                <c:when test="${param.error == 'password'}">
+                                    <spring:message code="public.login.error.incorrectPassword"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="public.login.error.unknown"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    }
+</script>
 </body>
 </html>
