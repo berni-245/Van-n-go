@@ -92,4 +92,6 @@ public interface DriverService {
     List<Vehicle> getVehicles(Driver driver, int page);
 
     int getVehicleCount(Driver driver);
+
+    void deleteVehicle(Vehicle vehicle);
 }

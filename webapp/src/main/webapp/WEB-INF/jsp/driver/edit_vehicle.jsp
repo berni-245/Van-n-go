@@ -22,13 +22,18 @@
 <body>
 <comp:Header/>
 <div class="container mt-3">
-    <%--    <h2><spring:message code="driver.edit_vehicle.title" arguments="${loggedUser.username}"/></h2>--%>
     <div class="d-flex justify-content-between flex-sm-wrap">
         <div>
             <comp:VehicleForm action="/driver/vehicle/edit" modelAttribute="vehicleForm">
                 <form:input type="hidden" path="id" cssClass="form-control"/>
                 <input type="hidden" name="ogPlateNumber" value="${plateNumber}">
             </comp:VehicleForm>
+            <form id="deleteForm" method="POST" action="${pageContext.request.contextPath}/driver/vehicle/delete">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    <spring:message code="generic.word.delete"/>
+                </button>
+                <input type="hidden" name="plateNumber" value="${plateNumber}" />
+            </form>
         </div>
 
         <div>
@@ -60,9 +65,29 @@
                 </div>
             </form:form>
         </div>
-    </div>
 </div>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <spring:message code="vehicle.delete.confirmation"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <spring:message code="generic.word.cancel"/>
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                        <spring:message code="generic.word.delete"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 <comp:ToastManager toasts="${toasts}"/>
 </body>
-
+<script>
+    function confirmDelete() {
+        document.getElementById("deleteForm").submit();
+    }
+</script>
 </html>

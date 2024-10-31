@@ -86,8 +86,14 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Transactional
     @Override
-    public void updateVehicle(Driver driver, Vehicle vehicle) {
+    public void updateVehicle(Vehicle vehicle) {
         em.merge(vehicle);
+    }
+
+    @Transactional
+    @Override
+    public void deleteVehicle(Vehicle vehicle) {
+        em.remove(vehicle);
     }
 
     @Override

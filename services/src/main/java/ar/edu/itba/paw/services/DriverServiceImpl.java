@@ -58,8 +58,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Transactional
     @Override
     public Driver create(String username, String mail, String password, String extra1, Locale locale) {
-        // Driver instance will be created with unencrypted password.
-        // Is that a problem tho?
         Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), extra1);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
@@ -157,8 +155,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size) {
         List<Vehicle> vehicles = vehicleDao.getDriverVehicles(driver);
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        // List<DayOfWeek> list = driverDao.getDriverWeekDaysOnZoneAndSize(driver,zone,size);
-        // return new HashSet<>(list);
         Set<DayOfWeek> days = new HashSet<>();
         vehicles.forEach(vehicle -> {
             if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
@@ -167,13 +163,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
                 });
             }
         });
-       /* driver.getVehicles().forEach(vehicle -> {
-            if(vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
-                vehicle.getAvailabilitiy().forEach(availability -> {
-                    days.add(availability.getWeekDay());
-                });
-            }
-        });*/
         return days;
 
     }
@@ -256,7 +245,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
             v.setImgId(imgId);
         }
-        vehicleDao.updateVehicle(driver, v);
+        vehicleDao.updateVehicle(v);
     }
 
     @Override
@@ -278,4 +267,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public int getVehicleCount(Driver driver){return vehicleDao.getDriverVehicles(driver).size();}
+
+    @Override
+    public void deleteVehicle(Vehicle vehicle) {
+        vehicleDao.deleteVehicle(vehicle);
+    }
 }

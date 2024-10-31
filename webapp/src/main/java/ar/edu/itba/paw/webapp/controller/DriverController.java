@@ -120,21 +120,10 @@ public class DriverController {
             @PathVariable(name = "plateNumber") String plateNumber,
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
-//            BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
         Optional<Vehicle> vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isEmpty()) return new ModelAndView();
-        // There are no validations done in this form so this is unnecessary.
-        // if (errors.hasErrors()) {
-        //     List<Toast> toasts = Collections.singletonList(new Toast(
-        //             ToastType.danger,
-        //             "toast.availability.edit.error.title",
-        //             "toast.availability.edit.error.description"
-        //     ));
-        //     redirectAttributes.addFlashAttribute("toasts", toasts);
-        //     return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
-        // }
         ds.updateAvailability(
                 vehicle.get(),
                 form.getMondayShiftPeriods(),
@@ -151,17 +140,6 @@ public class DriverController {
         redirectAttributes.addFlashAttribute("toasts", toasts);
         return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
     }
-
-//    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
-//    public ModelAndView addAvailabilityForm(
-//            @ModelAttribute("loggedUser") Driver loggedUser,
-//            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
-//    ) {
-//        final ModelAndView mav = new ModelAndView("driver/add_availability");
-//        mav.addObject("vehicles", ds.getVehicles(loggedUser));
-//        mav.addObject("zones", zs.getAllZones());
-//        return mav;
-//    }
 
     @RequestMapping(path = "/driver/vehicles")
     public ModelAndView vehiclesDashboard(
@@ -307,17 +285,8 @@ public class DriverController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "plateNumber") String plateNumber,
             @RequestParam(name = "vehicleId") long vehicleId,
-//            @Valid @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form,
             BindingResult errors
     ) {
-//        if (errors.hasErrors()) {
-//            return editAvailabilityGet(loggedUser, plateNumber, form);
-//        }
-//        ds.updateWeeklyAvailability(
-//                loggedUser.getId(), form.getWeekDay(),
-//                form.getHourBlocks(), form.getZoneId(), vehicleId
-//        );
-//        return editAvailabilityGet(loggedUser, plateNumber, form);
         return new ModelAndView();
     }
 
@@ -325,11 +294,9 @@ public class DriverController {
     public ModelAndView editAvailabilityGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam(name = "plateNumber") String plateNumber
-//            @ModelAttribute("availabilityForm") IndividualVehicleAvailabilityForm form
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
-//            form.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_availability");
             mav.addObject("vehicle", vehicle.get());
             mav.addObject("zones", zs.getAllZones());
@@ -363,5 +330,19 @@ public class DriverController {
     ) {
         ds.rejectBooking(bookingId);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(path = "/driver/vehicle/delete", method = RequestMethod.POST)
+    public ModelAndView deleteVehicle(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam("plateNumber") String plateNumber
+    ) {
+        Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser,plateNumber);
+        if(v.isPresent()) {
+            ds.deleteVehicle(v.get());
+        } else {
+            log.error("Vehicle not found");
+        }
+        return new ModelAndView("redirect:/driver/vehicles");
     }
 }
