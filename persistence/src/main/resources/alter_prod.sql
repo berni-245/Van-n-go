@@ -106,3 +106,20 @@ order by bo2.id;
 
 ALTER TABLE booking ALTER COLUMN state DROP DEFAULT;
 ALTER TABLE booking ALTER COLUMN state TYPE text USING state::text;
+
+ALTER SEQUENCE booking_id_seq1 RENAME TO old_booking_id_seq;
+ALTER SEQUENCE booking_id_seq2 RENAME TO old_booking_id_seq2;
+ALTER TABLE booking_old ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq'::regclass);
+ALTER TABLE booking_old2 ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq2'::regclass);
+ALTER TABLE booking ALTER COLUMN id SET DEFAULT nextval('booking_id_seq'::regclass);
+SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
+
+-- command to check which sequence is mapped to a table
+/*
+ select column_default
+ from information_schema.columns
+ where table_name = <table> and column_name = <name of serial key>
+ */
+
+-- command to check last value of a sequence
+-- select last_value from <sequence>
