@@ -25,7 +25,7 @@
                             <input id="username" name="j_username" type="text" class="form-control"/>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">
+                            <label for="password-input" class="form-label">
                                 <spring:message code="generic.word.password"/>
                             </label>
                             <div class="input-group">
