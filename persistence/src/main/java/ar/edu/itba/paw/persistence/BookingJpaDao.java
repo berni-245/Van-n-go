@@ -264,9 +264,9 @@ public class BookingJpaDao implements BookingDao {
 
     private boolean hasClientAlreadyAppointedForThatDateTimeAndZone(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
         TypedQuery<Booking> bookingQuery = em.createQuery("""
-                From Booking b
-                where b.vehicle = :vehicle and b.client = :client and b.originZone = :zone and b.date = :date and b.shiftPeriod = :sp
-                """, Booking.class);
+            From Booking b
+            where b.vehicle = :vehicle and b.client = :client and b.originZone = :zone and b.date = :date and b.shiftPeriod = :sp
+            """, Booking.class);
         bookingQuery.setParameter("vehicle", vehicle);
         bookingQuery.setParameter("client", client);
         bookingQuery.setParameter("zone", zone);

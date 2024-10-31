@@ -3,12 +3,14 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.models.Rates;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 public class VehicleForm {
     // This should be country dependant I think?
@@ -28,6 +30,8 @@ public class VehicleForm {
     @Max(Rates.MAXIMUM)
     private double rate;
 
+    private List<Long> zoneIds;
+
     private long id;
 
     private Long imgId;
@@ -37,6 +41,7 @@ public class VehicleForm {
         this.description = vehicle.getDescription();
         this.volume = vehicle.getVolume();
         this.plateNumber = vehicle.getPlateNumber();
+        this.zoneIds = vehicle.getZones().stream().map(Zone::getId).toList();
         this.rate = vehicle.getHourlyRate();
         this.imgId = vehicle.getImgId();
     }
@@ -73,11 +78,27 @@ public class VehicleForm {
         this.description = description;
     }
 
-    public double getRate() {return rate;}
+    public double getRate() {
+        return rate;
+    }
 
-    public void setRate(double rate) {this.rate = rate;}
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
 
-    public Long getImgId() {return imgId;}
+    public Long getImgId() {
+        return imgId;
+    }
 
-    public void setImgId(Long imgId) {this.imgId = imgId;}
+    public void setImgId(Long imgId) {
+        this.imgId = imgId;
+    }
+
+    public List<Long> getZoneIds() {
+        return zoneIds;
+    }
+
+    public void setZoneIds(List<Long> zoneIds) {
+        this.zoneIds = zoneIds;
+    }
 }

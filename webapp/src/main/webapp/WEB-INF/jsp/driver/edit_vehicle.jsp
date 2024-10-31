@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.vehicles">
+<comp:Head titleCode="components.header.vehicles" tomselect="true">
     <style>
         .btn-check:not(:checked) ~ .toggle-label:hover {
             background-color: var(--bs-primary-bg-subtle);
@@ -23,15 +23,15 @@
 <comp:Header/>
 <div class="container mt-3">
     <%--    <h2><spring:message code="driver.edit_vehicle.title" arguments="${loggedUser.username}"/></h2>--%>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="d-flex justify-content-between flex-sm-wrap">
+        <div>
             <comp:VehicleForm action="/driver/vehicle/edit" modelAttribute="vehicleForm">
                 <form:input type="hidden" path="id" cssClass="form-control"/>
                 <input type="hidden" name="ogPlateNumber" value="${plateNumber}">
             </comp:VehicleForm>
         </div>
 
-        <div class="col-md-6">
+        <div>
             <c:url var="postUrl" value="/driver/vehicle/${vehicle.plateNumber}/edit/availability"/>
             <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
                 <c:forEach var="day" items="${days}">

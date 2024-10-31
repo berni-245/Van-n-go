@@ -71,10 +71,22 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData) {
-        Vehicle v = vehicleDao.create(driverId, plateNumber, volume, description, rate);
-        if (imgFilename != null && imgData != null && imgData.length > 0)
+    public Vehicle addVehicle(
+            long driverId,
+            String plateNumber,
+            double volume,
+            String description,
+            List<Long> zoneIds,
+            double rate,
+            String imgFilename,
+            byte[] imgData
+    ) {
+        Vehicle v = vehicleDao.create(
+                driverId, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
+        );
+        if (imgFilename != null && imgData != null && imgData.length > 0) {
             imageDao.uploadVehicleImage(imgData, imgFilename, v.getId());
+        }
         return v;
     }
 
@@ -145,16 +157,16 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size) {
         List<Vehicle> vehicles = vehicleDao.getDriverVehicles(driver);
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-      // List<DayOfWeek> list = driverDao.getDriverWeekDaysOnZoneAndSize(driver,zone,size);
-      // return new HashSet<>(list);
-       Set<DayOfWeek> days = new HashSet<>();
-       vehicles.forEach(vehicle -> {
-           if(vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
-               vehicle.getAvailabilitiy().forEach(availability -> {
-                   days.add(availability.getWeekDay());
-               });
-           }
-       });
+        // List<DayOfWeek> list = driverDao.getDriverWeekDaysOnZoneAndSize(driver,zone,size);
+        // return new HashSet<>(list);
+        Set<DayOfWeek> days = new HashSet<>();
+        vehicles.forEach(vehicle -> {
+            if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
+                vehicle.getAvailabilitiy().forEach(availability -> {
+                    days.add(availability.getWeekDay());
+                });
+            }
+        });
        /* driver.getVehicles().forEach(vehicle -> {
             if(vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
                 vehicle.getAvailabilitiy().forEach(availability -> {
@@ -226,8 +238,20 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData) {
+    public void updateVehicle(
+            Driver driver,
+            long vehicleId,
+            String plateNumber,
+            double volume,
+            String description,
+            List<Long> zoneIds,
+            double rate,
+            Long oldImgId,
+            String imgFilename,
+            byte[] imgData
+    ) {
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
+        v.setZones(zoneDao.getZonesById(zoneIds));
         if (imgFilename != null && imgData != null && imgData.length > 0) {
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
             v.setImgId(imgId);

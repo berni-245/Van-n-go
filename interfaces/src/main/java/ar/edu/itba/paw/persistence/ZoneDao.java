@@ -11,4 +11,6 @@ public interface ZoneDao {
     boolean isValidZone(long zoneId);
 
     List<Zone> getAllZones();
+
+    List<Zone> getZonesById(List<Long> zoneIds);
 }

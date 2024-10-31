@@ -14,7 +14,16 @@ public interface DriverService {
 
     Optional<Driver> findById(long id);
 
-    Vehicle addVehicle(long driverId, String plateNumber, double volume, String description, double rate, String imgFilename, byte[] imgData);
+    Vehicle addVehicle(
+            long driverId,
+            String plateNumber,
+            double volume,
+            String description,
+            List<Long> zoneIds,
+            double rate,
+            String imgFilename,
+            byte[] imgData
+    );
 
     List<Vehicle> getVehicles(Driver driver);
 
@@ -76,7 +85,7 @@ public interface DriverService {
 
     Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size);
 
-    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, double rate, Long oldImgId, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, List<Long> zoneIds, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 
     void finishBooking(long bookingId);
 

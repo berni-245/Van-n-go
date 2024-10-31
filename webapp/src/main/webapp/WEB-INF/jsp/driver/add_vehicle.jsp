@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="components.header.vehicles"/>
+<comp:Head titleCode="components.header.vehicles" tomselect="true"/>
 
 <body>
 <comp:Header/>

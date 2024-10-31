@@ -17,9 +17,17 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Transactional
     @Override
-    public Vehicle create(long driverId, String plateNumber, double volume, String description, double hourlyRate) {
+    public Vehicle create(
+            long driverId,
+            String plateNumber,
+            double volume,
+            String description,
+            List<Zone> zones,
+            double hourlyRate
+    ) {
         Driver driver = em.find(Driver.class, driverId);
         Vehicle v = new Vehicle(driver, plateNumber, volume, description, null, hourlyRate);
+        v.setZones(zones);
         em.persist(v);
         return v;
     }

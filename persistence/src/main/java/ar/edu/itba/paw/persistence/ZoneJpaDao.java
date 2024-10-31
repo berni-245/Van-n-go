@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,12 @@ public class ZoneJpaDao implements ZoneDao {
     @Override
     public List<Zone> getAllZones() {
         return em.createQuery("From Zone", Zone.class).getResultList();
+    }
+
+    @Override
+    public List<Zone> getZonesById(List<Long> zoneIds) {
+        return em.createQuery("From Zone z where z.id in :zoneIds", Zone.class)
+                .setParameter("zoneIds", zoneIds)
+                .getResultList();
     }
 }

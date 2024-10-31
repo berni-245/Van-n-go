@@ -69,6 +69,7 @@ public class DriverController {
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
                 vehicleForm.getDescription(),
+                vehicleForm.getZoneIds(),
                 vehicleForm.getRate(),
                 imgFilename,
                 imgData
@@ -82,7 +83,9 @@ public class DriverController {
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
     public ModelAndView addVehicleGet(@ModelAttribute("vehicleForm") VehicleForm vehicleForm) {
-        return new ModelAndView("driver/add_vehicle");
+        ModelAndView mav = new ModelAndView("driver/add_vehicle");
+        mav.addObject("zones", zs.getAllZones());
+        return mav;
     }
 
     @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
@@ -117,14 +120,21 @@ public class DriverController {
             @PathVariable(name = "plateNumber") String plateNumber,
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
-            BindingResult errors,
+//            BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
         Optional<Vehicle> vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isEmpty()) return new ModelAndView();
-        if (errors.hasErrors()) {
-            return addAvailabilityForm(loggedUser, form);
-        }
+        // There are no validations done in this form so this is unnecessary.
+        // if (errors.hasErrors()) {
+        //     List<Toast> toasts = Collections.singletonList(new Toast(
+        //             ToastType.danger,
+        //             "toast.availability.edit.error.title",
+        //             "toast.availability.edit.error.description"
+        //     ));
+        //     redirectAttributes.addFlashAttribute("toasts", toasts);
+        //     return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
+        // }
         ds.updateAvailability(
                 vehicle.get(),
                 form.getMondayShiftPeriods(),
@@ -142,16 +152,16 @@ public class DriverController {
         return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
     }
 
-    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
-    public ModelAndView addAvailabilityForm(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
-    ) {
-        final ModelAndView mav = new ModelAndView("driver/add_availability");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser));
-        mav.addObject("zones", zs.getAllZones());
-        return mav;
-    }
+//    @RequestMapping(path = "/driver/availability/add", method = RequestMethod.GET)
+//    public ModelAndView addAvailabilityForm(
+//            @ModelAttribute("loggedUser") Driver loggedUser,
+//            @ModelAttribute("availabilityForm") AvailabilityForm availabilityForm
+//    ) {
+//        final ModelAndView mav = new ModelAndView("driver/add_availability");
+//        mav.addObject("vehicles", ds.getVehicles(loggedUser));
+//        mav.addObject("zones", zs.getAllZones());
+//        return mav;
+//    }
 
     @RequestMapping(path = "/driver/vehicles")
     public ModelAndView vehiclesDashboard(
@@ -211,6 +221,7 @@ public class DriverController {
             };
             mav.addObject("days", days);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
+            mav.addObject("zones", zs.getAllZones());
             if (model.containsAttribute("toasts")) {
                 mav.addObject("toasts", model.getAttribute("toasts"));
             }
@@ -264,6 +275,7 @@ public class DriverController {
                 form.getPlateNumber(),
                 form.getVolume(),
                 form.getDescription(),
+                form.getZoneIds(),
                 form.getRate(),
                 form.getImgId(),
                 imgFilename,

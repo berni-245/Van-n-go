@@ -9,7 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VehicleDao {
-    Vehicle create(long driverId, String plateNumber, double volume, String description, double rate);
+    Vehicle create(
+            long driverId,
+            String plateNumber,
+            double volume,
+            String description,
+            List<Zone> zones,
+            double rate
+    );
 
     Optional<Vehicle> findById(long id);
 
