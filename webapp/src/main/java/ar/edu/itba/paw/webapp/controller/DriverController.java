@@ -90,7 +90,10 @@ public class DriverController {
 
     @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getVehicleImage(@RequestParam("imgId") int imgId, @ModelAttribute("loggedUser") User loggedUser) {
+    public ResponseEntity<byte[]> getVehicleImage(
+            @RequestParam("imgId") int imgId,
+            @ModelAttribute("loggedUser") User loggedUser
+    ) {
         Image vehicleImg = is.getImage(imgId);
         if (vehicleImg == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -144,16 +147,16 @@ public class DriverController {
     @RequestMapping(path = "/driver/vehicles")
     public ModelAndView vehiclesDashboard(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "0") int page,
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
-        mav.addObject("vehicles", ds.getVehicles(loggedUser,page));
+        mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
         int totalRecords = ds.getVehicleCount(loggedUser);
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
-        if (model.containsAttribute("toasts")) {
+        if (model != null && model.containsAttribute("toasts")) {
             mav.addObject("toasts", model.getAttribute("toasts"));
         }
         return mav;
@@ -178,20 +181,20 @@ public class DriverController {
         return new ModelAndView("/driver/edit_profile");
     }
 
-    @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.GET)
+    @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.GET)
     public ModelAndView editVehicleGet(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "plateNumber") String plateNumber,
+            @PathVariable(name = "plateNumber") String plateNumber,
             @ModelAttribute("vehicleForm") VehicleForm form,
+            BindingResult errors,
             @ModelAttribute("availabilityForm") AvailabilityForm avForm,
             Model model
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
-            form.setAll(vehicle.get());
+            if (!errors.hasErrors()) form.setAll(vehicle.get());
             avForm.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
-            mav.addObject("plateNumber", plateNumber);
             mav.addObject("vehicle", vehicle.get());
             String[] days = new String[]{
                     "monday", "tuesday", "wednesday", "thursday",
@@ -200,7 +203,7 @@ public class DriverController {
             mav.addObject("days", days);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
             mav.addObject("zones", zs.getAllZones());
-            if (model.containsAttribute("toasts")) {
+            if (model != null && model.containsAttribute("toasts")) {
                 mav.addObject("toasts", model.getAttribute("toasts"));
             }
             return mav;
@@ -209,33 +212,18 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(path = "/driver/vehicle/edit", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.POST)
     public ModelAndView editVehiclePost(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam("ogPlateNumber") String ogPlateNumber,
+            @PathVariable(name = "plateNumber") String ogPlateNumber,
             @Valid @ModelAttribute("vehicleForm") VehicleForm form,
             BindingResult errors,
             @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
             @ModelAttribute("availabilityForm") AvailabilityForm avForm,
             RedirectAttributes redirectAttributes
     ) {
-        // Clearly hay que buscar la manera correcta de ignorar un error particular.
         if (errors.hasErrors()) {
-            boolean ignoreError = false;
-            if (errors.getErrorCount() == 1 && form.getPlateNumber().equals(ogPlateNumber)) {
-                for (var error : errors.getFieldErrors("plateNumber")) {
-                    if (error.getCode().equals("ValidPlateNumber")) {
-                        ignoreError = true;
-                    }
-                }
-            }
-            if (!ignoreError) {
-                List<Toast> toasts = Collections.singletonList(new Toast(
-                        ToastType.danger, "toast.vehicle.plateNumber.error"
-                ));
-                redirectAttributes.addFlashAttribute("toasts", toasts);
-                return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + ogPlateNumber);
-            }
+            return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm, null);
         }
         String imgFilename = null;
         byte[] imgData = null;
@@ -263,7 +251,7 @@ public class DriverController {
                 ToastType.success, "toast.vehicle.edit.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + form.getPlateNumber());
+        return new ModelAndView("redirect:/driver/vehicle/%s/edit".formatted(form.getPlateNumber()));
     }
 
     @RequestMapping(path = "/driver/history")
@@ -332,17 +320,15 @@ public class DriverController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(path = "/driver/vehicle/delete", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/vehicle/{plateNumber}/delete", method = RequestMethod.POST)
     public ModelAndView deleteVehicle(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam("plateNumber") String plateNumber
+            @PathVariable("plateNumber") String plateNumber
     ) {
-        Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser,plateNumber);
-        if(v.isPresent()) {
-            ds.deleteVehicle(v.get());
-        } else {
-            log.error("Vehicle not found");
-        }
+        Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
+        if (v.isPresent()) ds.deleteVehicle(v.get());
+        else log.error("Vehicle `%s` not found".formatted(plateNumber));
         return new ModelAndView("redirect:/driver/vehicles");
+//        return vehiclesDashboard(loggedUser, 0, null);
     }
 }

@@ -6,17 +6,20 @@ import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
+@ValidPlateNumber
 public class VehicleForm {
-    // This should be country dependant I think?
-    // @Size(min = 8, max = 20)
+    @Nullable
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
-    @ValidPlateNumber
+    private String ogPlateNumber;
+
+    @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
     private String plateNumber;
 
     @Min(Size.MIN)
@@ -52,6 +55,14 @@ public class VehicleForm {
 
     public long getId() {
         return id;
+    }
+
+    public String getOgPlateNumber() {
+        return ogPlateNumber;
+    }
+
+    public void setOgPlateNumber(String ogPlateNumber) {
+        this.ogPlateNumber = ogPlateNumber;
     }
 
     public String getPlateNumber() {
