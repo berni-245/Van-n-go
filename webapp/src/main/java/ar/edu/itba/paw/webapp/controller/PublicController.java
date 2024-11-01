@@ -50,14 +50,14 @@ public class PublicController {
         } else {
             // This should probably not be here but in the DriverController.
             // Yeah, no shit
-            List<Booking> bookings = ds.getBookings(loggedUser.getId(),page);
-            int totalBookings =  ds.getTotalBookingCount(loggedUser.getId());
+            List<Booking> bookings = ds.getBookings(loggedUser.getId(), page);
+            int totalBookings = ds.getTotalBookingCount(loggedUser.getId());
             int totalPages = (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
             final ModelAndView mav = new ModelAndView("driver/home");
             mav.addObject("currentPage", page);
             mav.addObject("currentDate", LocalDate.now());
             mav.addObject("totalPages", totalPages);
-            mav.addObject("bookings",bookings);
+            mav.addObject("bookings", bookings);
             return mav;
         }
     }
@@ -71,10 +71,10 @@ public class PublicController {
         if (userForm.getUserType().equals(UserRole.DRIVER.name()))
             user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "", LocaleContextHolder.getLocale());
         else
-            user = cs.create(userForm.getUsername(), userForm.getMail(),userForm.getPassword(), LocaleContextHolder.getLocale());
+            user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
-        if(user.isDriver())
+        if (user.isDriver())
             return new ModelAndView("redirect:/driver/vehicles");
         return new ModelAndView("redirect:/client/search");
     }
@@ -113,7 +113,10 @@ public class PublicController {
 
     @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getUserPicture(@RequestParam("userPfp") int userPfp ,@ModelAttribute("loggedUser") User loggedUser) {
+    public ResponseEntity<byte[]> getUserPicture(
+            @RequestParam("userPfp") int userPfp,
+            @ModelAttribute("loggedUser") User loggedUser
+    ) {
         return getValidatedPfp(is.getImage(userPfp));
     }
 
@@ -127,7 +130,7 @@ public class PublicController {
         if (pfp != null && pfp.getData() != null) {
             String fileName = pfp.getFileName();
             String contentType;
-            if(fileName == null)
+            if (fileName == null)
                 return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             if (fileName.toLowerCase().endsWith(".png")) {
                 contentType = "image/png";
@@ -147,7 +150,10 @@ public class PublicController {
 
     @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> getProofOfPayment(@RequestParam("popId") long popId, @ModelAttribute("loggedUser") User loggedUser) {
+    public ResponseEntity<byte[]> getProofOfPayment(
+            @RequestParam("popId") long popId,
+            @ModelAttribute("loggedUser") User loggedUser
+    ) {
         Image pop = is.getImage(popId);
         if (pop != null && pop.getFileName().endsWith(".pdf")) {
             HttpHeaders headers = new HttpHeaders();
