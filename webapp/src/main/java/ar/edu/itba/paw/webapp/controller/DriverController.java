@@ -64,7 +64,7 @@ public class DriverController {
                 log.error(e.getMessage());
             }
         }
-        final Vehicle vehicle = ds.addVehicle(
+        ds.addVehicle(
                 loggedUser.getId(),
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
@@ -74,11 +74,11 @@ public class DriverController {
                 imgFilename,
                 imgData
         );
-        List<Toast> toasts = Collections.singletonList(new Toast(
+        List<Toast> toasts = List.of(new Toast(
                 ToastType.success, "toast.vehicle.add.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        return new ModelAndView("redirect:/driver/vehicles");
+        return redirect("/driver/vehicles");
     }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
@@ -137,11 +137,11 @@ public class DriverController {
                 form.getSaturdayShiftPeriods(),
                 form.getSundayShiftPeriods()
         );
-        List<Toast> toasts = Collections.singletonList(new Toast(
+        List<Toast> toasts = List.of(new Toast(
                 ToastType.success, "toast.availability.edit.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        return new ModelAndView("redirect:/driver/vehicle/edit?plateNumber=" + plateNumber);
+        return redirect("/driver/vehicle/%s/edit", plateNumber);
     }
 
     @RequestMapping(path = "/driver/vehicles")
@@ -156,9 +156,7 @@ public class DriverController {
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
-        if (model != null && model.containsAttribute("toasts")) {
-            mav.addObject("toasts", model.getAttribute("toasts"));
-        }
+        mav.addObject("toasts", model.getAttribute("toasts"));
         return mav;
     }
 
@@ -168,16 +166,21 @@ public class DriverController {
             @Valid @ModelAttribute("profileForm") ProfileForm form,
             BindingResult errors
     ) {
+        if (errors.hasErrors()) return redirect("/profile/edit");
         ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
-        return new ModelAndView("redirect:/profile");
+        return redirect("/profile");
     }
 
     @RequestMapping(path = "/profile/edit", method = RequestMethod.GET)
     public ModelAndView editProfileForm(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("profileForm") ProfileForm form) {
-        form.setcbu(loggedUser.getCbu());
-        form.setExtra1(loggedUser.getExtra1());
+            @ModelAttribute("profileForm") ProfileForm form,
+            BindingResult errors
+    ) {
+        if (!errors.hasErrors()) {
+            form.setcbu(loggedUser.getCbu());
+            form.setExtra1(loggedUser.getExtra1());
+        }
         return new ModelAndView("/driver/edit_profile");
     }
 
@@ -192,7 +195,7 @@ public class DriverController {
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
-            if (!errors.hasErrors()) form.setAll(vehicle.get());
+            if (errors != null && !errors.hasErrors()) form.setAll(vehicle.get());
             avForm.setAll(vehicle.get());
             var mav = new ModelAndView("driver/edit_vehicle");
             mav.addObject("vehicle", vehicle.get());
@@ -203,9 +206,7 @@ public class DriverController {
             mav.addObject("days", days);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
             mav.addObject("zones", zs.getAllZones());
-            if (model != null && model.containsAttribute("toasts")) {
-                mav.addObject("toasts", model.getAttribute("toasts"));
-            }
+            mav.addObject("toasts", model.getAttribute("toasts"));
             return mav;
         } else {
             return new ModelAndView();
@@ -251,7 +252,7 @@ public class DriverController {
                 ToastType.success, "toast.vehicle.edit.success"
         ));
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        return new ModelAndView("redirect:/driver/vehicle/%s/edit".formatted(form.getPlateNumber()));
+        return redirect("/driver/vehicle/%s/edit", form.getPlateNumber());
     }
 
     @RequestMapping(path = "/driver/history")
@@ -268,67 +269,51 @@ public class DriverController {
         return mav;
     }
 
-    @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.POST)
-    public ModelAndView editAvailabilityPost(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "plateNumber") String plateNumber,
-            @RequestParam(name = "vehicleId") long vehicleId,
-            BindingResult errors
-    ) {
-        return new ModelAndView();
-    }
-
-    @RequestMapping(path = "/driver/availability/edit", method = RequestMethod.GET)
-    public ModelAndView editAvailabilityGet(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "plateNumber") String plateNumber
-    ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
-        if (vehicle.isPresent()) {
-            var mav = new ModelAndView("driver/edit_availability");
-            mav.addObject("vehicle", vehicle.get());
-            mav.addObject("zones", zs.getAllZones());
-            mav.addObject("plateNumber", plateNumber);
-            return mav;
-        } else {
-            return new ModelAndView();
-        }
-    }
-
-
-    @RequestMapping(path = "/driver/acceptBooking", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/booking/{id:\\d+}/accept", method = RequestMethod.POST)
     public ModelAndView acceptBooking(
-            @RequestParam("bookingId") long bookingId
+            @PathVariable("id") long bookingId
     ) {
         ds.acceptBooking(bookingId);
-        return new ModelAndView("redirect:/");
+        return redirect("/");
     }
 
-    @RequestMapping(path = "/driver/finishBooking", method = RequestMethod.POST)
+    @RequestMapping(path = "/driver/booking/{id:\\d+}/finish", method = RequestMethod.POST)
     public ModelAndView finishBooking(
-            @RequestParam("bookingId") long bookingId
+            @PathVariable("id") long bookingId
     ) {
         ds.finishBooking(bookingId);
-        return new ModelAndView("redirect:/");
+        return redirect("/");
     }
 
-    @RequestMapping(path = "/driver/rejectBooking", method = RequestMethod.POST)
-    public ModelAndView denyBooking(
-            @RequestParam("bookingId") long bookingId
+    @RequestMapping(path = "/driver/booking/{id:\\d+}/reject", method = RequestMethod.POST)
+    public ModelAndView rejectBooking(
+            @PathVariable("id") long bookingId
     ) {
         ds.rejectBooking(bookingId);
-        return new ModelAndView("redirect:/");
+        return redirect("/");
     }
 
     @RequestMapping(path = "/driver/vehicle/{plateNumber}/delete", method = RequestMethod.POST)
     public ModelAndView deleteVehicle(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("plateNumber") String plateNumber
+            @PathVariable("plateNumber") String plateNumber,
+            RedirectAttributes redirectAttributes
     ) {
         Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
-        if (v.isPresent()) ds.deleteVehicle(v.get());
-        else log.error("Vehicle `%s` not found".formatted(plateNumber));
-        return new ModelAndView("redirect:/driver/vehicles");
-//        return vehiclesDashboard(loggedUser, 0, null);
+        if (v.isPresent()) {
+            ds.deleteVehicle(v.get());
+            List<Toast> toasts = Collections.singletonList(new Toast(
+                    ToastType.success, "toast.vehicle.delete.success"
+            ));
+            redirectAttributes.addFlashAttribute("toasts", toasts);
+            return redirect("/driver/vehicles");
+        } else {
+            log.error("Vehicle `{}` not found", plateNumber);
+            return new ModelAndView();
+        }
+    }
+
+    private ModelAndView redirect(String formattedPath, Object... args) {
+        return new ModelAndView("redirect:" + formattedPath.formatted(args));
     }
 }

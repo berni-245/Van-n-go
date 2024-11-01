@@ -54,17 +54,19 @@
                                     </div>
                                     <c:if test="${booking.state eq BookingState.PENDING}">
                                         <div class="d-flex justify-content-around mt-2">
-                                            <form action="${pageContext.request.contextPath}/driver/acceptBooking"
+                                            <c:url value="/driver/booking/${booking.id}/accept" var="bookingAcceptUrl"/>
+                                            <form action="${bookingAcceptUrl}"
                                                   method="POST" class="mb-1">
-                                                <input type="hidden" name="bookingId" value="${booking.id}">
-                                                <button type="submit" class="btn btn-success"><spring:message
-                                                        code="driver.home.booking.accept"/></button>
+                                                <button type="submit" class="btn btn-success">
+                                                    <spring:message code="driver.home.booking.accept"/>
+                                                </button>
                                             </form>
-                                            <form action="${pageContext.request.contextPath}/driver/rejectBooking"
+                                            <c:url value="/driver/booking/${booking.id}/reject" var="bookingRejectUrl"/>
+                                            <form action="${bookingRejectUrl}"
                                                   method="POST" class="mb-1">
-                                                <input type="hidden" name="bookingId" value="${booking.id}">
-                                                <button type="submit" class="btn btn-danger"><spring:message
-                                                        code="driver.home.booking.reject"/></button>
+                                                <button type="submit" class="btn btn-danger">
+                                                    <spring:message code="driver.home.booking.reject"/>
+                                                </button>
                                             </form>
                                         </div>
                                     </c:if>
@@ -82,11 +84,12 @@
                                             </c:if>
                                             <c:if test="${booking.date.isBefore(currentDate)}">
                                                 <div class="d-flex justify-content-around mt-2">
-                                                    <form action="${pageContext.request.contextPath}/driver/finishBooking"
-                                                          method="POST" class="mb-1">
-                                                        <input type="hidden" name="bookingId" value="${booking.id}">
-                                                        <button type="submit" class="btn btn-success"><spring:message
-                                                                code="driver.home.booking.finish"/></button>
+                                                    <c:url value="/driver/booking/${booking.id}/finish"
+                                                           var="bookingFinishUrl"/>
+                                                    <form action="${bookingFinishUrl}" method="POST" class="mb-1">
+                                                        <button type="submit" class="btn btn-success">
+                                                            <spring:message code="driver.home.booking.finish"/>
+                                                        </button>
                                                     </form>
                                                 </div>
                                             </c:if>

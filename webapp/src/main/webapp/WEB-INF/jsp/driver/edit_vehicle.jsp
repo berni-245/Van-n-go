@@ -23,7 +23,7 @@
 <comp:Header/>
 <div class="container mt-3">
     <div class="d-flex justify-content-between flex-sm-wrap">
-        <div>
+        <div class="w-50">
             <comp:VehicleForm
                     action="/driver/vehicle/${vehicle.plateNumber}/edit"
                     modelAttribute="vehicleForm"
