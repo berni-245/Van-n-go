@@ -25,6 +25,9 @@ public class User {
     @Column
     private Long pfp;
 
+    @Column(nullable = false)
+    private int authority = 1;
+
     User() {
         //This is used by hibernate. Do not remove.
     }
@@ -72,11 +75,17 @@ public class User {
         return pfp;
     }
 
+    public int getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(int authority) {
+        this.authority = authority;
+    }
+
     public boolean isDriver() {
         return false;
     }
-
-    ;
 
     public boolean getIsDriver() {
         return isDriver();

@@ -11,6 +11,7 @@ create table if not exists app_user
     username text unique not null,
     mail     text unique not null,
     password text        not null,
+    authority int default 1 not null,
     pfp      int         references image (id) on delete set null
 );
 

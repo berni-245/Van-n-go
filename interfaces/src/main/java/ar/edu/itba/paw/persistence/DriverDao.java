@@ -10,7 +10,7 @@ import java.util.Optional;
 
 // Should extend UserDao
 public interface DriverDao {
-    Driver create(String username, String mail, String password, String extra1);
+    Driver create(String username, String mail, String password);
 
     Optional<Driver> findById(long id);
 

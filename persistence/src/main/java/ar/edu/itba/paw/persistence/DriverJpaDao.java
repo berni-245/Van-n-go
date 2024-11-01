@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
-import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,8 +17,8 @@ public class DriverJpaDao implements DriverDao {
     private EntityManager em;
 
     @Override
-    public Driver create(String username, String mail, String password, String extra1) {
-        Driver driver = new Driver(username, mail, password, extra1, null, null);
+    public Driver create(String username, String mail, String password) {
+        Driver driver = new Driver(username, mail, password, null, null, null);
         em.persist(driver);
         return driver;
     }

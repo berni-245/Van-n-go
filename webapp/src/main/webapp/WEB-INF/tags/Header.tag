@@ -69,6 +69,20 @@
             <ul class="nav nav-pills ms-auto">
                 <c:choose>
                     <c:when test="${loggedIn}">
+                        <c:if test="${loggedUser.authority >= 2}">
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/admin/mod/dashboard" class="nav-link">
+                                    <spring:message code="components.header.mod"/>
+                                </a>
+                            </li>
+                            </c:if>
+                            <c:if test="${loggedUser.authority >= 3}">
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-link">
+                                    <spring:message code="components.header.admin"/>
+                                </a>
+                            </li>
+                        </c:if>
                         <div class="dropdown me-2 user-select-none">
                             <a class="text-body-emphasis d-flex align-items-center text-decoration-none dropdown-toggle"
                                data-bs-toggle="dropdown" aria-expanded="false" role="button">

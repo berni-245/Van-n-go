@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface DriverService {
-    Driver create(String username, String mail, String password, String extra1, Locale locale);
+    Driver create(String username, String mail, String password, Locale locale);
 
     Optional<Driver> findById(long id);
 

@@ -1,3 +1,6 @@
+ALTER TABLE app_user
+    ADD COLUMN authority int DEFAULT 1 NOT NULL;
+
 create type state as enum ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
 
 UPDATE weekly_availability

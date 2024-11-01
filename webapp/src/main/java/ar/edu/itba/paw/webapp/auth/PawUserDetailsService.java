@@ -32,6 +32,14 @@ public class PawUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        switch (user.get().getAuthority()) {
+            case 3:
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.ADMIN.name()));
+            case 2:
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.MOD.name()));
+            case 1:
+                break;
+        }
         if (user.get().isDriver()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.DRIVER.name()));
         } else {
