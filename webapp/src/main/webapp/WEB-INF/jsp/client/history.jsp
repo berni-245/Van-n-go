@@ -7,6 +7,16 @@
 <html>
 <comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">
+    <style>
+        .star {
+            font-size: 2rem;
+            cursor: pointer;
+            color: gray;
+        }
+        .star.selected {
+            color: gold;
+        }
+    </style>
 <comp:Header inHistory="true"/>
 <main>
     <div class="container mt-4">
@@ -67,7 +77,15 @@
                                                                 code="client.select.rating"
                                                                 arguments="${booking.driver.username}"/>
                                                         </form:label>
-                                                        <form:input path="rating" type="text" />
+                                                       <!-- <form:input path="rating" type="text" /> -->
+                                                        <div class="starRating" id="starRating${booking.id}">
+                                                            <span class="star" data-value="1">&#9733;</span>
+                                                            <span class="star" data-value="2">&#9733;</span>
+                                                            <span class="star" data-value="3">&#9733;</span>
+                                                            <span class="star" data-value="4">&#9733;</span>
+                                                            <span class="star" data-value="5">&#9733;</span>
+                                                        </div>
+                                                        <input type="hidden" name="rating" id="rating${booking.id}" value="0">
 
                                                     </div>
 
@@ -129,4 +147,27 @@
     </div>
 </footer>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.starRating').forEach(starContainer => {
+            const stars = starContainer.querySelectorAll('.star');
+            const ratingInput = starContainer.nextElementSibling;
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.getAttribute('data-value'), 10);
+                    ratingInput.value = rating;
+
+
+                    stars.forEach(s => s.classList.remove('selected'));
+                    for (let i = 0; i < rating; i++) {
+                        stars[i].classList.add('selected');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
 </html>
