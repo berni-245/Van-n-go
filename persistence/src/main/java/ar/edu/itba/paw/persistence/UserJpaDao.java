@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class UserJpaDao implements UserDao{
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
     }
 
+    @Transactional
     @Override
     public int updateMail(long userId, String updatedMail) {
         User user = findById(userId);
@@ -48,6 +50,8 @@ public class UserJpaDao implements UserDao{
         return 0;  //TODO posiblemente deberiamos cambiarlo a void
     }
 
+
+    @Transactional
     @Override
     public int updatePassword(long userId, String updatedPassword) {
         User user = findById(userId);
@@ -58,6 +62,7 @@ public class UserJpaDao implements UserDao{
         return 0;
     }
 
+    @Transactional
     @Override
     public int updateUsername(long userId, String updatedUsername) {
         User user = findById(userId);
