@@ -132,39 +132,19 @@
                                         <spring:message code="components.header.availability"/>
                                     </label>
                                     <div id="hb-availability" class="row weekday-toggle-group mt-3 fs-6">
-                                        <div class="col-button">
-                                            <comp:SquareToggleButton
-                                                    path="shiftPeriod"
-                                                    radio="true"
-                                                    id="hb-MORNING-${v.plateNumber}"
-                                                    labelClass="fs-6"
-                                                    inputClass="${v.plateNumber}"
-                                                    content="MORNING"
-                                                    value="MORNING"
-                                            />
-                                        </div>
-                                        <div class="col-button">
-                                            <comp:SquareToggleButton
-                                                    path="shiftPeriod"
-                                                    radio="true"
-                                                    id="hb-AFTERNOON-${v.plateNumber}"
-                                                    labelClass="fs-6"
-                                                    inputClass="${v.plateNumber}"
-                                                    content="AFTERNOON"
-                                                    value="AFTERNOON"
-                                            />
-                                        </div>
-                                        <div class="col-button">
-                                            <comp:SquareToggleButton
-                                                    path="shiftPeriod"
-                                                    radio="true"
-                                                    id="hb-EVENING-${v.plateNumber}"
-                                                    labelClass="fs-6"
-                                                    inputClass="${v.plateNumber}"
-                                                    content="EVENING"
-                                                    value="EVENING"
-                                            />
-                                        </div>
+                                        <c:forEach var="sp" items="${shiftPeriods}">
+                                            <div class="col-button">
+                                                <comp:SquareToggleButton
+                                                        path="shiftPeriod"
+                                                        radio="true"
+                                                        id="hb-${sp}-${v.plateNumber}"
+                                                        labelClass="fs-6"
+                                                        inputClass="${v.plateNumber}"
+                                                        content="${sp}"
+                                                        value="${sp}"
+                                                />
+                                            </div>
+                                        </c:forEach>
                                     </div>
                                 </div>
 
@@ -254,7 +234,7 @@
 
             dateClick: function (info) {
 
-                updateSelected(info);
+                updateSelectedDay(info);
 
                 document.getElementById('confirmForm').style.display = 'block';
                 document.querySelectorAll('input[name="date"]').forEach(
@@ -281,7 +261,7 @@
     ]
     const accordionButtons = document.querySelectorAll('.accordion-button');
 
-    function updateSelected(newDay) {
+    function updateSelectedDay(newDay) {
         if (selectedDate != null) {
             selectedDate.classList.remove('active-cell')
         }
@@ -289,20 +269,25 @@
         selectedDate = newDay.dayEl;
         selectedDateString = newDay.date.toISOString().slice(0, 10);
         const weekDay = newDay.date.getDay();
+        updateSelectedDayForVehicleButton(vehicles_data, weekDay)
+
+        // updateActiveAvailability();
+    }
+
+    function updateSelectedDayForVehicleButton(vehicles_data, weekDay) {
         vehicles_data.forEach(v => {
             const accordionButton = document.getElementById('ab-' + v.plateNumber);
             const accordionBody = document.getElementById(v.plateNumber);
             if (v.availability_days.some(av_day => av_day === weekDay)) {
                 accordionButton.disabled = false;
             } else {
-                accordionButton.disabled = true;
                 accordionButton.classList.add('collapsed');
                 accordionBody.classList.remove('show');
+                accordionButton.disabled = true;
             }
         });
-        // updateActiveAvailability();
     }
-
+/*
     function updateActiveAvailability() {
         const activeVehicleBtns = document.querySelectorAll('button.accordion-button:not(:disabled)')
         activeVehicleBtns.forEach(btn => {
@@ -324,7 +309,7 @@
                 })
             })
         })
-    }
+    }*/
 </script>
 
 </body>

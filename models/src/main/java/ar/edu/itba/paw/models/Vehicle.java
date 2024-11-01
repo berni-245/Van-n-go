@@ -43,7 +43,6 @@ public class Vehicle {
         this.zones = zones;
     }
 
-    // private Map<WeekDay, List<Availability>> weeklyAvailability
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Availability> availabilitiy;
 
