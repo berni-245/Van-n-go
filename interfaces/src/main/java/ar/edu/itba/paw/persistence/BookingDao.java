@@ -20,7 +20,9 @@ public interface BookingDao {
 
     void acceptBooking(Booking booking) throws VehicleAlreadyAcceptedException;
 
-    void rejectBooking(long bookingId);
+    void rejectBooking(Booking booking);
+
+    void finishBooking(Booking booking);
 
     Optional<Booking> getBookingById(long bookingId);
 
@@ -47,6 +49,4 @@ public interface BookingDao {
     void setRatingAndReview(long bookingId, int rating, String review);
 
     List<Booking> getAllDriverBookings(long id);
-
-    void finishBooking(Booking booking);
 }

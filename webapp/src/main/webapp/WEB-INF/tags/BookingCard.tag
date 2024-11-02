@@ -1,0 +1,85 @@
+<%@ attribute name="booking" required="true" type="ar.edu.itba.paw.models.Booking" %>
+<%@ tag body-content="empty" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<%@ tag import="ar.edu.itba.paw.models.BookingState" %>
+
+<div class="col">
+    <div class="card mb-3 shadow h-100">
+        <c:choose>
+            <c:when test="${booking.client.pfp==0}">
+                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                     alt="Client Profile Picture" style="width: 60px; height: 60px;"
+                     class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                />
+            </c:when>
+            <c:otherwise>
+                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.client.pfp}"
+                     alt="ClientPfp" style="width: 60px; height: 60px;"
+                     class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                />
+            </c:otherwise>
+        </c:choose>
+        <div class="card-body d-flex flex-column justify-content-between h-100">
+            <div>
+                <h5 class="card-title"><c:out value="${booking.date}"/></h5>
+                <p class="card-text"><c:out value="${booking.client.username}"/></p>
+                <p class="card-text"><c:out value="${booking.client.mail}"/></p>
+            </div>
+            <c:if test="${booking.state eq BookingState.PENDING}">
+                <div class="d-flex justify-content-around mt-2">
+                    <c:url value="/driver/booking/${booking.id}/accept"
+                           var="bookingAcceptUrl"/>
+                    <form action="${bookingAcceptUrl}"
+                          method="POST" class="mb-1">
+                        <button type="submit" class="btn btn-success">
+                            <spring:message code="driver.home.booking.accept"/>
+                        </button>
+                    </form>
+                    <c:url value="/driver/booking/${booking.id}/reject"
+                           var="bookingRejectUrl"/>
+                    <form action="${bookingRejectUrl}"
+                          method="POST" class="mb-1">
+                        <button type="submit" class="btn btn-danger">
+                            <spring:message code="driver.home.booking.reject"/>
+                        </button>
+                    </form>
+                </div>
+            </c:if>
+            <c:if test="${booking.state eq BookingState.ACCEPTED}">
+                <div>
+                    <p><spring:message code="driver.home.booking.confirmed"/></p>
+                    <c:if test="${booking.pop eq null}">
+                        <spring:message code="driver.home.unpaid"/>
+                    </c:if>
+                    <c:if test="${booking.pop ne null}">
+                        <a href="<c:url value='/booking/pop?popId=${booking.pop}' />"
+                           target="_blank">
+                            <spring:message code="driver.home.paid"/>
+                        </a>
+                    </c:if>
+                    <c:if test="${booking.date.isBefore(currentDate)}">
+                        <div class="d-flex justify-content-around mt-2">
+                            <c:url value="/driver/booking/${booking.id}/finish"
+                                   var="bookingFinishUrl"/>
+                            <form action="${bookingFinishUrl}" method="POST"
+                                  class="mb-1">
+                                <button type="submit" class="btn btn-success">
+                                    <spring:message
+                                            code="driver.home.booking.finish"/>
+                                </button>
+                            </form>
+                        </div>
+                    </c:if>
+                </div>
+            </c:if>
+            <c:if test="${booking.state eq BookingState.REJECTED}">
+                <div>
+                    <p><spring:message code="driver.home.booking.rejected"/></p>
+                </div>
+            </c:if>
+        </div>
+    </div>
+</div>

@@ -198,11 +198,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getBookingsByVehicleAndDate(vehicleId, date);
     }
 
-    @Transactional
     @Override
     public void acceptBooking(long bookingId) {
-        // No se si lo correcto es conseguir el entity de booking desde el service
-        // o desde el dao...
         Optional<Booking> booking = bookingDao.getBookingById(bookingId);
         //TODO move this try catch somewhere else
         booking.ifPresent(book -> {
@@ -215,10 +212,16 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     }
 
-    @Transactional
     @Override
     public void rejectBooking(long bookingId) {
-        bookingDao.rejectBooking(bookingId);
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        bookingDao.rejectBooking(booking);
+    }
+
+    @Override
+    public void finishBooking(long bookingId) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        bookingDao.finishBooking(booking);
     }
 
     @Override
@@ -246,12 +249,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             v.setImgId(imgId);
         }
         vehicleDao.updateVehicle(v);
-    }
-
-    @Override
-    public void finishBooking(long bookingId) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        bookingDao.finishBooking(booking);
     }
 
     @Transactional
