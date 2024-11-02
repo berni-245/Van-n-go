@@ -121,28 +121,22 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         availabilityDao.updateVehicleAvailability(vehicle, periods);
     }
 
-
-    @Transactional
-    @Override
-    public void updateWeeklyAvailability(
-            long driverId,
-            DayOfWeek weekDay,
-            ShiftPeriod[] periods,
-            long vehicleId
-    ) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public List<Driver> getAll(long zoneId, Size size, int page) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         return driverDao.getAll(zone, size, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
-    @Transactional
     @Override
     public List<Booking> getBookings(long driverId, int page) {
-        return bookingDao.getDriverBookings(driverId, page * Pagination.BOOKINGS_PAGE_SIZE);
+        Driver driver = driverDao.findById(driverId).orElseThrow();
+        return bookingDao.getDriverBookings(driver, page * Pagination.BOOKINGS_PAGE_SIZE);
+    }
+
+    @Override
+    public List<Booking> getHistory(long driverId, int page) {
+        Driver driver = driverDao.findById(driverId).orElseThrow();
+        return bookingDao.getDriverHistory(driver, Pagination.BOOKINGS_PAGE_SIZE * page);
     }
 
     @Override
@@ -158,18 +152,11 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         Set<DayOfWeek> days = new HashSet<>();
         vehicles.forEach(vehicle -> {
             if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
-                vehicle.getAvailabilitiy().forEach(availability -> {
-                    days.add(availability.getWeekDay());
-                });
+                vehicle.getAvailabilitiy().forEach(availability -> days.add(availability.getWeekDay()));
             }
         });
         return days;
 
-    }
-
-    @Override
-    public List<Booking> getHistory(long driverId, int page) {
-        return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE * page);
     }
 
     @Override

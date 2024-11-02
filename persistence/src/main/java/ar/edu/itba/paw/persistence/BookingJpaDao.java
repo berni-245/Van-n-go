@@ -75,12 +75,9 @@ public class BookingJpaDao implements BookingDao {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }
 
+    @Transactional
     @Override
-    public List<Booking> getDriverBookings(long driverId, int offset) {
-        Driver driver = em.find(Driver.class, driverId);
-        if (driver == null) {
-            //throws...
-        }
+    public List<Booking> getDriverBookings(Driver driver, int offset) {
         TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
         vehiclesQuery.setParameter("driver", driver);
         List<Vehicle> vehicles = vehiclesQuery.getResultList();
@@ -108,12 +105,9 @@ public class BookingJpaDao implements BookingDao {
     }
 
 
+    @Transactional
     @Override
-    public List<Booking> getDriverHistory(long driverId, int offset) {
-        Driver driver = em.find(Driver.class, driverId);
-        if (driver == null) {
-            //throws...
-        }
+    public List<Booking> getDriverHistory(Driver driver, int offset) {
         TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
         vehiclesQuery.setParameter("driver", driver);
         List<Vehicle> vehicles = vehiclesQuery.getResultList();

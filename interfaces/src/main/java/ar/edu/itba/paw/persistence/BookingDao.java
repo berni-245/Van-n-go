@@ -26,9 +26,11 @@ public interface BookingDao {
 
     Optional<Booking> getBookingById(long bookingId);
 
-    List<Booking> getDriverBookings(long driverId, int offset);
+    List<Booking> getDriverBookings(Driver driver, int offset);
 
-    List<Booking> getDriverHistory(long driverId, int offset);
+    List<Booking> getDriverHistory(Driver driver, int offset);
+
+//    List<Booking> getDriverBookings(long driverId, int offset);
 
     int getDriverBookingCount(long driverId);
 

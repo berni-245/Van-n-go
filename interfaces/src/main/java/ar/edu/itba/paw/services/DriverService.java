@@ -44,13 +44,6 @@ public interface DriverService {
             ShiftPeriod[] sundayPeriods
     );
 
-    void updateWeeklyAvailability(
-            long driverId,
-            DayOfWeek weekDay,
-            ShiftPeriod[] periods,
-            long vehicleId
-    );
-
     List<Driver> getAll(long zoneId, Size size, int page);
 
     List<Booking> getBookings(long driverId, int page);

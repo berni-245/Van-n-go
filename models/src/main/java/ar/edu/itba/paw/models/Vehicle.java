@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import com.google.gson.Gson;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -35,21 +33,11 @@ public class Vehicle {
     )
     private List<Zone> zones;
 
-    public List<Zone> getZones() {
-        return zones;
-    }
-
-    public void setZones(List<Zone> zones) {
-        this.zones = zones;
-    }
-
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Availability> availabilitiy;
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings;
-
-    private static final Gson gson = new Gson();
 
     Vehicle() {
     }
@@ -118,6 +106,14 @@ public class Vehicle {
 
     public double getHourlyRate() {
         return hourlyRate;
+    }
+
+    public List<Zone> getZones() {
+        return zones;
+    }
+
+    public void setZones(List<Zone> zones) {
+        this.zones = zones;
     }
 
     public List<Availability> getAvailabilitiy() {
