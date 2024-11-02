@@ -258,6 +258,7 @@ public class DriverController extends ParentController {
 
     private boolean addBookingData(ModelAndView mav, Driver driver, BookingState state, int currentPage) {
         int totPages = ds.getBookingPages(driver, state);
+        if(totPages == 0) return true;
         if (currentPage > totPages || currentPage < 1) return false;
         String stateLowerCase = state.toString().toLowerCase();
         String stateCapitalized = stateLowerCase.substring(0, 1).toUpperCase() + stateLowerCase.substring(1);
