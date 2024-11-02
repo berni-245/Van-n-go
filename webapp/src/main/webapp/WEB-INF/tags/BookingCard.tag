@@ -1,10 +1,8 @@
 <%@ attribute name="booking" required="true" type="ar.edu.itba.paw.models.Booking" %>
 <%@ attribute name="currentDate" required="true" type="java.time.LocalDate" %>
 <%@ tag body-content="empty" %>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
 <%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
 <div class="col">
@@ -80,6 +78,33 @@
                     <div>
                         <p><spring:message code="driver.home.booking.finish"/></p>
                     </div>
+                    <c:choose>
+                        <c:when test="${booking.rating.isPresent()}">
+                            <p><spring:message code="driver.history.rating"/></p>
+                            <div class="d-flex align-items-center">
+                            <span class="fw-bold text-warning">
+                                <c:out value="${booking.rating.get()}"/>
+                            </span>
+                                <div class="ms-2">
+                                    <c:set var="fullStars" value="${booking.rating.get().intValue()}"/>
+                                    <c:set var="emptyStars" value="${5 - fullStars}"/>
+
+                                    <c:forEach var="i" begin="1" end="${fullStars}">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </c:forEach>
+
+                                    <c:forEach var="i" begin="1" end="${emptyStars}">
+                                        <i class="bi bi-star text-secondary"></i>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                            <p><spring:message code="driver.history.review"/></p>
+                            <p><c:out value="${booking.review.get()}"/></p>
+                        </c:when>
+                        <c:otherwise>
+                            <p><spring:message code="driver.history.noRating"/></p>
+                        </c:otherwise>
+                    </c:choose>
                 </c:when>
             </c:choose>
         </div>

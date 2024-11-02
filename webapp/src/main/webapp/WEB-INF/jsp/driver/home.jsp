@@ -6,7 +6,7 @@
 <%@ page import="ar.edu.itba.paw.models.BookingState" %>
 
 <html>
-<comp:Head titleCode="siteName"/>
+<comp:Head titleCode="siteName" bsIcons="true"/>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:Header inHome="true"/>
