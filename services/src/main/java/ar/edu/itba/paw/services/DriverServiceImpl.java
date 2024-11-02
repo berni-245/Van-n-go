@@ -94,9 +94,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size) {
+    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return vehicleDao.getDriverVehicles(driver, zone, size);
+        return vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
     }
 
     @Override
@@ -156,16 +156,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size) {
-        List<Vehicle> vehicles = vehicleDao.getDriverVehicles(driver);
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+    public Set<DayOfWeek> getWorkingDays(Driver driver, List<Vehicle> vehicles) {
         Set<DayOfWeek> days = new HashSet<>();
+        //TODO: (While size<7 do:)
         vehicles.forEach(vehicle -> {
-            if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
                 vehicle.getAvailability().forEach(availability -> {
                     days.add(availability.getWeekDay());
                 });
-            }
         });
         return days;
 

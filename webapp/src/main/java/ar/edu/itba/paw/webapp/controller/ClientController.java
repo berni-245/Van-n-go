@@ -171,7 +171,10 @@ public class ClientController {
     public ModelAndView driverAvailability(
             @PathVariable(name = "driverId") long driverId,
             @RequestParam(name = "zoneId") long zoneId,
-            @RequestParam(name = "size") Size size,
+            @RequestParam(name = "size", required = false) Size size,
+            @RequestParam(name = "priceMin", required = false) Double priceMin,
+            @RequestParam(name = "priceMax", required = false) Double priceMax,
+            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
@@ -179,8 +182,8 @@ public class ClientController {
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", driverId);
-            var vehicles = ds.getVehicles(driver.get(), zoneId, size);
-            Set<DayOfWeek> workingDays = ds.getDriverWorkingDaysOnZoneWithSize(driver.get(),zoneId,size);
+            var vehicles = ds.getVehicles(driver.get(), zoneId, size, priceMin, priceMax, weekday);
+            Set<DayOfWeek> workingDays = ds.getWorkingDays(driver.get(),vehicles);
             List<Zone> zones = zs.getAllZones();
             mav.addObject("zones", zones);
             mav.addObject("vehicles", vehicles);
@@ -192,8 +195,11 @@ public class ClientController {
             Optional<Zone> originZone = zs.getZone(zoneId);
             if (originZone.isEmpty()) return new ModelAndView();
             mav.addObject("originZone", originZone.get());
-            mav.addObject("size", size.name());
-            mav.addObject("sizeLowerCase", size.name().toLowerCase());
+            mav.addObject("size", size);
+            mav.addObject("sizeLowerCase", size);
+            mav.addObject("priceMin", priceMin);
+            mav.addObject("priceMax", priceMax);
+            mav.addObject("weekday", weekday);
             return mav;
         } else {
             return new ModelAndView("redirect:/403");
@@ -204,14 +210,17 @@ public class ClientController {
     public ModelAndView appointBooking(
             @PathVariable(name = "id") long id,
             @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam(name = "size") Size size,
+            @RequestParam(name = "size", required = false) Size size,
+            @RequestParam(name = "priceMin", required = false) Double priceMin,
+            @RequestParam(name = "priceMax",required = false) Double priceMax,
+            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @ModelAttribute("bookingForm") BookingForm form,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
         List<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            return driverAvailability(id, form.getOriginZoneId(), size, loggedUser, form);
+            return driverAvailability(id, form.getOriginZoneId(), size, priceMin, priceMax, weekday, loggedUser, form);
         }
         try {
             Optional<Booking> booking = Optional.ofNullable(cs.appointBooking(

@@ -70,10 +70,9 @@
 <body>
 <comp:Header/>
 <h1 class="text-center mb-5">
-    <spring:message code="generic.word.${sizeLowerCase}" var="sizeMsg"/>
     <spring:message
             code="generic.phrase.userAvailability"
-            arguments="${driver.username},${zone.neighborhoodName},${sizeMsg}"
+            arguments="${driver.username},${zone.neighborhoodName}"
     />
 </h1>
 
@@ -118,8 +117,12 @@
                                 </figcaption>
                             </figure>
                             <c:url var="postUrl"
-                                   value="/client/availability/${driverId}?size=${size}"/>
+                                   value="/client/availability/${driverId}"/>
                             <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
+                                <input type="hidden" name="size" value="${size}">
+                                <input type="hidden" name="priceMin" value="${priceMin}">
+                                <input type="hidden" name="priceMax" value="${priceMax}">
+                                <input type="hidden" name="weekday" value="${weekday}">
                                 <input type="hidden" name="vehicleId" value="${v.id}">
                                 <input type="hidden" name="originZoneId" value="${originZone.id}">
                                 <input id="bookingDate" type="hidden" name="date" value=""/>
