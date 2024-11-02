@@ -77,62 +77,37 @@ public class BookingJpaDao implements BookingDao {
 
     @Transactional
     @Override
-    public List<Booking> getDriverBookings(Driver driver, int offset) {
-        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
-        vehiclesQuery.setParameter("driver", driver);
-        List<Vehicle> vehicles = vehiclesQuery.getResultList();
+    public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
+        var bookingIds = em.createNativeQuery("""
+                        select b.id from booking b join vehicle v on v.id = b.vehicle_id
+                        where v.driver_id = :driverId and b.state = :state
+                        """)
+                .setParameter("driverId", driver.getId())
+                .setParameter("state", state.toString())
+                .setFirstResult(offset)
+                .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
+                .getResultList();
 
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles order by b.date", Booking.class); //TODO: revisar si hace el equals de java
-        query.setParameter("vehicles", vehicles);
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
-        return query.getResultList();
+        // The return type of the previous query is a List<Integer> and for some reason
+        // Integer and Long (Booking id is Long) cannot be compared directly so I need
+        // to convert the values to Long.
+        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
+
+        return em.createQuery("from Booking where id in (:bookingIds)", Booking.class)
+                .setParameter("bookingIds", bookingIds2)
+                .getResultList();
     }
 
     @Override
-    public int getDriverBookingCount(long driverId) {
-        Driver driver = em.find(Driver.class, driverId);
-        if (driver == null) {
-            //throws...
-        }
-        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
-        vehiclesQuery.setParameter("driver", driver);
-        List<Vehicle> vehicles = vehiclesQuery.getResultList();
-
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles", Booking.class); //TODO: revisar si hace el equals de java
-        query.setParameter("vehicles", vehicles);
-        return query.getResultList().size();
-    }
-
-
-    @Transactional
-    @Override
-    public List<Booking> getDriverHistory(Driver driver, int offset) {
-        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
-        vehiclesQuery.setParameter("driver", driver);
-        List<Vehicle> vehicles = vehiclesQuery.getResultList();
-
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE and b.state = :state order by b.date desc", Booking.class); //TODO: revisar si hace el equals de java
-        query.setParameter("vehicles", vehicles);
-        query.setParameter("state", BookingState.FINISHED);
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
-        return query.getResultList();
-    }
-
-    @Override
-    public int getDriverHistoryCount(long driverId) {
-        Driver driver = em.find(Driver.class, driverId);
-        if (driver == null) {
-            //throws...
-        }
-        TypedQuery<Vehicle> vehiclesQuery = em.createQuery("From Vehicle v where v.driver = :driver", Vehicle.class);
-        vehiclesQuery.setParameter("driver", driver);
-        List<Vehicle> vehicles = vehiclesQuery.getResultList();
-
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle in :vehicles and b.date < CURRENT_DATE", Booking.class); //TODO: revisar si hace el equals de java
-        query.setParameter("vehicles", vehicles);
-        return query.getResultList().size();
+    public long getDriverBookingCount(Driver driver, BookingState state) {
+        return em.createQuery("""
+                        select count(*) from Booking b
+                        join Vehicle v on b.vehicle = v
+                        where v.driver = :driver and b.state = :state
+                        """, Long.class)
+                .setParameter("driver", driver)
+                .setParameter("state", state)
+                .getSingleResult();
     }
 
     @Override

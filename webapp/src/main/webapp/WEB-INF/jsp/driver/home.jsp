@@ -12,89 +12,52 @@
 <comp:Header inHome="true"/>
 <main>
     <div class="container mt-4">
-
         <div class="row">
             <div class="col-12">
                 <h1 class="text-left"><spring:message code="driver.home.yourBookings"/></h1>
             </div>
         </div>
-        <c:choose>
-            <c:when test="${empty bookings}">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="mt-5 display-4 font-weight-bold"><spring:message
-                                code="call_to_action.driver_bookings"/></p>
-                    </div>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <ul class="nav nav-tabs" id="statusTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pending-tab" data-bs-toggle="tab"
-                                data-bs-target="#pending" type="button" role="tab" aria-controls="pending"
-                                aria-selected="true">
-                            Pending
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted"
-                                type="button" role="tab" aria-controls="accepted" aria-selected="false">
-                            Accepted
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected"
-                                type="button" role="tab" aria-controls="rejected" aria-selected="false">
-                            Rejected
-                        </button>
-                    </li>
-                </ul>
+        <ul class="nav nav-tabs" id="statusTabs" role="tablist">
+            <comp:TabButton id="pending-tab" targetId="${BookingState.PENDING}"
+                            code="generic.word.pending.bookings"
+                            active="${activeTab eq BookingState.PENDING}"/>
+            <comp:TabButton id="accepted-tab" targetId="${BookingState.ACCEPTED}"
+                            code="generic.word.accepted.bookings"
+                            active="${activeTab eq BookingState.ACCEPTED}"/>
+            <comp:TabButton id="finished-tab" targetId="${BookingState.FINISHED}"
+                            code="generic.word.finished.bookings"
+                            active="${activeTab eq BookingState.FINISHED}"/>
+            <comp:TabButton id="rejected-tab" targetId="${BookingState.REJECTED}"
+                            code="generic.word.rejected.bookings"
+                            active="${activeTab eq BookingState.REJECTED}"/>
+        </ul>
 
-                <div class="tab-content mt-3" id="statusTabsContent">
-                    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                        <div class="row row-cols-3">
-                            <c:forEach var="booking" items="${bookings}">
-                                <comp:BookingCard booking="${booking}"/>
-                            </c:forEach>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade show active" id="accepted" role="tabpanel" aria-labelledby="accepted-tab">
-                        <div class="row row-cols-3">
-                            <c:forEach var="booking" items="${bookings}">
-                            </c:forEach>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade show active" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
-                        <div class="row row-cols-3">
-                            <c:forEach var="booking" items="${bookings}">
-                            </c:forEach>
-                        </div>
-                    </div>
-                </div>
-
-                <c:if test="${totalPages > 1}">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1"
-                                   aria-disabled="${currentPage == 0}">&laquo; Previous</a>
-                            </li>
-                            <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="?page=${i}">${i + 1}</a>
-                                </li>
-                            </c:forEach>
-                            <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="?page=${currentPage + 1}"
-                                   aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </c:if>
-            </c:otherwise>
-        </c:choose>
+        <div class="tab-content mt-3" id="statusTabsContent">
+            <comp:BookingCardList id="${BookingState.PENDING}" tabId="pending-tab"
+                                  active="${activeTab eq BookingState.PENDING}"
+                                  callToActionCode="call_to_action.driver_bookings"
+                                  bookings="${pendingBookings}" currentDate="${currentDate}"
+                                  paramName="pendingPage" totalPages="${totPendingPages}"
+                                  currentPage="${pendingPage}"/>
+            <comp:BookingCardList id="${BookingState.ACCEPTED}" tabId="accepted-tab"
+                                  active="${activeTab eq BookingState.ACCEPTED}"
+                                  callToActionCode="call_to_action.driver_bookings"
+                                  bookings="${acceptedBookings}" currentDate="${currentDate}"
+                                  paramName="acceptedPage" totalPages="${totAcceptedPages}"
+                                  currentPage="${acceptedPage}"/>
+            <comp:BookingCardList id="${BookingState.FINISHED}" tabId="finished-tab"
+                                  active="${activeTab eq BookingState.FINISHED}"
+                                  callToActionCode="call_to_action.driver_bookings"
+                                  bookings="${finishedBookings}" currentDate="${currentDate}"
+                                  paramName="finishedPage" totalPages="${totFinishedPages}"
+                                  currentPage="${finishedPage}"/>
+            <comp:BookingCardList id="${BookingState.REJECTED}" tabId="rejected-tab"
+                                  active="${activeTab eq BookingState.REJECTED}"
+                                  callToActionCode="call_to_action.driver_bookings"
+                                  bookings="${rejectedBookings}" currentDate="${currentDate}"
+                                  paramName="rejectedPage" totalPages="${totRejectedPages}"
+                                  currentPage="${rejectedPage}"/>
+        </div>
     </div>
 
 
@@ -110,4 +73,30 @@
 </footer>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        function setParamAndNavigate(paramName, paramValue) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(paramName, paramValue);
+            window.location.href = url.toString();
+        }
+
+        document.querySelectorAll('.pagination').forEach(pagination => {
+            const paramName = pagination.getAttribute('param-name');
+            const currentPage = parseInt(pagination.getAttribute('current-page'));
+            pagination.querySelector('.pagination-prev')
+                .addEventListener('click', () => setParamAndNavigate(paramName, currentPage - 1));
+            pagination.querySelector('.pagination-next')
+                .addEventListener('click', () => setParamAndNavigate(paramName, currentPage + 1));
+            pagination.querySelectorAll('.pagination-page').forEach(p => {
+                p.addEventListener('click', () => setParamAndNavigate(paramName, p.textContent));
+            })
+        });
+
+        document.querySelectorAll('[role="tab"]').forEach(tab => {
+            const tabName = tab.getAttribute('aria-controls');
+            tab.addEventListener('click', () => setParamAndNavigate('activeTab', tabName));
+        });
+    })
+</script>
 </html>

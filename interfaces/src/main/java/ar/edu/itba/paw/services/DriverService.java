@@ -46,15 +46,16 @@ public interface DriverService {
 
     List<Driver> getAll(long zoneId, Size size, int page);
 
-    List<Booking> getBookings(long driverId, int page);
+    List<Booking> getBookings(Driver driver, BookingState state, int page);
 
-    public List<Booking> getHistory(long driverId, int page);
+    long getBookingCount(Driver driver, BookingState state);
+
+    default int getBookingPages(Driver driver, BookingState state) {
+        long totalBookings = this.getBookingCount(driver, state);
+        return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
+    }
 
     int totalMatches(long zoneId, Size size);
-
-    int getTotalBookingCount(long driverId);
-
-    int getTotalHistoryCount(long driverId);
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 

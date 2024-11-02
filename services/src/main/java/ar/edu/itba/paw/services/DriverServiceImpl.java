@@ -128,17 +128,17 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Booking> getBookings(long driverId, int page) {
-        Driver driver = driverDao.findById(driverId).orElseThrow();
-        return bookingDao.getDriverBookings(driver, page * Pagination.BOOKINGS_PAGE_SIZE);
+    public List<Booking> getBookings(Driver driver, BookingState state, int page) {
+        return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
     @Override
-    public List<Booking> getHistory(long driverId, int page) {
-        Driver driver = driverDao.findById(driverId).orElseThrow();
-        return bookingDao.getDriverHistory(driver, Pagination.BOOKINGS_PAGE_SIZE * page);
+    public long getBookingCount(Driver driver, BookingState state) {
+        return bookingDao.getDriverBookingCount(driver, state);
     }
 
+    // Hay que ver bien cuándo se usa esto porque si tenemos que paginar los bookings se supone
+    // que es porque puede llegar a haber muchos y no los deberíamos traer a todos de una.
     @Override
     public List<Booking> getAllBookings(long id) {
         return bookingDao.getAllDriverBookings(id);
@@ -163,16 +163,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     public int totalMatches(long zoneId, Size size) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         return driverDao.getSearchCount(zone, size);
-    }
-
-    @Override
-    public int getTotalBookingCount(long driverId) {
-        return bookingDao.getDriverBookingCount(driverId);
-    }
-
-    @Override
-    public int getTotalHistoryCount(long driverId) {
-        return bookingDao.getDriverHistoryCount(driverId);
     }
 
     @Override
@@ -246,11 +236,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Vehicle> getVehicles(Driver driver, int page) {
-        return vehicleDao.getDriverVehicles(driver,page*Pagination.VEHICLES_PAGE_SIZE);
+        return vehicleDao.getDriverVehicles(driver, page * Pagination.VEHICLES_PAGE_SIZE);
     }
 
     @Override
-    public int getVehicleCount(Driver driver){return vehicleDao.getDriverVehicles(driver).size();}
+    public int getVehicleCount(Driver driver) {
+        return vehicleDao.getDriverVehicles(driver).size();
+    }
 
     @Override
     public void deleteVehicle(Vehicle vehicle) {
