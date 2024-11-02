@@ -28,83 +28,52 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
-                    <c:forEach var="booking" items="${bookings}">
-                        <div class="col">
-                            <div class="card mb-3 shadow h-100">
-                                <c:choose>
-                                    <c:when test="${booking.client.pfp==0}">
-                                        <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
-                                             alt="Client Profile Picture" style="width: 60px; height: 60px;"
-                                             class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
-                                        />
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.client.pfp}"
-                                             alt="ClientPfp" style="width: 60px; height: 60px;"
-                                             class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
-                                        />
-                                    </c:otherwise>
-                                </c:choose>
-                                <div class="card-body d-flex flex-column justify-content-between h-100">
-                                    <div>
-                                        <h5 class="card-title"><c:out value="${booking.date}"/></h5>
-                                        <p class="card-text"><c:out value="${booking.client.username}"/></p>
-                                        <p class="card-text"><c:out value="${booking.client.mail}"/></p>
-                                    </div>
-                                    <c:if test="${booking.state eq BookingState.PENDING}">
-                                        <div class="d-flex justify-content-around mt-2">
-                                            <c:url value="/driver/booking/${booking.id}/accept" var="bookingAcceptUrl"/>
-                                            <form action="${bookingAcceptUrl}"
-                                                  method="POST" class="mb-1">
-                                                <button type="submit" class="btn btn-success">
-                                                    <spring:message code="driver.home.booking.accept"/>
-                                                </button>
-                                            </form>
-                                            <c:url value="/driver/booking/${booking.id}/reject" var="bookingRejectUrl"/>
-                                            <form action="${bookingRejectUrl}"
-                                                  method="POST" class="mb-1">
-                                                <button type="submit" class="btn btn-danger">
-                                                    <spring:message code="driver.home.booking.reject"/>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${booking.state eq BookingState.ACCEPTED}">
-                                        <div>
-                                            <p><spring:message code="driver.home.booking.confirmed"/></p>
-                                            <c:if test="${booking.pop eq null}">
-                                                <spring:message code="driver.home.unpaid"/>
-                                            </c:if>
-                                            <c:if test="${booking.pop ne null}">
-                                                <a href="<c:url value='/booking/pop?popId=${booking.pop}' />"
-                                                   target="_blank">
-                                                    <spring:message code="driver.home.paid"/>
-                                                </a>
-                                            </c:if>
-                                            <c:if test="${booking.date.isBefore(currentDate)}">
-                                                <div class="d-flex justify-content-around mt-2">
-                                                    <c:url value="/driver/booking/${booking.id}/finish"
-                                                           var="bookingFinishUrl"/>
-                                                    <form action="${bookingFinishUrl}" method="POST" class="mb-1">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <spring:message code="driver.home.booking.finish"/>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </c:if>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${booking.state eq BookingState.REJECTED}">
-                                        <div>
-                                            <p><spring:message code="driver.home.booking.rejected"/></p>
-                                        </div>
-                                    </c:if>
-                                </div>
-                            </div>
+                <ul class="nav nav-tabs" id="statusTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pending-tab" data-bs-toggle="tab"
+                                data-bs-target="#pending" type="button" role="tab" aria-controls="pending"
+                                aria-selected="true">
+                            Pending
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted"
+                                type="button" role="tab" aria-controls="accepted" aria-selected="false">
+                            Accepted
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected"
+                                type="button" role="tab" aria-controls="rejected" aria-selected="false">
+                            Rejected
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3" id="statusTabsContent">
+                    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                        <div class="row row-cols-3">
+                            <c:forEach var="booking" items="${bookings}">
+                                <comp:BookingCard booking="${booking}"/>
+                            </c:forEach>
                         </div>
-                    </c:forEach>
+                    </div>
+
+                    <div class="tab-pane fade show active" id="accepted" role="tabpanel" aria-labelledby="accepted-tab">
+                        <div class="row row-cols-3">
+                            <c:forEach var="booking" items="${bookings}">
+                            </c:forEach>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show active" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+                        <div class="row row-cols-3">
+                            <c:forEach var="booking" items="${bookings}">
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
+
                 <c:if test="${totalPages > 1}">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">

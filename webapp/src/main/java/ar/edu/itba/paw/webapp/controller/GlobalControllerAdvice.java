@@ -31,9 +31,9 @@ public class GlobalControllerAdvice {
         return null;
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error/500";
-    }
+//    @ExceptionHandler(Exception.class)
+//    public String handleException(Exception ex, Model model) {
+//        model.addAttribute("errorMessage", ex.getMessage());
+//        return "error/500";
+//    }
 }

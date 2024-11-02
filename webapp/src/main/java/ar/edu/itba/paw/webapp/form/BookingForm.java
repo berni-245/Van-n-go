@@ -13,13 +13,13 @@ public class BookingForm {
     private long vehicleId;
 
     @NotEmpty
-    private long zoneId;
+    private long originZoneId;
 
     @NotNull
     private String shiftPeriod;
 
-    @NotNull
-    private long destinationId;
+    @NotEmpty
+    private long destinationZoneId;
 
     @Length(min = 20, max = 500)
     private String jobDescription;
@@ -42,12 +42,12 @@ public class BookingForm {
     }
 
     @NotEmpty
-    public long getZoneId() {
-        return zoneId;
+    public long getOriginZoneId() {
+        return originZoneId;
     }
 
-    public void setZoneId(@NotEmpty long zoneId) {
-        this.zoneId = zoneId;
+    public void setOriginZoneId(@NotEmpty long originZoneId) {
+        this.originZoneId = originZoneId;
     }
 
     public @Length(min = 20, max = 500) String getJobDescription() {
@@ -67,11 +67,11 @@ public class BookingForm {
     }
 
     @NotNull
-    public long getDestinationId() {
-        return destinationId;
+    public long getDestinationZoneId() {
+        return destinationZoneId;
     }
 
-    public void setDestinationId(@NotNull long destinationId) {
-        this.destinationId = destinationId;
+    public void setDestinationZoneId(@NotNull long destinationZoneId) {
+        this.destinationZoneId = destinationZoneId;
     }
 }

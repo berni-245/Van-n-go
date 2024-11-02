@@ -167,29 +167,31 @@ public class ClientController {
         return gson.toJson("{}");
     }
 
-    @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.GET)
+    @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
-            @PathVariable(name = "id") long id,
+            @PathVariable(name = "driverId") long driverId,
             @RequestParam(name = "zoneId") long zoneId,
             @RequestParam(name = "size") Size size,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
-        Optional<Driver> driver = ds.findById(id);
+        Optional<Driver> driver = ds.findById(driverId);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
-            mav.addObject("driverId", id);
+            mav.addObject("driverId", driverId);
             var vehicles = ds.getVehicles(driver.get(), zoneId, size);
             Set<DayOfWeek> workingDays = ds.getDriverWorkingDaysOnZoneWithSize(driver.get(),zoneId,size);
+            List<Zone> zones = zs.getAllZones();
+            mav.addObject("zones", zones);
             mav.addObject("vehicles", vehicles);
             mav.addObject("workingDays", workingDays);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
             var bookings = ds.getAllBookings(driver.get().getId());
             mav.addObject("bookings", bookings);
             mav.addObject("driver", driver.get());
-            Optional<Zone> zone = zs.getZone(zoneId);
-            if (zone.isEmpty()) return new ModelAndView();
-            mav.addObject("zone", zone.get());
+            Optional<Zone> originZone = zs.getZone(zoneId);
+            if (originZone.isEmpty()) return new ModelAndView();
+            mav.addObject("originZone", originZone.get());
             mav.addObject("size", size.name());
             mav.addObject("sizeLowerCase", size.name().toLowerCase());
             return mav;
@@ -209,14 +211,14 @@ public class ClientController {
     ) {
         List<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            return driverAvailability(id, form.getZoneId(), size, loggedUser, form);
+            return driverAvailability(id, form.getOriginZoneId(), size, loggedUser, form);
         }
         try {
             Optional<Booking> booking = Optional.ofNullable(cs.appointBooking(
                     form.getVehicleId(),
                     loggedUser,
-                    form.getZoneId(),
-                    form.getDestinationId(),
+                    form.getOriginZoneId(),
+                    form.getDestinationZoneId(),
                     form.getDate(),
                     ShiftPeriod.valueOf(form.getShiftPeriod()),
                     form.getJobDescription(),
@@ -227,7 +229,7 @@ public class ClientController {
                         ToastType.danger, "toast.booking.error"
                 ));
                 redirectAttributes.addFlashAttribute("toasts", toasts);
-                return new ModelAndView("redirect:/availability/%d?zoneId=%d&size=%s".formatted(id, form.getZoneId(), size.name()));
+                return new ModelAndView("redirect:/availability/%d?zoneId=%d&size=%s".formatted(id, form.getOriginZoneId(), size.name()));
             }
             toasts.add(new Toast(
                     ToastType.danger, "toast.booking.success"
