@@ -63,8 +63,6 @@
             padding: 10px;
             text-align: center;
         }
-
-
     </style>
 </comp:Head>
 <body>
@@ -93,6 +91,7 @@
                                 data-bs-target="#${v.plateNumber}" aria-expanded="false"
                                 aria-controls="${v.plateNumber}"
                                 vehicleId="${v.id}" plateNumber="${v.plateNumber}"
+                                onclick="updateSelectedVehicle('${v.plateNumber}')"
                                 disabled
                         >
                             <strong><c:out value="${v.plateNumber}"/></strong> -
@@ -119,11 +118,10 @@
                             </figure>
                             <c:url var="postUrl"
                                    value="/client/availability/${driverId}?size=${size}"/>
-                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
+                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm" onsubmit="return isShiftPeriodButtonClicked()">
                                 <input type="hidden" name="vehicleId" value="${v.id}">
                                 <input type="hidden" name="originZoneId" value="${originZone.id}">
                                 <input id="bookingDate" type="hidden" name="date" value=""/>
-
                                 <div>
                                     <label for="hb-availability">
                                         <spring:message code="components.header.availability"/>
@@ -136,6 +134,7 @@
                                                         id="sp-${sp}-${v.plateNumber}"
                                                         content="${sp}"
                                                         value="${sp}"
+                                                        onclick="updateSelectedShiftPeriod('${sp}')"
                                                 />
                                             </div>
                                         </c:forEach>
@@ -174,31 +173,11 @@
     <comp:ToastManager toasts="${toasts}"/>
 </div>
 
+
 <script type="text/javascript">
-    <%--const reservedDates = [--%>
-    <%--    <c:forEach var="booking" items="${bookings}">--%>
-    <%--    <c:if test="${booking.confirmed}">--%>
-    <%--    "<c:out value='${booking.date}'/>",--%>
-    <%--    </c:if>--%>
-    <%--    </c:forEach>--%>
-    <%--];--%>
-
-    function mapToFullCalendar(dayOfWeek) {
-        const dayMap = {
-            1: 1,  // Lunes a Lunes
-            2: 2,  // Martes a Martes
-            3: 3,  // Miércoles a Miércoles
-            4: 4,  // Jueves a Jueves
-            5: 5,  // Viernes a Viernes
-            6: 6,  // Sábado a Sábado
-            7: 0   // Domingo a Domingo (FullCalendar usa 0 para domingo)
-        };
-        return dayMap[dayOfWeek];
-    }
-
     let workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
-         mapToFullCalendar(${workDay.value}),
+          ${workDay.value % 7},
         </c:forEach>
     ];
 
@@ -209,6 +188,9 @@
 
     let selectedDate = null;
     let selectedDateString = null;
+    let selectedIntDayOfWeek = null;
+    let selectedVehiclePlateNumber = null;
+    let selectedShiftPeriod = null;
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
         const today = new Date();
@@ -283,11 +265,13 @@
         if (selectedDate != null) {
             selectedDate.classList.remove('active-cell')
         }
+        selectedVehiclePlateNumber = null;
+        selectedShiftPeriod = null;
         newDay.dayEl.classList.add('active-cell')
         selectedDate = newDay.dayEl;
         selectedDateString = newDay.date.toISOString().slice(0, 10);
-        const weekDay = newDay.date.getDay();
-        updateVehicleInfo(weekDay)
+        selectedIntDayOfWeek = newDay.date.getDay();
+        updateVehicleInfo(selectedIntDayOfWeek);
     }
 
     function updateVehicleInfo(weekDay) {
@@ -319,6 +303,29 @@
                     spButton.disabled = true;
                 }
         })
+    }
+
+    function updateSelectedVehicle(vehiclePlate) {
+        selectedVehiclePlateNumber = vehiclePlate;
+        selectedShiftPeriod = null;
+        vehiclesData.forEach(v => {
+            if(v.plateNumber === vehiclePlate) {
+                updateShiftPeriodButtons(v, selectedIntDayOfWeek, selectedDateString);
+            }
+        })
+    }
+
+    function updateSelectedShiftPeriod(sf) {
+        selectedShiftPeriod = sf;
+    }
+
+    let noShiftPeriodButtonClicked = '<spring:message code="toast.availability.submit.error.missing.shift.period"/>'
+    function isShiftPeriodButtonClicked() {
+        if(selectedShiftPeriod == null) {
+            alert(noShiftPeriodButtonClicked);
+            return false;
+        }
+        return true;
     }
 </script>
 

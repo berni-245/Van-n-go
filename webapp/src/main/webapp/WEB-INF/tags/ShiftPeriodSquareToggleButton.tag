@@ -3,6 +3,7 @@
 <%@ attribute name="value" required="true" type="java.lang.String" %>
 <%@ attribute name="id" required="false" type="java.lang.String" %>
 <%@ attribute name="disabled" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="onclick" required="false" type="java.lang.String"%>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -45,7 +46,9 @@
                       id="${finalId}"
                       cssClass="btn-check"
                       element="div"
-                      disabled="${disabled}" />
+                      disabled="${disabled}"
+                      onclick="${onclick}"
+    />
     <label class="btn btn-primary square-toggle-label" for="${finalId}">
         <c:out value="${content}"/>
     </label>
