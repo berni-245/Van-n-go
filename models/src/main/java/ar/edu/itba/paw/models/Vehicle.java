@@ -46,6 +46,9 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Availability> availabilitiy;
 
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Booking> bookings;
+
     private static final Gson gson = new Gson();
 
     Vehicle() {
@@ -141,6 +144,13 @@ public class Vehicle {
             return Size.LARGE;
         }
         throw new IllegalArgumentException("Volume fuera del rango permitido");
+    }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public List<Booking> getAcceptedBookings() {
+        return bookings.stream().filter(booking -> booking.getState().equals(BookingState.ACCEPTED)).toList();
     }
 }

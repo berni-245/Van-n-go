@@ -58,8 +58,8 @@
             opacity: 0.5;
         }
 
-        .col-button {
-            width: 100px; /* Adjust this value as needed */
+        .shift-period-button {
+            width: 100px;
             padding: 10px;
             text-align: center;
         }
@@ -124,20 +124,16 @@
                                 <input type="hidden" name="originZoneId" value="${originZone.id}">
                                 <input id="bookingDate" type="hidden" name="date" value=""/>
 
-
                                 <div>
                                     <label for="hb-availability">
                                         <spring:message code="components.header.availability"/>
                                     </label>
                                     <div id="hb-availability" class="row weekday-toggle-group mt-3 fs-6">
                                         <c:forEach var="sp" items="${shiftPeriods}">
-                                            <div class="col-button">
-                                                <comp:SquareToggleButton
+                                            <div class="shift-period-button">
+                                                <comp:ShiftPeriodSquareToggleButton
                                                         path="shiftPeriod"
-                                                        radio="true"
-                                                        id="hb-${sp}-${v.plateNumber}"
-                                                        labelClass="fs-6"
-                                                        inputClass="${v.plateNumber}"
+                                                        id="sp-${sp}-${v.plateNumber}"
                                                         content="${sp}"
                                                         value="${sp}"
                                                 />
@@ -209,6 +205,7 @@
 
     const allDays = [0, 1, 2, 3, 4, 5, 6];
     const hiddenDays = allDays.filter((dayIndex) => !workingDays.includes(dayIndex));
+    const shiftPeriods = ['MORNING', 'AFTERNOON', 'EVENING'];
 
     let selectedDate = null;
     let selectedDateString = null;
@@ -257,18 +254,29 @@
         calendar.render();
     });
 
-    const vehicles_data = [
+    const vehiclesData = [
         <c:forEach var="v" items="${vehicles}">
             {
                 "plateNumber"  : "${v.plateNumber}",
-                "availability_days" : [
+                "availabilityDays" : [
                     <c:forEach var="av" items="${v.availabilitiy}">
-                        ${av.weekDay.value % 7},
+                    {
+                        "weekDay"  : "${av.weekDay.value % 7}",
+                        "shiftPeriod" : "${av.shiftPeriod}"
+                    },
+                    </c:forEach>
+                ],
+                "acceptedBookings" : [
+                    <c:forEach var="b" items="${v.acceptedBookings}">
+                    {
+                        "bookingDay"            : "${b.date}",
+                        "bookingShiftPeriod"    : "${b.shiftPeriod}"
+                    },
                     </c:forEach>
                 ]
             },
         </c:forEach>
-    ]
+    ];
     const accordionButtons = document.querySelectorAll('.accordion-button');
 
     function updateSelectedDay(newDay) {
@@ -279,17 +287,16 @@
         selectedDate = newDay.dayEl;
         selectedDateString = newDay.date.toISOString().slice(0, 10);
         const weekDay = newDay.date.getDay();
-        updateSelectedDayForVehicleButton(vehicles_data, weekDay)
-
-        // updateActiveAvailability();
+        updateVehicleInfo(weekDay)
     }
 
-    function updateSelectedDayForVehicleButton(vehicles_data, weekDay) {
-        vehicles_data.forEach(v => {
+    function updateVehicleInfo(weekDay) {
+        vehiclesData.forEach(v => {
             const accordionButton = document.getElementById('ab-' + v.plateNumber);
             const accordionBody = document.getElementById(v.plateNumber);
-            if (v.availability_days.some(av_day => av_day === weekDay)) {
+            if (v.availabilityDays.some(av => av.weekDay === weekDay.toString())) {
                 accordionButton.disabled = false;
+                updateShiftPeriodButtons(v, weekDay, selectedDateString)
             } else {
                 accordionButton.classList.add('collapsed');
                 accordionBody.classList.remove('show');
@@ -297,29 +304,22 @@
             }
         });
     }
-/*
-    function updateActiveAvailability() {
-        const activeVehicleBtns = document.querySelectorAll('button.accordion-button:not(:disabled)')
-        activeVehicleBtns.forEach(btn => {
-            const plateNumber = btn.getAttribute('plateNumber');
-            const vehicleId = btn.getAttribute('vehicleId');
-            const path = '/client/availability/active';
-            const url = new URL(path, window.location.origin);
-            url.searchParams.append('vehicleId', vehicleId);
-            url.searchParams.append('zoneId', ${zone.id});
-            url.searchParams.append('date', selectedDateString);
-            fetch(url.toString()).then(res => res.json()).then(activeAv => {
-                const hourBlockInputs = Array.from(
-                    document.querySelectorAll('input[name="timeStart"]' + '.' + plateNumber)
-                );
-                hourBlockInputs.forEach(input => input.disabled = true);
-                activeAv.forEach(av => {
-                    const input = hourBlockInputs.find(input => input.value === av.hourInterval.startHourString);
-                    if (input) input.disabled = false;
-                })
-            })
+
+    function updateShiftPeriodButtons(vehicle, weekDay, selectedDateString) {
+        shiftPeriods.forEach(sp => {
+            const spButton = document.getElementById('sp-' + sp + '-' + vehicle.plateNumber);
+            spButton.checked = false;
+            spButton.disabled = !vehicle.availabilityDays.some(av =>
+                av.weekDay === weekDay.toString() && av.shiftPeriod === sp
+            );
         })
-    }*/
+        vehicle.acceptedBookings.forEach(b => {
+                if(b.bookingDay === selectedDateString) {``
+                    const spButton = document.getElementById('sp-' + b.bookingShiftPeriod + '-' + vehicle.plateNumber);
+                    spButton.disabled = true;
+                }
+        })
+    }
 </script>
 
 </body>
