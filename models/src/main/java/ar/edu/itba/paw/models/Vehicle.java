@@ -44,7 +44,7 @@ public class Vehicle {
     }
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Availability> availabilitiy;
+    private List<Availability> availability;
 
     private static final Gson gson = new Gson();
 
@@ -117,8 +117,8 @@ public class Vehicle {
         return hourlyRate;
     }
 
-    public List<Availability> getAvailabilitiy() {
-        return availabilitiy;
+    public List<Availability> getAvailability() {
+        return availability;
     }
 
     @Override

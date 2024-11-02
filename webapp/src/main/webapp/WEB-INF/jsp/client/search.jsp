@@ -10,7 +10,6 @@
   <c:url value="/css/availability.css" var="css"/>
   <link rel="stylesheet" href="${css}">
 </comp:Head>
-
 <body>
 <comp:Header inAvailability="true"/>
 <div class="container d-flex justify-content-center mt-5">
@@ -44,6 +43,7 @@
         <form:select path="size" id="select-size" multiple="false"
                      cssClass="form-select form-select-lg"
                      autocomplete="off">
+          <form:option value="" label="Any"/>
           <spring:message var="small" code="generic.word.small"/>
           <form:option value="SMALL" label="${small}"/>
           <spring:message var="medium" code="generic.word.medium"/>
@@ -51,6 +51,51 @@
           <spring:message var="large" code="generic.word.large"/>
           <form:option value="LARGE" label="${large}"/>
         </form:select>
+      </div>
+
+      <!-- Day of the Week Selection -->
+      <div class="mb-4">
+        <label for="select-day" class="form-label h4">
+          <spring:message code="client.search.selectWeekday"/>
+        </label>
+        <form:select path="weekday" id="select-day" cssClass="form-select form-select-lg" autocomplete="off">
+          <form:option value="" label="Any"/>
+          <form:option value="MONDAY" label="Monday"/>
+          <form:option value="TUESDAY" label="Tuesday"/>
+          <form:option value="WEDNESDAY" label="Wednesday"/>
+          <form:option value="THURSDAY" label="Thursday"/>
+          <form:option value="FRIDAY" label="Friday"/>
+          <form:option value="SATURDAY" label="Saturday"/>
+          <form:option value="SUNDAY" label="Sunday"/>
+        </form:select>
+      </div>
+
+      <!-- Rating Selection -->
+      <div class="mb-4">
+        <label for="select-rating" class="form-label h4">
+          <spring:message code="client.search.selectRating"/>
+        </label>
+        <form:select path="rating" id="select-rating" cssClass="form-select form-select-lg" autocomplete="off">
+        <form:option value="" label="Any"/>
+          <form:option value="5" label="5 stars"/>
+          <form:option value="4" label="4 stars"/>
+          <form:option value="3" label="3 stars"/>
+        </form:select>
+      </div>
+
+      <!-- Price Range Selection -->
+      <div class="mb-4">
+        <label class="form-label h4">
+          <spring:message code="client.search.selectPriceRange"/>
+        </label>
+        <div class="row g-2">
+          <div class="col">
+            <form:input path="priceMin" type="number" id="price-min" placeholder="Min" cssClass="form-control" />
+          </div>
+          <div class="col">
+            <form:input path="priceMax" type="number" id="price-max" placeholder="Max" cssClass="form-control" />
+          </div>
+        </div>
       </div>
 
       <!-- Submit Button -->

@@ -26,7 +26,7 @@ public class AvailabilityForm {
     }
 
     private ShiftPeriod[] getDayShiftPeriods(Vehicle vehicle, DayOfWeek day) {
-        return vehicle.getAvailabilitiy().stream().filter(
+        return vehicle.getAvailability().stream().filter(
                 wa -> wa.getWeekDay() == day
         ).map(Availability::getShiftPeriod).toArray(ShiftPeriod[]::new);
     }

@@ -252,7 +252,7 @@
             {
                 "plateNumber"  : "${v.plateNumber}",
                 "availability_days" : [
-                    <c:forEach var="av" items="${v.availabilitiy}">
+                    <c:forEach var="av" items="${v.availability}">
                         ${av.weekDay.value % 7},
                     </c:forEach>
                 ]

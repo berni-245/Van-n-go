@@ -16,14 +16,13 @@ public interface DriverDao {
 
     List<Driver> getAll();
 
-    List<Driver> getAll(Zone zone, Size size, int offset);
-
+    List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset);
 
     Optional<Driver> findByUsername(String username);
 
     void editProfile(long id, String extra1, String cbu);
 
-    int getSearchCount(Zone zone, Size size);
+    int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 
     List<DayOfWeek> getDriverWeekDaysOnZoneAndSize(Driver driver, Zone zone, Size size);
 }

@@ -134,9 +134,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Driver> getAll(long zoneId, Size size, int page) {
+    public List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page) {
+        //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
+        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+            return Collections.emptyList();
+        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getAll(zone, size, page * Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getAll(zone, size, priceMin, priceMax, weekday, rating, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Transactional
@@ -158,7 +162,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         Set<DayOfWeek> days = new HashSet<>();
         vehicles.forEach(vehicle -> {
             if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
-                vehicle.getAvailabilitiy().forEach(availability -> {
+                vehicle.getAvailability().forEach(availability -> {
                     days.add(availability.getWeekDay());
                 });
             }
@@ -173,9 +177,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public int totalMatches(long zoneId, Size size) {
+    public int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
+        //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
+        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+            return 0;
+        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getSearchCount(zone, size);
+        return driverDao.getSearchCount(zone, size, priceMin, priceMax, weekday, rating);
     }
 
     @Override

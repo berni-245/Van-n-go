@@ -124,6 +124,10 @@ public class ClientController {
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "zoneId", required = false) Long zoneId,
             @RequestParam(name = "size", required = false) Size size,
+            @RequestParam(name = "priceMin", required = false) Double priceMin,
+            @RequestParam(name = "priceMax", required = false) Double priceMax,
+            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
+            @RequestParam(name = "rating", required = false) Integer rating,
             @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
             BindingResult errors,
             @RequestParam(name = "page", defaultValue = "0") int page
@@ -133,20 +137,20 @@ public class ClientController {
             zoneId = 1L;
             form.setZoneId(zoneId);
         }
-        if (size == null) {
-            size = Size.SMALL;
-            form.setSize(size);
-        }
         if (errors.hasErrors()) return new ModelAndView();
         final ModelAndView mav = new ModelAndView("client/availability");
-        List<Driver> drivers = ds.getAll(zoneId, size, page);
+        List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, page);
         List<Zone> zones = zs.getAllZones();
         mav.addObject("drivers", drivers);
         mav.addObject("zones", zones);
         mav.addObject("currentPage", page);
-        mav.addObject("totalPages", (int) Math.ceil((double) ds.totalMatches(zoneId,size) / Pagination.SEARCH_PAGE_SIZE));
+        mav.addObject("totalPages", (int) Math.ceil((double) ds.totalMatches(zoneId,size, priceMin, priceMax, weekday, rating) / Pagination.SEARCH_PAGE_SIZE));
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
+        mav.addObject("priceMin", priceMin);
+        mav.addObject("priceMax", priceMax);
+        mav.addObject("weekday", weekday);
+        mav.addObject("rating", rating);
         return mav;
     }
 

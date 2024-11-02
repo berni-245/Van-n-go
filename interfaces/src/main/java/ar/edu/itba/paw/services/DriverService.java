@@ -51,13 +51,13 @@ public interface DriverService {
             long vehicleId
     );
 
-    List<Driver> getAll(long zoneId, Size size, int page);
+    List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page);
 
     List<Booking> getBookings(long driverId, int page);
 
     public List<Booking> getHistory(long driverId, int page);
 
-    int totalMatches(long zoneId, Size size);
+    int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 
     int getTotalBookingCount(long driverId);
 
