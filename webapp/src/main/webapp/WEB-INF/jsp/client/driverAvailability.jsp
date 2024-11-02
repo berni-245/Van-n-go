@@ -153,15 +153,18 @@
                                     <textarea id="jobDescription" name="jobDescription"
                                               rows="4" cols="50" required></textarea>
                                 </div>
-                                <spring:message code="driver.add_availability.selectZones" var="selectZones"/>
-                                <spring:bind path="destinationZoneId">
-                                    <form:select path="destinationZoneId" id="select-zones" multiple="false"
-                                                 placeholder="${selectZones}..." autocomplete="off"
-                                                 cssClass="form-select ${status.error ? 'is-invalid' : ''}"
-                                    >
-                                        <form:options items="${zones}" itemValue="id"/>
-                                    </form:select>
-                                </spring:bind>
+                                <div class="mt-3">
+                                    <label for="destinationZoneId">
+                                        <spring:message code="driver.availability.selectDestinationZone" var="selectZones"/>
+                                    </label>
+                                        <spring:bind path="destinationZoneId">
+                                            <form:select path="destinationZoneId" id="select-zones" multiple="false"
+                                                         placeholder="${selectZones}..." autocomplete="off"
+                                                         cssClass="form-select ${status.error ? 'is-invalid' : ''}">
+                                                <form:options items="${zones}" itemValue="id"/>
+                                            </form:select>
+                                    </spring:bind>
+                                </div>
                                 <button type="submit" class="btn btn-primary mt-2">
                                     <spring:message code="components.availability.Reserve"/>
                                 </button>
