@@ -72,11 +72,10 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     ) {
         Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        // TODO should not be null destinationZoneId
-//        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
+        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
         try {
             Booking booking = bookingDao.appointBooking(
-                    v, client, zone, null, date, shiftPeriod, jobDescription
+                    v, client, zone, destination, date, shiftPeriod, jobDescription
             );
             mailService.sendRequestedDriverService(
                     booking.getDriver().getId(), client, date, jobDescription, locale

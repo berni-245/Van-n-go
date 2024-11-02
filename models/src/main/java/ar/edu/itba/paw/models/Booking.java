@@ -22,7 +22,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Zone originZone;
     @JoinColumn(name = "destination_zone_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Zone destinationZone;
 
     @Column
