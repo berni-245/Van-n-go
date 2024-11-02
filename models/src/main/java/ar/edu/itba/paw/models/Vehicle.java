@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import com.google.gson.Gson;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -35,18 +33,11 @@ public class Vehicle {
     )
     private List<Zone> zones;
 
-    public List<Zone> getZones() {
-        return zones;
-    }
-
-    public void setZones(List<Zone> zones) {
-        this.zones = zones;
-    }
-
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Availability> availability;
 
-    private static final Gson gson = new Gson();
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
     Vehicle() {
     }
@@ -100,6 +91,15 @@ public class Vehicle {
         return description;
     }
 
+
+    public List<Zone> getZones() {
+        return zones;
+    }
+
+    public void setZones(List<Zone> zones) {
+        this.zones = zones;
+    }
+
     @Override
     public String toString() {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);
@@ -141,6 +141,13 @@ public class Vehicle {
             return Size.LARGE;
         }
         throw new IllegalArgumentException("Volume fuera del rango permitido");
+    }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public List<Booking> getAcceptedBookings() {
+        return bookings.stream().filter(booking -> booking.getState().equals(BookingState.ACCEPTED)).toList();
     }
 }

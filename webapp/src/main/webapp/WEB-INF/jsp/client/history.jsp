@@ -96,6 +96,8 @@
                                                                     arguments="${booking.driver.username}"/>
                                                         </form:label>
                                                         <form:input path="review" type="text"/>
+                                                        <form:errors path="review" cssClass="text-danger" element="p"/>
+                                                        <form:errors element="div" cssClass="alert alert-danger"/>
                                                     </div>
 
 

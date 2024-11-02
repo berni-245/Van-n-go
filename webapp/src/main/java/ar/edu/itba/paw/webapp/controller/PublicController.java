@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class PublicController {
+public class PublicController extends ParentController {
     private static final Logger log = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private ClientService cs;
@@ -43,22 +43,14 @@ public class PublicController {
     }
 
     @RequestMapping(path = {"/", "/home"})
-    public ModelAndView index(@ModelAttribute("loggedUser") User loggedUser,
-                              @RequestParam(value = "page", defaultValue = "0") int page) {
+    public ModelAndView index(
+            @ModelAttribute("loggedUser") User loggedUser,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ) {
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {
-            // This should probably not be here but in the DriverController.
-            // Yeah, no shit
-            List<Booking> bookings = ds.getBookings(loggedUser.getId(), page);
-            int totalBookings = ds.getTotalBookingCount(loggedUser.getId());
-            int totalPages = (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
-            final ModelAndView mav = new ModelAndView("driver/home");
-            mav.addObject("currentPage", page);
-            mav.addObject("currentDate", LocalDate.now());
-            mav.addObject("totalPages", totalPages);
-            mav.addObject("bookings", bookings);
-            return mav;
+            return redirect("/driver/bookings");
         }
     }
 

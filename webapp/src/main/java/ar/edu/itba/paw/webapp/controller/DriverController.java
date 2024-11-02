@@ -23,12 +23,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class DriverController {
+public class DriverController extends ParentController {
     private static final Logger log = LoggerFactory.getLogger(DriverController.class);
     @Autowired
     private DriverService ds;
@@ -255,17 +256,37 @@ public class DriverController {
         return redirect("/driver/vehicle/%s/edit", form.getPlateNumber());
     }
 
-    @RequestMapping(path = "/driver/history")
-    public ModelAndView driverHistory(
+    private boolean addBookingData(ModelAndView mav, Driver driver, BookingState state, int currentPage) {
+        int totPages = ds.getBookingPages(driver, state);
+        if(totPages == 0) return true;
+        if (currentPage > totPages || currentPage < 1) return false;
+        String stateLowerCase = state.toString().toLowerCase();
+        String stateCapitalized = stateLowerCase.substring(0, 1).toUpperCase() + stateLowerCase.substring(1);
+        mav.addObject("tot" + stateCapitalized + "Pages", totPages);
+        mav.addObject(stateLowerCase + "Page", currentPage);
+        mav.addObject(stateLowerCase + "Bookings", ds.getBookings(driver, state, currentPage));
+        return true;
+    }
+
+    @RequestMapping(path = "/driver/bookings")
+    public ModelAndView driverBookings(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        List<Booking> paginatedHistory = ds.getHistory(loggedUser.getId(), page);
-        int totalRecords = ds.getTotalHistoryCount(loggedUser.getId());
-        int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
-        ModelAndView mav = new ModelAndView("driver/history");
-        mav.addObject("history", paginatedHistory);
-        mav.addObject("currentPage", page);
-        mav.addObject("totalPages", totalPages);
+            @RequestParam(name = "pendingPage", defaultValue = "1") int pendingPage,
+            @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
+            @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
+            @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
+            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
+    ) {
+        final ModelAndView mav = new ModelAndView("driver/home");
+        mav.addObject("currentDate", LocalDate.now());
+
+        boolean errors = !addBookingData(mav, loggedUser, BookingState.PENDING, pendingPage) ||
+                         !addBookingData(mav, loggedUser, BookingState.ACCEPTED, acceptedPage) ||
+                         !addBookingData(mav, loggedUser, BookingState.FINISHED, finishedPage) ||
+                         !addBookingData(mav, loggedUser, BookingState.REJECTED, rejectedPage);
+        if (errors) return new ModelAndView();
+
+        mav.addObject("activeTab", activeTab);
         return mav;
     }
 
@@ -311,9 +332,5 @@ public class DriverController {
             log.error("Vehicle `{}` not found", plateNumber);
             return new ModelAndView();
         }
-    }
-
-    private ModelAndView redirect(String formattedPath, Object... args) {
-        return new ModelAndView("redirect:" + formattedPath.formatted(args));
     }
 }

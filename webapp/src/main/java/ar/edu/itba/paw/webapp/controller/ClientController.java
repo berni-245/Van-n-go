@@ -189,8 +189,6 @@ public class ClientController {
             mav.addObject("vehicles", vehicles);
             mav.addObject("workingDays", workingDays);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
-            var bookings = ds.getAllBookings(driver.get().getId());
-            mav.addObject("bookings", bookings);
             mav.addObject("driver", driver.get());
             Optional<Zone> originZone = zs.getZone(zoneId);
             if (originZone.isEmpty()) return new ModelAndView();
@@ -249,7 +247,8 @@ public class ClientController {
                     ToastType.danger, "toast.booking.error"
             ));
             redirectAttributes.addFlashAttribute("toasts", toasts);
-            return new ModelAndView("redirect:/client/availability/" + id);
+            return new ModelAndView("redirect:/client/availability/" +
+                    id + "?zoneId=" + form.getOriginZoneId() + "&size=" + size.name());
         }
     }
 

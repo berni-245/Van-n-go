@@ -121,18 +121,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         availabilityDao.updateVehicleAvailability(vehicle, periods);
     }
 
-
-    @Transactional
-    @Override
-    public void updateWeeklyAvailability(
-            long driverId,
-            DayOfWeek weekDay,
-            ShiftPeriod[] periods,
-            long vehicleId
-    ) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
@@ -143,12 +131,18 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return driverDao.getAll(zone, size, priceMin, priceMax, weekday, rating, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
-    @Transactional
     @Override
-    public List<Booking> getBookings(long driverId, int page) {
-        return bookingDao.getDriverBookings(driverId, page * Pagination.BOOKINGS_PAGE_SIZE);
+    public List<Booking> getBookings(Driver driver, BookingState state, int page) {
+        return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
+    @Override
+    public long getBookingCount(Driver driver, BookingState state) {
+        return bookingDao.getDriverBookingCount(driver, state);
+    }
+
+    // Hay que ver bien cuándo se usa esto porque si tenemos que paginar los bookings se supone
+    // que es porque puede llegar a haber muchos y no los deberíamos traer a todos de una.
     @Override
     public List<Booking> getAllBookings(long id) {
         return bookingDao.getAllDriverBookings(id);
@@ -169,11 +163,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Booking> getHistory(long driverId, int page) {
-        return bookingDao.getDriverHistory(driverId, Pagination.BOOKINGS_PAGE_SIZE * page);
-    }
-
-    @Override
     public int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
         if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
@@ -181,16 +170,6 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         return driverDao.getSearchCount(zone, size, priceMin, priceMax, weekday, rating);
-    }
-
-    @Override
-    public int getTotalBookingCount(long driverId) {
-        return bookingDao.getDriverBookingCount(driverId);
-    }
-
-    @Override
-    public int getTotalHistoryCount(long driverId) {
-        return bookingDao.getDriverHistoryCount(driverId);
     }
 
     @Override
@@ -264,11 +243,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Vehicle> getVehicles(Driver driver, int page) {
-        return vehicleDao.getDriverVehicles(driver,page*Pagination.VEHICLES_PAGE_SIZE);
+        return vehicleDao.getDriverVehicles(driver, page * Pagination.VEHICLES_PAGE_SIZE);
     }
 
     @Override
-    public int getVehicleCount(Driver driver){return vehicleDao.getDriverVehicles(driver).size();}
+    public int getVehicleCount(Driver driver) {
+        return vehicleDao.getDriverVehicles(driver).size();
+    }
 
     @Override
     public void deleteVehicle(Vehicle vehicle) {

@@ -40,24 +40,18 @@ public interface DriverService {
             ShiftPeriod[] sundayPeriods
     );
 
-    void updateWeeklyAvailability(
-            long driverId,
-            DayOfWeek weekDay,
-            ShiftPeriod[] periods,
-            long vehicleId
-    );
+    List<Driver> getAll(long zoneId, Size size, int page);
 
-    List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page);
+    List<Booking> getBookings(Driver driver, BookingState state, int page);
 
-    List<Booking> getBookings(long driverId, int page);
+    long getBookingCount(Driver driver, BookingState state);
 
-    public List<Booking> getHistory(long driverId, int page);
+    default int getBookingPages(Driver driver, BookingState state) {
+        long totalBookings = this.getBookingCount(driver, state);
+        return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
+    }
 
     int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
-
-    int getTotalBookingCount(long driverId);
-
-    int getTotalHistoryCount(long driverId);
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 
