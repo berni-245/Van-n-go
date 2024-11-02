@@ -14,7 +14,7 @@ public class Vehicle {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Driver driver;
-    @Column(name = "plate_number", nullable = false)
+    @Column(name = "plate_number", nullable = false, unique = true)
     private String plateNumber;
     @Column(name = "volume_m3", nullable = false)
     private double volume;

@@ -124,6 +124,11 @@ ALTER TABLE booking_old2 ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq
 ALTER TABLE booking ALTER COLUMN id SET DEFAULT nextval('booking_id_seq'::regclass);
 SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
 
+-- Esta consulta da un "unsafe query" pues va a recorrer toda la tabla, y podria modificar todos los plate_number
+-- pero eso es lo que queremos.
+UPDATE vehicle
+SET plate_number = UPPER(plate_number)
+
 -- command to check which sequence is mapped to a table only in psql console
 /*
  select column_default

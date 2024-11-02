@@ -29,7 +29,7 @@ public class VehicleJpaDao implements VehicleDao {
             double hourlyRate
     ) {
         Driver driver = em.find(Driver.class, driverId);
-        Vehicle v = new Vehicle(driver, plateNumber, volume, description, null, hourlyRate);
+        Vehicle v = new Vehicle(driver, plateNumber.toUpperCase(), volume, description, null, hourlyRate);
         v.setZones(zones);
         em.persist(v);
         return v;
@@ -102,7 +102,7 @@ public class VehicleJpaDao implements VehicleDao {
                 "from Vehicle v where v.plateNumber = :plateNumber",
                 Vehicle.class
         );
-        query.setParameter("plateNumber", plateNumber);
+        query.setParameter("plateNumber", plateNumber.toUpperCase());
         return !query.getResultList().isEmpty();
     }
 
