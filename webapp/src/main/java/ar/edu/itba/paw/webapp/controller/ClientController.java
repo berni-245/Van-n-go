@@ -234,7 +234,8 @@ public class ClientController {
                     ToastType.danger, "toast.booking.error"
             ));
             redirectAttributes.addFlashAttribute("toasts", toasts);
-            return new ModelAndView("redirect:/client/availability/" + id);
+            return new ModelAndView("redirect:/client/availability/" +
+                    id + "?zoneId=" + form.getOriginZoneId() + "&size=" + size.name());
         }
     }
 

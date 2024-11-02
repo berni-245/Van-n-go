@@ -150,7 +150,7 @@
                                 </div>
                                 <div class="mt-3">
                                     <label for="destinationZoneId">
-                                        <spring:message code="driver.availability.selectDestinationZone" var="selectZones"/>
+                                        <spring:message code="driver.availability.selectDestinationZone"/>
                                     </label>
                                         <spring:bind path="destinationZoneId">
                                             <form:select path="destinationZoneId" id="select-zones" multiple="false"
