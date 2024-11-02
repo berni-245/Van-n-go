@@ -163,18 +163,18 @@ public class ClientController {
         return gson.toJson("{}");
     }
 
-    @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.GET)
+    @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
-            @PathVariable(name = "id") long id,
+            @PathVariable(name = "driverId") long driverId,
             @RequestParam(name = "zoneId") long zoneId,
             @RequestParam(name = "size") Size size,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
-        Optional<Driver> driver = ds.findById(id);
+        Optional<Driver> driver = ds.findById(driverId);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
-            mav.addObject("driverId", id);
+            mav.addObject("driverId", driverId);
             var vehicles = ds.getVehicles(driver.get(), zoneId, size);
             Set<DayOfWeek> workingDays = ds.getDriverWorkingDaysOnZoneWithSize(driver.get(),zoneId,size);
             mav.addObject("vehicles", vehicles);
