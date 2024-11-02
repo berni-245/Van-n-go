@@ -92,7 +92,7 @@ public class ClientController {
         return mav;
     }
 
-    @RequestMapping(path = "/client/history", method = RequestMethod.POST)
+    @RequestMapping(path = "/client/send/review", method = RequestMethod.POST)
     public ModelAndView sendReview(
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,

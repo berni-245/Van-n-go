@@ -39,7 +39,7 @@
     <div>
         <label class="form-label w-100">
             <spring:message code="driver.add_vehicle.plateNumber"/>
-            <form:input path="plateNumber" cssClass="form-control"/>
+            <form:input path="plateNumber" cssClass="form-control" required="true"/>
         </label>
         <form:errors path="plateNumber" element="p" cssStyle="color: red"/>
             <%--        No path because the already used plate number validation is a class level--%>
