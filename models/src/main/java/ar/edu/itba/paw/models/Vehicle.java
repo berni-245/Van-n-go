@@ -34,7 +34,7 @@ public class Vehicle {
     private List<Zone> zones;
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Availability> availabilitiy;
+    private List<Availability> availability;
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings;
@@ -91,6 +91,15 @@ public class Vehicle {
         return description;
     }
 
+
+    public List<Zone> getZones() {
+        return zones;
+    }
+
+    public void setZones(List<Zone> zones) {
+        this.zones = zones;
+    }
+
     @Override
     public String toString() {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);
@@ -108,16 +117,8 @@ public class Vehicle {
         return hourlyRate;
     }
 
-    public List<Zone> getZones() {
-        return zones;
-    }
-
-    public void setZones(List<Zone> zones) {
-        this.zones = zones;
-    }
-
-    public List<Availability> getAvailabilitiy() {
-        return availabilitiy;
+    public List<Availability> getAvailability() {
+        return availability;
     }
 
     @Override

@@ -94,9 +94,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size) {
+    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return vehicleDao.getDriverVehicles(driver, zone, size);
+        return vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
     }
 
     @Override
@@ -122,9 +122,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Driver> getAll(long zoneId, Size size, int page) {
+    public List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page) {
+        //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
+        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+            return Collections.emptyList();
+        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getAll(zone, size, page * Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getAll(zone, size, priceMin, priceMax, weekday, rating, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Override
@@ -146,23 +150,26 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size) {
-        List<Vehicle> vehicles = vehicleDao.getDriverVehicles(driver);
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+    public Set<DayOfWeek> getWorkingDays(Driver driver, List<Vehicle> vehicles) {
         Set<DayOfWeek> days = new HashSet<>();
+        //TODO: (While size<7 do:)
         vehicles.forEach(vehicle -> {
-            if (vehicle.getZones().contains(zone) && vehicle.getSize().equals(size)) {
-                vehicle.getAvailabilitiy().forEach(availability -> days.add(availability.getWeekDay()));
-            }
+                vehicle.getAvailability().forEach(availability -> {
+                    days.add(availability.getWeekDay());
+                });
         });
         return days;
 
     }
 
     @Override
-    public int totalMatches(long zoneId, Size size) {
+    public int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
+        //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
+        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+            return 0;
+        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getSearchCount(zone, size);
+        return driverDao.getSearchCount(zone, size, priceMin, priceMax, weekday, rating);
     }
 
     @Override

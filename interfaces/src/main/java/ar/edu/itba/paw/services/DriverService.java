@@ -27,11 +27,7 @@ public interface DriverService {
 
     List<Vehicle> getVehicles(Driver driver);
 
-    List<Vehicle> getVehicles(Driver driver, long zoneId, Size size);
-
-//    List<WeeklyAvailability> getWeeklyAvailability(long id);
-//
-//    List<WeeklyAvailability> getWeeklyAvailability(long id, long zoneId, Size size);
+    List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday);
 
     void updateAvailability(
             Vehicle vehicle,
@@ -44,7 +40,7 @@ public interface DriverService {
             ShiftPeriod[] sundayPeriods
     );
 
-    List<Driver> getAll(long zoneId, Size size, int page);
+    List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page);
 
     List<Booking> getBookings(Driver driver, BookingState state, int page);
 
@@ -55,7 +51,7 @@ public interface DriverService {
         return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
     }
 
-    int totalMatches(long zoneId, Size size);
+    int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 
@@ -73,11 +69,9 @@ public interface DriverService {
 
     void editProfile(long id, String extra1, String cbu);
 
-//    List<WeeklyAvailability>  activeAvailabilities(long vehicleId, long zoneId, LocalDate date);
-
     List<Booking> getAllBookings(long id);
 
-    Set<DayOfWeek> getDriverWorkingDaysOnZoneWithSize(Driver driver, long zoneId, Size size);
+    Set<DayOfWeek> getWorkingDays(Driver driver, List<Vehicle> vehicles);
 
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, List<Long> zoneIds, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 

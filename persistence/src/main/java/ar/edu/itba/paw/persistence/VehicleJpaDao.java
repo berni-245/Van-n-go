@@ -5,8 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,18 +62,37 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size) {
-        TypedQuery<Vehicle> query = em.createQuery(
-                """
-                        from Vehicle v where v.driver = :driver
-                        and :zone member of v.zones and
-                        v.volume between :minVolume and :maxVolume""",
-                Vehicle.class
-        );
+    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
+        StringBuilder queryString = new StringBuilder("""
+                        SELECT DISTINCT v FROM Vehicle v
+                        JOIN v.zones z
+                        LEFT JOIN v.availability a
+                        WHERE v.driver = :driver AND z = :zone
+                        """);
+        if(size != null)
+            queryString.append(" AND v.volume BETWEEN :minVol AND :maxVol");
+        if(priceMin != null)
+            queryString.append(" AND v.hourlyRate >= :priceMin");
+        if(priceMax != null)
+            queryString.append(" AND v.hourlyRate <= :priceMax");
+        if(weekday != null)
+            queryString.append(" AND a.weekDay = :weekday");
+        TypedQuery<Vehicle> query = em.createQuery(queryString.toString(), Vehicle.class);
         query.setParameter("driver", driver);
         query.setParameter("zone", zone);
-        query.setParameter("minVolume", (double) size.getMinVolume());
-        query.setParameter("maxVolume", (double) size.getMaxVolume());
+        if(size != null){
+            query.setParameter("minVol", (double) size.getMinVolume());
+            query.setParameter("maxVol", (double) size.getMaxVolume());
+        }
+        if(priceMin != null){
+            query.setParameter("priceMin", priceMin);
+        }
+        if(priceMax != null){
+            query.setParameter("priceMax", priceMax);
+        }
+        if(weekday != null){
+            query.setParameter("weekday", weekday);
+        }
         return query.getResultList();
     }
 

@@ -29,10 +29,9 @@
                 </spring:bind>
             </div>
             <div class="col-sm">
-                <form:select path="size" id="select-size" multiple="false"
-                             placeholder="${selectZones}..." autocomplete="off"
-                             cssClass="form-control"
-                >
+                <spring:message code="generic.word.size" var="sizeLabel"/>
+                <form:select path="size" id="select-size" cssClass="form-control">
+                    <form:option value="" label="${sizeLabel}"/>
                     <spring:message var="small" code="generic.word.small"/>
                     <form:option value="SMALL" label="${small}"/>
                     <spring:message var="medium" code="generic.word.medium"/>
@@ -40,8 +39,42 @@
                     <spring:message var="large" code="generic.word.large"/>
                     <form:option value="LARGE" label="${large}"/>
                 </form:select>
-                <form:errors path="zoneId" element="p" cssClass="invalid-feedback"/>
             </div>
+        </div>
+
+        <!-- Second Row: Price, Weekday, Rating, and Submit Button -->
+        <div class="row g-3">
+            <div class="col-sm-2">
+                <input type="number" step="0.01" min="0" name="priceMin" placeholder="Min Price" class="form-control" value="${priceMin}"/>
+            </div>
+            <div class="col-sm-2">
+                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price" class="form-control" value="${priceMax}"/>
+            </div>
+
+            <div class="col-sm-3">
+                <spring:message code="client.search.selectWeekday" var="weekdayLabel"/>
+                <form:select path="weekday" id="select-weekday" cssClass="form-select">
+                    <form:option value="" label="${weekdayLabel}"/>
+                    <form:option value="MONDAY" label="Monday"/>
+                    <form:option value="TUESDAY" label="Tuesday"/>
+                    <form:option value="WEDNESDAY" label="Wednesday"/>
+                    <form:option value="THURSDAY" label="Thursday"/>
+                    <form:option value="FRIDAY" label="Friday"/>
+                    <form:option value="SATURDAY" label="Saturday"/>
+                    <form:option value="SUNDAY" label="Sunday"/>
+                </form:select>
+            </div>
+
+            <div class="col-sm-2">
+                <spring:message code="client.search.selectRating" var="ratingLabel"/>
+                <form:select path="rating" id="select-rating" cssClass="form-select">
+                    <form:option value="" label="${ratingLabel}"/>
+                    <form:option value="3" label="3"/>
+                    <form:option value="4" label="4"/>
+                    <form:option value="5" label="5"/>
+                </form:select>
+            </div>
+
             <div class="col-sm d-flex align-items-center">
                 <button type="submit" class="btn btn-primary">
                     <spring:message code="components.availability.Search"/>
@@ -103,7 +136,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-                                        <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}"
+                                        <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}"
                                            class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>
                                         </a>
@@ -125,15 +158,15 @@
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
+                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
                                 </li>
                                 <c:forEach begin="0" end="${totalPages - 1}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="?page=${i}">${i + 1}</a>
+                                        <a class="page-link" href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}">${i + 1}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage + 1}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
+                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
                                 </li>
                             </ul>
                         </nav>

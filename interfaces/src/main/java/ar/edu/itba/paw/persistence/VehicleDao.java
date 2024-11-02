@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public interface VehicleDao {
 
     List<Vehicle> getDriverVehicles(Driver driver);
 
-    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size);
+    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double minPrice, Double maxPrice, DayOfWeek weekday);
 
     boolean plateNumberExists(String plateNumber);
 
