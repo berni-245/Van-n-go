@@ -158,7 +158,7 @@
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; Previous</a>
+                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message code="generic.word.previous"/></a>
                                 </li>
                                 <c:forEach begin="0" end="${totalPages - 1}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
@@ -166,7 +166,7 @@
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
+                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" aria-disabled="${currentPage == totalPages - 1}"><spring:message code="generic.word.next"/>&raquo;</a>
                                 </li>
                             </ul>
                         </nav>

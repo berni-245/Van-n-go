@@ -88,7 +88,7 @@
             </c:if>
         </c:otherwise>
     </c:choose>
-    <div class="mt-4">
+    <div class="fixed-bottom m-4" style="left: 0;">
         <a class="btn btn-primary"
            href="${pageContext.request.contextPath}/driver/vehicle/add"
            role="button"

@@ -26,6 +26,7 @@
                 <h5 class="card-title"><c:out value="${booking.date}"/></h5>
                 <p class="card-text"><c:out value="${booking.client.username}"/></p>
                 <p class="card-text"><c:out value="${booking.client.mail}"/></p>
+                <p class="card-text"><c:out value="${booking.jobDescription}"/></p>
             </div>
             <c:choose>
                 <c:when test="${booking.state eq BookingState.PENDING}">

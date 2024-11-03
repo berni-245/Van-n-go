@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
-import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
-import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
-import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Toast;
 import ar.edu.itba.paw.models.ToastType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,6 +16,13 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(InvalidImageException.class)
+    public ModelAndView handleInvalidImageException(InvalidImageException ex, final RedirectAttributes redirectAttributes,
+                                                    HttpServletRequest request) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));
+        return new ModelAndView("redirect:/");
+    }
+
     @ExceptionHandler(ClientAlreadyAppointedException.class)
     public ModelAndView handleClientAlreadyAppointed(ClientAlreadyAppointedException e, RedirectAttributes redirectAttributes,
                                                      HttpServletRequest request) {
@@ -54,10 +60,10 @@ public class GlobalExceptionHandler {
         toasts.add(toast);
         redirectAttributes.addFlashAttribute("toasts", toasts);
     }
-
+//    TODO: De-comment when deploying, Do not delete
 //    @ExceptionHandler(Exception.class)
 //    public String handleException(Exception ex, Model model) {
 //        model.addAttribute("errorMessage", ex.getMessage());
-//        return "error/500";
+//        return "forward:/error";
 //    }
 }
