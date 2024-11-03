@@ -5,8 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Pattern;
 
 public class ProfileForm {
-    @Length(min = 0, max = 255)
-    @Pattern(regexp = "^[a-zA-Z0-9]*$")
+    @Length(min = 5, max = 255)
     private String extra1;
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
     @Length(min = 0, max = 32)

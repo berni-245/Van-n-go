@@ -41,10 +41,22 @@
                         value="${loggedUser.mail}"/></p>
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
-                        <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong> <c:out
-                                value="${loggedDriver.extra1}"/></p>
-                        <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong> <c:out
-                                value="${loggedDriver.cbu}"/></p>
+                            <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong>
+                                <c:if test="${loggedDriver.extra1 ne null}">
+                                    <c:out value="${loggedDriver.extra1}"/>
+                                </c:if>
+                                <c:if test="${loggedDriver.extra1 eq null}">
+                                    <spring:message code="public.profile.noDescription"/>
+                                </c:if>
+                            </p>
+                        <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong>
+                            <c:if test="${loggedDriver.cbu ne null}">
+                                <c:out value="${loggedDriver.cbu}"/>
+                            </c:if>
+                            <c:if test="${loggedDriver.cbu eq null}">
+                                <spring:message code="public.profile.noCbu"/>
+                            </c:if>
+                        </p>
                         <div class="d-flex justify-content-end mt-4">
                             <a href="<c:url value='/profile/edit'/>" class="btn btn-primary"><spring:message
                                     code="generic.word.edit"/></a>

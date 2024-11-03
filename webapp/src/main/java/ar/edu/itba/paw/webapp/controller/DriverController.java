@@ -168,7 +168,7 @@ public class DriverController extends ParentController {
             @Valid @ModelAttribute("profileForm") ProfileForm form,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) return redirect("/profile/edit");
+        if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
         ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
         return redirect("/profile");
     }
