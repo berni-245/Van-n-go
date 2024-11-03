@@ -120,13 +120,31 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver, int offset) {
+        var vehicleIds = em.createNativeQuery("""
+            select v.id from vehicle v
+            where v.driver_id = :driverId
+            order by v.plate_number
+            """).setParameter("driverId", driver.getId())
+                .setFirstResult(offset)
+                .setMaxResults(Pagination.VEHICLES_PAGE_SIZE)
+                .getResultList();
+
+        List<Long> parsedIds = vehicleIds.stream().map(id->((Integer) id).longValue()).toList();
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driver = :driver order by v.plateNumber",
+                "from Vehicle v where id in (:idList) order by v.plateNumber",
                 Vehicle.class
         );
-        query.setParameter("driver", driver);
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.VEHICLES_PAGE_SIZE);
+        query.setParameter("idList", parsedIds);
         return query.getResultList();
+    }
+
+    @Override
+    public long getVehicleCount(Driver driver) {
+        return em.createQuery("""
+                    select count(*) from Vehicle v
+                    where v.driver = :driver
+                    """, Long.class)
+                .setParameter("driver", driver)
+                .getSingleResult();
     }
 }

@@ -34,4 +34,6 @@ public interface VehicleDao {
     void deleteVehicle(Vehicle vehicle);
 
     List<Vehicle> getDriverVehicles(Driver driver, int offset);
+
+    long getVehicleCount(Driver driver);
 }

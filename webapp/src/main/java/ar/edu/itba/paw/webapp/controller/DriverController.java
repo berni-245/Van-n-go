@@ -153,7 +153,7 @@ public class DriverController extends ParentController {
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
         mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
-        int totalRecords = ds.getVehicleCount(loggedUser);
+        long totalRecords = ds.getVehicleCount(loggedUser);
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);

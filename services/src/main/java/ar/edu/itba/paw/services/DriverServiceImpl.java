@@ -247,8 +247,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public int getVehicleCount(Driver driver) {
-        return vehicleDao.getDriverVehicles(driver).size();
+    public long getVehicleCount(Driver driver) {
+        return vehicleDao.getVehicleCount(driver);
     }
 
     @Override
