@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
+import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
+import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
+import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
+import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -28,14 +31,11 @@ public class BookingJpaDao implements BookingDao {
             ShiftPeriod period,
             String jobDescription
     ) {
-        if (date.isBefore(LocalDate.now()) ||
-            !isVehicleAvailableInThatTimeAndZone(vehicle, originZone, date, period) ||
-            isVehicleAlreadyAccepted(vehicle, date, period) ||
-            hasClientAlreadyAppointedForThatDateTimeAndZone(vehicle, client, originZone, date, period)
-        ) {
-            throw new IllegalArgumentException("El booking no se pudo reservar");
-        }
-        // TODO add custom exceptions
+        if (date.isBefore(LocalDate.now()))
+            throw new TimeAlreadyPassedException();
+        checkVehicleAvailability(vehicle, originZone, date, period);
+        checkIfVehicleIsAlreadyAccepted(vehicle, date, period);
+        checkIfClientIsAlreadyAppointed(vehicle, client, originZone, date, period);
 
         Booking toReturn = new Booking(client, vehicle, originZone, destinationZone, date, period, BookingState.PENDING, jobDescription);
         em.persist(toReturn);
@@ -44,16 +44,14 @@ public class BookingJpaDao implements BookingDao {
 
     @Transactional
     @Override
-    public void acceptBooking(Booking booking) throws VehicleAlreadyAcceptedException {
-        if (isVehicleAlreadyAccepted(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod())) {
-            throw new VehicleAlreadyAcceptedException();
-        }
+    public void acceptBooking(Booking booking) {
+        checkIfVehicleIsAlreadyAccepted(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod());
         booking.setState(BookingState.ACCEPTED);
 
         for (Booking bookingToReject : getBookingsByVehicle(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod(), BookingState.PENDING))
             bookingToReject.setState(BookingState.REJECTED);
 
-        em.persist(booking);
+        em.merge(booking);
     }
 
     @Transactional
@@ -218,31 +216,29 @@ public class BookingJpaDao implements BookingDao {
         return List.of();
     }
 
-    private boolean isVehicleAlreadyAccepted(Vehicle vehicle, LocalDate date, ShiftPeriod shiftPeriod) {
-        return !getBookingsByVehicle(vehicle, date, shiftPeriod, BookingState.ACCEPTED).isEmpty();
+    private void checkIfVehicleIsAlreadyAccepted(Vehicle vehicle, LocalDate date, ShiftPeriod shiftPeriod) {
+        if (!getBookingsByVehicle(vehicle, date, shiftPeriod, BookingState.ACCEPTED).isEmpty())
+            throw new VehicleIsAlreadyAcceptedException();
     }
 
     private List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date, ShiftPeriod sp, BookingState bs) {
-        try {
-            TypedQuery<Booking> query = em.createQuery(
-                    """
-                            from Booking as b
-                            where b.vehicle = :vehicle and b.date = :date and b.shiftPeriod = :sp and b.state = :bs
-                            """,
-                    Booking.class
-            );
-            query.setParameter("vehicle", vehicle);
-            query.setParameter("date", date);
-            query.setParameter("sp", sp);
-            query.setParameter("bs", bs);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        TypedQuery<Booking> query = em.createQuery(
+                """
+                        from Booking as b
+                        where b.vehicle = :vehicle and b.date = :date and b.shiftPeriod = :sp and b.state = :bs
+                        """,
+                Booking.class
+        );
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("date", date);
+        query.setParameter("sp", sp);
+        query.setParameter("bs", bs);
+        return query.getResultList();
     }
 
-    private boolean isVehicleAvailableInThatTimeAndZone(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
-        if (!vehicle.getZones().contains(zone)) return false;
+    private void checkVehicleAvailability(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
+        if (!vehicle.getZones().contains(zone))
+            throw new VehicleNotAvailableException();
 
         TypedQuery<Availability> avQuery = em.createQuery(
                 """
@@ -252,10 +248,11 @@ public class BookingJpaDao implements BookingDao {
         avQuery.setParameter("vehicle", vehicle);
         avQuery.setParameter("weekDay", date.getDayOfWeek());
         avQuery.setParameter("sp", sp);
-        return !avQuery.getResultList().isEmpty();
+        if (avQuery.getResultList().isEmpty())
+            throw new VehicleNotAvailableException();
     }
 
-    private boolean hasClientAlreadyAppointedForThatDateTimeAndZone(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
+    private void checkIfClientIsAlreadyAppointed(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
         TypedQuery<Booking> bookingQuery = em.createQuery("""
                 From Booking b
                 where b.vehicle = :vehicle and b.client = :client and b.originZone = :zone and b.date = :date and b.shiftPeriod = :sp
@@ -265,6 +262,7 @@ public class BookingJpaDao implements BookingDao {
         bookingQuery.setParameter("zone", zone);
         bookingQuery.setParameter("date", date);
         bookingQuery.setParameter("sp", sp);
-        return !bookingQuery.getResultList().isEmpty();
+        if( !bookingQuery.getResultList().isEmpty())
+            throw new ClientAlreadyAppointedException();
     }
 }

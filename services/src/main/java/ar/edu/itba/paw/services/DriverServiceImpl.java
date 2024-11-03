@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,15 +184,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public void acceptBooking(long bookingId) {
         Optional<Booking> booking = bookingDao.getBookingById(bookingId);
-        //TODO move this try catch somewhere else
-        booking.ifPresent(book -> {
-            try {
-                bookingDao.acceptBooking(book);
-            } catch (VehicleAlreadyAcceptedException e) {
-                // TODO LOGGEAR
-            }
-        });
-
+        booking.ifPresent(bookingDao::acceptBooking);
     }
 
     @Override
