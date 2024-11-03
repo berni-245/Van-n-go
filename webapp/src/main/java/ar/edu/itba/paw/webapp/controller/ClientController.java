@@ -181,7 +181,7 @@ public class ClientController extends ParentController {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", driverId);
             var vehicles = ds.getVehicles(driver.get(), zoneId, size, priceMin, priceMax, weekday);
-            Set<DayOfWeek> workingDays = ds.getWorkingDays(driver.get(),vehicles);
+            Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
             List<Zone> zones = zs.getAllZones();
             mav.addObject("zones", zones);
             mav.addObject("vehicles", vehicles);
@@ -208,7 +208,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
-            @RequestParam(name = "priceMax",required = false) Double priceMax,
+            @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @ModelAttribute("bookingForm") BookingForm form,
             BindingResult errors,

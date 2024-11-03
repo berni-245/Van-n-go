@@ -15,7 +15,7 @@ public class Driver extends User {
     @Column(length = 32)
     private  String cbu;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Vehicle> vehicles;
 
     public Driver(

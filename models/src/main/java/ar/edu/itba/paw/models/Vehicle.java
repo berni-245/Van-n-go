@@ -12,6 +12,7 @@ public class Vehicle {
     @SequenceGenerator(sequenceName = "vehicle_id_seq", name = "vehicle_id_seq", allocationSize = 1)
     private Long id;
 
+    @JoinColumn(name = "driver_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Driver driver;
     @Column(name = "plate_number", nullable = false, unique = true)

@@ -123,7 +123,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
-        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+        if(priceMin != null && priceMax != null && priceMin > priceMax) {
             return Collections.emptyList();
         }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
@@ -140,25 +140,19 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getDriverBookingCount(driver, state);
     }
 
-    // Hay que ver bien cuándo se usa esto porque si tenemos que paginar los bookings se supone
-    // que es porque puede llegar a haber muchos y no los deberíamos traer a todos de una.
-    @Override
-    public List<Booking> getAllBookings(long id) {
-        return bookingDao.getAllDriverBookings(id);
-    }
-
     @Transactional
     @Override
-    public Set<DayOfWeek> getWorkingDays(Driver driver, List<Vehicle> vehicles) {
+    public Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles) {
         Set<DayOfWeek> days = new HashSet<>();
-        //TODO: (While size<7 do:)
-        vehicles.forEach(vehicle -> {
-                vehicle.getAvailability().forEach(availability -> {
-                    days.add(availability.getWeekDay());
-                });
-        });
+        for(Vehicle vehicle : vehicles) {
+            for (Availability availability : vehicle.getAvailability()) {
+                days.add(availability.getWeekDay());
+                if (days.size() == DayOfWeek.values().length) {
+                    return days;
+                }
+            }
+        }
         return days;
-
     }
 
     @Override
@@ -173,12 +167,12 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Override
     public List<Booking> getBookingsByVehicle(long vehicleId) {
-        return bookingDao.getBookingsByVehicle(vehicleId);
+        return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow());
     }
 
     @Override
-    public List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date) {
-        return bookingDao.getBookingsByVehicleAndDate(vehicleId, date);
+    public List<Booking> getBookingsByVehicle(long vehicleId, LocalDate date) {
+        return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow(), date);
     }
 
     @Override

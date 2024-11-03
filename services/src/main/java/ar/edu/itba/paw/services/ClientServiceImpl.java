@@ -84,29 +84,29 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Override
     public List<Booking> getBookings(long id, int page) {
-        return bookingDao.getClientBookings(id, Pagination.BOOKINGS_PAGE_SIZE * page);
+        return bookingDao.getClientBookings(clientDao.findById(id).orElseThrow(), Pagination.BOOKINGS_PAGE_SIZE * page);
     }
 
     @Override
     public List<Booking> getHistory(long id, int page) {
-        return bookingDao.getClientHistory(id, Pagination.BOOKINGS_PAGE_SIZE * page);
+        return bookingDao.getClientHistory(clientDao.findById(id).orElseThrow(), Pagination.BOOKINGS_PAGE_SIZE * page);
     }
 
     @Override
     public long getTotalHistoryCount(long id) {
-        return bookingDao.getClientHistoryCount(id);
+        return bookingDao.getClientHistoryCount(clientDao.findById(id).orElseThrow());
     }
 
     @Override
     public long getTotalBookingCount(long id) {
-        return bookingDao.getClientBookingCount(id);
+        return bookingDao.getClientBookingCount(clientDao.findById(id).orElseThrow());
     }
 
     @Transactional
     @Override
     public void setBookingRatingAndReview(long bookingId, int rating, String review) {
         //send mail!
-        bookingDao.setRatingAndReview(bookingId, rating, review);
+        bookingDao.setRatingAndReview(bookingDao.getBookingById(bookingId).orElseThrow(), rating, review);
     }
 
     @Transactional

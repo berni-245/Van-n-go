@@ -55,10 +55,10 @@ public interface DriverService {
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 
-    List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date);
+    List<Booking> getBookingsByVehicle(long vehicleId, LocalDate date);
 
-    default List<Booking> getBookingsByVehicleAndDate(long vehicleId, String date) {
-        return getBookingsByVehicleAndDate(vehicleId, LocalDate.parse(date));
+    default List<Booking> getBookingsByVehicle(long vehicleId, String date) {
+        return getBookingsByVehicle(vehicleId, LocalDate.parse(date));
     }
 
     void acceptBooking(long bookingId);
@@ -69,9 +69,7 @@ public interface DriverService {
 
     void editProfile(Driver driver, String username, String mail, String extra1, String cbu);
 
-    List<Booking> getAllBookings(long id);
-
-    Set<DayOfWeek> getWorkingDays(Driver driver, List<Vehicle> vehicles);
+    Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, List<Long> zoneIds, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 

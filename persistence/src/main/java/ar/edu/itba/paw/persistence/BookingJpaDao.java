@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
-import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
-import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
-import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -76,24 +73,19 @@ public class BookingJpaDao implements BookingDao {
     @Transactional
     @Override
     public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
-        var bookingIds = em.createNativeQuery("""
-                        select b.id from booking b join vehicle v on v.id = b.vehicle_id
-                        where v.driver_id = :driverId and b.state = :state
-                        order by b.date
-                        """)
-                .setParameter("driverId", driver.getId())
-                .setParameter("state", state.toString())
+        List<Long> bookingIds = em.createQuery("""
+        select b.id from Booking b
+        where b.vehicle.driver = :driver and b.state = :state
+        order by b.date
+        """, Long.class)
+                .setParameter("driver", driver)
+                .setParameter("state", state)
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        // The return type of the previous query is a List<Integer> and for some reason
-        // Integer and Long (Booking id is Long) cannot be compared directly so I need
-        // to convert the values to Long.
-        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
-
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds2)
+                .setParameter("bookingIds", bookingIds)
                 .getResultList();
     }
 
@@ -110,22 +102,14 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getBookingsByVehicle(long vehicleId) {
-        Vehicle vehicle = em.find(Vehicle.class, vehicleId);
-        if (vehicle == null) {
-            //throws...
-        }
+    public List<Booking> getBookingsByVehicle(Vehicle vehicle) {
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle = :vehicle", Booking.class);
-        query.setParameter("vehicle", vehicle); //TODO: hacer vehicle equals
+        query.setParameter("vehicle", vehicle);
         return query.getResultList();
     }
 
     @Override
-    public List<Booking> getBookingsByVehicleAndDate(long vehicleId, LocalDate date) {
-        Vehicle vehicle = em.find(Vehicle.class, vehicleId);
-        if (vehicle == null) {
-            //throws...
-        }
+    public List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date) {
         TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle = :vehicle and b.date = :date", Booking.class);
         query.setParameter("vehicle", vehicle);
         query.setParameter("date", date.toString());
@@ -133,26 +117,24 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getClientBookings(long clientId, int offset) {
-        var bookingIds = em.createNativeQuery("""
-                        select b.id from Booking b
-                        where b.client_id = :clientId
-                        and b.date >= current_date
-                        order by b.date
-                        """)
-                .setParameter("clientId", clientId)
+    public List<Booking> getClientBookings(Client client, int offset) {
+        List<Long> bookingIds = em.createQuery("""
+        select b.id from Booking b
+        where b.client = :client and b.date >= CURRENT_DATE
+        order by b.date
+        """, Long.class)
+                .setParameter("client", client)
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
-        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
+
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds2)
+                .setParameter("bookingIds", bookingIds)
                 .getResultList();
     }
 
     @Override
-    public long getClientBookingCount(long clientId) {
-        Client client = em.find(Client.class, clientId);
+    public long getClientBookingCount(Client client) {
         return em.createQuery("""
                          select count(*) from Booking b
                          where b.client = :client
@@ -163,26 +145,24 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getClientHistory(long clientId, int offset) {
-        var bookingIds = em.createNativeQuery("""
-                        select b.id from booking b
-                        where b.client_id = :clientId
-                        and b.date < current_date
-                        order by b.date
-                        """)
-                .setParameter("clientId", clientId)
+    public List<Booking> getClientHistory(Client client, int offset) {
+        List<Long> bookingIds = em.createQuery("""
+        select b.id from Booking b
+        where b.client = :client and b.date < CURRENT_DATE
+        order by b.date
+        """, Long.class)
+                .setParameter("client", client)
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
-        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
+
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds2)
+                .setParameter("bookingIds", bookingIds)
                 .getResultList();
     }
 
     @Override
-    public long getClientHistoryCount(long clientId) {
-        Client client = em.find(Client.class, clientId);
+    public long getClientHistoryCount(Client client) {
         return em.createQuery("""
                          select count(*) from Booking b
                          where b.client = :client
@@ -195,8 +175,7 @@ public class BookingJpaDao implements BookingDao {
 
     @Transactional
     @Override
-    public void setRatingAndReview(long bookingId, int rating, String review) {
-        Booking booking = getBookingById(bookingId).orElseThrow(); //TODO: revisar el manejo de exceptions y optionals
+    public void setRatingAndReview(Booking booking, int rating, String review) {
         int finishedBookingsWithRating = getFinishedBookingsWithRatingCountByDriver(booking.getDriver());
         booking.setReview(review);
         booking.setRating(rating);
@@ -223,9 +202,20 @@ public class BookingJpaDao implements BookingDao {
         return query.getResultList().size();
     }
 
-    @Override
-    public List<Booking> getAllDriverBookings(long id) {
-        return List.of();
+    private void checkVehicleAvailability(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
+        if (!vehicle.getZones().contains(zone))
+            throw new VehicleNotAvailableException();
+
+        TypedQuery<Availability> avQuery = em.createQuery(
+                """
+                        from Availability as av
+                        where av.vehicle = :vehicle and av.weekDay = :weekDay and av.shiftPeriod = :sp
+                        """, Availability.class);
+        avQuery.setParameter("vehicle", vehicle);
+        avQuery.setParameter("weekDay", date.getDayOfWeek());
+        avQuery.setParameter("sp", sp);
+        if (avQuery.getResultList().isEmpty())
+            throw new VehicleNotAvailableException();
     }
 
     private void checkIfVehicleIsAlreadyAccepted(Vehicle vehicle, LocalDate date, ShiftPeriod shiftPeriod) {
@@ -246,22 +236,6 @@ public class BookingJpaDao implements BookingDao {
         query.setParameter("sp", sp);
         query.setParameter("bs", bs);
         return query.getResultList();
-    }
-
-    private void checkVehicleAvailability(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
-        if (!vehicle.getZones().contains(zone))
-            throw new VehicleNotAvailableException();
-
-        TypedQuery<Availability> avQuery = em.createQuery(
-                """
-                        from Availability as av
-                        where av.vehicle = :vehicle and av.weekDay = :weekDay and av.shiftPeriod = :sp
-                        """, Availability.class);
-        avQuery.setParameter("vehicle", vehicle);
-        avQuery.setParameter("weekDay", date.getDayOfWeek());
-        avQuery.setParameter("sp", sp);
-        if (avQuery.getResultList().isEmpty())
-            throw new VehicleNotAvailableException();
     }
 
     private void checkIfClientIsAlreadyAppointed(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
