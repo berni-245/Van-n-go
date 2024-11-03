@@ -38,7 +38,7 @@ public class Booking {
     @Column
     private String review;
     @Column(name = "proof_of_payment")
-    private Integer pop;
+    private Long pop;
     @Column(name = "job_description")
     private String jobDescription;
 
@@ -48,7 +48,7 @@ public class Booking {
     public Booking(Long id, Client client,  Vehicle vehicle,
                    Zone originZone, Zone destinationZone, LocalDate date, ShiftPeriod shiftPeriod,
                    BookingState state, Integer rating,
-                   String review, Integer pop, String jobDescription) {
+                   String review, Long pop, String jobDescription) {
         this.id = id;
         this.client = client;
         this.vehicle = vehicle;
@@ -128,7 +128,7 @@ public class Booking {
         return jobDescription;
     }
 
-    public Integer getPop() {
+    public Long getPop() {
         return pop;
     }
 
