@@ -142,7 +142,7 @@
                                         </a>
                                         </div>
                                         <c:choose>
-                                            <c:when test="${driver.pfp==0}">
+                                            <c:when test="${driver.pfp eq null}">
                                                 <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle" style="width: 60px; height: 60px;"/>
                                             </c:when>
                                             <c:otherwise>
