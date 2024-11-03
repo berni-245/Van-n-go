@@ -16,6 +16,12 @@
             text-overflow: ellipsis;
             max-height: 3rem;
         }
+        .fixed-bottom-left {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            z-index: 1000;
+        }
     </style>
 </comp:Head>
 
@@ -88,14 +94,12 @@
             </c:if>
         </c:otherwise>
     </c:choose>
-    <div class="fixed-bottom m-4" style="left: 0;">
-        <a class="btn btn-primary"
-           href="${pageContext.request.contextPath}/driver/vehicle/add"
-           role="button"
-        >
-            <spring:message code="generic.phrase.add_vehicle"/>
-        </a>
-    </div>
+    <a class="btn btn-primary fixed-bottom-left"
+       href="${pageContext.request.contextPath}/driver/vehicle/add"
+       role="button"
+    >
+        <spring:message code="generic.phrase.add_vehicle"/>
+    </a>
 </div>
 
 <comp:ToastManager toasts="${toasts}"/>
