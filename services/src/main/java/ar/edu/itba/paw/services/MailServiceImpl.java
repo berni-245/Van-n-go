@@ -208,7 +208,7 @@ public class MailServiceImpl implements MailService {
             context.setVariable("dateRequested", new java.util.Date());
             context.setVariable("clientName", driverMail);
             context.setVariable("clientMail", clientMail );
-            sendClientRequestedServiceMail(clientMail, context, locale);
+            sendClientRequestedServiceMail(clientMail, context, jobDescription, locale);
             sendDriverRequestedMail(driverMail, context, jobDescription, locale);
 
         }
@@ -216,12 +216,13 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    private void sendClientRequestedServiceMail(String clientMail, Context context,Locale locale) {
+    private void sendClientRequestedServiceMail(String clientMail, Context context, String jobDescription, Locale locale) {
+        context.setVariable("jobDescription", jobDescription);
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject(messageSource.getMessage("subject.serviceRequired",null,locale));
+            message.setSubject(messageSource.getMessage("subject.serviceRequested",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
@@ -234,7 +235,7 @@ public class MailServiceImpl implements MailService {
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
             String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
-            message.setSubject(messageSource.getMessage("subject.serviceRequested",null,locale));
+            message.setSubject(messageSource.getMessage("subject.serviceRequired",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {
         }
