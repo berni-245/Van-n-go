@@ -127,7 +127,12 @@ SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
 -- Esta consulta da un "unsafe query" pues va a recorrer toda la tabla, y podria modificar todos los plate_number
 -- pero eso es lo que queremos.
 UPDATE vehicle
-SET plate_number = UPPER(plate_number)
+SET plate_number = UPPER(plate_number);
+
+--Teniamos en el create Driver como extra1 "" entonces no podiamos hacer verificaciones tipo extra1 == null
+UPDATE driver
+SET extra1 = null
+where extra1 = '';
 
 -- command to check which sequence is mapped to a table only in psql console
 /*

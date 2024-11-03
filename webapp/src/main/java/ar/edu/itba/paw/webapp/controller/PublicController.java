@@ -61,7 +61,7 @@ public class PublicController extends ParentController {
         }
         final User user;
         if (userForm.getUserType().equals(UserRole.DRIVER.name()))
-            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), "", LocaleContextHolder.getLocale());
+            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), null, LocaleContextHolder.getLocale());
         else
             user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
