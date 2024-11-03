@@ -83,7 +83,7 @@ public class ClientController {
             @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             @RequestParam(value = "page", defaultValue = "0") int page) {
         List<Booking> paginatedHistory = cs.getHistory(loggedUser.getId(), page);
-        int totalRecords = cs.getTotalHistoryCount(loggedUser.getId());
+        long totalRecords = cs.getTotalHistoryCount(loggedUser.getId());
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
         ModelAndView mav = new ModelAndView("client/history");
         mav.addObject("history", paginatedHistory);

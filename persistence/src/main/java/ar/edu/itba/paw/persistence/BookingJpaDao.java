@@ -79,6 +79,7 @@ public class BookingJpaDao implements BookingDao {
         var bookingIds = em.createNativeQuery("""
                         select b.id from booking b join vehicle v on v.id = b.vehicle_id
                         where v.driver_id = :driverId and b.state = :state
+                        order by b.date
                         """)
                 .setParameter("driverId", driver.getId())
                 .setParameter("state", state.toString())
@@ -91,7 +92,7 @@ public class BookingJpaDao implements BookingDao {
         // to convert the values to Long.
         List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
 
-        return em.createQuery("from Booking where id in (:bookingIds)", Booking.class)
+        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
                 .setParameter("bookingIds", bookingIds2)
                 .getResultList();
     }
@@ -133,51 +134,62 @@ public class BookingJpaDao implements BookingDao {
 
     @Override
     public List<Booking> getClientBookings(long clientId, int offset) {
-        Client client = em.find(Client.class, clientId);
-        if (client == null) {
-            //throws...
-        }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT_DATE order by b.date", Booking.class);
-        query.setParameter("client", client); //TODO: hacer equals driver
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
-        return query.getResultList();
+        var bookingIds = em.createNativeQuery("""
+                        select b.id from Booking b
+                        where b.client_id = :clientId
+                        and b.date >= current_date
+                        order by b.date
+                        """)
+                .setParameter("clientId", clientId)
+                .setFirstResult(offset)
+                .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
+                .getResultList();
+        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
+        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+                .setParameter("bookingIds", bookingIds2)
+                .getResultList();
     }
 
     @Override
-    public int getClientBookingCount(long clientId) {
+    public long getClientBookingCount(long clientId) {
         Client client = em.find(Client.class, clientId);
-        if (client == null) {
-            //throws...
-        }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date >= CURRENT_DATE", Booking.class);
-        query.setParameter("client", client); //TODO: hacer equals driver
-        //TODO: Hacer que estos counts no sean un asco
-        return query.getResultList().size();
+        return em.createQuery("""
+                         select count(*) from Booking b
+                         where b.client = :client
+                         and b.date >= current_date
+                         """, Long.class)
+                .setParameter("client",client)
+                .getSingleResult();
     }
 
     @Override
     public List<Booking> getClientHistory(long clientId, int offset) {
-        Client client = em.find(Client.class, clientId);
-        if (client == null) {
-            //throws...
-        }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE order by b.date desc", Booking.class);
-        query.setParameter("client", client);
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.BOOKINGS_PAGE_SIZE);
-        return query.getResultList();
+        var bookingIds = em.createNativeQuery("""
+                        select b.id from booking b
+                        where b.client_id = :clientId
+                        and b.date < current_date
+                        order by b.date
+                        """)
+                .setParameter("clientId", clientId)
+                .setFirstResult(offset)
+                .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
+                .getResultList();
+        List<Long> bookingIds2 = bookingIds.stream().map(id -> ((Integer) id).longValue()).toList();
+        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+                .setParameter("bookingIds", bookingIds2)
+                .getResultList();
     }
 
     @Override
-    public int getClientHistoryCount(long clientId) {
+    public long getClientHistoryCount(long clientId) {
         Client client = em.find(Client.class, clientId);
-        if (client == null) {
-            //throws...
-        }
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.client = :client and b.date < CURRENT_DATE ", Booking.class);
-        query.setParameter("client", client);
-        return query.getResultList().size();
+        return em.createQuery("""
+                         select count(*) from Booking b
+                         where b.client = :client
+                         and b.date < current_date
+                         """, Long.class)
+                .setParameter("client",client)
+                .getSingleResult();
     }
 
 

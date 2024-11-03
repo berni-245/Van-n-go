@@ -93,12 +93,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public int getTotalHistoryCount(long id) {
+    public long getTotalHistoryCount(long id) {
         return bookingDao.getClientHistoryCount(id);
     }
 
     @Override
-    public int getTotalBookingCount(long id) {
+    public long getTotalBookingCount(long id) {
         return bookingDao.getClientBookingCount(id);
     }
 

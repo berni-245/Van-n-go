@@ -35,11 +35,11 @@ public interface BookingDao {
 
     List<Booking> getClientBookings(long clientId, int offset);
 
-    int getClientBookingCount(long clientId);
+    long getClientBookingCount(long clientId);
 
     List<Booking> getClientHistory(long clientId, int offset);
 
-    int getClientHistoryCount(long clientId);
+    long getClientHistoryCount(long clientId);
 
     void setRatingAndReview(long bookingId, int rating, String review);
 

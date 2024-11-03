@@ -42,9 +42,9 @@ public interface ClientService {
 
     List<Booking> getHistory(long id, int page);
 
-    int getTotalHistoryCount(long id);
+    long getTotalHistoryCount(long id);
 
-    int getTotalBookingCount(long id);
+    long getTotalBookingCount(long id);
 
     void setBookingRatingAndReview(long bookingId, int rating, String review);
 }
