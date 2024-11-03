@@ -204,7 +204,7 @@
         const today = new Date();
 
         const maxDate = new Date();
-        maxDate.setMonth(today.getMonth() + 2);
+        maxDate.setMonth(today.getMonth() + 6);
 
         calendar = new FullCalendar.Calendar(calendarEl, {
             themeSystem: 'bootstrap5',
@@ -218,7 +218,7 @@
             headerToolbar: {
                 left: 'prev,next',
                 center: 'title',
-                right: 'dayGridMonth'
+                right: ''
             },
             hiddenDays,
 
