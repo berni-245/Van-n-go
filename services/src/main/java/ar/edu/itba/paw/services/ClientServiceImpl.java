@@ -73,17 +73,13 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         Zone destination = zoneDao.getZone(destinationId).orElseThrow();
-        try {
-            Booking booking = bookingDao.appointBooking(
+        Booking booking = bookingDao.appointBooking(
                     v, client, zone, destination, date, shiftPeriod, jobDescription
-            );
-            mailService.sendRequestedDriverService(
-                    booking.getDriver().getId(), client, date, jobDescription, locale
-            );
-            return booking;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        );
+        mailService.sendRequestedDriverService(
+                booking.getDriver().getId(), client, date, jobDescription, locale
+        );
+        return booking;
     }
 
     @Override

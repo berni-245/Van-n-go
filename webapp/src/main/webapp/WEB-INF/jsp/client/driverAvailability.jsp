@@ -115,8 +115,13 @@
                                     <c:out value="${v.description}"/>
                                 </figcaption>
                             </figure>
-                            <c:url var="postUrl"
-                                   value="/client/availability/${driverId}"/>
+                            <c:url var="postUrl" value="/client/availability/${driverId}">
+                                <c:param name="zoneId" value="${originZone.id}" />
+                                <c:param name="size" value="${size}" />
+                                <c:param name="priceMin" value="${priceMin}" />
+                                <c:param name="priceMax" value="${priceMax}" />
+                                <c:param name="weekday" value="${weekday}" />
+                            </c:url>
                             <form:form action="${postUrl}" method="post" modelAttribute="bookingForm" onsubmit="return isShiftPeriodButtonClicked()">
                                 <input type="hidden" name="size" value="${size}">
                                 <input type="hidden" name="priceMin" value="${priceMin}">
@@ -322,9 +327,10 @@
         selectedShiftPeriod = sf;
     }
 
-    let noShiftPeriodButtonClicked = '<spring:message code="toast.availability.submit.error.missing.shift.period"/>'
+    let noShiftPeriodButtonClicked = '<spring:message code="error.driver.availability.submit.error.missing.shift.period"/>'
     function isShiftPeriodButtonClicked() {
         if(selectedShiftPeriod == null) {
+            //TODO Cambiar
             alert(noShiftPeriodButtonClicked);
             return false;
         }

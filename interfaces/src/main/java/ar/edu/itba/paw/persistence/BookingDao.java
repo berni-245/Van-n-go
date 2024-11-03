@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.VehicleAlreadyAcceptedException;
 import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
@@ -18,7 +17,7 @@ public interface BookingDao {
             String jobDescription
     );
 
-    void acceptBooking(Booking booking) throws VehicleAlreadyAcceptedException;
+    void acceptBooking(Booking booking);
 
     void rejectBooking(Booking booking);
 
