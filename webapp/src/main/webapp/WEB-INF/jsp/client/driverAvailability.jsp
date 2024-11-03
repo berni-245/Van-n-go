@@ -85,7 +85,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button id="ab-${v.plateNumber}"
-                                class="accordion-button collapsed"
+                                class="accordion-button collapsed  d-flex align-items-center"
                                 type="button" data-bs-toggle="collapse"
                                 data-bs-target="#${v.plateNumber}" aria-expanded="false"
                                 aria-controls="${v.plateNumber}"
@@ -93,8 +93,13 @@
                                 onclick="updateSelectedVehicle('${v.plateNumber}')"
                                 disabled
                         >
-                            <strong><c:out value="${v.plateNumber}"/></strong> -
-                            <c:out value="${v.volume}"/>m&sup3
+                            <span class="flex-grow-1">
+                                <strong><c:out value="${v.plateNumber}"/></strong> -
+                                <c:out value="${v.volume}"/>m&sup3
+                            </span>
+                            <span class="text-end">
+                                $<c:out value="${v.hourlyRate}"/>/h
+                            </span>
                         </button>
                     </h2>
                     <div id="${v.plateNumber}" class="accordion-collapse collapse"
