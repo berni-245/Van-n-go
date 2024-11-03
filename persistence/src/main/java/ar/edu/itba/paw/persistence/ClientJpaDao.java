@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +34,13 @@ public class ClientJpaDao implements ClientDao {
         query.setParameter("username", username);
         final List<Client> list = query.getResultList();
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
+    }
+
+    @Transactional
+    @Override
+    public void editProfile(Client client, String username, String mail) {
+        client.setUsername(username);
+        client.setMail(mail);
+        em.merge(client);
     }
 }

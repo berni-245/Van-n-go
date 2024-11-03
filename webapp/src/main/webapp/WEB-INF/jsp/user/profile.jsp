@@ -36,9 +36,11 @@
                     </label>
                 </form>
             </div>
+
             <div class="user-info text-center">
                 <p class="mb-1"><strong><spring:message code="generic.word.email"/>: </strong> <c:out
                         value="${loggedUser.mail}"/></p>
+                <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                             <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong>
@@ -57,22 +59,18 @@
                                 <spring:message code="public.profile.noCbu"/>
                             </c:if>
                         </p>
-                        <div class="d-flex justify-content-end mt-4">
-                            <a href="<c:url value='/profile/edit'/>" class="btn btn-primary"><spring:message
-                                    code="generic.word.edit"/></a>
-                        </div>
-                        <div class="d-flex justify-content-end mt-4">
-                            <a href="<c:url value='/driver/change/password'/>" class="btn btn-primary"><spring:message
-                                    code="user.editUser.changePassword"/></a>
-                        </div>
+                        <!--When more client only props are added, add a c:otherwise tag and add the props there -->
                     </c:when>
-                    <c:otherwise>
-                        <div class="d-flex justify-content-end mt-4">
-                            <a href="<c:url value='/client/change/password'/>" class="btn btn-primary"><spring:message
-                                    code="user.editUser.changePassword"/></a>
-                        </div>
-                    </c:otherwise>
+
                 </c:choose>
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="<c:url value='/${userPath}/profile/edit'/>" class="btn btn-primary"><spring:message
+                            code="generic.word.edit"/></a>
+                </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="<c:url value='/${userPath}/change/password'/>" class="btn btn-primary"><spring:message
+                            code="user.editUser.changePassword"/></a>
+                </div>
             </div>
         </div>
     </div>

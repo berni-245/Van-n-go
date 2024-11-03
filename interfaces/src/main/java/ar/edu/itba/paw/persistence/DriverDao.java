@@ -20,7 +20,7 @@ public interface DriverDao {
 
     Optional<Driver> findByUsername(String username);
 
-    void editProfile(long id, String extra1, String cbu);
+    void editProfile(Driver driver, String username, String mail, String extra1, String cbu);
 
     int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 

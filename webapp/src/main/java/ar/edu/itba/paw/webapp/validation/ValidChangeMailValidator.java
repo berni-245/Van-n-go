@@ -16,7 +16,9 @@ public class ValidChangeMailValidator implements ConstraintValidator<ValidChange
     @Override
     public boolean isValid(ChangeUserInfoForm form, ConstraintValidatorContext constraintValidatorContext) {
         String mail = form.getMail();
-        return !form.getMailChanged() || (mail != null && !us.mailExists(mail) && mail.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"));
+        String oldMail = form.getOldMail();
+        if(mail.equals(oldMail)) return true;
+        return  !us.mailExists(mail) ;
     }
 
 }

@@ -5,10 +5,7 @@ import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
-import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
-import ar.edu.itba.paw.webapp.form.BookingForm;
-import ar.edu.itba.paw.webapp.form.BookingReviewForm;
-import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
+import ar.edu.itba.paw.webapp.form.*;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
-public class ClientController {
+public class ClientController extends ParentController {
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private DriverService ds;
@@ -260,6 +257,41 @@ public class ClientController {
         }
         cs.updatePassword(loggedUser.getId(), form.getPassword());
         return new ModelAndView("redirect:/profile");
+    }
+
+
+    @RequestMapping(path = "/client/profile")
+    public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
+        ModelAndView mav = new ModelAndView("user/profile");
+        mav.addObject("loggedUser", loggedUser);
+        return mav;
+    }
+
+
+    @RequestMapping(path = "/client/profile/edit", method = RequestMethod.GET)
+    public ModelAndView editProfileForm(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
+            BindingResult errors
+    ) {
+        form.setOldUsername(loggedUser.getUsername());
+        form.setOldMail(loggedUser.getMail());
+        if (!errors.hasErrors()) {
+            form.setMail(loggedUser.getMail());
+            form.setUsername(loggedUser.getUsername());
+        }
+        return new ModelAndView("/user/profileEdit");
+    }
+
+    @RequestMapping(path = "/client/profile/edit", method = RequestMethod.POST)
+    public ModelAndView editProfile(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
+            BindingResult errors
+    ) {
+        if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
+        cs.editProfile(loggedUser, form.getUsername(), form.getMail());
+        return redirect("/client/profile");
     }
 
 

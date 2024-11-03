@@ -67,7 +67,7 @@ public interface DriverService {
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
-    void editProfile(long id, String extra1, String cbu);
+    void editProfile(Driver driver, String username, String mail, String extra1, String cbu);
 
     List<Booking> getAllBookings(long id);
 

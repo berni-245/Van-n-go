@@ -86,7 +86,8 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end text-small shadow">
                                 <li class="dropdown-item">
-                                    <c:url value='/profile' var="profileUrl"/>
+                                    <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
+                                    <c:url value='/${userPath}/profile' var="profileUrl"/>
                                     <a href="${profileUrl}"
                                        class="nav-link icon-link text-body-emphasis"
                                        aria-current="page">

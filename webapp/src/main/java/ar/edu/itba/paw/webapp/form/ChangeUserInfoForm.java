@@ -2,22 +2,55 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 
 @ValidChangeUsername
 @ValidChangeMail
 public class ChangeUserInfoForm {
 
+    @NotNull
+    @Size(min = 5, max = 20)
+    @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    private String oldUsername;
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    private String oldMail;
 
-    private boolean mailChanged;
-
-    private boolean usernameChanged;
-
-    private boolean passwordChanged;
-
+    @NotNull
+    @Size(min = 5, max = 20)
+    @Pattern(regexp = "^[a-zA-Z]\\w*$")
     private String username;
 
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private String mail;
+
+    @Nullable
+    @Length(min = 5, max = 255)
+    private String extra1;
+
+    @Pattern(regexp = "^[a-zA-Z0-9]*$")
+    @Length(max = 32)
+    @Nullable
+    private String cbu;
+
+    public String getExtra1() {return extra1;}
+
+    public String getCbu() {return cbu;}
+
+    public void setCbu(String cbu) {
+        this.cbu = cbu;
+    }
+
+    public void setExtra1(String extra1) {
+        this.extra1 = extra1;
+    }
 
     public String getUsername() {
         return username;
@@ -27,21 +60,6 @@ public class ChangeUserInfoForm {
         this.username = username;
     }
 
-    public boolean getMailChanged() {
-        return mailChanged;
-    }
-
-    public void setMailChanged(boolean mailChanged) {
-        this.mailChanged = mailChanged;
-    }
-
-    public boolean getUsernameChanged() {
-        return usernameChanged;
-    }
-
-    public void setUsernameChanged(boolean usernameChanged) {
-        this.usernameChanged = usernameChanged;
-    }
 
     public String getMail() {
         return mail;
@@ -51,12 +69,19 @@ public class ChangeUserInfoForm {
         this.mail = mail;
     }
 
-    public boolean getPasswordChanged() {
-        return passwordChanged;
+    public @NotNull @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String getOldUsername() {
+        return oldUsername;
     }
 
-    public void setPasswordChanged(boolean passwordChanged) {
-        this.passwordChanged = passwordChanged;
+    public void setOldUsername(@NotNull @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String oldUsername) {
+        this.oldUsername = oldUsername;
     }
 
+    public @NotNull @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") String getOldMail() {
+        return oldMail;
+    }
+
+    public void setOldMail(@NotNull @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") String oldMail) {
+        this.oldMail = oldMail;
+    }
 }

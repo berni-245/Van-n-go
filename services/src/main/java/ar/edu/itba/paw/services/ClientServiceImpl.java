@@ -108,4 +108,10 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         //send mail!
         bookingDao.setRatingAndReview(bookingId, rating, review);
     }
+
+    @Transactional
+    @Override
+    public void editProfile(Client client, String username, String mail) {
+        clientDao.editProfile(client, username, mail);
+    }
 }

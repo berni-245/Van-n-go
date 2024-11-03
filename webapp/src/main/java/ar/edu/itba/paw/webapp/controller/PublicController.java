@@ -22,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -95,7 +93,7 @@ public class PublicController extends ParentController {
 
     @RequestMapping(path = "/profile")
     public ModelAndView profile(@ModelAttribute("loggedUser") User loggedUser) {
-        ModelAndView mav = new ModelAndView("public/profile");
+        ModelAndView mav = new ModelAndView("user/profile");
         Optional<Driver> test = ds.findById(loggedUser.getId());
         test.ifPresent(driver -> mav.addObject("loggedDriver", driver));
         mav.addObject("loggedUser", loggedUser);

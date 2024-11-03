@@ -226,10 +226,10 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         vehicleDao.updateVehicle(v);
     }
 
-    @Transactional
+
     @Override
-    public void editProfile(long id, String extra1, String cbu) {
-        driverDao.editProfile(id, extra1, cbu);
+    public void editProfile(Driver driver, String username, String mail,  String extra1, String cbu) {
+        driverDao.editProfile(driver, username, mail, extra1, cbu);
     }
 
     @Override

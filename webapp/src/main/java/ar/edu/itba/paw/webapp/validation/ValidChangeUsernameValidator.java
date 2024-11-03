@@ -16,10 +16,8 @@ public class ValidChangeUsernameValidator implements ConstraintValidator<ValidCh
     @Override
     public boolean isValid(ChangeUserInfoForm form, ConstraintValidatorContext constraintValidatorContext) {
         String username = form.getUsername();
-        return  !form.getUsernameChanged() || (isSizeValid(username) && username.matches("^[a-zA-Z]\\w*$") &&!us.usernameExists(username));
-    }
-
-    private boolean isSizeValid(String username){
-        return username != null && username.length() >= 5 && username.length() <= 20;
+        String oldUsername = form.getOldUsername();
+        if(username.equals(oldUsername)) return true;
+        return   !us.usernameExists(username);
     }
 }

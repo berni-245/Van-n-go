@@ -10,4 +10,6 @@ public interface ClientDao {
     Optional<Client> findById(long id);
 
     Optional<Client> findByUsername(String username);
+
+    void editProfile(Client client, String username, String mail);
 }

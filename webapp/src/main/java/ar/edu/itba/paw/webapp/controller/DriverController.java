@@ -4,10 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
-import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
-import ar.edu.itba.paw.webapp.form.ProfileForm;
-import ar.edu.itba.paw.webapp.form.VehicleForm;
+import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,29 +159,44 @@ public class DriverController extends ParentController {
         return mav;
     }
 
-    @RequestMapping(path = "/profile/edit", method = RequestMethod.POST)
+
+    @RequestMapping(path = "/driver/profile")
+    public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
+        ModelAndView mav = new ModelAndView("user/profile");
+        mav.addObject("loggedUser", loggedUser);
+        mav.addObject("loggedDriver", loggedUser); //TODO: revisar porque falla sin este add
+        return mav;
+    }
+
+    @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.GET)
+    public ModelAndView editProfileForm(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
+            BindingResult errors
+    ) {
+        form.setOldUsername(loggedUser.getUsername());
+        form.setOldMail(loggedUser.getMail());
+        if (!errors.hasErrors()) {
+            form.setMail(loggedUser.getMail());
+            form.setUsername(loggedUser.getUsername());
+            form.setCbu(loggedUser.getCbu());
+            form.setExtra1(loggedUser.getExtra1());
+        }
+        return new ModelAndView("/user/profileEdit");
+    }
+
+    @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("profileForm") ProfileForm form,
+            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
         if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
-        ds.editProfile(loggedUser.getId(), form.getExtra1(), form.getcbu());
-        return redirect("/profile");
+        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getExtra1(), form.getCbu());
+        return redirect("/driver/profile");
     }
 
-    @RequestMapping(path = "/profile/edit", method = RequestMethod.GET)
-    public ModelAndView editProfileForm(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("profileForm") ProfileForm form,
-            BindingResult errors
-    ) {
-        if (!errors.hasErrors()) {
-            form.setcbu(loggedUser.getCbu());
-            form.setExtra1(loggedUser.getExtra1());
-        }
-        return new ModelAndView("/driver/edit_profile");
-    }
+
 
     @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.GET)
     public ModelAndView editVehicleGet(

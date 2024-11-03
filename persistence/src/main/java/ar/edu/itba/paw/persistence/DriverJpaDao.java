@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -84,15 +85,15 @@ public class DriverJpaDao implements DriverDao {
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
     }
 
+    @Transactional
     @Override
-    public void editProfile(long id, String extra1, String cbu) {
-        Optional<Driver> driver = findById(id);
-        if (driver.isPresent()) {
-            Driver d = driver.get();
-            d.setExtra1(extra1);
-            d.setCbu(cbu);
-            em.persist(d);
-        }
+    public void editProfile(Driver driver, String username, String mail, String extra1, String cbu) {
+        driver.setUsername(username);
+        driver.setMail(mail);
+        driver.setExtra1(extra1);
+        driver.setCbu(cbu);
+        em.merge(driver);
+
     }
 
     //TODO: Ver una forma de comprimir estos dos metodos

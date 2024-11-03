@@ -45,14 +45,15 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="user.editUser.edit"/>
                     </h5>
-                    <c:url var="postUrl" value="/account/edit"/>
+                    <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
+                    <c:url var="postUrl" value="/${userPath}/profile/edit"/>
                     <form:form action="${postUrl}" method="post" modelAttribute="changeUserInfoForm"
                                id="changeUserInfoForm">
                     <div class="mb-3">
                         <label class="form-label">
                             <spring:message code="generic.word.username"/>
                         </label>
-                        <form:input path="username" type="text" class="form-control" value="${loggedUser.username}"
+                        <form:input path="username" type="text" class="form-control"
                                     id="username"/>
                         <form:errors path="username" element="p" cssClass="text-danger"/>
                     </div>
@@ -60,10 +61,24 @@
                         <label class="form-label">
                             <spring:message code="public.register.mail"/>
                         </label>
-                        <form:input path="mail" type="email" class="form-control" value="${loggedUser.mail}" id="mail"/>
+                        <form:input path="mail" type="email" class="form-control"  id="mail"/>
                         <form:errors path="mail" element="p" cssClass="text-danger"/>
                     </div>
 
+                    <c:if test="${loggedUser.isDriver}">
+                        <div class="form-group">
+                            <label for="cbu"><spring:message code="generic.word.cbu"/></label>
+                            <form:input path="cbu" id="cbu" cssClass="form-control" />
+                            <form:errors path="cbu" cssClass="text-danger" />
+                        </div>
+                        <div class="form-group">
+                            <label for="extra1"><spring:message code="generic.word.description"/></label>
+                            <form:input path="extra1" id="extra1" cssClass="form-control" />
+                            <form:errors path="extra1" cssClass="text-danger" />
+                        </div>
+                    </c:if>
+                    <form:input path="oldUsername" type="hidden" id="oldUsername"/>
+                    <form:input path="oldMail" type="hidden" id="oldMail"/>
                     <form:errors element="div" cssClass="alert alert-danger"/>
                     <spring:message code="generic.word.confirm" var="confirm"/>
                     <input type="submit" class="btn btn-success" value="${confirm}">

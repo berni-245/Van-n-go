@@ -1,14 +1,17 @@
 package ar.edu.itba.paw.webapp.form;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 
 public class ProfileForm {
+    @Nullable
     @Length(min = 5, max = 255)
     private String extra1;
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
-    @Length(min = 0, max = 32)
+    @Length(max = 32)
     private String cbu;
 
     public String getExtra1() {return extra1;}
