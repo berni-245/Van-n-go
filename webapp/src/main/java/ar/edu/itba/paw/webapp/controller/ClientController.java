@@ -8,6 +8,7 @@ import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilitySearchForm;
 import ar.edu.itba.paw.webapp.form.BookingForm;
 import ar.edu.itba.paw.webapp.form.BookingReviewForm;
+import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,5 +243,24 @@ public class ClientController {
         ));
         return new ModelAndView("redirect:/client/bookings");
     }
+
+
+    @RequestMapping(path = "/client/change/password")
+    public ModelAndView changePassword(@ModelAttribute("loggedUser") Client loggedUser,  @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
+        ModelAndView mav = new ModelAndView("public/changePassword");
+        mav.addObject("loggedUser", loggedUser);
+        mav.addObject("userTypePath", "client");
+        return mav;
+    }
+
+    @RequestMapping(path = "/client/change/password", method = RequestMethod.POST)
+    public ModelAndView postChangePassword(@ModelAttribute("loggedUser") Client loggedUser, @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form, BindingResult errors) {
+        if(errors.hasErrors()){
+            return changePassword(loggedUser,form);
+        }
+        cs.updatePassword(loggedUser.getId(), form.getPassword());
+        return new ModelAndView("redirect:/profile");
+    }
+
 
 }

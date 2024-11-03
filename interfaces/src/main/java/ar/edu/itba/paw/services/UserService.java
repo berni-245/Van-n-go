@@ -13,7 +13,7 @@ public interface UserService {
 
     int updateMail(long userId, String updatedMail);
 
-    int updatePassword(long userId, String updatedPassword);
+    void updatePassword(long userId, String updatedPassword);
 
     int updateUsername(long userId, String updatedUsername);
 }

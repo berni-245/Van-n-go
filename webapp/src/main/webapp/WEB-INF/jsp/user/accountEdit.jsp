@@ -13,13 +13,10 @@
 
             const initialEmail = "${loggedUser.mail}";
             const initialUsername = "${loggedUser.username}";
-            const initialPassword = "";
             const currentEmail = document.getElementById("mail").value;
             const currentUsername = document.getElementById("username").value;
-            const currentPassword = document.getElementById("password").value
             const mailChanged = currentEmail !== initialEmail;
             const usernameChanged = currentUsername !== initialUsername;
-            const passwordChanged = initialPassword !== currentPassword;
 
             const mailChangedInput = document.createElement("input");
             mailChangedInput.type = "hidden";
@@ -31,24 +28,13 @@
             usernameChangedInput.name = "usernameChanged";
             usernameChangedInput.value = usernameChanged;
 
-            const passwordChangedInput = document.createElement("input");
-            passwordChangedInput.type = "hidden";
-            passwordChangedInput.name = "passwordChanged";
-            passwordChangedInput.value = passwordChanged;
 
             this.appendChild(mailChangedInput);
             this.appendChild(usernameChangedInput);
-            this.appendChild(passwordChangedInput);
         });
     });
 
-    function changePassword() {
-        var div = document.getElementById("passwordForm");
-        div.style.display = "block";
-        var elemento = document.getElementById("changePasswordButton");
-        elemento.style.display = "none";
 
-    }
 </script>
 <comp:Header/>
 <div class="container mt-5">
@@ -78,29 +64,11 @@
                         <form:errors path="mail" element="p" cssClass="text-danger"/>
                     </div>
 
-                    <div id="passwordForm" style="display: none">
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <spring:message code="generic.word.password"/>
-                            </label>
-                            <form:input type="password" path="password" class="form-control" id="password" value=""/>
-                            <form:errors path="password" element="p" cssClass="text-danger"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <spring:message code="public.register.confirmPassword"/>
-                            </label>
-                            <form:input type="password" path="confirmPassword" class="form-control" value=""/>
-                            <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
-                            <form:errors element="div" cssClass="alert alert-danger"/>
-                        </div>
-                    </div>
+                    <form:errors element="div" cssClass="alert alert-danger"/>
                     <spring:message code="generic.word.confirm" var="confirm"/>
                     <input type="submit" class="btn btn-success" value="${confirm}">
                 </div>
                 </form:form>
-                <button class="btn btn-secondary w-auto" id="changePasswordButton" onclick="changePassword()">
-                    <spring:message code="user.editUser.changePassword"/></button>
             </div>
 
         </div>

@@ -82,4 +82,6 @@ public interface DriverService {
     long getVehicleCount(Driver driver);
 
     void deleteVehicle(Vehicle vehicle);
+
+    void updatePassword(long id, String password);
 }

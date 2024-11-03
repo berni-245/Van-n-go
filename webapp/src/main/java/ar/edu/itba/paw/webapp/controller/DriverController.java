@@ -5,6 +5,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
+import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
@@ -333,4 +334,25 @@ public class DriverController extends ParentController {
             return new ModelAndView();
         }
     }
+
+
+
+    @RequestMapping(path = "/driver/change/password")
+    public ModelAndView changePassword(@ModelAttribute("loggedUser") Driver loggedUser,  @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
+        ModelAndView mav = new ModelAndView("public/changePassword");
+        mav.addObject("loggedUser", loggedUser);
+        mav.addObject("userTypePath", "driver");
+        return mav;
+    }
+
+    @RequestMapping(path = "/driver/change/password", method = RequestMethod.POST)
+    public ModelAndView postChangePassword(@ModelAttribute("loggedUser") Driver loggedUser, @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form, BindingResult errors) {
+        if(errors.hasErrors()){
+            return changePassword(loggedUser,form);
+        }
+        ds.updatePassword(loggedUser.getId(), form.getPassword());
+        return new ModelAndView("redirect:/profile");
+    }
+
+
 }

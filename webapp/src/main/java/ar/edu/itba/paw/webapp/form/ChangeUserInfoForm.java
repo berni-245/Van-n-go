@@ -1,13 +1,11 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
-import ar.edu.itba.paw.webapp.validation.ValidChangePasssword;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
 
 
 @ValidChangeUsername
 @ValidChangeMail
-@ValidChangePasssword
 public class ChangeUserInfoForm {
 
 
@@ -21,32 +19,12 @@ public class ChangeUserInfoForm {
 
     private String mail;
 
-    private String password;
-
-    private String confirmPassword;
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
     }
 
     public boolean getMailChanged() {

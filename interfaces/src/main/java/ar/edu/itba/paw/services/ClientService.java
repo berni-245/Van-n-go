@@ -47,4 +47,6 @@ public interface ClientService {
     long getTotalBookingCount(long id);
 
     void setBookingRatingAndReview(long bookingId, int rating, String review);
+
+    void updatePassword(long id, String password);
 }

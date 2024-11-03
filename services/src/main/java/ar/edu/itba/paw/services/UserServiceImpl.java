@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updatePassword(long userId, String updatedPassword) {
-        return userDao.updatePassword(userId, passwordEncoder.encode(updatedPassword));
+    public void updatePassword(long userId, String updatedPassword) {
+        userDao.updatePassword(userId, passwordEncoder.encode(updatedPassword));
     }
 
     @Override

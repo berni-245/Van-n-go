@@ -1,27 +1,23 @@
 package ar.edu.itba.paw.webapp.form;
 
+
+import ar.edu.itba.paw.webapp.validation.OldPasswordMatch;
 import ar.edu.itba.paw.webapp.validation.PasswordMatch;
 import ar.edu.itba.paw.webapp.validation.PasswordValidator;
-import ar.edu.itba.paw.webapp.validation.ValidMail;
-import ar.edu.itba.paw.webapp.validation.ValidUsername;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @PasswordMatch
-public class UserForm implements PasswordValidator {
+@OldPasswordMatch
+public class ChangePasswordForm implements PasswordValidator {
 
-    @Size(min = 5, max = 20)
-    @Pattern(regexp = "^[a-zA-Z]\\w*$")
-    @ValidUsername
-    private String username;
+    @NotNull
+    private long userId;
 
-    @NotBlank
-    @Email
-    @ValidMail
-    private String mail;
+    @NotNull
+    private boolean isDriver;
 
     @Size(min = 8, max = 32)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
@@ -30,46 +26,52 @@ public class UserForm implements PasswordValidator {
     @Size(min = 8, max = 32)
     private String confirmPassword;
 
-    @NotBlank
-    private String userType;
+    @Size(min = 8, max = 32)
+    private String oldPassword;
 
-    public String getUsername() {
-        return username;
+    @NotNull
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(@NotNull long userId) {
+        this.userId = userId;
     }
+
     @Override
     public String getPassword() {
         return password;
     }
+
     @Override
     public void setPassword(String password) {
         this.password = password;
     }
+
     @Override
     public String getConfirmPassword() {
         return confirmPassword;
     }
+
     @Override
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getMail() {
-        return mail;
+    public @Size(min = 8, max = 32) String getOldPassword() {
+        return oldPassword;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setOldPassword(@Size(min = 8, max = 32) String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
-    public String getUserType() {
-        return userType;
+
+    public boolean isDriver() {
+        return isDriver;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setDriver(boolean driver) {
+        isDriver = driver;
     }
 }

@@ -23,27 +23,44 @@
                            onchange="document.getElementById('uploadProfilePicForm').submit();">
                     <label for="profilePicInput" style="cursor: pointer;">
                         <c:choose>
-                        <c:when test="${loggedUser.pfp ne null}">
-                            <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
-                                 class="rounded-circle border" width="150" height="150">
-                        </c:when>
-                        <c:otherwise>
-                            <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
-                                 alt="No Profile Picture" class="rounded-circle border mb-2" width="150" height="150">
-                        </c:otherwise>
+                            <c:when test="${loggedUser.pfp ne null}">
+                                <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
+                                     class="rounded-circle border" width="150" height="150">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                                     alt="No Profile Picture" class="rounded-circle border mb-2" width="150"
+                                     height="150">
+                            </c:otherwise>
                         </c:choose>
                     </label>
                 </form>
             </div>
             <div class="user-info text-center">
-                <p class="mb-1"><strong><spring:message code="generic.word.email"/>: </strong> <c:out value="${loggedUser.mail}"/></p>
-                <c:if test="${loggedUser.isDriver}">
-                    <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong> <c:out value="${loggedDriver.extra1}"/></p>
-                    <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong> <c:out value="${loggedDriver.cbu}"/></p>
-                    <div class="d-flex justify-content-end mt-4">
-                        <a href="<c:url value='/profile/edit'/>" class="btn btn-primary"><spring:message code="generic.word.edit"/></a>
-                    </div>
-                </c:if>
+                <p class="mb-1"><strong><spring:message code="generic.word.email"/>: </strong> <c:out
+                        value="${loggedUser.mail}"/></p>
+                <c:choose>
+                    <c:when test="${loggedUser.isDriver}">
+                        <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong> <c:out
+                                value="${loggedDriver.extra1}"/></p>
+                        <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong> <c:out
+                                value="${loggedDriver.cbu}"/></p>
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="<c:url value='/profile/edit'/>" class="btn btn-primary"><spring:message
+                                    code="generic.word.edit"/></a>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="<c:url value='/driver/change/password'/>" class="btn btn-primary"><spring:message
+                                    code="user.editUser.changePassword"/></a>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="<c:url value='/client/change/password'/>" class="btn btn-primary"><spring:message
+                                    code="user.editUser.changePassword"/></a>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

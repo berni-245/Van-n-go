@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.validation;
 
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -7,11 +8,11 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = ValidChangePasswordValidator.class)
-public @interface ValidChangePasssword {
+@Constraint(validatedBy = OldPasswordMatchValidator.class)
+public @interface OldPasswordMatch {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Invalid password";
+    String message() default "Old password does not match";
 }
