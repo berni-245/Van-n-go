@@ -65,7 +65,6 @@
                     </c:otherwise>
                 </c:choose>
             </c:if>
-
             <ul class="nav nav-pills ms-auto">
                 <c:choose>
                     <c:when test="${loggedIn}">
@@ -85,58 +84,44 @@
                                 <span class="d-sm-inline mx-1">${loggedUser.username}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                                <li class="dropdown-item">
-                                    <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
-                                    <c:url value='/${userPath}/profile' var="profileUrl"/>
-                                    <a href="${profileUrl}"
-                                       class="nav-link icon-link text-body-emphasis"
-                                       aria-current="page">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                             fill="currentColor" class="bi bi-person-lines-fill"
-                                             viewBox="0 0 16 16">
+                                <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
+                                <c:url value='/${userPath}/profile' var="profileUrl"/>
+                                <li class="dropdown-item" onclick="window.location='${profileUrl}';" style="cursor: pointer;">
+                                    <div class="nav-link icon-link text-body-emphasis" aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
                                             <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"></path>
                                         </svg>
                                         <spring:message code="generic.word.profile"/>
-                                    </a>
+                                    </div>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li class="dropdown-item">
-                                    <c:url value='/account/edit' var="accountEditUrl"/>
-                                    <a href="${accountEditUrl}"
-                                       class="nav-link icon-link text-body-emphasis"
-                                       aria-current="page">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                             fill="currentColor" class="bi bi-gear-fill dropdown-icon"
-                                             viewBox="0 0 16 16">
+                                <c:url value='/account/edit' var="accountEditUrl"/>
+                                <li class="dropdown-item" onclick="window.location='${accountEditUrl}';" style="cursor: pointer;">
+                                    <div class="nav-link icon-link text-body-emphasis" aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill dropdown-icon" viewBox="0 0 16 16">
                                             <path d="M8 0a2 2 0 0 0-2 2v.41c-.741.124-1.45.357-2.102.693L3.5 2.5a2 2 0 1 0-2 3.464l.41.237a6.992 6.992 0 0 0 0 3.598l-.41.237a2 2 0 1 0 2 3.464l.398-.603a6.992 6.992 0 0 0 2.102.693V14a2 2 0 1 0 4 0v-.41a6.992 6.992 0 0 0 2.102-.693l.398.603a2 2 0 1 0 2-3.464l-.41-.237a6.992 6.992 0 0 0 0-3.598l.41-.237a2 2 0 1 0-2-3.464l-.398.603a6.992 6.992 0 0 0-2.102-.693V2a2 2 0 0 0-2-2zm0 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"></path>
                                         </svg>
                                         <spring:message code="user.editUser.edit"/>
-                                    </a>
+                                    </div>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li class="dropdown-item">
-                                    <c:url value='/logout' var="logoutUrl"/>
-                                    <a href="${logoutUrl}"
-                                       class="nav-link icon-link icon-link-hover text-body-emphasis"
-                                       aria-current="page">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                             stroke-width="1.5" stroke-linecap="round"
-                                             stroke-linejoin="round" class="bi" style="fill: none">
+                                <c:url value='/logout' var="logoutUrl"/>
+                                <li class="dropdown-item" onclick="window.location='${logoutUrl}';" style="cursor: pointer;">
+                                    <div class="nav-link icon-link icon-link-hover text-body-emphasis" aria-current="page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="bi" style="fill: none">
                                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                             <polyline points="16 17 21 12 16 7"></polyline>
                                             <line x1="21" y1="12" x2="9" y2="12"></line>
                                         </svg>
                                         <spring:message code="components.header.logout"/>
-                                    </a>
+                                    </div>
                                 </li>
                             </ul>
-                        </div>
-                    </c:when>
+                        </c:when>
                     <c:otherwise>
                         <li class="nav-item">
                             <a href="${pageContext.request.contextPath}/login"
