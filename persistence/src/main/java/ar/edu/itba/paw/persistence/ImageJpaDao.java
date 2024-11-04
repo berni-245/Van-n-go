@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Image;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -29,44 +29,26 @@ public class ImageJpaDao implements ImageDao {
     }
 
     @Override
-    public long uploadPop(byte[] bin, String fileName, long bookingId) {
+    public long uploadPop(byte[] bin, String fileName, Booking booking) {
         long imageId = uploadImage(fileName, bin);
-        em.createQuery("""
-                UPDATE Booking b
-                SET b.pop = :imageId
-                WHERE b.id = :bookingId
-                """)
-                .setParameter("imageId", imageId)
-                .setParameter("bookingId", bookingId)
-                .executeUpdate();
+        booking.setPop(imageId);
+        em.merge(booking);
         return imageId;
     }
 
     @Override
-    public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
+    public long uploadVehicleImage(byte[] bin, String fileName, Vehicle vehicle) {
         long imageId = uploadImage(fileName, bin);
-        em.createQuery("""
-                UPDATE Vehicle v
-                SET v.imgId = :imageId
-                WHERE v.id = :vehicleId
-                """)
-                .setParameter("imageId", imageId)
-                .setParameter("vehicleId", vehicleId)
-                .executeUpdate();
+        vehicle.setImgId(imageId);
+        em.merge(vehicle);
         return imageId;
     }
 
     @Override
-    public long uploadPfp(byte[] bin, String fileName, long userId) {
+    public long uploadPfp(byte[] bin, String fileName, User user) {
         long imageId = uploadImage(fileName, bin);
-        em.createQuery("""
-                 UPDATE User u
-                 SET u.pfp = :imageId
-                 WHERE u.id = :userId
-                 """)
-                .setParameter("imageId", imageId)
-                .setParameter("userId", userId)
-                .executeUpdate();
+        user.setPfp(imageId);
+        em.merge(user);
         return imageId;
     }
 }

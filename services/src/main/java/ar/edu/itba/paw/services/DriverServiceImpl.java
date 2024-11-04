@@ -79,10 +79,10 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             byte[] imgData
     ) {
         Vehicle v = vehicleDao.create(
-                driverId, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
+                driverDao.findById(driverId).orElseThrow(), plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
         );
         if (imgFilename != null && imgData != null && imgData.length > 0) {
-            imageDao.uploadVehicleImage(imgData, imgFilename, v.getId());
+            imageDao.uploadVehicleImage(imgData, imgFilename, v);
         }
         return v;
     }
@@ -217,7 +217,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
         v.setZones(zoneDao.getZonesById(zoneIds));
         if (imgFilename != null && imgData != null && imgData.length > 0) {
-            long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, vehicleId);
+            long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
             v.setImgId(imgId);
         }
         vehicleDao.updateVehicle(v);

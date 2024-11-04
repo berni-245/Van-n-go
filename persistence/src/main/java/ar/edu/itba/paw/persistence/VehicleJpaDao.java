@@ -21,14 +21,13 @@ public class VehicleJpaDao implements VehicleDao {
     @Transactional
     @Override
     public Vehicle create(
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,
             List<Zone> zones,
             double hourlyRate
     ) {
-        Driver driver = em.find(Driver.class, driverId);
         Vehicle v = new Vehicle(driver, plateNumber.toUpperCase(), volume, description, null, hourlyRate);
         v.setZones(zones);
         em.persist(v);
@@ -120,21 +119,20 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver, int offset) {
-        var vehicleIds = em.createNativeQuery("""
-            select v.id from vehicle v
-            where v.driver_id = :driverId
-            order by v.plate_number
-            """).setParameter("driverId", driver.getId())
+        List<Long> vehicleIds = em.createQuery("""
+            select v.id from Vehicle v
+            where v.driver = :driver
+            order by v.plateNumber
+            """, Long.class).setParameter("driver", driver)
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.VEHICLES_PAGE_SIZE)
                 .getResultList();
 
-        List<Long> parsedIds = vehicleIds.stream().map(id->((Integer) id).longValue()).toList();
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where id in (:idList) order by v.plateNumber",
+                "from Vehicle v where id in (:vehicleIds) order by v.plateNumber",
                 Vehicle.class
         );
-        query.setParameter("idList", parsedIds);
+        query.setParameter("vehicleIds", vehicleIds);
         return query.getResultList();
     }
 

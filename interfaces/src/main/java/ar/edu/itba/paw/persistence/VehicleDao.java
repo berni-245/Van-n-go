@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface VehicleDao {
     Vehicle create(
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,

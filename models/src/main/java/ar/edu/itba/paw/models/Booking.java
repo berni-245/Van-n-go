@@ -139,4 +139,8 @@ public class Booking {
     public void setReview(String review) {
         this.review = review;
     }
+
+    public void setPop(Long pop) {
+        this.pop = pop;
+    }
 }

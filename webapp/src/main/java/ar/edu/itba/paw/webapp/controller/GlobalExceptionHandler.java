@@ -16,6 +16,13 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ModelAndView handleUserNotFound(UserNotFoundException e, RedirectAttributes redirectAttributes,
+                                                       HttpServletRequest request) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.user.not.found"));
+        return new ModelAndView("redirect:/");
+    }
+
     @ExceptionHandler(InvalidImageException.class)
     public ModelAndView handleInvalidImageException(InvalidImageException ex, final RedirectAttributes redirectAttributes,
                                                     HttpServletRequest request) {
