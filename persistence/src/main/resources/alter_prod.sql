@@ -1,4 +1,4 @@
-create type state as enum ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
+-- create type state as enum ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
 
 UPDATE weekly_availability
 SET week_day = 0
