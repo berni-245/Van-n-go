@@ -1,9 +1,11 @@
 <%@ attribute name="booking" required="true" type="ar.edu.itba.paw.models.Booking" %>
 <%@ attribute name="currentDate" required="true" type="java.time.LocalDate" %>
+<%@ attribute name="loggedUser" required="true" type="ar.edu.itba.paw.models.User" %>
 <%@ tag body-content="empty" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ tag import="ar.edu.itba.paw.models.BookingState" %>
+<%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <div class="col">
     <div class="card mb-3 shadow h-100">
@@ -72,13 +74,13 @@
                         </c:if>
                     </div>
                 </c:when>
-                <c:when test="${booking.state eq BookingState.REJECTED}">
-
-                </c:when>
-                <c:when test="${booking.state eq BookingState.FINISHED}">
-
-                </c:when>
             </c:choose>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#bookingModal${booking.id}">
+                <spring:message code="generic.phrase.seeDetails"/>
+            </button>
+            <comp:BookingModal booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>
+
         </div>
     </div>
 </div>

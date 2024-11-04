@@ -7,6 +7,7 @@
 <%@ attribute name="paramName" required="true" type="java.lang.String" %>
 <%@ attribute name="totalPages" required="true" type="java.lang.Long" %>
 <%@ attribute name="currentPage" required="true" type="java.lang.Long" %>
+<%@ attribute name="loggedUser" required="true" type="ar.edu.itba.paw.models.User" %>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -20,7 +21,7 @@
     </c:if>
     <div class="row row-cols-3 g-4">
         <c:forEach var="booking" items="${bookings}">
-            <comp:BookingCard booking="${booking}" currentDate="${currentDate}"/>
+            <comp:BookingCard booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>
         </c:forEach>
     </div>
     <comp:Pagination paramName="${paramName}"

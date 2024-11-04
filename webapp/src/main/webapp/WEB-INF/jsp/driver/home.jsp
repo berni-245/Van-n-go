@@ -38,25 +38,25 @@
                                   callToActionCode="call_to_action.driver_bookings"
                                   bookings="${pendingBookings}" currentDate="${currentDate}"
                                   paramName="pendingPage" totalPages="${totPendingPages}"
-                                  currentPage="${pendingPage}"/>
+                                  currentPage="${pendingPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.ACCEPTED}" tabId="accepted-tab"
                                   active="${activeTab eq BookingState.ACCEPTED}"
                                   callToActionCode="call_to_action.driver_bookings"
                                   bookings="${acceptedBookings}" currentDate="${currentDate}"
                                   paramName="acceptedPage" totalPages="${totAcceptedPages}"
-                                  currentPage="${acceptedPage}"/>
+                                  currentPage="${acceptedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.FINISHED}" tabId="finished-tab"
                                   active="${activeTab eq BookingState.FINISHED}"
                                   callToActionCode="call_to_action.driver_bookings"
                                   bookings="${finishedBookings}" currentDate="${currentDate}"
                                   paramName="finishedPage" totalPages="${totFinishedPages}"
-                                  currentPage="${finishedPage}"/>
+                                  currentPage="${finishedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.REJECTED}" tabId="rejected-tab"
                                   active="${activeTab eq BookingState.REJECTED}"
                                   callToActionCode="call_to_action.driver_bookings"
                                   bookings="${rejectedBookings}" currentDate="${currentDate}"
                                   paramName="rejectedPage" totalPages="${totRejectedPages}"
-                                  currentPage="${rejectedPage}"/>
+                                  currentPage="${rejectedPage}" loggedUser="${loggedUser}"/>
         </div>
     </div>
 
