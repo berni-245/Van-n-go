@@ -70,7 +70,7 @@
 <h1 class="text-center mb-5">
     <spring:message
             code="generic.phrase.userAvailability"
-            arguments="${driver.username},${zone.neighborhoodName}"
+            arguments="${driver.username},${originZone},"
     />
 </h1>
 
