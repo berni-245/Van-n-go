@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +54,7 @@ public class ClientController extends ParentController {
         }
         try {
             is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
         }
         return "redirect:/client/bookings";

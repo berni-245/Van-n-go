@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,7 @@ public class DriverController extends ParentController {
             imgFilename = vehicleImg.getOriginalFilename();
             try {
                 imgData = vehicleImg.getBytes();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error(e.getMessage());
             }
         }
@@ -246,7 +247,7 @@ public class DriverController extends ParentController {
             imgFilename = vehicleImg.getOriginalFilename();
             try {
                 imgData = vehicleImg.getBytes();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error(e.getMessage());
             }
         }

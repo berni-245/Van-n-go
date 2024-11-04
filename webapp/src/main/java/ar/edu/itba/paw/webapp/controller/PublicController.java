@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Optional;
 
 @Controller
@@ -80,11 +81,13 @@ public class PublicController extends ParentController {
     }
 
     @RequestMapping(path = "/upload/pfp", method = RequestMethod.POST)
-    public String submit(@RequestParam("profilePicture") MultipartFile file, @ModelAttribute("loggedUser") User loggedUser) {
+    public String submit(
+            @RequestParam("profilePicture") MultipartFile file,
+            @ModelAttribute("loggedUser") User loggedUser) {
         if (file != null && !file.isEmpty()) {
             try {
                 loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error(e.getMessage());
             }
         }
