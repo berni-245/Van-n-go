@@ -175,16 +175,19 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow(), date);
     }
 
+    @Transactional
     @Override
-    public void acceptBooking(long bookingId) {
-        Optional<Booking> booking = bookingDao.getBookingById(bookingId);
-        booking.ifPresent(bookingDao::acceptBooking);
+    public void acceptBooking(long bookingId, Locale locale) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        bookingDao.acceptBooking(booking);
+        mailService.sendAcceptedBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getClient().getMail(),locale);
     }
 
     @Override
-    public void rejectBooking(long bookingId) {
+    public void rejectBooking(long bookingId, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         bookingDao.rejectBooking(booking);
+        mailService.sendRejectedBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getClient().getMail(),locale);
     }
 
     @Override

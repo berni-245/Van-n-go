@@ -4,6 +4,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ public class MailServiceImpl implements MailService {
     private final DriverDao driverDao;
     @Autowired
     private final ClientDao clientDao;
+    @Autowired
+    private final BookingDao bookingDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
     private final TemplateEngine templateEngine;
@@ -47,9 +50,10 @@ public class MailServiceImpl implements MailService {
     private final Authenticator auth;
     private final Properties properties;
 
-    public MailServiceImpl(DriverDao driverDao, ClientDao clientDao) {
+    public MailServiceImpl(DriverDao driverDao, ClientDao clientDao, BookingDao bookingDao) {
         this.driverDao = driverDao;
         this.clientDao = clientDao;
+        this.bookingDao = bookingDao;
         this.properties = new Properties();
         setProperties();
 
@@ -142,15 +146,14 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendAcceptedBooking(long bookingId, Locale locale){
-        Booking booking = null; //= bookingDao.getBooking(id);
+    public void sendAcceptedBooking(LocalDate date, String driverName, String clientMail, Locale locale){
         Message message = getMessage();
         Context context = new Context(locale);
-        context.setVariable("date", booking.getDate());
-        context.setVariable("driverName",booking.getDriver().getUsername());
+        context.setVariable("date", date);
+        context.setVariable("driverName",driverName);
         String mailBodyProcessed = templateEngine.process("acceptedBooking", context);
         try {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(booking.getClient().getMail()));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.bookingAccepted",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
@@ -161,15 +164,14 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRejectedBooking(long bookingId, Locale locale){
-        Booking booking = null ;//bookingDao.getBooking(id);
+    public void sendRejectedBooking(LocalDate date, String driverName, String clientMail, Locale locale){
         Message message = getMessage();
         Context context = new Context(locale);
-        context.setVariable("date", booking.getDate());
-        context.setVariable("driverName",booking.getDriver().getUsername());
+        context.setVariable("date", date);
+        context.setVariable("driverName",driverName);
         String mailBodyProcessed = templateEngine.process("rejectedBooking", context);
         try {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(booking.getClient().getMail()));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.bookingRejected",null,locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {

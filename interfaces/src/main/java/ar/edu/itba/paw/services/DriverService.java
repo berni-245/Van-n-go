@@ -61,9 +61,9 @@ public interface DriverService {
         return getBookingsByVehicle(vehicleId, LocalDate.parse(date));
     }
 
-    void acceptBooking(long bookingId);
+    void acceptBooking(long bookingId, Locale locale);
 
-    void rejectBooking(long bookingId);
+    void rejectBooking(long bookingId, Locale locale);
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 

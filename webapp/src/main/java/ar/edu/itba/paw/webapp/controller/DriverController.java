@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -307,7 +308,7 @@ public class DriverController extends ParentController {
     public ModelAndView acceptBooking(
             @PathVariable("id") long bookingId
     ) {
-        ds.acceptBooking(bookingId);
+        ds.acceptBooking(bookingId, LocaleContextHolder.getLocale());
         return redirect("/");
     }
 
@@ -323,7 +324,7 @@ public class DriverController extends ParentController {
     public ModelAndView rejectBooking(
             @PathVariable("id") long bookingId
     ) {
-        ds.rejectBooking(bookingId);
+        ds.rejectBooking(bookingId,LocaleContextHolder.getLocale());
         return redirect("/");
     }
 
