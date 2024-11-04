@@ -25,8 +25,9 @@
             <div>
                 <h5 class="card-title"><c:out value="${booking.date}"/></h5>
                 <p class="card-text"><c:out value="${booking.client.username}"/></p>
-                <p class="card-text"><c:out value="${booking.client.mail}"/></p>
-                <p class="card-text"><c:out value="${booking.jobDescription}"/></p>
+                <p class="card-text"><spring:message
+                        code="components.bookingCard.zone"
+                        arguments="${booking.originZone.neighborhoodName}, ${booking.destinationZone.neighborhoodName}"/></p>
             </div>
             <c:choose>
                 <c:when test="${booking.state eq BookingState.PENDING}">
@@ -47,7 +48,6 @@
                 </c:when>
                 <c:when test="${booking.state eq BookingState.ACCEPTED}">
                     <div>
-                        <p><spring:message code="driver.home.booking.confirmed"/></p>
                         <c:if test="${booking.pop eq null}">
                             <spring:message code="driver.home.unpaid"/>
                         </c:if>
@@ -71,41 +71,10 @@
                     </div>
                 </c:when>
                 <c:when test="${booking.state eq BookingState.REJECTED}">
-                    <div>
-                        <p><spring:message code="driver.home.booking.rejected"/></p>
-                    </div>
+
                 </c:when>
                 <c:when test="${booking.state eq BookingState.FINISHED}">
-                    <div>
-                        <p><spring:message code="driver.home.booking.finish"/></p>
-                    </div>
-                    <c:choose>
-                        <c:when test="${booking.rating.isPresent()}">
-                            <p><spring:message code="driver.history.rating"/></p>
-                            <div class="d-flex align-items-center">
-                            <span class="fw-bold text-warning">
-                                <c:out value="${booking.rating.get()}"/>
-                            </span>
-                                <div class="ms-2">
-                                    <c:set var="fullStars" value="${booking.rating.get().intValue()}"/>
-                                    <c:set var="emptyStars" value="${5 - fullStars}"/>
 
-                                    <c:forEach var="i" begin="1" end="${fullStars}">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </c:forEach>
-
-                                    <c:forEach var="i" begin="1" end="${emptyStars}">
-                                        <i class="bi bi-star text-secondary"></i>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                            <p><spring:message code="driver.history.review"/></p>
-                            <p><c:out value="${booking.review.get()}"/></p>
-                        </c:when>
-                        <c:otherwise>
-                            <p><spring:message code="driver.history.noRating"/></p>
-                        </c:otherwise>
-                    </c:choose>
                 </c:when>
             </c:choose>
         </div>
