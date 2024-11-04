@@ -163,11 +163,11 @@
                                 </div>
                                 <div class="mt-3">
                                     <label for="destinationZoneId">
-                                        <spring:message code="driver.availability.selectDestinationZone"/>
+                                        <spring:message code="driver.availability.selectDestinationZone" />
                                     </label>
                                         <spring:bind path="destinationZoneId">
                                             <form:select path="destinationZoneId" id="select-zones" multiple="false"
-                                                         placeholder="${selectZones}..." autocomplete="off"
+                                                         autocomplete="off"
                                                          cssClass="form-select ${status.error ? 'is-invalid' : ''}">
                                                 <form:options items="${zones}" itemValue="id"/>
                                             </form:select>
