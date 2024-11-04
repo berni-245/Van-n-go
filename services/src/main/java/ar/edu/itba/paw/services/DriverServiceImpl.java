@@ -56,8 +56,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public Driver create(String username, String mail, String password, String extra1, Locale locale) {
-        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), extra1);
+    public Driver create(String username, String mail, String password, String description, Locale locale) {
+        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
     }
@@ -222,8 +222,8 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
 
     @Override
-    public void editProfile(Driver driver, String username, String mail,  String extra1, String cbu) {
-        driverDao.editProfile(driver, username, mail, extra1, cbu);
+    public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
+        driverDao.editProfile(driver, username, mail, description, cbu);
     }
 
     @Override

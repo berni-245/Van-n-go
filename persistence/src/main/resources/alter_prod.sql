@@ -124,6 +124,16 @@ ALTER TABLE booking_old2 ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq
 ALTER TABLE booking ALTER COLUMN id SET DEFAULT nextval('booking_id_seq'::regclass);
 SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
 
+-- command to check which sequence is mapped to a table only in psql console
+/*
+ select column_default
+ from information_schema.columns
+ where table_name = booking and column_name = id;
+*/
+
+-- command to check last value of a sequence
+-- select last_value from <sequence>
+
 -- Esta consulta da un "unsafe query" pues va a recorrer toda la tabla, y podria modificar todos los plate_number
 -- pero eso es lo que queremos.
 UPDATE vehicle
@@ -134,12 +144,4 @@ UPDATE driver
 SET extra1 = null
 where extra1 = '';
 
--- command to check which sequence is mapped to a table only in psql console
-/*
- select column_default
- from information_schema.columns
- where table_name = booking and column_name = id;
-*/
-
--- command to check last value of a sequence
--- select last_value from <sequence>
+ALTER TABLE driver RENAME COLUMN extra1 TO description;

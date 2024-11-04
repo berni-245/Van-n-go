@@ -44,10 +44,10 @@
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                             <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong>
-                                <c:if test="${loggedDriver.extra1 ne null}">
-                                    <c:out value="${loggedDriver.extra1}"/>
+                                <c:if test="${loggedDriver.description ne null}">
+                                    <c:out value="${loggedDriver.description}"/>
                                 </c:if>
-                                <c:if test="${loggedDriver.extra1 eq null}">
+                                <c:if test="${loggedDriver.description eq null}">
                                     <spring:message code="public.profile.noDescription"/>
                                 </c:if>
                             </p>

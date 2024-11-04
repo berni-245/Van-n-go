@@ -9,12 +9,12 @@ import javax.validation.constraints.Pattern;
 public class ProfileForm {
     @Nullable
     @Length(min = 5, max = 255)
-    private String extra1;
+    private String description;
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
     @Length(max = 32)
     private String cbu;
 
-    public String getExtra1() {return extra1;}
+    public String getDescription() {return description;}
 
     public String getcbu() {return cbu;}
 
@@ -22,7 +22,7 @@ public class ProfileForm {
         this.cbu = cbu;
     }
 
-    public void setExtra1(String extra1) {
-        this.extra1 = extra1;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

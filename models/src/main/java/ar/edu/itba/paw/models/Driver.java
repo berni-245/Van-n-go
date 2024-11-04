@@ -7,13 +7,13 @@ import java.util.List;
 public class Driver extends User {
 
     @Column
-    private  String extra1;
+    private String description;
 
     @Column(precision = 3)
-    private  Double rating;
+    private Double rating;
 
     @Column(length = 32)
-    private  String cbu;
+    private String cbu;
 
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Vehicle> vehicles;
@@ -22,24 +22,22 @@ public class Driver extends User {
             String username,
             String mail,
             String password,
-            String extra1,
+            String description,
             Double rating,
             String cbu
     ) {
         super(username, mail, password);
-        this.extra1 = extra1;
+        this.description = description;
         this.rating = rating;
         this.cbu = cbu;
     }
-
-
 
     Driver(){
 
     }
 
-    public String getExtra1() {
-        return extra1;
+    public String getDescription() {
+        return description;
     }
 
     public Double getRating() {
@@ -53,7 +51,7 @@ public class Driver extends User {
         return true;
     }
 
-    public void setExtra1(String extra1) { this.extra1 = extra1; }
+    public void setDescription(String description) { this.description = description; }
 
     public void setCbu(String cbu) { this.cbu = cbu; }
 
@@ -71,8 +69,8 @@ public class Driver extends User {
 
     @Override
     public String toString() {
-        return "Driver{id=%d, username='%s', mail='%s', extra1='%s', cbu='%s'".formatted(
-                getId(), getUsername(), getMail(), extra1, cbu
+        return "Driver{id=%d, username='%s', mail='%s', description='%s', cbu='%s'".formatted(
+                getId(), getUsername(), getMail(), getDescription(), getCbu()
         );
     }
 }

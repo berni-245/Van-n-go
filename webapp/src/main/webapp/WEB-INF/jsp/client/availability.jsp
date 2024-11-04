@@ -97,7 +97,7 @@
                                     <div class="card-body d-flex justify-content-between">
                                         <div>
                                         <h5 class="card-title">${driver.username}</h5>
-                                        <p class="card-text">${driver.extra1}</p>
+                                        <p class="card-text">${driver.description}</p>
                                         <div class="d-flex align-items-center">
 
                                             <c:choose>
