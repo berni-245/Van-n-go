@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.services;
 
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
@@ -136,7 +134,7 @@ public class MailServiceImpl implements MailService {
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
+            message.setSubject(messageSource.getMessage("subject.welcome", new Object[]{userName}, locale));
             setMailContent(message, mailBodyProcessed);
             sendMail(message);
         } catch (Exception e) {
@@ -146,15 +144,15 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendAcceptedBooking(LocalDate date, String driverName, String clientMail, Locale locale){
+    public void sendAcceptedBooking(LocalDate date, String driverName, String clientMail, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);
         context.setVariable("date", date);
-        context.setVariable("driverName",driverName);
+        context.setVariable("driverName", driverName);
         String mailBodyProcessed = templateEngine.process("acceptedBooking", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject(messageSource.getMessage("subject.bookingAccepted",null,locale));
+            message.setSubject(messageSource.getMessage("subject.bookingAccepted", null, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
 
@@ -164,15 +162,15 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRejectedBooking(LocalDate date, String driverName, String clientMail, Locale locale){
+    public void sendRejectedBooking(LocalDate date, String driverName, String clientMail, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);
         context.setVariable("date", date);
-        context.setVariable("driverName",driverName);
+        context.setVariable("driverName", driverName);
         String mailBodyProcessed = templateEngine.process("rejectedBooking", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject(messageSource.getMessage("subject.bookingRejected",null,locale));
+            message.setSubject(messageSource.getMessage("subject.bookingRejected", null, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
 
@@ -189,7 +187,7 @@ public class MailServiceImpl implements MailService {
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(messageSource.getMessage("subject.welcome",new Object[]{userName},locale));
+            message.setSubject(messageSource.getMessage("subject.welcome", new Object[]{userName}, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
             LOGGER.error("Error sending welcome driver mail to {}", userName);
@@ -199,22 +197,19 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendRequestedDriverService(long driverId, Client client, LocalDate date, String jobDescription, Locale locale) {
-        Optional<Driver> driver = driverDao.findById(driverId);
-        if(driver.isPresent()){
-            Context context = new Context(locale);
-            String clientMail = client.getMail();
-            String driverMail = driver.get().getMail();
-            context.setVariable("driverName", driver.get().getUsername());
-            context.setVariable("driverMail", driver.get().getMail());
-            context.setVariable("dateRequested", new java.util.Date());
-            context.setVariable("clientName", driverMail);
-            context.setVariable("clientMail", clientMail );
-            sendClientRequestedServiceMail(clientMail, context, jobDescription, locale);
-            sendDriverRequestedMail(driverMail, context, jobDescription, locale);
-
-        }
-
+    public void sendRequestedDriverService(String driverUsername, String driverMail, String clientUsername,
+                                           String clientMail, LocalDate date, String jobDescription,
+                                           String originZone, String destinationZone, ShiftPeriod period, Locale locale) {
+        Context context = new Context(locale);
+        context.setVariable("driverName", driverUsername);
+        context.setVariable("driverMail", driverMail);
+        context.setVariable("dateRequested", date);
+        context.setVariable("clientName", clientUsername);
+        context.setVariable("clientMail", clientMail);
+        context.setVariable("originZone", originZone);
+        context.setVariable("destinationZone", destinationZone);
+        sendClientRequestedServiceMail(clientMail, context, jobDescription, locale);
+        sendDriverRequestedMail(driverMail, context, jobDescription, locale);
     }
 
 
@@ -224,7 +219,7 @@ public class MailServiceImpl implements MailService {
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
-            message.setSubject(messageSource.getMessage("subject.serviceRequested",null,locale));
+            message.setSubject(messageSource.getMessage("subject.serviceRequested", null, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignored) {
         }
@@ -237,7 +232,7 @@ public class MailServiceImpl implements MailService {
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
             String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
-            message.setSubject(messageSource.getMessage("subject.serviceRequired",null,locale));
+            message.setSubject(messageSource.getMessage("subject.serviceRequired", null, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception ignore) {
         }

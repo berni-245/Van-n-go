@@ -77,8 +77,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
                     v, client, zone, destination, date, shiftPeriod, jobDescription
         );
         mailService.sendRequestedDriverService(
-                booking.getDriver().getId(), client, date, jobDescription, locale
-        );
+                booking.getDriver().getUsername(),booking.getDriver().getMail(),
+                booking.getClient().getUsername(), booking.getClient().getMail(),
+                date, jobDescription, booking.getOriginZone().getNeighborhoodName(),booking.getDestinationZone().getNeighborhoodName(),booking.getShiftPeriod() ,locale );
         return booking;
     }
 

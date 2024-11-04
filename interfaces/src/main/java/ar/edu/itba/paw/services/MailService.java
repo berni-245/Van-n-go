@@ -2,6 +2,8 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.models.Zone;
 import org.springframework.scheduling.annotation.Async;
 
 import java.awt.print.Book;
@@ -19,6 +21,8 @@ public interface MailService {
 
     void sendDriverWelcomeMail(String to, String userName, Locale locale);
 
-    void sendRequestedDriverService(long driverId, Client client, LocalDate date, String jobDescription, Locale locale);
+    void sendRequestedDriverService(String driverUsername, String driverMail, String clientUsername,
+                                    String clientMail, LocalDate date, String jobDescription,
+                                    String originZone, String destinationZone, ShiftPeriod period, Locale locale);
 
 }
