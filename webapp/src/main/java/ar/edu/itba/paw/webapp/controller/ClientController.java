@@ -159,7 +159,6 @@ public class ClientController extends ParentController {
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date2 = LocalDate.parse(date, formatter);
-//        return gson.toJson(ds.activeAvailabilities(vehicleId, zoneId, date2));
         return gson.toJson("{}");
     }
 
@@ -171,6 +170,8 @@ public class ClientController extends ParentController {
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
+            @RequestParam(name = "rating", required = false) Integer rating,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
@@ -193,7 +194,9 @@ public class ClientController extends ParentController {
             mav.addObject("sizeLowerCase", size);
             mav.addObject("priceMin", priceMin);
             mav.addObject("priceMax", priceMax);
+            mav.addObject("rating", rating);
             mav.addObject("weekday", weekday);
+            mav.addObject("page",page);
             return mav;
         } else {
             return new ModelAndView("redirect:/403");
@@ -214,7 +217,7 @@ public class ClientController extends ParentController {
     ) {
         List<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            return driverAvailability(id, form.getOriginZoneId(), size, priceMin, priceMax, weekday, loggedUser, form);
+            return driverAvailability(id, form.getOriginZoneId(), size, priceMin, priceMax, weekday, 0,0,loggedUser, form);
         }
         Optional<Booking> booking = Optional.ofNullable(cs.appointBooking(
                 form.getVehicleId(),

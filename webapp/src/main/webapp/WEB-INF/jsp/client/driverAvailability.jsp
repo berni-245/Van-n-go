@@ -66,12 +66,18 @@
 </comp:Head>
 <body>
 <comp:Header/>
-<h1 class="text-center mb-5">
-    <spring:message
-            code="generic.phrase.userAvailability"
-            arguments="${driver.username},${originZone},"
-    />
-</h1>
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <a href="${pageContext.request.contextPath}/client/availability?zoneId=${originZone.id}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&page=${page}"
+       class="btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M5.854 4.146a.5.5 0 0 1 0 .708L3.707 7H13.5a.5.5 0 0 1 0 1H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
+        </svg>
+    </a>
+    <h1 class="text-center mb-0 flex-grow-1">
+        <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
+    </h1>
+    <div style="width: 50px;"></div>
+</div>
 
 <div class="row mx-0">
     <div class="calendar-container">
@@ -119,13 +125,7 @@
                                     <c:out value="${v.description}"/>
                                 </figcaption>
                             </figure>
-                            <c:url var="postUrl" value="/client/availability/${driverId}">
-                                <c:param name="zoneId" value="${originZone.id}" />
-                                <c:param name="size" value="${size}" />
-                                <c:param name="priceMin" value="${priceMin}" />
-                                <c:param name="priceMax" value="${priceMax}" />
-                                <c:param name="weekday" value="${weekday}" />
-                            </c:url>
+                            <c:url var="postUrl" value="/client/availability/${driverId}"/>
                             <form:form action="${postUrl}" method="post" modelAttribute="bookingForm" onsubmit="return isShiftPeriodButtonClicked()">
                                 <input type="hidden" name="size" value="${size}">
                                 <input type="hidden" name="priceMin" value="${priceMin}">
