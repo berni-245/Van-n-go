@@ -70,7 +70,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void validateImage(String filename, byte[] bin) {
-        if(bin == null || bin.length < 0 || bin.length > 10*1024*1024 || filename == null || !filename.isEmpty())
+        if(bin == null || bin.length < 0 || bin.length > 10*1024*1024 || filename == null || filename.isEmpty())
             throw new InvalidImageException();
     }
 }
