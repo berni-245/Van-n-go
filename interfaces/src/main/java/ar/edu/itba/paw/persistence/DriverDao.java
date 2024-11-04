@@ -14,8 +14,6 @@ public interface DriverDao {
 
     Optional<Driver> findById(long id);
 
-    List<Driver> getAll();
-
     List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset);
 
     Optional<Driver> findByUsername(String username);

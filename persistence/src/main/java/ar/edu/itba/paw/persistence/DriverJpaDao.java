@@ -30,13 +30,6 @@ public class DriverJpaDao implements DriverDao {
     }
 
     @Override
-    public List<Driver> getAll() { //TODO: paginar
-        return em.createQuery("From Driver", Driver.class)
-                .getResultList();
-    }
-
-
-    @Override
     public List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset) {
         StringBuilder queryString = new StringBuilder("""
             SELECT DISTINCT v.driver FROM Vehicle v
