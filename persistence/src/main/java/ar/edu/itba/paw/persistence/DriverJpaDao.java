@@ -18,8 +18,8 @@ public class DriverJpaDao implements DriverDao {
     private EntityManager em;
 
     @Override
-    public Driver create(String username, String mail, String password, String extra1) {
-        Driver driver = new Driver(username, mail, password, extra1, null, null);
+    public Driver create(String username, String mail, String password, String description) {
+        Driver driver = new Driver(username, mail, password, description, null, null);
         em.persist(driver);
         return driver;
     }
@@ -87,10 +87,10 @@ public class DriverJpaDao implements DriverDao {
 
     @Transactional
     @Override
-    public void editProfile(Driver driver, String username, String mail, String extra1, String cbu) {
+    public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
         driver.setUsername(username);
         driver.setMail(mail);
-        driver.setExtra1(extra1);
+        driver.setDescription(description);
         driver.setCbu(cbu);
         em.merge(driver);
 

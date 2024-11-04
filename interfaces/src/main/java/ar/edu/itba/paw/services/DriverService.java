@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface DriverService {
-    Driver create(String username, String mail, String password, String extra1, Locale locale);
+    Driver create(String username, String mail, String password, String description, Locale locale);
 
     Optional<Driver> findById(long id);
 
@@ -67,7 +67,7 @@ public interface DriverService {
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
-    void editProfile(Driver driver, String username, String mail, String extra1, String cbu);
+    void editProfile(Driver driver, String username, String mail, String description, String cbu);
 
     Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 

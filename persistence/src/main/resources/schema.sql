@@ -23,7 +23,7 @@ create table if not exists client
 create table if not exists driver
 (
     id int primary key references app_user (id) on delete cascade,
-    extra1  text,
+    description  text,
     rating  double precision,
     cbu     varchar(32)
 );

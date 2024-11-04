@@ -181,7 +181,7 @@ public class DriverController extends ParentController {
             form.setMail(loggedUser.getMail());
             form.setUsername(loggedUser.getUsername());
             form.setCbu(loggedUser.getCbu());
-            form.setExtra1(loggedUser.getExtra1());
+            form.setDescription(loggedUser.getDescription());
         }
         return new ModelAndView("/user/profileEdit");
     }
@@ -193,7 +193,7 @@ public class DriverController extends ParentController {
             BindingResult errors
     ) {
         if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
-        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getExtra1(), form.getCbu());
+        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu());
         return redirect("/driver/profile");
     }
 

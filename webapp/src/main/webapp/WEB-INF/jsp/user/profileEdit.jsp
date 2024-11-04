@@ -72,9 +72,9 @@
                             <form:errors path="cbu" cssClass="text-danger" />
                         </div>
                         <div class="form-group">
-                            <label for="extra1"><spring:message code="generic.word.description"/></label>
-                            <form:input path="extra1" id="extra1" cssClass="form-control" />
-                            <form:errors path="extra1" cssClass="text-danger" />
+                            <label for="description"><spring:message code="generic.word.description"/></label>
+                            <form:input path="description" id="description" cssClass="form-control" />
+                            <form:errors path="description" cssClass="text-danger" />
                         </div>
                     </c:if>
                     <form:input path="oldUsername" type="hidden" id="oldUsername"/>

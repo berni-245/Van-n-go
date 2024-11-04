@@ -10,7 +10,7 @@ import java.util.Optional;
 
 // Should extend UserDao
 public interface DriverDao {
-    Driver create(String username, String mail, String password, String extra1);
+    Driver create(String username, String mail, String password, String description);
 
     Optional<Driver> findById(long id);
 
@@ -20,7 +20,7 @@ public interface DriverDao {
 
     Optional<Driver> findByUsername(String username);
 
-    void editProfile(Driver driver, String username, String mail, String extra1, String cbu);
+    void editProfile(Driver driver, String username, String mail, String description, String cbu);
 
     int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 
