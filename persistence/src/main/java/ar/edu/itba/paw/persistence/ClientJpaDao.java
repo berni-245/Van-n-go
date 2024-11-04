@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -38,9 +39,10 @@ public class ClientJpaDao implements ClientDao {
 
     @Transactional
     @Override
-    public void editProfile(Client client, String username, String mail) {
+    public void editProfile(Client client, String username, String mail, Zone zone) {
         client.setUsername(username);
         client.setMail(mail);
+        client.setZone(zone);
         em.merge(client);
     }
 }

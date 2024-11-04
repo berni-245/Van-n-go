@@ -112,7 +112,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Transactional
     @Override
-    public void editProfile(Client client, String username, String mail) {
-        clientDao.editProfile(client, username, mail);
+    public void editProfile(Client client, String username, String mail, Long zoneId) {
+        //TODO: That'll do
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        clientDao.editProfile(client, username, mail, zone);
     }
 }

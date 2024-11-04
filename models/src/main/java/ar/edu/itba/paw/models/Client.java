@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.models;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class Client extends User {
@@ -15,4 +15,11 @@ public class Client extends User {
     public boolean isDriver() {
         return false;
     }
+
+    @ManyToOne
+    private Zone zone;
+    //TODO: Ver como solucionar el tema de la lazy intialization exception
+    public Zone getZone() {return zone;}
+
+    public void setZone(Zone zone) {this.zone = zone;}
 }

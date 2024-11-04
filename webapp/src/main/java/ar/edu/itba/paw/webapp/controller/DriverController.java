@@ -165,7 +165,6 @@ public class DriverController extends ParentController {
     public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
         mav.addObject("loggedUser", loggedUser);
-        mav.addObject("loggedDriver", loggedUser); //TODO: revisar porque falla sin este add
         return mav;
     }
 

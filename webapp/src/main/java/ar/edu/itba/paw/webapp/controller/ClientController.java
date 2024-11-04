@@ -112,6 +112,8 @@ public class ClientController extends ParentController {
     ) {
         if (errors.hasErrors()) return new ModelAndView();
         ModelAndView mav = new ModelAndView("client/search");
+        if(loggedUser.getZone()!=null)
+            form.setZoneId(loggedUser.getZone().getId());
         List<Zone> zones = zs.getAllZones();
         mav.addObject("zones", zones);
         return mav;
@@ -130,11 +132,7 @@ public class ClientController extends ParentController {
             BindingResult errors,
             @RequestParam(name = "page", defaultValue = "0") int page
     ) {
-        // The default should be the client's zone.
-        if (zoneId == null) {
-            zoneId = 1L;
-            form.setZoneId(zoneId);
-        }
+        form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
         if (errors.hasErrors()) return new ModelAndView();
         final ModelAndView mav = new ModelAndView("client/availability");
         List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, page);
@@ -276,11 +274,14 @@ public class ClientController extends ParentController {
     ) {
         form.setOldUsername(loggedUser.getUsername());
         form.setOldMail(loggedUser.getMail());
+        form.setZoneId(Optional.ofNullable(loggedUser.getZone()).map(Zone::getId).orElse(null));
         if (!errors.hasErrors()) {
             form.setMail(loggedUser.getMail());
             form.setUsername(loggedUser.getUsername());
         }
-        return new ModelAndView("/user/profileEdit");
+        ModelAndView mav = new ModelAndView("/user/profileEdit");
+        mav.addObject("zones",zs.getAllZones());
+        return mav;
     }
 
     @RequestMapping(path = "/client/profile/edit", method = RequestMethod.POST)
@@ -290,7 +291,7 @@ public class ClientController extends ParentController {
             BindingResult errors
     ) {
         if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
-        cs.editProfile(loggedUser, form.getUsername(), form.getMail());
+        cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId());
         return redirect("/client/profile");
     }
 

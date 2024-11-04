@@ -44,24 +44,29 @@
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                             <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong>
-                                <c:if test="${loggedDriver.description ne null}">
-                                    <c:out value="${loggedDriver.description}"/>
+                                <c:if test="${loggedUser.description ne null}">
+                                    <c:out value="${loggedUser.description}"/>
                                 </c:if>
-                                <c:if test="${loggedDriver.description eq null}">
+                                <c:if test="${loggedUser.description eq null}">
                                     <spring:message code="public.profile.noDescription"/>
                                 </c:if>
                             </p>
                         <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong>
-                            <c:if test="${loggedDriver.cbu ne null}">
-                                <c:out value="${loggedDriver.cbu}"/>
+                            <c:if test="${loggedUser.cbu ne null}">
+                                <c:out value="${loggedUser.cbu}"/>
                             </c:if>
-                            <c:if test="${loggedDriver.cbu eq null}">
+                            <c:if test="${loggedUser.cbu eq null}">
                                 <spring:message code="public.profile.noCbu"/>
                             </c:if>
                         </p>
-                        <!--When more client only props are added, add a c:otherwise tag and add the props there -->
                     </c:when>
-
+                    <c:otherwise>
+                        <p class="mb-1"><strong><spring:message code="client.profile.zone"/>: </strong>
+                            <c:if test="${loggedUser.zone ne null}">
+                                This is where I'd put the client zone if I had it
+                            </c:if>
+                        </p>
+                    </c:otherwise>
                 </c:choose>
                 <div class="d-flex justify-content-end mt-4">
                     <a href="<c:url value='/${userPath}/profile/edit'/>" class="btn btn-primary"><spring:message

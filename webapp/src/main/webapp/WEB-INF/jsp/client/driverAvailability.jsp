@@ -14,7 +14,6 @@
         .calendar-container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -70,11 +69,11 @@
 <h1 class="text-center mb-5">
     <spring:message
             code="generic.phrase.userAvailability"
-            arguments="${driver.username},${zone.neighborhoodName}"
+            arguments="${driver.username},${originZone},"
     />
 </h1>
 
-<div class="row">
+<div class="row mx-0">
     <div class="calendar-container">
         <div id="calendar"></div>
     </div>
