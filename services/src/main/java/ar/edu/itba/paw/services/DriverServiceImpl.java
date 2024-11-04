@@ -216,7 +216,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     ) {
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
         v.setZones(zoneDao.getZonesById(zoneIds));
-        if (imgFilename != null && imgData != null && imgData.length > 0) {
+        if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10*1024*1024) {
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
             v.setImgId(imgId);
         }

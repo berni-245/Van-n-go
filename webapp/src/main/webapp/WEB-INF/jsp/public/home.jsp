@@ -61,6 +61,7 @@
 
 <footer class="mt-auto">
     <div class="container">
+        <comp:ToastManager toasts="${toasts}"/>
         <p class="mb-1">&copy; PAW 2024B G1</p>
     </div>
 </footer>

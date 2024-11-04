@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidImageException.class)
-    public ModelAndView handleInvalidImageException(InvalidImageException ex, final RedirectAttributes redirectAttributes,
+    public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes,
                                                     HttpServletRequest request) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));
         return new ModelAndView("redirect:/");

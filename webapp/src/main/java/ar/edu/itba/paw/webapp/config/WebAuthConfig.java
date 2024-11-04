@@ -50,7 +50,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
-                .defaultSuccessUrl("/", false)
+                .defaultSuccessUrl("/", true)
                 .loginPage("/login")
                 .failureHandler(customAuthenticationFailureHandler)
                 .and().rememberMe()
