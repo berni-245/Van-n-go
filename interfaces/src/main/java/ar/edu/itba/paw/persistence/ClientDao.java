@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Zone;
 
 import java.util.Optional;
 
@@ -11,5 +12,5 @@ public interface ClientDao {
 
     Optional<Client> findByUsername(String username);
 
-    void editProfile(Client client, String username, String mail);
+    void editProfile(Client client, String username, String mail, Zone zone);
 }

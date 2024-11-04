@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
+import ar.edu.itba.paw.webapp.validation.ValidZoneId;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
 
@@ -32,10 +34,14 @@ public class ChangeUserInfoForm {
     private String mail;
 
     @Nullable
+    @ValidZoneId
+    private Long zoneId;
+
+    @Nullable
     @Length(min = 5, max = 255)
     private String description;
 
-    @Pattern(regexp = "^[a-zA-Z0-9]*$")
+    //TODO:The previous Regex was wrong. No special chars on alias is fucking retarded
     @Length(max = 32)
     @Nullable
     private String cbu;
@@ -60,7 +66,6 @@ public class ChangeUserInfoForm {
         this.username = username;
     }
 
-
     public String getMail() {
         return mail;
     }
@@ -68,6 +73,10 @@ public class ChangeUserInfoForm {
     public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public Long getZoneId() {return zoneId;}
+
+    public void setZoneId(Long zoneId) {this.zoneId = zoneId;}
 
     public @NotNull @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String getOldUsername() {
         return oldUsername;

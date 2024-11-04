@@ -64,19 +64,39 @@
                         <form:input path="mail" type="email" class="form-control"  id="mail"/>
                         <form:errors path="mail" element="p" cssClass="text-danger"/>
                     </div>
-
-                    <c:if test="${loggedUser.isDriver}">
-                        <div class="form-group">
-                            <label for="cbu"><spring:message code="generic.word.cbu"/></label>
-                            <form:input path="cbu" id="cbu" cssClass="form-control" />
-                            <form:errors path="cbu" cssClass="text-danger" />
+                    <c:choose>
+                     <c:when test="${loggedUser.isDriver}">
+                         <div class="form-group"><label for="cbu">
+                             <spring:message code="generic.word.cbu"/></label>
+                             <form:input path="cbu" id="cbu" cssClass="form-control" />
+                             <form:errors path="cbu" cssClass="text-danger" />
                         </div>
                         <div class="form-group">
+<<<<<<< HEAD
                             <label for="description"><spring:message code="generic.word.description"/></label>
                             <form:input path="description" id="description" cssClass="form-control" />
                             <form:errors path="description" cssClass="text-danger" />
+=======
+                            <label for="extra1"><spring:message code="generic.word.description"/></label>
+                            <form:input path="extra1" id="extra1" cssClass="form-control" />
+                            <form:errors path="extra1" cssClass="text-danger" />
+                         </div>
+                      </c:when>
+                    <c:otherwise>
+                        <div class="mt-3">
+                            <label for="zoneId">
+                                <spring:message code="client.profile.zoneSelect"/>
+                            </label>
+                            <spring:bind path="zoneId">
+                                <form:select path="zoneId" id="select-zones" multiple="false" autocomplete="off"
+                                             cssClass="form-select ${status.error ? 'is-invalid' : ''}">
+                                    <form:options items="${zones}" itemValue="id"/>
+                                </form:select>
+                            </spring:bind>
+>>>>>>> 865c344 (Chore: CLient can set its home zone. Cannot be viewed on profile tho. Cleaned up some other code)
                         </div>
-                    </c:if>
+                    </c:otherwise>
+                    </c:choose>
                     <form:input path="oldUsername" type="hidden" id="oldUsername"/>
                     <form:input path="oldMail" type="hidden" id="oldMail"/>
                     <form:errors element="div" cssClass="alert alert-danger"/>

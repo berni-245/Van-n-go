@@ -2,7 +2,6 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.ShiftPeriod;
 
 import java.time.LocalDate;
@@ -51,5 +50,5 @@ public interface ClientService {
 
     void updatePassword(long id, String password);
 
-    void editProfile(Client client, String username, String mail);
+    void editProfile(Client client, String username, String mail, Long zoneId);
 }
