@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidClientOnBookingCancelException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +127,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             bookingDao.cancelBooking(booking);
             mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),locale);
         }else{
-            throw new IllegalArgumentException(); //TODO: revisar manejo de exceptions
+            throw new InvalidClientOnBookingCancelException();
         }
     }
 }

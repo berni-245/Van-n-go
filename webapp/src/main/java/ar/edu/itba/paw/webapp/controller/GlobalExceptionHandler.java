@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
         return new ModelAndView("redirect:/NotFound");
     }
 
+    @ExceptionHandler(InvalidClientOnBookingCancelException.class)
+    public ModelAndView handleInvalidClientOnBookingCancel(InvalidClientOnBookingCancelException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.client.booking.cancel"));
+        return new ModelAndView("redirect:/client/bookings");
+    }
+
     @ExceptionHandler(InvalidImageException.class)
     public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));

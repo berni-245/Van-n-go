@@ -253,8 +253,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             bookingDao.cancelBooking(booking);
             mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),locale);
         }else{
-            throw new IllegalArgumentException(); //TODO: revisar manejo de exceptions
+            throw new IllegalArgumentException();
         }
-
     }
 }

@@ -67,9 +67,6 @@ public class ClientController extends ParentController {
             Model model
     ) {
         ModelAndView mav = new ModelAndView("client/bookings");
-        if (model.containsAttribute("toasts")) {
-            mav.addObject("toasts", model.getAttribute("toasts"));
-        }
         mav.addObject("bookings", cs.getBookings(loggedUser.getId(),page));
         mav.addObject("currentPage", page);
         mav.addObject("totalPages", (int) Math.ceil((double)cs.getTotalBookingCount(loggedUser.getId()) / Pagination.BOOKINGS_PAGE_SIZE));
