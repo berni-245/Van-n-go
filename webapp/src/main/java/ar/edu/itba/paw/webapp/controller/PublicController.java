@@ -20,9 +20,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
@@ -44,11 +46,13 @@ public class PublicController extends ParentController {
     @RequestMapping(path = {"/", "/home"})
     public ModelAndView index(
             @ModelAttribute("loggedUser") User loggedUser,
-            @RequestParam(value = "page", defaultValue = "0") int page
+            @ModelAttribute(value = "toasts", binding = false) ArrayList<Toast> toasts,
+            RedirectAttributes redirectAttributes
     ) {
         if (loggedUser == null || !loggedUser.getIsDriver()) {
             return new ModelAndView("public/home");
         } else {
+            redirectAttributes.addFlashAttribute("toasts", toasts);
             return redirect("/driver/bookings");
         }
     }

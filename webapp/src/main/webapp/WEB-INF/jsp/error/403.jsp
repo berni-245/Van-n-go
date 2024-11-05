@@ -23,5 +23,6 @@
         </div>
     </div>
 </div>
+<comp:ToastManager toasts="${toasts}"/>
 </body>
 </html>

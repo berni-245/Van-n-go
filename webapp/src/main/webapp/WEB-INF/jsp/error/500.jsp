@@ -16,7 +16,7 @@
                         <spring:message code="error.500.desc"/>
                     </p>
                     <p class="card-text">
-                        ${errorMessage != null ? errorMessage : '<spring:message code="error.500.desc"/>'}
+                        <spring:message code="error.500.desc"/>
                     </p>
                     <a href="${pageContext.request.contextPath}/" class="btn btn-primary mt-3">
                         <spring:message code="components.header.home"/>
@@ -26,5 +26,6 @@
         </div>
     </div>
 </div>
+<comp:ToastManager toasts="${toasts}"/>
 </body>
 </html>

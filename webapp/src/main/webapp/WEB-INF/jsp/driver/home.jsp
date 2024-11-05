@@ -33,6 +33,7 @@
         </ul>
 
         <div class="tab-content mt-3" id="statusTabsContent">
+            <comp:ToastManager toasts="${toasts}"/>
             <comp:BookingCardList id="${BookingState.PENDING}" tabId="pending-tab"
                                   active="${activeTab eq BookingState.PENDING}"
                                   callToActionCode="call_to_action.driver_bookings"

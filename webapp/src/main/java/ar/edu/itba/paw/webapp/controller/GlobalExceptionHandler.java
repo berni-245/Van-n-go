@@ -3,8 +3,6 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Toast;
 import ar.edu.itba.paw.models.ToastType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,15 +15,13 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
-    public ModelAndView handleUserNotFound(UserNotFoundException e, RedirectAttributes redirectAttributes,
-                                                       HttpServletRequest request) {
+    public ModelAndView handleUserNotFound(UserNotFoundException e, RedirectAttributes redirectAttributes) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.user.not.found"));
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/NotFound");
     }
 
     @ExceptionHandler(InvalidImageException.class)
-    public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes,
-                                                    HttpServletRequest request) {
+    public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));
         return new ModelAndView("redirect:/");
     }
@@ -63,14 +59,8 @@ public class GlobalExceptionHandler {
     }
 
     private void addToast(RedirectAttributes redirectAttributes, Toast toast) {
-        List<Toast> toasts = new ArrayList<>();
+        ArrayList<Toast> toasts = new ArrayList<>();
         toasts.add(toast);
         redirectAttributes.addFlashAttribute("toasts", toasts);
     }
-//    TODO: De-comment when deploying, Do not delete
-//    @ExceptionHandler(Exception.class)
-//    public String handleException(Exception ex, Model model) {
-//        model.addAttribute("errorMessage", ex.getMessage());
-//        return "forward:/error";
-//    }
 }
