@@ -10,7 +10,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,8 +19,8 @@ public class GlobalExceptionHandler {
         return new ModelAndView("redirect:/NotFound");
     }
 
-    @ExceptionHandler(InvalidClientOnBookingCancelException.class)
-    public ModelAndView handleInvalidClientOnBookingCancel(InvalidClientOnBookingCancelException e, RedirectAttributes redirectAttributes) {
+    @ExceptionHandler(InvalidUserOnBookingCancelException.class)
+    public ModelAndView handleInvalidClientOnBookingCancel(InvalidUserOnBookingCancelException e, RedirectAttributes redirectAttributes) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.client.booking.cancel"));
         return new ModelAndView("redirect:/client/bookings");
     }
