@@ -82,4 +82,6 @@ public interface DriverService {
     void deleteVehicle(Vehicle vehicle);
 
     void updatePassword(long id, String password);
+
+    void cancelBooking(long bookingId, Driver driver, Locale locale);
 }

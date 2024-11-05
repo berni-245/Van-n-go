@@ -117,4 +117,16 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         clientDao.editProfile(client, username, mail, zone);
     }
+
+    @Transactional
+    @Override
+    public void cancelBooking(long bookingId, Client client, Locale locale) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        if(booking.getClient().equals(client)) {
+            bookingDao.cancelBooking(booking);
+            mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),locale);
+        }else{
+            throw new IllegalArgumentException(); //TODO: revisar manejo de exceptions
+        }
+    }
 }

@@ -51,4 +51,6 @@ public interface ClientService {
     void updatePassword(long id, String password);
 
     void editProfile(Client client, String username, String mail, Long zoneId);
+
+    void cancelBooking(long bookingId, Client client, Locale locale);
 }

@@ -188,6 +188,12 @@ public class BookingJpaDao implements BookingDao {
         driver.setRating(newRating);
     }
 
+    @Override
+    public void cancelBooking(Booking booking) {
+        booking.setState(BookingState.CANCELED);
+        em.merge(booking);
+    }
+
     private int getFinishedBookingsWithRatingCountByDriver(Driver driver) {
         TypedQuery<Booking> query = em.createQuery(
                 """

@@ -140,13 +140,15 @@
                             </div>
                         </c:if>
                         <c:choose>
-                            <c:when test="${booking.date.isBefore(currentDate.minusDays(2))}">
+                            <c:when test="${currentDate.isBefore(booking.date.minusDays(2))}">
                                 <button class="btn btn-danger" data-bs-target="#cancelBooking${booking.id}"
                                         data-bs-toggle="modal" data-bs-dismiss="modal"><spring:message
                                         code="components.bookingModal.cancelBooking"/></button>
                             </c:when>
                             <c:otherwise>
-                                <p><spring:message code="components.bookingModal.cantCancel"/></p>
+                                <c:if test="${!booking.date.isBefore(currentDate)}">
+                                    <p><spring:message code="components.bookingModal.cantCancel"/></p>
+                                </c:if>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
@@ -196,6 +198,6 @@
     </div>
 </div>
 
-<c:if test="${booking.state eq BookingState.ACCEPTED && booking.date.isBefore(currentDate.minusDays(2))}">
+<c:if test="${booking.state eq BookingState.ACCEPTED && currentDate.isBefore(booking.date.minusDays(2))}">
     <comp:CancelBookingModal booking="${booking}" userPath="${userPath}"/>
 </c:if>

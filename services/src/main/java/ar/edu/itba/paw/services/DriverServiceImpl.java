@@ -183,6 +183,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         mailService.sendAcceptedBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getClient().getMail(),locale);
     }
 
+    @Transactional
     @Override
     public void rejectBooking(long bookingId, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
@@ -242,5 +243,18 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public void deleteVehicle(Vehicle vehicle) {
         vehicleDao.deleteVehicle(vehicle);
+    }
+
+    @Transactional
+    @Override
+    public void cancelBooking(long bookingId, Driver driver, Locale locale) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        if(booking.getDriver().equals(driver)) {
+            bookingDao.cancelBooking(booking);
+            mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),locale);
+        }else{
+            throw new IllegalArgumentException(); //TODO: revisar manejo de exceptions
+        }
+
     }
 }

@@ -42,4 +42,6 @@ public interface BookingDao {
     long getClientHistoryCount(Client client);
 
     void setRatingAndReview(Booking booking, int rating, String review);
+
+    void cancelBooking(Booking booking);
 }

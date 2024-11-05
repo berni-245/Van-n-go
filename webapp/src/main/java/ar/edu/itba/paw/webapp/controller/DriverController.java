@@ -329,6 +329,15 @@ public class DriverController extends ParentController {
         return redirect("/");
     }
 
+    @RequestMapping(path = "/driver/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
+    public ModelAndView cancelBooking(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @PathVariable("id") long bookingId
+    ) {
+        ds.cancelBooking(bookingId, loggedUser ,LocaleContextHolder.getLocale());
+        return redirect("/driver/bookings?activeTab=ACCEPTED");
+    }
+
     @RequestMapping(path = "/driver/vehicle/{plateNumber}/delete", method = RequestMethod.POST)
     public ModelAndView deleteVehicle(
             @ModelAttribute("loggedUser") Driver loggedUser,

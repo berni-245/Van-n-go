@@ -25,4 +25,7 @@ public interface MailService {
                                     String clientMail, LocalDate date, String jobDescription,
                                     String originZone, String destinationZone, ShiftPeriod period, Locale locale);
 
+    void sendDriverCanceledBooking(LocalDate date, String username, String mail, Locale locale);
+
+    void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 }

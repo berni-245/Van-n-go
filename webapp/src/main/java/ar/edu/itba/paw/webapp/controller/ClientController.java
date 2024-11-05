@@ -105,6 +105,15 @@ public class ClientController extends ParentController {
         return new ModelAndView("redirect:/client/history");
     }
 
+    @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
+    public ModelAndView cancelBooking(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @PathVariable("id") long bookingId
+    ) {
+        cs.cancelBooking(bookingId, loggedUser ,LocaleContextHolder.getLocale());
+        return redirect("/");
+    }
+
     @RequestMapping("/client/search")
     public ModelAndView search(
             @ModelAttribute("loggedUser") Client loggedUser,

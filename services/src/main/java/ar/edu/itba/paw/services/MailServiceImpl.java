@@ -31,14 +31,6 @@ import java.util.Properties;
 @Service
 //@PropertySource("classpath:resources/mail/mailConfig.properties") //TODO: pasar las configuraciones a mailConfig.properties
 public class MailServiceImpl implements MailService {
-
-    @Autowired
-    private final DriverDao driverDao;
-    @Autowired
-    private final ClientDao clientDao;
-    @Autowired
-    private final BookingDao bookingDao;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
     private final TemplateEngine templateEngine;
     private final ResourceBundleMessageSource messageSource;
@@ -48,10 +40,7 @@ public class MailServiceImpl implements MailService {
     private final Authenticator auth;
     private final Properties properties;
 
-    public MailServiceImpl(DriverDao driverDao, ClientDao clientDao, BookingDao bookingDao) {
-        this.driverDao = driverDao;
-        this.clientDao = clientDao;
-        this.bookingDao = bookingDao;
+    public MailServiceImpl() {
         this.properties = new Properties();
         setProperties();
 
@@ -210,6 +199,16 @@ public class MailServiceImpl implements MailService {
         context.setVariable("destinationZone", destinationZone);
         sendClientRequestedServiceMail(clientMail, context, jobDescription, locale);
         sendDriverRequestedMail(driverMail, context, jobDescription, locale);
+    }
+
+    @Override
+    public void sendDriverCanceledBooking(LocalDate date, String username, String mail, Locale locale) {
+
+    }
+
+    @Override
+    public void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale) {
+
     }
 
 
