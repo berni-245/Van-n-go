@@ -8,8 +8,6 @@
 <comp:Head titleCode="components.header.availability">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <%--TODO: Move to css file--%>
-    <c:url value="/css/weekdaySelector.css" var="css"/>
-    <link rel="stylesheet" href="${css}">
     <style>
         .calendar-container {
             max-width: 800px;
@@ -69,8 +67,10 @@
 <div class="d-flex justify-content-between align-items-center mb-5">
     <a href="${pageContext.request.contextPath}/client/availability?zoneId=${originZone.id}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&page=${page}"
        class="btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M5.854 4.146a.5.5 0 0 1 0 .708L3.707 7H13.5a.5.5 0 0 1 0 1H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left"
+             viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M5.854 4.146a.5.5 0 0 1 0 .708L3.707 7H13.5a.5.5 0 0 1 0 1H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"></path>
         </svg>
     </a>
     <h1 class="text-center mb-0 flex-grow-1">
@@ -94,7 +94,6 @@
                                 type="button" data-bs-toggle="collapse"
                                 data-bs-target="#${v.plateNumber}" aria-expanded="false"
                                 aria-controls="${v.plateNumber}"
-                                vehicleId="${v.id}" plateNumber="${v.plateNumber}"
                                 onclick="updateSelectedVehicle('${v.plateNumber}')"
                                 disabled
                         >
@@ -102,7 +101,7 @@
                                 <strong><c:out value="${v.plateNumber}"/></strong> -
                                 <c:out value="${v.volume}"/>m&sup3
                             </span>
-                            <span class="text-end">
+                            <span class="text-end me-3">
                                 $<c:out value="${v.hourlyRate}"/>/h
                             </span>
                         </button>
@@ -126,7 +125,8 @@
                                 </figcaption>
                             </figure>
                             <c:url var="postUrl" value="/client/availability/${driverId}"/>
-                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm" onsubmit="return isShiftPeriodButtonClicked()">
+                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm"
+                                       onsubmit="return isShiftPeriodButtonClicked()">
                                 <input type="hidden" name="size" value="${size}">
                                 <input type="hidden" name="priceMin" value="${priceMin}">
                                 <input type="hidden" name="priceMax" value="${priceMax}">
@@ -138,16 +138,20 @@
                                     <label for="hb-availability">
                                         <spring:message code="components.header.availability"/>
                                     </label>
-                                    <div id="hb-availability" class="row weekday-toggle-group mt-3 fs-6">
+                                    <div id="hb-availability" class="mt-3 fs-6 d-flex justify-content-around">
                                         <c:forEach var="sp" items="${shiftPeriods}">
-                                            <div class="shift-period-button">
-                                                <comp:ShiftPeriodSquareToggleButton
-                                                        path="shiftPeriod"
-                                                        id="sp-${sp}-${v.plateNumber}"
-                                                        content="${sp}"
-                                                        value="${sp}"
-                                                        onclick="updateSelectedShiftPeriod('${sp}')"
+                                            <div class="position-relative">
+                                                <form:radiobutton path="shiftPeriod"
+                                                                  value="${sp}"
+                                                                  id="sp-${sp}-${v.plateNumber}"
+                                                                  cssClass="btn-check bottom-0"
+                                                                  element="div"
+                                                                  required="true"
                                                 />
+                                                <label class="btn btn-primary"
+                                                       for="sp-${sp}-${v.plateNumber}">
+                                                    <c:out value="${sp}"/>
+                                                </label>
                                             </div>
                                         </c:forEach>
                                     </div>
@@ -162,14 +166,14 @@
                                 </div>
                                 <div class="mt-3">
                                     <label for="destinationZoneId">
-                                        <spring:message code="driver.availability.selectDestinationZone" />
+                                        <spring:message code="driver.availability.selectDestinationZone"/>
                                     </label>
-                                        <spring:bind path="destinationZoneId">
-                                            <form:select path="destinationZoneId" id="select-zones" multiple="false"
-                                                         autocomplete="off"
-                                                         cssClass="form-select ${status.error ? 'is-invalid' : ''}">
-                                                <form:options items="${zones}" itemValue="id"/>
-                                            </form:select>
+                                    <spring:bind path="destinationZoneId">
+                                        <form:select path="destinationZoneId" id="select-zones" multiple="false"
+                                                     autocomplete="off"
+                                                     cssClass="form-select ${status.error ? 'is-invalid' : ''}">
+                                            <form:options items="${zones}" itemValue="id"/>
+                                        </form:select>
                                     </spring:bind>
                                 </div>
                                 <button type="submit" class="btn btn-primary mt-2">
@@ -189,7 +193,7 @@
 <script type="text/javascript">
     let workingDays = [
         <c:forEach var="workDay" items="${workingDays}">
-          ${workDay.value % 7},
+        ${workDay.value % 7},
         </c:forEach>
     ];
 
@@ -250,25 +254,25 @@
 
     const vehiclesData = [
         <c:forEach var="v" items="${vehicles}">
-            {
-                "plateNumber"  : "${v.plateNumber}",
-                "availabilityDays" : [
-                    <c:forEach var="av" items="${v.availability}">
-                    {
-                        "weekDay"  : "${av.weekDay.value % 7}",
-                        "shiftPeriod" : "${av.shiftPeriod}"
-                    },
-                    </c:forEach>
-                ],
-                "acceptedBookings" : [
-                    <c:forEach var="b" items="${v.acceptedBookings}">
-                    {
-                        "bookingDay"            : "${b.date}",
-                        "bookingShiftPeriod"    : "${b.shiftPeriod}"
-                    },
-                    </c:forEach>
-                ]
-            },
+        {
+            "plateNumber": "${v.plateNumber}",
+            "availabilityDays": [
+                <c:forEach var="av" items="${v.availability}">
+                {
+                    "weekDay": "${av.weekDay.value % 7}",
+                    "shiftPeriod": "${av.shiftPeriod}"
+                },
+                </c:forEach>
+            ],
+            "acceptedBookings": [
+                <c:forEach var="b" items="${v.acceptedBookings}">
+                {
+                    "bookingDay": "${b.date}",
+                    "bookingShiftPeriod": "${b.shiftPeriod}"
+                },
+                </c:forEach>
+            ]
+        },
         </c:forEach>
     ];
     const accordionButtons = document.querySelectorAll('.accordion-button');
@@ -310,10 +314,11 @@
             );
         })
         vehicle.acceptedBookings.forEach(b => {
-                if(b.bookingDay === selectedDateString) {``
-                    const spButton = document.getElementById('sp-' + b.bookingShiftPeriod + '-' + vehicle.plateNumber);
-                    spButton.disabled = true;
-                }
+            if (b.bookingDay === selectedDateString) {
+                ``
+                const spButton = document.getElementById('sp-' + b.bookingShiftPeriod + '-' + vehicle.plateNumber);
+                spButton.disabled = true;
+            }
         })
     }
 
@@ -321,47 +326,10 @@
         selectedVehiclePlateNumber = vehiclePlate;
         selectedShiftPeriod = null;
         vehiclesData.forEach(v => {
-            if(v.plateNumber === vehiclePlate) {
+            if (v.plateNumber === vehiclePlate) {
                 updateShiftPeriodButtons(v, selectedIntDayOfWeek, selectedDateString);
             }
         })
-    }
-
-    function updateSelectedShiftPeriod(sf) {
-        selectedShiftPeriod = sf;
-    }
-
-    let noShiftPeriodButtonClicked = '<spring:message code="error.driver.availability.submit.error.missing.shift.period"/>'
-
-    function isShiftPeriodButtonClicked() {
-        if (selectedShiftPeriod == null) {
-            showToast(noShiftPeriodButtonClicked, 'danger');
-            return false;
-        }
-        return true;
-    }
-
-    function showToast(message, type) {
-        const toastContainer = document.querySelector('.toast-container');
-
-        const toast = document.createElement('div');
-        toast.classList.add('toast', 'align-items-center', 'text-bg-' + type, 'border-0');
-        toast.setAttribute('role', 'alert');
-        toast.setAttribute('aria-live', 'assertive');
-        toast.setAttribute('aria-atomic', 'true');
-
-        toast.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">`
-            + message +
-            `</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    `;
-        toastContainer.appendChild(toast);
-
-        const bootstrapToast = new bootstrap.Toast(toast);
-        bootstrapToast.show();
     }
 
 </script>
