@@ -177,24 +177,42 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public void acceptBooking(long bookingId, Locale locale) {
+    public void acceptBooking(long bookingId,Driver driver, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        bookingDao.acceptBooking(booking);
-        mailService.sendAcceptedBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getClient().getMail(),locale);
+        if(booking.getDriver().equals(driver)) {
+            bookingDao.acceptBooking(booking);
+            mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(), locale);
+        }
     }
 
     @Transactional
     @Override
-    public void rejectBooking(long bookingId, Locale locale) {
+    public void rejectBooking(long bookingId, Driver driver, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        bookingDao.rejectBooking(booking);
-        mailService.sendRejectedBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getClient().getMail(),locale);
+        if(booking.getDriver().equals(driver)) {
+            bookingDao.rejectBooking(booking);
+            mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(), locale);
+        }
     }
 
     @Override
-    public void finishBooking(long bookingId) {
+    public void finishBooking(long bookingId, Driver driver, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        bookingDao.finishBooking(booking);
+        if(booking.getDriver().equals(driver)) {
+            bookingDao.finishBooking(booking);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void cancelBooking(long bookingId, Driver driver, Locale locale) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        if(booking.getDriver().equals(driver)) {
+            bookingDao.cancelBooking(booking);
+            mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),locale);
+        }else{
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -245,15 +263,4 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         vehicleDao.deleteVehicle(vehicle);
     }
 
-    @Transactional
-    @Override
-    public void cancelBooking(long bookingId, Driver driver, Locale locale) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(booking.getDriver().equals(driver)) {
-            bookingDao.cancelBooking(booking);
-            mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),locale);
-        }else{
-            throw new IllegalArgumentException();
-        }
-    }
 }

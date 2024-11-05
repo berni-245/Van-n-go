@@ -61,9 +61,9 @@ public interface DriverService {
         return getBookingsByVehicle(vehicleId, LocalDate.parse(date));
     }
 
-    void acceptBooking(long bookingId, Locale locale);
+    void acceptBooking(long bookingId,Driver driver, Locale locale);
 
-    void rejectBooking(long bookingId, Locale locale);
+    void rejectBooking(long bookingId,Driver driver, Locale locale);
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
@@ -73,7 +73,7 @@ public interface DriverService {
 
     void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, List<Long> zoneIds, double rate, Long oldImgId, String imgFilename, byte[] imgData);
 
-    void finishBooking(long bookingId);
+    void finishBooking(long bookingId, Driver driver, Locale locale);
 
     List<Vehicle> getVehicles(Driver driver, int page);
 

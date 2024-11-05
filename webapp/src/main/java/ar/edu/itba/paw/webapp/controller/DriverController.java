@@ -307,26 +307,29 @@ public class DriverController extends ParentController {
 
     @RequestMapping(path = "/driver/booking/{id:\\d+}/accept", method = RequestMethod.POST)
     public ModelAndView acceptBooking(
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.acceptBooking(bookingId, LocaleContextHolder.getLocale());
-        return redirect("/");
+        ds.acceptBooking(bookingId,loggedUser,LocaleContextHolder.getLocale());
+        return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 
     @RequestMapping(path = "/driver/booking/{id:\\d+}/finish", method = RequestMethod.POST)
     public ModelAndView finishBooking(
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.finishBooking(bookingId);
-        return redirect("/");
+        ds.finishBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        return redirect("/driver/bookings?activeTab=FINISHED");
     }
 
     @RequestMapping(path = "/driver/booking/{id:\\d+}/reject", method = RequestMethod.POST)
     public ModelAndView rejectBooking(
+            @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.rejectBooking(bookingId, LocaleContextHolder.getLocale());
-        return redirect("/");
+        ds.rejectBooking(bookingId,loggedUser,LocaleContextHolder.getLocale());
+        return redirect("/driver/bookings?activeTab=REJECTED");
     }
 
     @RequestMapping(path = "/driver/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
