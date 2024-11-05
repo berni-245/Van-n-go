@@ -30,6 +30,9 @@
             <comp:TabButton id="rejected-tab" targetId="${BookingState.REJECTED}"
                             code="generic.word.rejected.bookings"
                             active="${activeTab eq BookingState.REJECTED}"/>
+            <comp:TabButton id="canceled-tab" targetId="${BookingState.CANCELED}"
+                            code="generic.word.canceled.bookings"
+                            active="${activeTab eq BookingState.CANCELED}"/>
         </ul>
 
         <div class="tab-content mt-3" id="statusTabsContent">
@@ -57,6 +60,12 @@
                                   bookings="${rejectedBookings}" currentDate="${currentDate}"
                                   paramName="rejectedPage" totalPages="${totRejectedPages}"
                                   currentPage="${rejectedPage}" loggedUser="${loggedUser}"/>
+            <comp:BookingCardList id="${BookingState.CANCELED}" tabId="canceled-tab"
+                                  active="${activeTab eq BookingState.CANCELED}"
+                                  callToActionCode="call_to_action.driver_bookings"
+                                  bookings="${canceledBookings}" currentDate="${currentDate}"
+                                  paramName="canceledPage" totalPages="${totCanceledPages}"
+                                  currentPage="${canceledPage}" loggedUser="${loggedUser}"/>
         </div>
     </div>
 

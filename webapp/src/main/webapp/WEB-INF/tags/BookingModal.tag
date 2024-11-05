@@ -32,6 +32,10 @@
                         <span class="badge bg-light text-dark"><spring:message
                                 code="generic.word.finished.bookings"/></span>
                     </c:when>
+                    <c:when test="${booking.state eq BookingState.CANCELED}">
+                        <span class="badge bg-danger"><spring:message
+                                code="generic.word.canceled.bookings"/></span>
+                    </c:when>
                 </c:choose>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -89,9 +93,7 @@
                             value="${booking.jobDescription}"/></p></li>
                     <li><p class="card-text"><spring:message arguments="${booking.vehicle.plateNumber}"
                                                              code="components.bookingModal.vehicle"/></p></li>
-
                 </ul>
-
 
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
@@ -137,9 +139,16 @@
                                 </c:if>
                             </div>
                         </c:if>
-                        <c:if test="${!loggedUser.isDriver}">
-
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${booking.date.isBefore(currentDate.minusDays(2))}">
+                                <button class="btn btn-danger" data-bs-target="#cancelBooking${booking.id}"
+                                        data-bs-toggle="modal" data-bs-dismiss="modal"><spring:message
+                                        code="components.bookingModal.cancelBooking"/></button>
+                            </c:when>
+                            <c:otherwise>
+                                <p><spring:message code="components.bookingModal.cantCancel"/></p>
+                            </c:otherwise>
+                        </c:choose>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.FINISHED}">
                         <c:choose>
@@ -182,12 +191,11 @@
 
                     </c:when>
                 </c:choose>
-
-
-                <!-- agregar boton para cancelar reserva -->
-
-
             </div>
         </div>
     </div>
 </div>
+
+<c:if test="${booking.state eq BookingState.ACCEPTED && booking.date.isBefore(currentDate.minusDays(2))}">
+    <comp:CancelBookingModal booking="${booking}" userPath="${userPath}"/>
+</c:if>

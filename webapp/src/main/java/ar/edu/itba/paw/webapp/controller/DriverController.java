@@ -192,11 +192,10 @@ public class DriverController extends ParentController {
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
+        if (errors.hasErrors()) return editProfileForm(loggedUser, form, errors);
         ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu());
         return redirect("/driver/profile");
     }
-
 
 
     @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.GET)
@@ -272,7 +271,7 @@ public class DriverController extends ParentController {
 
     private boolean addBookingData(ModelAndView mav, Driver driver, BookingState state, int currentPage) {
         int totPages = ds.getBookingPages(driver, state);
-        if(totPages == 0) return true;
+        if (totPages == 0) return true;
         if (currentPage > totPages || currentPage < 1) return false;
         String stateLowerCase = state.toString().toLowerCase();
         String stateCapitalized = stateLowerCase.substring(0, 1).toUpperCase() + stateLowerCase.substring(1);
@@ -289,15 +288,17 @@ public class DriverController extends ParentController {
             @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
             @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
             @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
+            @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
     ) {
         final ModelAndView mav = new ModelAndView("driver/home");
         mav.addObject("currentDate", LocalDate.now());
 
         boolean errors = !addBookingData(mav, loggedUser, BookingState.PENDING, pendingPage) ||
-                         !addBookingData(mav, loggedUser, BookingState.ACCEPTED, acceptedPage) ||
-                         !addBookingData(mav, loggedUser, BookingState.FINISHED, finishedPage) ||
-                         !addBookingData(mav, loggedUser, BookingState.REJECTED, rejectedPage);
+                !addBookingData(mav, loggedUser, BookingState.ACCEPTED, acceptedPage) ||
+                !addBookingData(mav, loggedUser, BookingState.FINISHED, finishedPage) ||
+                !addBookingData(mav, loggedUser, BookingState.REJECTED, rejectedPage) ||
+                !addBookingData(mav, loggedUser, BookingState.CANCELED, canceledPage);
         if (errors) return new ModelAndView();
 
         mav.addObject("activeTab", activeTab);
@@ -324,7 +325,7 @@ public class DriverController extends ParentController {
     public ModelAndView rejectBooking(
             @PathVariable("id") long bookingId
     ) {
-        ds.rejectBooking(bookingId,LocaleContextHolder.getLocale());
+        ds.rejectBooking(bookingId, LocaleContextHolder.getLocale());
         return redirect("/");
     }
 
@@ -349,9 +350,8 @@ public class DriverController extends ParentController {
     }
 
 
-
     @RequestMapping(path = "/driver/change/password")
-    public ModelAndView changePassword(@ModelAttribute("loggedUser") Driver loggedUser,  @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
+    public ModelAndView changePassword(@ModelAttribute("loggedUser") Driver loggedUser, @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
         ModelAndView mav = new ModelAndView("public/changePassword");
         mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "driver");
@@ -360,8 +360,8 @@ public class DriverController extends ParentController {
 
     @RequestMapping(path = "/driver/change/password", method = RequestMethod.POST)
     public ModelAndView postChangePassword(@ModelAttribute("loggedUser") Driver loggedUser, @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form, BindingResult errors) {
-        if(errors.hasErrors()){
-            return changePassword(loggedUser,form);
+        if (errors.hasErrors()) {
+            return changePassword(loggedUser, form);
         }
         ds.updatePassword(loggedUser.getId(), form.getPassword());
         return new ModelAndView("redirect:/profile");
