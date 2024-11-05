@@ -2,12 +2,8 @@ package ar.edu.itba.paw.services;
 
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.BookingDao;
-import ar.edu.itba.paw.persistence.ClientDao;
-import ar.edu.itba.paw.persistence.DriverDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -201,6 +197,7 @@ public class MailServiceImpl implements MailService {
         sendDriverRequestedMail(driverMail, context, jobDescription, locale);
     }
 
+    @Async
     @Override
     public void sendDriverCanceledBooking(LocalDate date, String driverUsername, String clientMail, Locale locale) {
         Message message = getMessage();
@@ -218,6 +215,7 @@ public class MailServiceImpl implements MailService {
         sendMail(message);
     }
 
+    @Async
     @Override
     public void sendClientCanceledBooking(LocalDate date, String clientUsername, String driverMail, Locale locale) {
         Message message = getMessage();
