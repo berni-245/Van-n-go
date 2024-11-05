@@ -202,13 +202,37 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendDriverCanceledBooking(LocalDate date, String username, String mail, Locale locale) {
+    public void sendDriverCanceledBooking(LocalDate date, String driverUsername, String clientMail, Locale locale) {
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("date", date);
+        context.setVariable("driverName", driverUsername);
+        String mailBodyProcessed = templateEngine.process("driverCanceledBookingMail", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
+            message.setSubject(messageSource.getMessage("subject.driverCanceledBooking", null, locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception ignored) {
 
+        }
+        sendMail(message);
     }
 
     @Override
-    public void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale) {
+    public void sendClientCanceledBooking(LocalDate date, String clientUsername, String driverMail, Locale locale) {
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("date", date);
+        context.setVariable("clientName", clientUsername);
+        String mailBodyProcessed = templateEngine.process("clientCanceledBookingMail", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
+            message.setSubject(messageSource.getMessage("subject.driverCanceledBooking", null, locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception ignored) {
 
+        }
+        sendMail(message);
     }
 
 

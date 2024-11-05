@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:remove="all">Rejected Booking </title>
+    <title th:remove="all">Canceled Booking</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="http://pawserver.it.itba.edu.ar/paw-2024b-01/css/bootstrap.min.css">
     <style>
@@ -39,14 +39,14 @@
 <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">
 
 
-    <h1 th:text="#{mail.rejectedBooking.head}" class="text-center m-2">Your Van N' Go booking was rejected</h1>
-    <p th:text="#{mail.rejectedBooking.rejectedBy(${date}, ${driverName})}" style="color: #343a40;">Your booking for {date} was rejected by driver {driverName}</p>
-    <p th:text="#{mail.newReservation}" style="color: #343a40;">Don't worry, you can make a new reservation right away at Van N' Go</p>
+    <h1 th:text="#{mail.clientCanceledBooking.head}" class="text-center m-2">Your Van N' Go booking was canceled</h1>
+    <p th:text="#{mail.clientCanceledBooking.canceledBy(${date}, ${clientName})}" style="color: #343a40;">Your booking for {date} was canceled by driver {driverName}</p>
+    <p th:text="#{mail.clientCanceledBooking.moreDetails}" style="color: #343a40;">Don't worry, you can make a new reservation right away at Van N' Go</p>
 
     <div class="text-center">
         <button class="button-primary">
-            <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/login" style="color: white"
-               th:text="#{mail.newReservation.button}">Make a new reservation</a>
+            <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/driver/bookings?activeTab=CANCELED" style="color: white"
+               th:text="#{mail.clientCanceledBooking.canceledBookings}">See reservations</a>
         </button>
     </div>
 
@@ -54,3 +54,5 @@
     <footer th:text="#{mail.footer}" class= "text-center m-2" style="color: #6c757d; font-size: 12px;">Thanks for using Van N' Go</footer>
 </div>
 </body>
+
+
