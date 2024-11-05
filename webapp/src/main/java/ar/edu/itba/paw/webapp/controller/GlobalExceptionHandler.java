@@ -20,9 +20,27 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidUserOnBookingCancelException.class)
-    public ModelAndView handleInvalidClientOnBookingCancel(InvalidUserOnBookingCancelException e, RedirectAttributes redirectAttributes) {
-        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.client.booking.cancel"));
-        return new ModelAndView("redirect:/client/bookings");
+    public ModelAndView handleInvalidUserOnBookingCancel(InvalidUserOnBookingCancelException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.cancel"));
+        return new ModelAndView("redirect:/");
+    }
+
+    @ExceptionHandler(InvalidUserOnBookingAcceptException.class)
+    public ModelAndView handleInvalidUserOnBookingAccept(InvalidUserOnBookingAcceptException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.accept"));
+        return new ModelAndView("redirect:/");
+    }
+
+    @ExceptionHandler(InvalidUserOnBookingRejectException.class)
+    public ModelAndView handleInvalidUserOnBookingReject(InvalidUserOnBookingRejectException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.reject"));
+        return new ModelAndView("redirect:/");
+    }
+
+    @ExceptionHandler(InvalidUserOnBookingFinishException.class)
+    public ModelAndView handleInvalidUserOnBookingFinish(InvalidUserOnBookingFinishException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.finish"));
+        return new ModelAndView("redirect:/");
     }
 
     @ExceptionHandler(InvalidImageException.class)
