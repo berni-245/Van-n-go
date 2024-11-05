@@ -49,10 +49,13 @@ public class PublicController extends ParentController {
             @ModelAttribute(value = "toasts", binding = false) ArrayList<Toast> toasts,
             RedirectAttributes redirectAttributes
     ) {
-        if (loggedUser == null || !loggedUser.getIsDriver()) {
+        redirectAttributes.addFlashAttribute("toasts", toasts);
+        if (loggedUser == null || (!loggedUser.isClient()) && !loggedUser.isDriver())
             return new ModelAndView("public/home");
-        } else {
-            redirectAttributes.addFlashAttribute("toasts", toasts);
+
+        if(loggedUser.isClient())
+            return redirect("/client/search");
+        else {
             return redirect("/driver/bookings");
         }
     }

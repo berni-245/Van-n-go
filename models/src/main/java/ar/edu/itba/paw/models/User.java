@@ -76,7 +76,9 @@ public class User {
         return false;
     }
 
-    ;
+    public boolean isClient() {
+        return false;
+    }
 
     public boolean getIsDriver() {
         return isDriver();

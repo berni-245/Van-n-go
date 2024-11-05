@@ -12,8 +12,8 @@ public class Client extends User {
     }
 
     @Override
-    public boolean isDriver() {
-        return false;
+    public boolean isClient() {
+        return true;
     }
 
     @ManyToOne
