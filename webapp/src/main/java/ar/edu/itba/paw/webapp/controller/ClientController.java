@@ -1,18 +1,17 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.InvalidImageException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.form.*;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,8 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -38,8 +35,6 @@ public class ClientController extends ParentController {
     @Autowired
     private ImageService is;
 
-    private static final Gson gson = new Gson();
-
     public ClientController(DriverService ds, ClientService cs, ZoneService zs, ImageService is) {
         this.ds = ds;
         this.cs = cs;
@@ -47,25 +42,11 @@ public class ClientController extends ParentController {
         this.is = is;
     }
 
-    @RequestMapping(path = "/upload/pop", method = RequestMethod.POST)
-    public String submit(@RequestParam("proofOfPayment") MultipartFile file, @RequestParam("bookingId") long bookingId, @RequestParam("driverId") long driverId, @ModelAttribute("loggedUser") User loggedUser) {
-        if (file == null || file.isEmpty()) {
-            return "redirect:/client/bookings";
-        }
-        try {
-            is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return "redirect:/client/bookings";
-    }
-
-    @RequestMapping("/client/bookings")
+    @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(
-            @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            Model model
-    ) {
+            @ModelAttribute("loggedUser") Client loggedUser
+            ) {
         ModelAndView mav = new ModelAndView("client/bookings");
         mav.addObject("bookings", cs.getBookings(loggedUser.getId(),page));
         mav.addObject("currentPage", page);
@@ -73,11 +54,24 @@ public class ClientController extends ParentController {
         return mav;
     }
 
-    @RequestMapping("/client/history")
+    @RequestMapping(path = "/client/bookings/upload/pop", method = RequestMethod.POST)
+    public ModelAndView submit(
+            @RequestParam("proofOfPayment") MultipartFile file,
+            @RequestParam("bookingId") long bookingId,
+            @ModelAttribute("loggedUser") User loggedUser
+    ) throws IOException {
+        if(file == null || file.isEmpty())
+            throw new InvalidImageException();
+        is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
+        return new ModelAndView("redirect:/client/bookings");
+    }
+
+    @RequestMapping(path = "/client/history", method = RequestMethod.GET)
     public ModelAndView clientHistory(
-            @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam(value = "page", defaultValue = "0") int page,
             @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            @RequestParam(value = "page", defaultValue = "0") int page) {
+            @ModelAttribute("loggedUser") Client loggedUser
+    ) {
         List<Booking> paginatedHistory = cs.getHistory(loggedUser.getId(), page);
         long totalRecords = cs.getTotalHistoryCount(loggedUser.getId());
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
@@ -88,18 +82,18 @@ public class ClientController extends ParentController {
         return mav;
     }
 
-    @RequestMapping(path = "/client/send/review", method = RequestMethod.POST)
+    @RequestMapping(path = "/client/history/send/review", method = RequestMethod.POST)
     public ModelAndView sendReview(
-            @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam(value = "page", defaultValue = "0") int page,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult errors,
-            @RequestParam(value = "page", defaultValue = "0") int page
-    ) {
+            @ModelAttribute("loggedUser") Client loggedUser,
+            BindingResult errors
+            ) {
         if (errors.hasErrors()) {
-            return clientHistory(loggedUser, form, page);
+            return clientHistory(page, form, loggedUser);
         }
         cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
-        return new ModelAndView("redirect:/client/history");
+        return redirect("/client/history");
     }
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
@@ -111,36 +105,33 @@ public class ClientController extends ParentController {
         return redirect("/");
     }
 
-    @RequestMapping("/client/search")
+    @RequestMapping(path = "/client/search", method = RequestMethod.GET)
     public ModelAndView search(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
-            BindingResult errors
-    ) {
-        if (errors.hasErrors()) return new ModelAndView();
+            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
+            @ModelAttribute("loggedUser") Client loggedUser
+            ) {
         ModelAndView mav = new ModelAndView("client/search");
-        if(loggedUser.getZone()!=null)
+        if(loggedUser.getZone() != null)
             form.setZoneId(loggedUser.getZone().getId());
         List<Zone> zones = zs.getAllZones();
         mav.addObject("zones", zones);
         return mav;
     }
 
-    @RequestMapping("/client/availability")
+    @RequestMapping(path = "/client/availability", method = RequestMethod.GET)
     public ModelAndView availability(
-            @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam(name = "zoneId", required = false) Long zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
-            @Valid @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
-            BindingResult errors,
-            @RequestParam(name = "page", defaultValue = "0") int page
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
+            @ModelAttribute("loggedUser") Client loggedUser
     ) {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
-        if (errors.hasErrors()) return new ModelAndView();
+        zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
         List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, page);
         List<Zone> zones = zs.getAllZones();
@@ -157,18 +148,6 @@ public class ClientController extends ParentController {
         return mav;
     }
 
-    @ResponseBody
-    @RequestMapping(path = "/client/availability/active", method = RequestMethod.GET)
-    public String vehicleActiveAvailability(
-            @RequestParam(name = "vehicleId") long vehicleId,
-            @RequestParam(name = "zoneId") long zoneId,
-            @RequestParam(name = "date") String date
-    ) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date2 = LocalDate.parse(date, formatter);
-        return gson.toJson("{}");
-    }
-
     @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
             @PathVariable(name = "driverId") long driverId,
@@ -179,14 +158,15 @@ public class ClientController extends ParentController {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingForm") BookingForm form
+            @ModelAttribute("bookingForm") BookingForm form,
+            @ModelAttribute("loggedUser") Client loggedUser
     ) {
         Optional<Driver> driver = ds.findById(driverId);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
             mav.addObject("driverId", driverId);
-            var vehicles = ds.getVehicles(driver.get(), zoneId, size, priceMin, priceMax, weekday);
+            Zone originZone = zs.getZone(zoneId).orElseThrow();
+            List<Vehicle> vehicles = ds.getVehicles(driver.get(), zoneId, size, priceMin, priceMax, weekday);
             Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
             List<Zone> zones = zs.getAllZones();
             mav.addObject("zones", zones);
@@ -194,9 +174,7 @@ public class ClientController extends ParentController {
             mav.addObject("workingDays", workingDays);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
             mav.addObject("driver", driver.get());
-            Optional<Zone> originZone = zs.getZone(zoneId);
-            if (originZone.isEmpty()) return new ModelAndView();
-            mav.addObject("originZone", originZone.get());
+            mav.addObject("originZone", originZone);
             mav.addObject("size", size);
             mav.addObject("sizeLowerCase", size);
             mav.addObject("priceMin", priceMin);
@@ -210,21 +188,21 @@ public class ClientController extends ParentController {
         }
     }
 
-    @RequestMapping(path = "/client/availability/{id:\\d+}", method = RequestMethod.POST)
+    @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.POST)
     public ModelAndView appointBooking(
-            @PathVariable(name = "id") long id,
-            @ModelAttribute("loggedUser") Client loggedUser,
+            @PathVariable(name = "driverId") long driverId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
-            @ModelAttribute("bookingForm") BookingForm form,
+            @Valid @ModelAttribute("bookingForm") BookingForm form,
+            @ModelAttribute("loggedUser") Client loggedUser,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
         List<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            return driverAvailability(id, form.getOriginZoneId(), size, priceMin, priceMax, weekday, 0,0,loggedUser, form);
+            return driverAvailability(driverId, form.getOriginZoneId(), size, priceMin, priceMax, weekday, 0,0, form, loggedUser);
         }
         cs.appointBooking(
                 form.getVehicleId(),
@@ -238,14 +216,17 @@ public class ClientController extends ParentController {
         );
         redirectAttributes.addFlashAttribute("toasts", toasts);
         toasts.add(new Toast(
-                ToastType.danger, "toast.booking.success"
+                ToastType.success, "toast.booking.success"
         ));
         return new ModelAndView("redirect:/client/bookings");
     }
 
 
-    @RequestMapping(path = "/client/change/password")
-    public ModelAndView changePassword(@ModelAttribute("loggedUser") Client loggedUser,  @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
+    @RequestMapping(path = "/client/change/password", method = RequestMethod.GET)
+    public ModelAndView changePassword(
+            @ModelAttribute("changePasswordForm") ChangePasswordForm form,
+            @ModelAttribute("loggedUser") Client loggedUser
+    ) {
         ModelAndView mav = new ModelAndView("public/changePassword");
         mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "client");
@@ -253,22 +234,23 @@ public class ClientController extends ParentController {
     }
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.POST)
-    public ModelAndView postChangePassword(@ModelAttribute("loggedUser") Client loggedUser, @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form, BindingResult errors) {
-        if(errors.hasErrors()){
-            return changePassword(loggedUser,form);
-        }
+    public ModelAndView postChangePassword(
+            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
+            @ModelAttribute("loggedUser") Client loggedUser,
+            BindingResult errors
+    ) {
+        if(errors.hasErrors()) return changePassword(form, loggedUser);
+
         cs.updatePassword(loggedUser.getId(), form.getPassword());
-        return new ModelAndView("redirect:/profile");
+        return new ModelAndView("redirect:/client/profile");
     }
 
-
-    @RequestMapping(path = "/client/profile")
+    @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
         mav.addObject("loggedUser", loggedUser);
         return mav;
     }
-
 
     @RequestMapping(path = "/client/profile/edit", method = RequestMethod.GET)
     public ModelAndView editProfileForm(
@@ -290,11 +272,11 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/profile/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(
-            @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
+            @ModelAttribute("loggedUser") Client loggedUser,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) return editProfileForm(loggedUser,form,errors);
+        if (errors.hasErrors()) return editProfileForm(loggedUser, form, errors);
         cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId());
         return redirect("/client/profile");
     }

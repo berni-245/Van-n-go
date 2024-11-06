@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @ControllerAdvice
@@ -16,7 +17,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ModelAndView handleUserNotFound(UserNotFoundException e, RedirectAttributes redirectAttributes) {
         addToast(redirectAttributes, new Toast(ToastType.danger, "toast.user.not.found"));
-        return new ModelAndView("redirect:/NotFound");
+        return new ModelAndView("redirect:/notFound");
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ModelAndView handleIO(IOException e, RedirectAttributes redirectAttributes) {
+        addToast(redirectAttributes, new Toast(ToastType.danger, "toast.io.error"));
+        return new ModelAndView("redirect:/internalError");
     }
 
     @ExceptionHandler(InvalidUserOnBookingCancelException.class)

@@ -66,7 +66,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <form:form modelAttribute="bookingReviewForm" method="post"
-                                                           action="${pageContext.request.contextPath}/client/send/review">
+                                                           action="/client/history/send/review">
 
                                                     <form:input type="hidden" path="bookingID"
                                                                 value="${booking.id}"/>

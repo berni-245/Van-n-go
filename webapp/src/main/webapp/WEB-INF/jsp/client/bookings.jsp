@@ -45,7 +45,7 @@
                                 <spring:message code="client.bookings.transfer"/>
                                 <c:out value="${booking.driver.cbu}"/>
                                     <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
-                                          action="<c:url value='/upload/pop'/>" enctype="multipart/form-data">
+                                          action="<c:url value='/client/bookings/upload/pop'/>" enctype="multipart/form-data">
                                         <input type="hidden" name="bookingId" value="${booking.id}">
                                         <input type="hidden" name="driverId" value="${booking.driver.id}">
                                         <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
