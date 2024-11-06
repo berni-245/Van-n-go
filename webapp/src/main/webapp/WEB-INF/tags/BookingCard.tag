@@ -79,8 +79,9 @@
                     data-bs-target="#bookingModal${booking.id}">
                 <spring:message code="generic.phrase.seeDetails"/>
             </button>
-            <comp:BookingModal booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>
 
         </div>
     </div>
 </div>
+
+<comp:BookingModal booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>
