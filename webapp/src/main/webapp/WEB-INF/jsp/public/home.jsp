@@ -26,7 +26,7 @@
                     <a class="btn btn-primary btn-lg px-4 gap-3"
                        href="${pageContext.request.contextPath}/client/search"
                        role="button">
-                        <spring:message code="public.home.search"/>
+                        <spring:message code="public.home.start"/>
                     </a>
                 </div>
             </div>
