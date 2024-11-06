@@ -1,5 +1,5 @@
 package ar.edu.itba.paw.exceptions;
 
 public class InvalidImageException extends RuntimeException{
-    public InvalidImageException() {super("Invalid Image");}
+    public InvalidImageException() {super("Invalid Image type or size\n");}
 }
