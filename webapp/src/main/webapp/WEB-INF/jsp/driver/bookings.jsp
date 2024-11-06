@@ -63,7 +63,7 @@
                                   currentPage="${rejectedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.CANCELED}" tabId="canceled-tab"
                                   active="${activeTab eq BookingState.CANCELED}"
-                                  callToActionCode="call_to_action.driver_canceled"
+                                  callToActionCode="call_to_action.driver_bookings.canceled"
                                   bookings="${canceledBookings}" currentDate="${currentDate}"
                                   paramName="canceledPage" totalPages="${totCanceledPages}"
                                   currentPage="${canceledPage}" loggedUser="${loggedUser}"/>
