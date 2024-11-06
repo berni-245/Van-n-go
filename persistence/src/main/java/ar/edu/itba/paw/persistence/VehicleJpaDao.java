@@ -126,7 +126,7 @@ public class VehicleJpaDao implements VehicleDao {
             from vehicle v
             where v.driver_id = :driverId
             order by v.plate_number
-            """, BigInteger.class)
+            """)
                 .setParameter("driverId", driver.getId())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.VEHICLES_PAGE_SIZE)

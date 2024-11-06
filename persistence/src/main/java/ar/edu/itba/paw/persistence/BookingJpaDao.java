@@ -77,7 +77,7 @@ public class BookingJpaDao implements BookingDao {
     @Override
     public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-        select distinct b.id
+        select b.id
         from booking b join vehicle v on b.vehicle_id = v.id
         where v.driver_id = :driverId and b.state = :state
         order by b.date
@@ -126,7 +126,7 @@ public class BookingJpaDao implements BookingDao {
     @Override
     public List<Booking> getClientBookings(Client client, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-        select distinct b.id
+        select b.id
         from booking b
         where b.client_id = :clientId and b.date >= current_date
         order by b.date
@@ -158,10 +158,10 @@ public class BookingJpaDao implements BookingDao {
     @Override
     public List<Booking> getClientHistory(Client client, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-        select distinct b.id
+        select b.id
         from booking b
         where b.client_id = :clientId and b.date < current_date
-        order by b.date
+        order by b.date desc
         """)
                 .setParameter("clientId", client.getId())
                 .setFirstResult(offset)

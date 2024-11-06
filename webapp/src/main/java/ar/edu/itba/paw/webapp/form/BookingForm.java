@@ -9,19 +9,19 @@ public class BookingForm {
     @NotNull
     private String date;
 
-    @NotEmpty
+    @NotNull
     private long vehicleId;
 
-    @NotEmpty
+    @NotNull
     private long originZoneId;
 
     @NotNull
     private String shiftPeriod;
 
-    @NotEmpty
+    @NotNull
     private long destinationZoneId;
 
-    @Length(min = 20, max = 500)
+    @Length(min = 1, max = 500)
     private String jobDescription;
 
     public LocalDate getDate() {
@@ -32,29 +32,29 @@ public class BookingForm {
         this.date = date;
     }
 
-    @NotEmpty
+    @NotNull
     public long getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(@NotEmpty long vehicleId) {
+    public void setVehicleId(@NotNull long vehicleId) {
         this.vehicleId = vehicleId;
     }
 
-    @NotEmpty
+    @NotNull
     public long getOriginZoneId() {
         return originZoneId;
     }
 
-    public void setOriginZoneId(@NotEmpty long originZoneId) {
+    public void setOriginZoneId(@NotNull long originZoneId) {
         this.originZoneId = originZoneId;
     }
 
-    public @Length(min = 20, max = 500) String getJobDescription() {
+    public @Length(min = 1, max = 500) String getJobDescription() {
         return jobDescription;
     }
 
-    public void setJobDescription(@Length(min = 20, max = 500) String jobDescription) {
+    public void setJobDescription(@Length(min = 1, max = 500) String jobDescription) {
         this.jobDescription = jobDescription;
     }
 
