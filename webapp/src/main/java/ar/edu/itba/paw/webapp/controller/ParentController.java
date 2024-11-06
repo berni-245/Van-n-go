@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Toast;
+import ar.edu.itba.paw.models.ToastType;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.UserBookingService;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -39,7 +41,8 @@ public class ParentController {
             int finishedPage,
             int rejectedPage,
             int canceledPage,
-            BookingState activeTab
+            BookingState activeTab,
+            RedirectAttributes redirectAttrs
     ) {
         final ModelAndView mav = new ModelAndView(mavPath);
         mav.addObject("currentDate", LocalDate.now());
@@ -49,13 +52,16 @@ public class ParentController {
                          !addBookingData(bs, mav, loggedUser, BookingState.FINISHED, finishedPage) ||
                          !addBookingData(bs, mav, loggedUser, BookingState.REJECTED, rejectedPage) ||
                          !addBookingData(bs, mav, loggedUser, BookingState.CANCELED, canceledPage);
-        if (errors) return new ModelAndView();
+        if (errors) {
+            setToasts(redirectAttrs, new Toast(ToastType.danger, "toast.booking.page.invalid"));
+            return redirect("/notFound");
+        }
 
         mav.addObject("activeTab", activeTab);
         return mav;
     }
 
     protected void setToasts(RedirectAttributes redirectAttributes, Toast... toasts) {
-        redirectAttributes.addFlashAttribute("toasts", toasts);
+        redirectAttributes.addFlashAttribute("toasts", Arrays.stream(toasts).toList());
     }
 }

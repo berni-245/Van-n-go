@@ -50,7 +50,8 @@ public class ClientController extends ParentController {
             @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
             @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
             @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
-            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
+            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
+            RedirectAttributes redirectAttrs
     ) {
         return super.userBookings(
                 "client/bookings",
@@ -61,7 +62,8 @@ public class ClientController extends ParentController {
                 finishedPage,
                 rejectedPage,
                 canceledPage,
-                activeTab
+                activeTab,
+                redirectAttrs
         );
     }
 
@@ -87,7 +89,6 @@ public class ClientController extends ParentController {
             @RequestParam(name = "finishedPage") int finishedPage,
             @RequestParam(name = "rejectedPage") int rejectedPage,
             @RequestParam(name = "canceledPage") int canceledPage,
-            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             BindingResult errors,
             RedirectAttributes redirectAttrs
@@ -107,7 +108,7 @@ public class ClientController extends ParentController {
                 rejectedPage,
                 canceledPage,
                 acceptedPage,
-                activeTab
+                "PENDING"
         );
     }
 

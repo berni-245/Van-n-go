@@ -20,9 +20,20 @@
         <comp:CallToAction code="${callToActionCode}"/>
     </c:if>
     <div class="row row-cols-3 g-4">
-        <c:forEach var="booking" items="${bookings}">
-            <comp:BookingCard booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>
-        </c:forEach>
+        <c:choose>
+            <c:when test="${loggedUser.isDriver}">
+                <c:forEach var="booking" items="${bookings}">
+                    <comp:DriverBookingCard booking="${booking}" currentDate="${currentDate}"
+                                            loggedUser="${loggedUser}"/>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <c:forEach var="booking" items="${bookings}">
+                    <comp:ClientBookingCard booking="${booking}" currentDate="${currentDate}"
+                                            loggedUser="${loggedUser}"/>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
     </div>
     <comp:Pagination paramName="${paramName}"
                      totalPages="${totalPages}"

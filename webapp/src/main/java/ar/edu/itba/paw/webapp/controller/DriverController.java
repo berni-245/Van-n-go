@@ -278,7 +278,8 @@ public class DriverController extends ParentController {
             @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
             @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
             @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
-            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
+            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
+            RedirectAttributes redirectAttrs
     ) {
         return super.userBookings(
                 "driver/bookings",
@@ -289,7 +290,8 @@ public class DriverController extends ParentController {
                 finishedPage,
                 rejectedPage,
                 canceledPage,
-                activeTab
+                activeTab,
+                redirectAttrs
         );
     }
 
