@@ -33,13 +33,9 @@ public interface BookingDao {
 
     List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date);
 
-    List<Booking> getClientBookings(Client client, int offset);
+    List<Booking> getClientBookings(Client client, BookingState state, int offset);
 
-    long getClientBookingCount(Client client);
-
-    List<Booking> getClientHistory(Client client, int offset);
-
-    long getClientHistoryCount(Client client);
+    long getClientBookingCount(Client client, BookingState state);
 
     void setRatingAndReview(Booking booking, int rating, String review);
 

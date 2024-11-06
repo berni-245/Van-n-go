@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-public interface ClientService {
+public interface ClientService extends UserBookingService<Client> {
     Client create(String username, String mail, String password, Locale locale);
 
     Optional<Client> findById(long id);
@@ -37,14 +37,6 @@ public interface ClientService {
     ) {
         return appointBooking(vehicleId, client, zoneId, destinationId, LocalDate.parse(date), period, jobDescription, locale);
     }
-
-    List<Booking> getBookings(long id, int page);
-
-    List<Booking> getHistory(long id, int page);
-
-    long getTotalHistoryCount(long id);
-
-    long getTotalBookingCount(long id);
 
     void setBookingRatingAndReview(long bookingId, int rating, String review);
 

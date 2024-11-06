@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-public interface DriverService {
+public interface DriverService extends UserBookingService<Driver> {
     Driver create(String username, String mail, String password, String description, Locale locale);
 
     Optional<Driver> findById(long id);
@@ -41,15 +41,6 @@ public interface DriverService {
     );
 
     List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page);
-
-    List<Booking> getBookings(Driver driver, BookingState state, int page);
-
-    long getBookingCount(Driver driver, BookingState state);
-
-    default int getBookingPages(Driver driver, BookingState state) {
-        long totalBookings = this.getBookingCount(driver, state);
-        return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
-    }
 
     int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 

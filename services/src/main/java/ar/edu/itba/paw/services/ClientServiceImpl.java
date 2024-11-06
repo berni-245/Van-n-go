@@ -85,23 +85,13 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     }
 
     @Override
-    public List<Booking> getBookings(long id, int page) {
-        return bookingDao.getClientBookings(clientDao.findById(id).orElseThrow(), Pagination.BOOKINGS_PAGE_SIZE * page);
+    public List<Booking> getBookings(Client client, BookingState state, int page) {
+        return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
     @Override
-    public List<Booking> getHistory(long id, int page) {
-        return bookingDao.getClientHistory(clientDao.findById(id).orElseThrow(), Pagination.BOOKINGS_PAGE_SIZE * page);
-    }
-
-    @Override
-    public long getTotalHistoryCount(long id) {
-        return bookingDao.getClientHistoryCount(clientDao.findById(id).orElseThrow());
-    }
-
-    @Override
-    public long getTotalBookingCount(long id) {
-        return bookingDao.getClientBookingCount(clientDao.findById(id).orElseThrow());
+    public long getBookingCount(Client client, BookingState state) {
+        return bookingDao.getClientBookingCount(client, state);
     }
 
     @Transactional

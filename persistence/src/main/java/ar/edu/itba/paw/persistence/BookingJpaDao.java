@@ -1,16 +1,16 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
+import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
+import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
+import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
 import ar.edu.itba.paw.models.*;
-import org.hibernate.type.BigIntegerType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -77,11 +77,11 @@ public class BookingJpaDao implements BookingDao {
     @Override
     public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-        select b.id
-        from booking b join vehicle v on b.vehicle_id = v.id
-        where v.driver_id = :driverId and b.state = :state
-        order by b.date
-        """)
+                        select b.id
+                        from booking b join vehicle v on b.vehicle_id = v.id
+                        where v.driver_id = :driverId and b.state = :state
+                        order by b.date
+                        """)
                 .setParameter("driverId", driver.getId())
                 .setParameter("state", state.toString())
                 .setFirstResult(offset)
@@ -124,14 +124,14 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getClientBookings(Client client, int offset) {
+    public List<Booking> getClientBookings(Client client, BookingState state, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-        select b.id
-        from booking b
-        where b.client_id = :clientId and b.date >= current_date
-        order by b.date
-        """)
+                        select b.id
+                        from booking b where b.client_id = :clientId and b.state = :state
+                        order by b.date
+                        """)
                 .setParameter("clientId", client.getId())
+                .setParameter("state", state.toString())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
@@ -145,48 +145,16 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public long getClientBookingCount(Client client) {
+    public long getClientBookingCount(Client client, BookingState state) {
         return em.createQuery("""
-                         select count(*) from Booking b
-                         where b.client = :client
-                         and b.date >= current_date
-                         """, Long.class)
-                .setParameter("client",client)
+                        select count(*) from Booking b
+                        where b.client = :client
+                        and b.state = :state
+                        """, Long.class)
+                .setParameter("client", client)
+                .setParameter("state", state)
                 .getSingleResult();
     }
-
-    @Override
-    public List<Booking> getClientHistory(Client client, int offset) {
-        var nativeQueryList = em.createNativeQuery("""
-        select b.id
-        from booking b
-        where b.client_id = :clientId and b.date < current_date
-        order by b.date desc
-        """)
-                .setParameter("clientId", client.getId())
-                .setFirstResult(offset)
-                .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
-                .getResultList();
-
-        @SuppressWarnings("unchecked")
-        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
-
-        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds)
-                .getResultList();
-    }
-
-    @Override
-    public long getClientHistoryCount(Client client) {
-        return em.createQuery("""
-                         select count(*) from Booking b
-                         where b.client = :client
-                         and b.date < current_date
-                         """, Long.class)
-                .setParameter("client",client)
-                .getSingleResult();
-    }
-
 
     @Transactional
     @Override
@@ -269,7 +237,7 @@ public class BookingJpaDao implements BookingDao {
         bookingQuery.setParameter("zone", zone);
         bookingQuery.setParameter("date", date);
         bookingQuery.setParameter("sp", sp);
-        if( !bookingQuery.getResultList().isEmpty())
+        if (!bookingQuery.getResultList().isEmpty())
             throw new ClientAlreadyAppointedException();
     }
 }
