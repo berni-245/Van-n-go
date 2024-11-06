@@ -63,6 +63,7 @@ public class ClientController extends ParentController {
         if(file == null || file.isEmpty())
             throw new InvalidImageException();
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
+        log.info("Upload proof of payment successfully");
         return new ModelAndView("redirect:/client/bookings");
     }
 
@@ -90,9 +91,11 @@ public class ClientController extends ParentController {
             BindingResult errors
             ) {
         if (errors.hasErrors()) {
+            log.warn("Invalid params in BookingReviewForm");
             return clientHistory(page, loggedUser, form);
         }
         cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
+        log.info("Sent review successfully");
         return redirect("/client/history");
     }
 
@@ -102,6 +105,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser
             ) {
         cs.cancelBooking(bookingId, loggedUser ,LocaleContextHolder.getLocale());
+        log.info("Successfully cancelled booking");
         return redirect("/");
     }
 
@@ -207,9 +211,7 @@ public class ClientController extends ParentController {
     ) {
         ArrayList<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            toasts.add(new Toast(ToastType.danger, "toast.booking.error"));
-            redirectAttributes.addFlashAttribute("toasts", toasts);
-            log.warn("Invalid booking params");
+            log.warn("Invalid params in BookingForm");
             return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, page, loggedUser, form, redirectAttributes);
         }
         cs.appointBooking(
@@ -289,8 +291,12 @@ public class ClientController extends ParentController {
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) return editProfileForm(loggedUser, form, errors);
+        if (errors.hasErrors()) {
+            log.warn("Invalid params in ChangeUserInfoForm");
+            return editProfileForm(loggedUser, form, errors);
+        };
         cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId());
+        log.info("Successfully changed client info");
         return redirect("/client/profile");
     }
 
