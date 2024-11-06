@@ -88,7 +88,6 @@
                                     <form:options items="${zones}" itemValue="id"/>
                                 </form:select>
                             </spring:bind>
->>>>>>> 865c344 (Chore: CLient can set its home zone. Cannot be viewed on profile tho. Cleaned up some other code)
                         </div>
                     </c:otherwise>
                     </c:choose>
