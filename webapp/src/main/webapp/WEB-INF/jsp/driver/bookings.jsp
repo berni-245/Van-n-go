@@ -88,37 +88,40 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        /**
-         * @param {Array<{name: string, value: string}>} params
-         */
-        function setParamsAndNavigate(params) {
+        function setParam(paramName, value) {
             const url = new URL(window.location.href);
-            for (const p of params) url.searchParams.set(p.name, p.value);
-            window.location.href = url.toString();
+            url.searchParams.set(paramName, value);
+            return url.toString();
         }
 
-        function setPaginationAndTabParam(paginationParamName, page) {
-            const activeTab = document.querySelector('button.active[role="tab"]').getAttribute('aria-controls');
-            setParamsAndNavigate([
-                {name: paginationParamName, value: page},
-                {name: 'activeTab', value: activeTab}
-            ]);
+        function setParamAndNavigate(paramName, value) {
+            window.location.href = setParam(paramName, value);
         }
 
+        function setParamDontNavigate(paramName, value) {
+            const url = setParam(paramName, value)
+            window.history.pushState({path: url}, null, url);
+        }
+
+        // Go back to previous method and use history.pushState for the tab buttons.
         document.querySelectorAll('.pagination').forEach(pagination => {
             const paramName = pagination.getAttribute('param-name');
             const currentPage = parseInt(pagination.getAttribute('current-page'));
             pagination.querySelector('.pagination-prev').addEventListener(
                 'click',
-                () => setPaginationAndTabParam(paramName, currentPage - 1)
+                () => setParamAndNavigate(paramName, currentPage - 1)
             );
             pagination.querySelector('.pagination-next').addEventListener(
                 'click',
-                () => setPaginationAndTabParam(paramName, currentPage + 1)
+                () => setParamAndNavigate(paramName, currentPage + 1)
             );
             pagination.querySelectorAll('.pagination-page').forEach(p => {
-                p.addEventListener('click', () => setPaginationAndTabParam(paramName, p.textContent));
+                p.addEventListener('click', () => setParamAndNavigate(paramName, p.textContent));
             })
+        });
+        document.querySelectorAll('[role="tab"]').forEach(tab => {
+            const tabName = tab.getAttribute('aria-controls');
+            tab.addEventListener('click', () => setParamDontNavigate('activeTab', tabName));
         });
     })
 </script>
