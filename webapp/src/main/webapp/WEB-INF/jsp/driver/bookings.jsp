@@ -45,25 +45,25 @@
                                   currentPage="${pendingPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.ACCEPTED}" tabId="accepted-tab"
                                   active="${activeTab eq BookingState.ACCEPTED}"
-                                  callToActionCode="call_to_action.driver_bookings"
+                                  callToActionCode="call_to_action.driver_bookings.accepted"
                                   bookings="${acceptedBookings}" currentDate="${currentDate}"
                                   paramName="acceptedPage" totalPages="${totAcceptedPages}"
                                   currentPage="${acceptedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.FINISHED}" tabId="finished-tab"
                                   active="${activeTab eq BookingState.FINISHED}"
-                                  callToActionCode="call_to_action.driver_bookings"
+                                  callToActionCode="call_to_action.driver_bookings.finished"
                                   bookings="${finishedBookings}" currentDate="${currentDate}"
                                   paramName="finishedPage" totalPages="${totFinishedPages}"
                                   currentPage="${finishedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.REJECTED}" tabId="rejected-tab"
                                   active="${activeTab eq BookingState.REJECTED}"
-                                  callToActionCode="call_to_action.driver_bookings"
+                                  callToActionCode="call_to_action.driver_bookings.rejected"
                                   bookings="${rejectedBookings}" currentDate="${currentDate}"
                                   paramName="rejectedPage" totalPages="${totRejectedPages}"
                                   currentPage="${rejectedPage}" loggedUser="${loggedUser}"/>
             <comp:BookingCardList id="${BookingState.CANCELED}" tabId="canceled-tab"
                                   active="${activeTab eq BookingState.CANCELED}"
-                                  callToActionCode="call_to_action.driver_bookings"
+                                  callToActionCode="call_to_action.driver_canceled"
                                   bookings="${canceledBookings}" currentDate="${currentDate}"
                                   paramName="canceledPage" totalPages="${totCanceledPages}"
                                   currentPage="${canceledPage}" loggedUser="${loggedUser}"/>
