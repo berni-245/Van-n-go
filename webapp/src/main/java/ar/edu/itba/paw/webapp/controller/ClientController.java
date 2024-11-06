@@ -69,9 +69,9 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/history", method = RequestMethod.GET)
     public ModelAndView clientHistory(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            @ModelAttribute("loggedUser") Client loggedUser
-    ) {
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form
+            ) {
         List<Booking> paginatedHistory = cs.getHistory(loggedUser.getId(), page);
         long totalRecords = cs.getTotalHistoryCount(loggedUser.getId());
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.BOOKINGS_PAGE_SIZE);
@@ -85,12 +85,12 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/history/send/review", method = RequestMethod.POST)
     public ModelAndView sendReview(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             BindingResult errors
             ) {
         if (errors.hasErrors()) {
-            return clientHistory(page, form, loggedUser);
+            return clientHistory(page, loggedUser, form);
         }
         cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
         return redirect("/client/history");
@@ -98,17 +98,17 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
     public ModelAndView cancelBooking(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @PathVariable("id") long bookingId
-    ) {
+            @PathVariable("id") long bookingId,
+            @ModelAttribute("loggedUser") Client loggedUser
+            ) {
         cs.cancelBooking(bookingId, loggedUser ,LocaleContextHolder.getLocale());
         return redirect("/");
     }
 
     @RequestMapping(path = "/client/search", method = RequestMethod.GET)
     public ModelAndView search(
-            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
-            @ModelAttribute("loggedUser") Client loggedUser
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
             ) {
         ModelAndView mav = new ModelAndView("client/search");
         if(loggedUser.getZone() != null)
@@ -127,9 +127,9 @@ public class ClientController extends ParentController {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form,
-            @ModelAttribute("loggedUser") Client loggedUser
-    ) {
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
+            ) {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
@@ -158,9 +158,10 @@ public class ClientController extends ParentController {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form,
-            @ModelAttribute("loggedUser") Client loggedUser
-    ) {
+            RedirectAttributes redirectAttributes
+            ) {
         Optional<Driver> driver = ds.findById(driverId);
         if (driver.isPresent()) {
             final ModelAndView mav = new ModelAndView("client/driverAvailability");
@@ -181,7 +182,8 @@ public class ClientController extends ParentController {
             mav.addObject("priceMax", priceMax);
             mav.addObject("rating", rating);
             mav.addObject("weekday", weekday);
-            mav.addObject("page",page);
+            mav.addObject("page", page);
+            mav.addObject("toasts", redirectAttributes.getAttribute("toasts"));
             return mav;
         } else {
             return new ModelAndView("redirect:/403");
@@ -191,18 +193,24 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.POST)
     public ModelAndView appointBooking(
             @PathVariable(name = "driverId") long driverId,
+            @RequestParam(name = "zoneId") long zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
-            @Valid @ModelAttribute("bookingForm") BookingForm form,
+            @RequestParam(name = "rating", required = false) Integer rating,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
             @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("bookingForm") BookingForm form,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
-        List<Toast> toasts = new ArrayList<>();
+        ArrayList<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            return driverAvailability(driverId, form.getOriginZoneId(), size, priceMin, priceMax, weekday, 0,0, form, loggedUser);
+            toasts.add(new Toast(ToastType.danger, "toast.booking.error"));
+            redirectAttributes.addFlashAttribute("toasts", toasts);
+            log.warn("Invalid booking params");
+            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, page, loggedUser, form, redirectAttributes);
         }
         cs.appointBooking(
                 form.getVehicleId(),
@@ -218,15 +226,16 @@ public class ClientController extends ParentController {
         toasts.add(new Toast(
                 ToastType.success, "toast.booking.success"
         ));
+        log.info("Booking successful");
         return new ModelAndView("redirect:/client/bookings");
     }
 
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.GET)
     public ModelAndView changePassword(
-            @ModelAttribute("changePasswordForm") ChangePasswordForm form,
-            @ModelAttribute("loggedUser") Client loggedUser
-    ) {
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("changePasswordForm") ChangePasswordForm form
+            ) {
         ModelAndView mav = new ModelAndView("public/changePassword");
         mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "client");
@@ -235,14 +244,18 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.POST)
     public ModelAndView postChangePassword(
-            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
             @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
             BindingResult errors
     ) {
-        if(errors.hasErrors()) return changePassword(form, loggedUser);
+        if(errors.hasErrors()) {
+            log.warn("Invalid params in ChangePasswordForm");
+            return changePassword(loggedUser, form);
+        }
 
         cs.updatePassword(loggedUser.getId(), form.getPassword());
-        return new ModelAndView("redirect:/client/profile");
+        log.info("Password changed successfully");
+        return redirect("/client/profile");
     }
 
     @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
@@ -272,8 +285,8 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/profile/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(
-            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             @ModelAttribute("loggedUser") Client loggedUser,
+            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
         if (errors.hasErrors()) return editProfileForm(loggedUser, form, errors);

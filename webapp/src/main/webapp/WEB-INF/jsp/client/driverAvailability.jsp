@@ -124,9 +124,16 @@
                                     <c:out value="${v.description}"/>
                                 </figcaption>
                             </figure>
-                            <c:url var="postUrl" value="/client/availability/${driverId}"/>
-                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm"
-                                       onsubmit="return isShiftPeriodButtonClicked()">
+                            <c:url var="postUrl" value="/client/availability/${driverId}">
+                                <c:param name="zoneId" value="${originZone.id}" />
+                                <c:param name="size" value="${size}" />
+                                <c:param name="priceMin" value="${priceMin}" />
+                                <c:param name="priceMax" value="${priceMax}" />
+                                <c:param name="weekday" value="${weekday}" />
+                                <c:param name="rating" value="${rating}" />
+                                <c:param name="page" value="${page}" />
+                            </c:url>
+                            <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
                                 <input type="hidden" name="size" value="${size}">
                                 <input type="hidden" name="priceMin" value="${priceMin}">
                                 <input type="hidden" name="priceMax" value="${priceMax}">
