@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
+import org.hibernate.type.BigIntegerType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.List;
@@ -119,14 +121,19 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver, int offset) {
-        List<Long> vehicleIds = em.createQuery("""
-            select v.id from Vehicle v
-            where v.driver = :driver
-            order by v.plateNumber
-            """, Long.class).setParameter("driver", driver)
+        var nativeQueryList = em.createNativeQuery("""
+            select v.id
+            from vehicle v
+            where v.driver_id = :driverId
+            order by v.plate_number
+            """, BigInteger.class)
+                .setParameter("driverId", driver.getId())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.VEHICLES_PAGE_SIZE)
                 .getResultList();
+
+        @SuppressWarnings("unchecked")
+        List<Long> vehicleIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
 
         TypedQuery<Vehicle> query = em.createQuery(
                 "from Vehicle v where id in (:vehicleIds) order by v.plateNumber",

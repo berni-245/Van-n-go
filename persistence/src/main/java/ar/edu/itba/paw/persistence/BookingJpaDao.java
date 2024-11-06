@@ -2,12 +2,15 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
+import org.hibernate.type.BigIntegerType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -73,16 +76,20 @@ public class BookingJpaDao implements BookingDao {
     @Transactional
     @Override
     public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
-        List<Long> bookingIds = em.createQuery("""
-        select b.id from Booking b
-        where b.vehicle.driver = :driver and b.state = :state
+        var nativeQueryList = em.createNativeQuery("""
+        select distinct b.id
+        from booking b join vehicle v on b.vehicle_id = v.id
+        where v.driver_id = :driverId and b.state = :state
         order by b.date
-        """, Long.class)
-                .setParameter("driver", driver)
-                .setParameter("state", state)
+        """)
+                .setParameter("driverId", driver.getId())
+                .setParameter("state", state.toString())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
+
+        @SuppressWarnings("unchecked")
+        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
 
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
                 .setParameter("bookingIds", bookingIds)
@@ -118,15 +125,19 @@ public class BookingJpaDao implements BookingDao {
 
     @Override
     public List<Booking> getClientBookings(Client client, int offset) {
-        List<Long> bookingIds = em.createQuery("""
-        select b.id from Booking b
-        where b.client = :client and b.date >= CURRENT_DATE
+        var nativeQueryList = em.createNativeQuery("""
+        select distinct b.id
+        from booking b
+        where b.client_id = :clientId and b.date >= current_date
         order by b.date
-        """, Long.class)
-                .setParameter("client", client)
+        """)
+                .setParameter("clientId", client.getId())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
+
+        @SuppressWarnings("unchecked")
+        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
 
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
                 .setParameter("bookingIds", bookingIds)
@@ -146,15 +157,19 @@ public class BookingJpaDao implements BookingDao {
 
     @Override
     public List<Booking> getClientHistory(Client client, int offset) {
-        List<Long> bookingIds = em.createQuery("""
-        select b.id from Booking b
-        where b.client = :client and b.date < CURRENT_DATE
+        var nativeQueryList = em.createNativeQuery("""
+        select distinct b.id
+        from booking b
+        where b.client_id = :clientId and b.date < current_date
         order by b.date
-        """, Long.class)
-                .setParameter("client", client)
+        """)
+                .setParameter("clientId", client.getId())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
+
+        @SuppressWarnings("unchecked")
+        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
 
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
                 .setParameter("bookingIds", bookingIds)
