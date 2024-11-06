@@ -61,6 +61,7 @@ public class PublicController extends ParentController {
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
         if (errors.hasErrors()) {
+            log.warn("Invalid params in UserForm");
             return createForm(userForm);
         }
         final User user;
@@ -70,6 +71,7 @@ public class PublicController extends ParentController {
             user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
+        log.info("User successfully created");
         if (user.isDriver())
             return new ModelAndView("redirect:/driver/vehicles");
         return new ModelAndView("redirect:/client/search");
