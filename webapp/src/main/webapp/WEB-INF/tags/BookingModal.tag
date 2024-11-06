@@ -39,61 +39,30 @@
                 </c:choose>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body ">
+            <ul class="modal-body list-group list-group-flush">
 
-                <ul>
+
                     <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
                     <c:choose>
                         <c:when test="${loggedUser.isDriver}">
-                            <li><p class="card-text"><c:out value="${booking.client.username}"/></p></li>
-                            <li><p class="card-text"><c:out value="${booking.client.mail}"/></p></li>
+                            <li class="list-group-item"><c:out value="${booking.client.username}"/></li>
+                            <li class="list-group-item"><c:out value="${booking.client.mail}"/></li>
                         </c:when>
                         <c:otherwise>
-                            <li><p class="card-text"><c:out value="${booking.driver.username}"/></p></li>
-                            <li><p class="card-text"><c:out value="${booking.driver.mail}"/></p></li>
-                            <c:if test="${booking.driver.cbu == null}">
-                                <p><spring:message code="public.profile.noCbu"/></p>
-                            </c:if>
-                            <c:if test="${booking.driver.cbu != null}">
-                                <li><p class="card-text"><spring:message code="generic.word.cbu"/>:<c:out
-                                        value="${booking.driver.cbu}"/></p></li>
-                            </c:if>
-                            <c:choose>
-                                <c:when test="${empty booking.pop or booking.pop == 0}">
-                                    <spring:message code="client.bookings.transfer"/>
-                                    <c:out value="${booking.driver.cbu}"/>
-                                    <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
-                                          action="<c:url value='/client/bookings/upload/pop'/>" enctype="multipart/form-data">
-                                        <input type="hidden" name="bookingId" value="${booking.id}">
-                                        <input type="hidden" name="driverId" value="${booking.driver.id}">
-                                        <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
-                                               class="d-none" accept="application/pdf"
-                                               onchange="document.getElementById('uploadProofOfPaymentForm_${booking.id}').submit();">
-                                        <label for="proofInput_${booking.id}"
-                                               style="cursor: pointer; text-decoration: underline;">
-                                            <spring:message code="client.bookings.clickHereToPop"/>
-                                        </label>
-                                    </form>
-                                </c:when>
-                                <c:otherwise>
-                                    <a href="<c:url value='/booking/pop?popId=${booking.pop}' />" target="_blank">
-                                        <spring:message code="client.bookings.popProvided"/>
-                                    </a>
-                                </c:otherwise>
-                            </c:choose>
-
+                            <li class="list-group-item"><c:out value="${booking.driver.username}"/></li>
+                            <li class="list-group-item"><c:out value="${booking.driver.mail}"/></li>
                         </c:otherwise>
                     </c:choose>
 
-                    <li><p class="card-text"><spring:message
+                    <li class="list-group-item"><spring:message
                             code="components.bookingCard.zone"
-                            arguments="${booking.originZone.neighborhoodName}, ${booking.destinationZone.neighborhoodName}"/></p>
-                    </li>
-                    <li><p class="card-text"><spring:message code="generic.word.description"/>: <c:out
-                            value="${booking.jobDescription}"/></p></li>
-                    <li><p class="card-text"><spring:message arguments="${booking.vehicle.plateNumber}"
-                                                             code="components.bookingModal.vehicle"/></p></li>
-                </ul>
+                            arguments="${booking.originZone.neighborhoodName}, ${booking.destinationZone.neighborhoodName}"/></li>
+                    <li class="list-group-item"><spring:message code="generic.word.description"/>:
+                        <c:out value="${booking.jobDescription}"/></li>
+                    <li class="list-group-item"><spring:message
+                            arguments="${booking.vehicle.plateNumber}"
+                            code="components.bookingModal.vehicle"/></li>
+
 
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
@@ -115,17 +84,9 @@
                         </c:if>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.ACCEPTED}">
+                        <comp:PopBookingList booking="${booking}" loggedUser="${loggedUser}"/>
                         <c:if test="${loggedUser.isDriver}">
                             <div>
-                                <c:if test="${booking.pop eq null}">
-                                    <spring:message code="driver.home.unpaid"/>
-                                </c:if>
-                                <c:if test="${booking.pop ne null}">
-                                    <c:url value='/booking/pop?popId=${booking.pop}' var="popUrl"/>
-                                    <a href="${popUrl}" target="_blank">
-                                        <spring:message code="driver.home.paid"/>
-                                    </a>
-                                </c:if>
                                 <c:if test="${booking.date.isBefore(currentDate)}">
                                     <div class="d-flex justify-content-around mt-2">
                                         <c:url value="/driver/booking/${booking.id}/finish" var="bookingFinishUrl"/>
@@ -147,17 +108,19 @@
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${!booking.date.isBefore(currentDate)}">
-                                    <p><spring:message code="components.bookingModal.cantCancel"/></p>
+                                    <li class="list-group-item"><spring:message code="components.bookingModal.cantCancel"/></li>
                                 </c:if>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.FINISHED}">
+                        <comp:PopBookingList booking="${booking}" loggedUser="${loggedUser}"/>
                         <c:choose>
                             <c:when test="${booking.rating.isPresent()}">
-                                <div class="d-flex justify-content-around mt-2">
+                                <div class="d-flex justify-content-between mt-2">
                                     <p><spring:message code="driver.history.rating"/></p>
-                                    <div class="d-flex align-items-center">
+                                </div>
+                            <div class="d-flex align-items-center">
                                 <span class="fw-bold text-warning">
                                     <c:out value="${booking.rating.get()}"/>
                                 </span>
@@ -173,7 +136,6 @@
                                                 <i class="bi bi-star text-secondary"></i>
                                             </c:forEach>
                                         </div>
-                                    </div>
                                 </div>
 
                                 <div class="d-flex">
@@ -193,7 +155,7 @@
 
                     </c:when>
                 </c:choose>
-            </div>
+            </ul>
         </div>
     </div>
 </div>
