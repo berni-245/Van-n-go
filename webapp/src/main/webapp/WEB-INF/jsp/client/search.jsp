@@ -7,7 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <comp:Head titleCode="components.header.availability" tomselect="true" bsIcons="true">
-  <c:url value="/css/availability.css" var="css"/>
+  <c:url value="/css/styles.css" var="css"/>
   <link rel="stylesheet" href="${css}">
 </comp:Head>
 <body>
