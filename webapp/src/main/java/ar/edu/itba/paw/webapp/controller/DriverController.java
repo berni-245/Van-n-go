@@ -290,7 +290,7 @@ public class DriverController extends ParentController {
             @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
     ) {
-        final ModelAndView mav = new ModelAndView("driver/home");
+        final ModelAndView mav = new ModelAndView("driver/bookings");
         mav.addObject("currentDate", LocalDate.now());
 
         boolean errors = !addBookingData(mav, loggedUser, BookingState.PENDING, pendingPage) ||
