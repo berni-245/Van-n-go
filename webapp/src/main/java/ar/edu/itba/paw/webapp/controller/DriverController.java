@@ -4,7 +4,10 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ZoneService;
-import ar.edu.itba.paw.webapp.form.*;
+import ar.edu.itba.paw.webapp.form.AvailabilityForm;
+import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
+import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
+import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -268,18 +270,6 @@ public class DriverController extends ParentController {
         return redirect("/driver/vehicle/%s/edit", form.getPlateNumber());
     }
 
-    private boolean addBookingData(ModelAndView mav, Driver driver, BookingState state, int currentPage) {
-        int totPages = ds.getBookingPages(driver, state);
-        if (totPages == 0) return true;
-        if (currentPage > totPages || currentPage < 1) return false;
-        String stateLowerCase = state.toString().toLowerCase();
-        String stateCapitalized = stateLowerCase.substring(0, 1).toUpperCase() + stateLowerCase.substring(1);
-        mav.addObject("tot" + stateCapitalized + "Pages", totPages);
-        mav.addObject(stateLowerCase + "Page", currentPage);
-        mav.addObject(stateLowerCase + "Bookings", ds.getBookings(driver, state, currentPage));
-        return true;
-    }
-
     @RequestMapping(path = "/driver/bookings")
     public ModelAndView driverBookings(
             @ModelAttribute("loggedUser") Driver loggedUser,
@@ -290,18 +280,17 @@ public class DriverController extends ParentController {
             @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab
     ) {
-        final ModelAndView mav = new ModelAndView("driver/bookings");
-        mav.addObject("currentDate", LocalDate.now());
-
-        boolean errors = !addBookingData(mav, loggedUser, BookingState.PENDING, pendingPage) ||
-                !addBookingData(mav, loggedUser, BookingState.ACCEPTED, acceptedPage) ||
-                !addBookingData(mav, loggedUser, BookingState.FINISHED, finishedPage) ||
-                !addBookingData(mav, loggedUser, BookingState.REJECTED, rejectedPage) ||
-                !addBookingData(mav, loggedUser, BookingState.CANCELED, canceledPage);
-        if (errors) return new ModelAndView();
-
-        mav.addObject("activeTab", activeTab);
-        return mav;
+        return super.userBookings(
+                "driver/bookings",
+                ds,
+                loggedUser,
+                pendingPage,
+                acceptedPage,
+                finishedPage,
+                rejectedPage,
+                canceledPage,
+                activeTab
+        );
     }
 
     @RequestMapping(path = "/driver/booking/{id:\\d+}/accept", method = RequestMethod.POST)
@@ -309,7 +298,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.acceptBooking(bookingId,loggedUser,LocaleContextHolder.getLocale());
+        ds.acceptBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
         return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 
@@ -327,7 +316,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.rejectBooking(bookingId,loggedUser,LocaleContextHolder.getLocale());
+        ds.rejectBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
         return redirect("/driver/bookings?activeTab=REJECTED");
     }
 
@@ -336,7 +325,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.cancelBooking(bookingId, loggedUser ,LocaleContextHolder.getLocale());
+        ds.cancelBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
         return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 
