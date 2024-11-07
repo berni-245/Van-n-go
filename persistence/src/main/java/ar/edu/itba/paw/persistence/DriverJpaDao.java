@@ -1,16 +1,15 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Pagination;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,38 +32,62 @@ public class DriverJpaDao implements DriverDao {
     }
 
     @Override
-    public List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset) {
-        StringBuilder queryString = new StringBuilder("""
-                    SELECT DISTINCT v.driver FROM Vehicle v
-                    JOIN v.zones z
-                    LEFT JOIN v.availability a
-                    WHERE z = :zone
-                """);
-        if (size != null) queryString.append(" AND v.volume BETWEEN :minVolume AND :maxVolume");
-        if (priceMin != null) queryString.append(" AND v.hourlyRate >= :priceMin");
-        if (priceMax != null) queryString.append(" AND v.hourlyRate <= :priceMax");
-        if (weekday != null) queryString.append(" AND a.weekDay = :weekday");
-        if (rating != null) queryString.append(" AND v.driver.rating >= :rating");
+    public List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset) {
+        StringBuilder idQuery = new StringBuilder("""
+            SELECT DISTINCT v.driver_id FROM Vehicle v
+            JOIN driver d ON d.id = v.driver_id
+            JOIN Vehicle_zone z ON v.id = z.vehicle_id
+            LEFT JOIN Vehicle_availability a ON v.id = a.vehicle_id
+            WHERE z.zone_id = :zoneId
+        """);
 
-        TypedQuery<Driver> query = em.createQuery(queryString.toString(), Driver.class);
-        query.setParameter("zone", zone);
+        if (size != null) idQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");
+        if (priceMin != null) idQuery.append(" AND v.hourly_rate >= :priceMin");
+        if (priceMax != null) idQuery.append(" AND v.hourly_rate <= :priceMax");
+        if (weekday != null) idQuery.append(" AND a.week_day = :weekday");
+        if (rating != null) idQuery.append(" AND d.rating >= :rating");
+
+        Query idNativeQuery = em.createNativeQuery(idQuery.toString());
+
+        idNativeQuery.setParameter("zoneId", zone.getId());
         if (size != null) {
-            query.setParameter("minVolume", (double) size.getMinVolume());
-            query.setParameter("maxVolume", (double) size.getMaxVolume());
+            idNativeQuery.setParameter("minVolume", (double) size.getMinVolume());
+            idNativeQuery.setParameter("maxVolume", (double) size.getMaxVolume());
         }
-        if (priceMin != null)
-            query.setParameter("priceMin", priceMin);
-        if (priceMax != null)
-            query.setParameter("priceMax", priceMax);
-        if (weekday != null)
-            query.setParameter("weekday", weekday);
-        if (rating != null)
-            query.setParameter("rating", rating);
+        if (priceMin != null) idNativeQuery.setParameter("priceMin", priceMin);
+        if (priceMax != null) idNativeQuery.setParameter("priceMax", priceMax);
+        if (weekday != null) idNativeQuery.setParameter("weekday", weekday);
+        if (rating != null) idNativeQuery.setParameter("rating", rating.doubleValue());
 
-        query.setFirstResult(offset);
-        query.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
-        return query.getResultList();
+        idNativeQuery.setFirstResult(offset);
+        idNativeQuery.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
+
+        List<Integer> driverIds = idNativeQuery.getResultList();
+        if (driverIds.isEmpty()) return Collections.emptyList();
+
+        StringBuilder driverQuery = new StringBuilder("""
+            SELECT d FROM Driver d
+            WHERE d.id IN :driverIds
+        """);
+        /*
+        if (order != null) {
+            switch (order) {
+                case PRICE -> driverQuery.append(" ORDER BY d.vehicle.hourlyRate");
+                case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
+                case RECENT -> driverQuery.append(" ORDER BY d.lastUpdate DESC");
+                case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
+            }
+        }
+        /
+         */
+        @SuppressWarnings("unchecked")
+        List<Long> driverIdLong = driverIds.stream().map(Integer::longValue).toList();
+        TypedQuery<Driver> finalQuery = em.createQuery(driverQuery.toString(), Driver.class);
+        finalQuery.setParameter("driverIds", driverIdLong);
+
+        return finalQuery.getResultList();
     }
+
 
 
     @Override
@@ -131,7 +154,7 @@ public class DriverJpaDao implements DriverDao {
             query.setParameter("weekday", weekday);
         }
         if (rating != null) {
-            query.setParameter("rating", rating);
+            query.setParameter("rating", rating.doubleValue());
         }
 
         Long count = query.getSingleResult();

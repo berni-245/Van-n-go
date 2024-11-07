@@ -76,7 +76,7 @@ public class ClientController extends ParentController {
         if (file == null || file.isEmpty())
             throw new InvalidImageException();
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        LOGGER.info("Upload proof of payment successfully");
+        LOGGER.info("Uploaded proof of payment successfully");
         // TODO agregar query params.
         return redirect("/client/bookings");
     }
@@ -147,6 +147,7 @@ public class ClientController extends ParentController {
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
+            @RequestParam(name = "order", required = false) SearchOrder order,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
@@ -154,7 +155,7 @@ public class ClientController extends ParentController {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
-        List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, page);
+        List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, order, page);
         List<Zone> zones = zs.getAllZones();
         mav.addObject("drivers", drivers);
         mav.addObject("zones", zones);
@@ -166,6 +167,7 @@ public class ClientController extends ParentController {
         mav.addObject("priceMax", priceMax);
         mav.addObject("weekday", weekday);
         mav.addObject("rating", rating);
+        mav.addObject("order", order);
         return mav;
     }
 
@@ -178,6 +180,7 @@ public class ClientController extends ParentController {
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
+            @RequestParam(name = "order", required = false) SearchOrder order,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form,
@@ -203,6 +206,7 @@ public class ClientController extends ParentController {
             mav.addObject("priceMax", priceMax);
             mav.addObject("rating", rating);
             mav.addObject("weekday", weekday);
+            mav.addObject("order", order);
             mav.addObject("page", page);
             mav.addObject("toasts", redirectAttributes.getAttribute("toasts"));
             return mav;
@@ -220,6 +224,7 @@ public class ClientController extends ParentController {
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
+            @RequestParam(name = "order", required = false) SearchOrder order,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingForm") BookingForm form,
@@ -229,7 +234,7 @@ public class ClientController extends ParentController {
         ArrayList<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingForm");
-            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, page, loggedUser, form, redirectAttributes);
+            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, order, page, loggedUser, form, redirectAttributes);
         }
         cs.appointBooking(
                 form.getVehicleId(),

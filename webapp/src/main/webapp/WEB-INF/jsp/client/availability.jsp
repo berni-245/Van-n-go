@@ -75,6 +75,17 @@
                 </form:select>
             </div>
 
+            <div class="col-sm-2">
+                <spring:message code="client.search.selectOrder" var="weekdayLabel"/>
+                <form:select path="order" id="select-weekday" cssClass="form-select">
+                    <form:option value="" label="${weekdayLabel}"/>
+                    <form:option value="ALPHABETICAL" label="Alphetical"/>
+                    <form:option value="RECENT" label="Most Recent"/>
+                    <form:option value="PRICE" label="Lowest Price"/>
+                    <form:option value="RATING" label="Highest Rating"/>
+                </form:select>
+            </div>
+
             <div class="col-sm d-flex align-items-center">
                 <button type="submit" class="btn btn-primary">
                     <spring:message code="components.availability.Search"/>
@@ -136,7 +147,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-                                        <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&page=${currentPage}"
+                                        <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}&page=${currentPage}"
                                            class="btn btn-primary">
                                             <spring:message code="components.availability.SeeAvailability"/>
                                         </a>
@@ -158,15 +169,15 @@
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message code="generic.word.previous"/></a>
+                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message code="generic.word.previous"/></a>
                                 </li>
                                 <c:forEach begin="0" end="${totalPages - 1}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}">${i + 1}</a>
+                                        <a class="page-link" href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}">${i + 1}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}" aria-disabled="${currentPage == totalPages - 1}"><spring:message code="generic.word.next"/>&raquo;</a>
+                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMin=${priceMin}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}" aria-disabled="${currentPage == totalPages - 1}"><spring:message code="generic.word.next"/>&raquo;</a>
                                 </li>
                             </ul>
                         </nav>
