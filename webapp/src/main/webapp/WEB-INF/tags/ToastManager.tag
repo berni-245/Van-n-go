@@ -4,8 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
-<div aria-live="polite" aria-atomic="true" class="sticky-bottom">
-    <div class="toast-container bottom-0 end-0 p-3">
+<div aria-live="polite" aria-atomic="true">
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <c:forEach var="toast" items="${toasts}">
             <comp:Toast type="${toast.type}" titleCode="${toast.titleCode}" descriptionCode="${toast.descriptionCode}"
                         delay="${toast.delay}"/>
