@@ -155,7 +155,7 @@ public class ClientController extends ParentController {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
-        List<Driver> drivers = ds.getAll(zoneId, size, priceMin, priceMax, weekday, rating, order, page);
+        List<Driver> drivers = ds.getSearchResults(zoneId, size, priceMin, priceMax, weekday, rating, order, page);
         List<Zone> zones = zs.getAllZones();
         mav.addObject("drivers", drivers);
         mav.addObject("zones", zones);

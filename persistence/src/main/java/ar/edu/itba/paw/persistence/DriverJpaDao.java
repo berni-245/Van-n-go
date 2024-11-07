@@ -32,10 +32,11 @@ public class DriverJpaDao implements DriverDao {
     }
 
     @Override
-    public List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset) {
+    public List<Driver> getSearchResults(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset) {
         StringBuilder idQuery = new StringBuilder("""
-            SELECT DISTINCT v.driver_id FROM Vehicle v
+            SELECT v.driver_id FROM Vehicle v
             JOIN driver d ON d.id = v.driver_id
+            JOIN app_user au ON v.driver_id = au.id
             JOIN Vehicle_zone z ON v.id = z.vehicle_id
             LEFT JOIN Vehicle_availability a ON v.id = a.vehicle_id
             WHERE z.zone_id = :zoneId
@@ -46,6 +47,15 @@ public class DriverJpaDao implements DriverDao {
         if (priceMax != null) idQuery.append(" AND v.hourly_rate <= :priceMax");
         if (weekday != null) idQuery.append(" AND a.week_day = :weekday");
         if (rating != null) idQuery.append(" AND d.rating >= :rating");
+        idQuery.append(" GROUP BY v.driver_id");
+        if(order != null){
+            switch (order) {
+                case PRICE -> {}//idQuery.append(" ORDER BY v.hourly_rate");
+                case RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
+                case RECENT -> idQuery.append(", d.lastUpdate ORDER BY d.lastUpdate DESC");
+                case ALPHABETICAL -> idQuery.append(", au.username ORDER BY au.username");
+            }
+        }
 
         Query idNativeQuery = em.createNativeQuery(idQuery.toString());
 
@@ -69,17 +79,16 @@ public class DriverJpaDao implements DriverDao {
             SELECT d FROM Driver d
             WHERE d.id IN :driverIds
         """);
-        /*
+
         if (order != null) {
             switch (order) {
-                case PRICE -> driverQuery.append(" ORDER BY d.vehicle.hourlyRate");
+                case PRICE -> {}//driverQuery.append(" ORDER BY v.hourlyRate");
                 case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
                 case RECENT -> driverQuery.append(" ORDER BY d.lastUpdate DESC");
                 case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
             }
         }
-        /
-         */
+
         @SuppressWarnings("unchecked")
         List<Long> driverIdLong = driverIds.stream().map(Integer::longValue).toList();
         TypedQuery<Driver> finalQuery = em.createQuery(driverQuery.toString(), Driver.class);

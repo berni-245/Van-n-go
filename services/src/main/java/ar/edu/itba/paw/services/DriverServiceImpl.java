@@ -121,13 +121,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     }
 
     @Override
-    public List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order,int page) {
+    public List<Driver> getSearchResults(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int page) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
         if(priceMin != null && priceMax != null && priceMin > priceMax) {
             return Collections.emptyList();
         }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getAll(zone, size, priceMin, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getSearchResults(zone, size, priceMin, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Override
