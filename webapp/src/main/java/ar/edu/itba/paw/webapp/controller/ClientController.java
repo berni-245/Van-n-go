@@ -45,8 +45,6 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(
             @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult erros,
             @RequestParam(name = "pendingPage", defaultValue = "1") int pendingPage,
             @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
             @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
@@ -55,9 +53,6 @@ public class ClientController extends ParentController {
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
             RedirectAttributes redirectAttrs
     ) {
-        if (erros.hasErrors()) {
-            setToasts(redirectAttrs, new Toast(ToastType.danger, "Error in review form handle this better"));
-        }
         return super.userBookings(
                 "client/bookings",
                 cs,
@@ -86,18 +81,33 @@ public class ClientController extends ParentController {
         return redirect("/client/bookings");
     }
 
-    @RequestMapping(path = "/client/history/send/review", method = RequestMethod.POST)
+    @RequestMapping(path = "/client/booking/{id:\\d+}/review", method = RequestMethod.GET)
+    public ModelAndView reviewForm(
+            @PathVariable("id") long bookingId,
+            @RequestParam(name = "driverId") long driverId,
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form
+            ) {
+        ModelAndView mav = new ModelAndView("client/bookingReview");
+        mav.addObject("loggedUser", loggedUser);
+        mav.addObject("driver", ds.findById(driverId).orElseThrow());
+        mav.addObject("bookingId", bookingId );
+        return mav;
+    }
+
+    @RequestMapping(path = "/client/booking/{id:\\d+}/review/send", method = RequestMethod.POST)
     public ModelAndView sendReview(
+            @PathVariable("id") long bookingId,
+            @RequestParam(name = "driverId") long driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttrs
+            BindingResult errors
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingReviewForm");
-            setToasts(redirectAttrs, new Toast(ToastType.danger, "toast.booking.review.invalid"));
+            return reviewForm(bookingId, driverId, loggedUser, form);
         } else {
-            cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
+            cs.setBookingRatingAndReview(bookingId, form.getRating(), form.getReview());
             LOGGER.info("Review sent successfully");
         }
         return redirect(

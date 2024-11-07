@@ -15,11 +15,6 @@ public class BookingReviewForm {
     @Length(min = 6, max = 255)
     private String review;
 
-    @NotNull
-    @Min(0)
-    private  long bookingID;
-
-
     public int getRating() {
         return rating;
     }
@@ -36,11 +31,4 @@ public class BookingReviewForm {
         this.review = review;
     }
 
-    public long getBookingID() {
-        return bookingID;
-    }
-
-    public void setBookingID(long bookingID) {
-        this.bookingID = bookingID;
-    }
 }

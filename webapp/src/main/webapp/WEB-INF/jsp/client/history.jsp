@@ -74,7 +74,7 @@
                                                     <div class="mb-3">
                                                         <form:label path="rating" cssClass="form-label">
                                                             <spring:message
-                                                                code="client.select.rating"
+                                                                code="client.rating.select"
                                                                 arguments="${booking.driver.username}"/>
                                                         </form:label>
                                                        <!-- <form:input path="rating" type="text" /> -->
