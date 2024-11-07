@@ -101,10 +101,8 @@ public class DriverController extends ParentController {
         }
         String fileName = vehicleImg.getFileName();
         String contentType;
-        if (fileName == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        if (fileName.toLowerCase().endsWith(".png"))
-            contentType = "image/png";
+        if (fileName == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        if (fileName.toLowerCase().endsWith(".png")) contentType = "image/png";
         else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
             contentType = "image/jpeg";
         } else {

@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Pagination;
+import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -32,42 +35,36 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset) {
         StringBuilder queryString = new StringBuilder("""
-            SELECT DISTINCT v.driver FROM Vehicle v
-            JOIN v.zones z
-            LEFT JOIN v.availability a
-            WHERE z = :zone
-        """);
-        if(size != null)
-            queryString.append(" AND v.volume BETWEEN :minVolume AND :maxVolume");
-        if(priceMin != null)
-            queryString.append(" AND v.hourlyRate >= :priceMin");
-        if(priceMax != null)
-            queryString.append(" AND v.hourlyRate <= :priceMax");
-        if (weekday != null)
-            queryString.append(" AND a.weekDay = :weekday");
-        if(rating != null)
-            queryString.append(" AND v.driver.rating >= :rating");
+                    SELECT DISTINCT v.driver FROM Vehicle v
+                    JOIN v.zones z
+                    LEFT JOIN v.availability a
+                    WHERE z = :zone
+                """);
+        if (size != null) queryString.append(" AND v.volume BETWEEN :minVolume AND :maxVolume");
+        if (priceMin != null) queryString.append(" AND v.hourlyRate >= :priceMin");
+        if (priceMax != null) queryString.append(" AND v.hourlyRate <= :priceMax");
+        if (weekday != null) queryString.append(" AND a.weekDay = :weekday");
+        if (rating != null) queryString.append(" AND v.driver.rating >= :rating");
 
         TypedQuery<Driver> query = em.createQuery(queryString.toString(), Driver.class);
         query.setParameter("zone", zone);
-        if(size != null) {
+        if (size != null) {
             query.setParameter("minVolume", (double) size.getMinVolume());
             query.setParameter("maxVolume", (double) size.getMaxVolume());
         }
-        if(priceMin != null)
+        if (priceMin != null)
             query.setParameter("priceMin", priceMin);
-        if(priceMax != null)
+        if (priceMax != null)
             query.setParameter("priceMax", priceMax);
-        if(weekday != null)
+        if (weekday != null)
             query.setParameter("weekday", weekday);
-        if(rating != null)
+        if (rating != null)
             query.setParameter("rating", rating);
 
         query.setFirstResult(offset);
         query.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
         return query.getResultList();
     }
-
 
 
     @Override
@@ -93,11 +90,11 @@ public class DriverJpaDao implements DriverDao {
     @Override
     public int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
         StringBuilder queryString = new StringBuilder("""
-        SELECT COUNT(DISTINCT v.driver) FROM Vehicle v
-        JOIN v.zones z
-        LEFT JOIN v.availability a
-        WHERE z = :zone
-    """);
+                    SELECT COUNT(DISTINCT v.driver) FROM Vehicle v
+                    JOIN v.zones z
+                    LEFT JOIN v.availability a
+                    WHERE z = :zone
+                """);
 
         // Add optional conditions
         if (size != null) {
