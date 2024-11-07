@@ -16,8 +16,9 @@ public class Client extends User {
         return true;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Zone zone;
+
     //TODO: Ver como solucionar el tema de la lazy intialization exception
     public Zone getZone() {return zone;}
 
