@@ -123,6 +123,8 @@ ALTER TABLE booking_old ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq'
 ALTER TABLE booking_old2 ALTER COLUMN id SET DEFAULT nextval('old_booking_id_seq2'::regclass);
 ALTER TABLE booking ALTER COLUMN id SET DEFAULT nextval('booking_id_seq'::regclass);
 SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
+SELECT setval('image_id_seq', (SELECT MAX(id) FROM image));
+
 
 -- command to check which sequence is mapped to a table only in psql console
 /*
