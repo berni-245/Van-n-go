@@ -25,7 +25,7 @@ import java.util.*;
 
 @Controller
 public class ClientController extends ParentController {
-    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private DriverService ds;
     @Autowired
@@ -81,7 +81,7 @@ public class ClientController extends ParentController {
         if (file == null || file.isEmpty())
             throw new InvalidImageException();
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        log.info("Upload proof of payment successfully");
+        LOGGER.info("Upload proof of payment successfully");
         // TODO agregar query params.
         return redirect("/client/bookings");
     }
@@ -94,11 +94,11 @@ public class ClientController extends ParentController {
             RedirectAttributes redirectAttrs
     ) {
         if (errors.hasErrors()) {
-            log.warn("Invalid params in BookingReviewForm");
+            LOGGER.warn("Invalid params in BookingReviewForm");
             setToasts(redirectAttrs, new Toast(ToastType.danger, "toast.booking.review.invalid"));
         } else {
             cs.setBookingRatingAndReview(form.getBookingID(), form.getRating(), form.getReview());
-            log.info("Review sent successfully");
+            LOGGER.info("Review sent successfully");
         }
         return redirect(
                 "/client/bookings?activeTab=%s",
@@ -112,7 +112,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser
     ) {
         cs.cancelBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
-        log.info("Successfully cancelled booking");
+        LOGGER.info("Successfully cancelled booking");
         return redirect("/");
     }
 
@@ -218,7 +218,7 @@ public class ClientController extends ParentController {
     ) {
         ArrayList<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
-            log.warn("Invalid params in BookingForm");
+            LOGGER.warn("Invalid params in BookingForm");
             return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, page, loggedUser, form, redirectAttributes);
         }
         cs.appointBooking(
@@ -235,7 +235,7 @@ public class ClientController extends ParentController {
         toasts.add(new Toast(
                 ToastType.success, "toast.booking.success"
         ));
-        log.info("Booking successful");
+        LOGGER.info("Booking successful");
         return new ModelAndView("redirect:/client/bookings");
     }
 
@@ -258,12 +258,12 @@ public class ClientController extends ParentController {
             BindingResult errors
     ) {
         if (errors.hasErrors()) {
-            log.warn("Invalid params in ChangePasswordForm");
+            LOGGER.warn("Invalid params in ChangePasswordForm");
             return changePassword(loggedUser, form);
         }
 
         cs.updatePassword(loggedUser.getId(), form.getPassword());
-        log.info("Password changed successfully");
+        LOGGER.info("Password changed successfully");
         return redirect("/client/profile");
     }
 
@@ -299,11 +299,11 @@ public class ClientController extends ParentController {
             BindingResult errors
     ) {
         if (errors.hasErrors()) {
-            log.warn("Invalid params in ChangeUserInfoForm");
+            LOGGER.warn("Invalid params in ChangeUserInfoForm");
             return editProfileForm(loggedUser, form, errors);
         }
         cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId());
-        log.info("Successfully changed client info");
+        LOGGER.info("Successfully changed client info");
         return redirect("/client/profile");
     }
 

@@ -139,8 +139,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.bookingAccepted", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            LOGGER.error("Error sending accepted booking message to {}", clientMail);
         }
         sendMail(message);
     }
@@ -157,8 +157,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.bookingRejected", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            LOGGER.error("Error sending rejected booking message to {}", clientMail);
         }
         sendMail(message);
     }
@@ -174,7 +174,7 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(messageSource.getMessage("subject.welcome", new Object[]{userName}, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             LOGGER.error("Error sending welcome driver mail to {}", userName);
         }
         sendMail(message);
@@ -209,8 +209,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.driverCanceledBooking", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            LOGGER.error("Error sending driver canceled booking message to {}", clientMail);
         }
         sendMail(message);
     }
@@ -227,8 +227,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
             message.setSubject(messageSource.getMessage("subject.driverCanceledBooking", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            LOGGER.error("Error sending client canceled booking message to {}", driverMail);
         }
         sendMail(message);
     }
@@ -242,7 +242,8 @@ public class MailServiceImpl implements MailService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
             message.setSubject(messageSource.getMessage("subject.serviceRequested", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            LOGGER.error("Error sending confirm requested service message to {}", clientMail);
         }
         sendMail(message);
     }
@@ -255,7 +256,8 @@ public class MailServiceImpl implements MailService {
             String mailBodyProcessed = templateEngine.process("driverRequestedServiceMail", context);
             message.setSubject(messageSource.getMessage("subject.serviceRequired", null, locale));
             setMailContent(message, mailBodyProcessed);
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            LOGGER.error("Error sending requested services message to {}", driverMail);
         }
         sendMail(message);
     }

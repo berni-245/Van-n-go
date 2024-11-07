@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -23,7 +23,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         } else if (exception.getMessage().contains("UserDetailsService returned null")) {
             error = "user";  // Unknown user
         }
-        log.error(exception.getMessage());
+        LOGGER.error(exception.getMessage());
         response.sendRedirect(request.getContextPath() + "/login?error=" + error);
     }
 }

@@ -59,7 +59,11 @@ public class PublicController extends ParentController {
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute("userForm") UserForm userForm, BindingResult errors) {
+    public ModelAndView create(
+            @Valid @ModelAttribute("userForm") UserForm userForm,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
+    ) {
         if (errors.hasErrors()) {
             log.warn("Invalid params in UserForm");
             return createForm(userForm);
@@ -72,6 +76,7 @@ public class PublicController extends ParentController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         log.info("User successfully created");
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.create.success"));
         if (user.isDriver())
             return new ModelAndView("redirect:/driver/vehicles");
         return new ModelAndView("redirect:/client/search");
@@ -90,13 +95,10 @@ public class PublicController extends ParentController {
     @RequestMapping(path = "/upload/pfp", method = RequestMethod.POST)
     public String submit(
             @RequestParam("profilePicture") MultipartFile file,
-            @ModelAttribute("loggedUser") User loggedUser) {
+            @ModelAttribute("loggedUser") User loggedUser
+    ) throws IOException {
         if (file != null && !file.isEmpty()) {
-            try {
-                loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+            loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
         }
         return "redirect:/profile";
     }

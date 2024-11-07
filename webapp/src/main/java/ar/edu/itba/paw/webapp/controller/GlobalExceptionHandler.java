@@ -15,54 +15,54 @@ import java.io.IOException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ParentController {
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UserNotFoundException.class)
     public ModelAndView handleUserNotFound(UserNotFoundException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.not.found"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/notFound");
     }
 
     @ExceptionHandler(IOException.class)
     public ModelAndView handleIO(IOException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.io.error"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/internalError");
     }
 
     @ExceptionHandler(InvalidUserOnBookingCancelException.class)
     public ModelAndView handleInvalidUserOnBookingCancel(InvalidUserOnBookingCancelException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.cancel"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/");
     }
 
     @ExceptionHandler(InvalidUserOnBookingAcceptException.class)
     public ModelAndView handleInvalidUserOnBookingAccept(InvalidUserOnBookingAcceptException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.accept"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/");
     }
 
     @ExceptionHandler(InvalidUserOnBookingRejectException.class)
     public ModelAndView handleInvalidUserOnBookingReject(InvalidUserOnBookingRejectException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.reject"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/");
     }
 
     @ExceptionHandler(InvalidUserOnBookingFinishException.class)
     public ModelAndView handleInvalidUserOnBookingFinish(InvalidUserOnBookingFinishException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.finish"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/");
     }
 
     @ExceptionHandler(InvalidImageException.class)
     public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         return redirect("/");
     }
 
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler extends ParentController {
     public ModelAndView handleClientAlreadyAppointed(ClientAlreadyAppointedException ex, RedirectAttributes redirectAttributes,
                                                      HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.client.already.appointed"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler extends ParentController {
     public ModelAndView handleTimeAlreadyPassed(TimeAlreadyPassedException ex, RedirectAttributes redirectAttributes,
                                                      HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.time.already.passed"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler extends ParentController {
     public ModelAndView handleVehicleIsAlreadyAccepted(VehicleIsAlreadyAcceptedException ex, RedirectAttributes redirectAttributes,
                                                 HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.is.already.accepted"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler extends ParentController {
     public ModelAndView handleVehicleNotAvailable(VehicleNotAvailableException ex, RedirectAttributes redirectAttributes,
                                                        HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.not.available"));
-        log.error(ex.getMessage());
+        LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }

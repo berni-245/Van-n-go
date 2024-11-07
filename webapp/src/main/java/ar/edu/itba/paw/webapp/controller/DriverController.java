@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @Controller
 public class DriverController extends ParentController {
-    private static final Logger log = LoggerFactory.getLogger(DriverController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriverController.class);
     @Autowired
     private DriverService ds;
     @Autowired
@@ -51,7 +51,7 @@ public class DriverController extends ParentController {
             BindingResult errors,
             @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
             RedirectAttributes redirectAttributes
-    ) {
+    ) throws IOException {
         if (errors.hasErrors()) {
             return addVehicleGet(vehicleForm);
         }
@@ -59,11 +59,7 @@ public class DriverController extends ParentController {
         byte[] imgData = null;
         if (vehicleImg != null) {
             imgFilename = vehicleImg.getOriginalFilename();
-            try {
-                imgData = vehicleImg.getBytes();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+            imgData = vehicleImg.getBytes();
         }
         ds.addVehicle(
                 loggedUser.getId(),
@@ -235,7 +231,7 @@ public class DriverController extends ParentController {
             @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
             @ModelAttribute("availabilityForm") AvailabilityForm avForm,
             RedirectAttributes redirectAttributes
-    ) {
+    ) throws IOException {
         if (errors.hasErrors()) {
             return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm, null);
         }
@@ -243,11 +239,7 @@ public class DriverController extends ParentController {
         byte[] imgData = null;
         if (vehicleImg != null) {
             imgFilename = vehicleImg.getOriginalFilename();
-            try {
-                imgData = vehicleImg.getBytes();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+            imgData = vehicleImg.getBytes();
         }
         ds.updateVehicle(
                 loggedUser,
@@ -344,7 +336,7 @@ public class DriverController extends ParentController {
             redirectAttributes.addFlashAttribute("toasts", toasts);
             return redirect("/driver/vehicles");
         } else {
-            log.error("Vehicle `{}` not found", plateNumber);
+            LOGGER.error("Vehicle `{}` not found", plateNumber);
             return new ModelAndView();
         }
     }

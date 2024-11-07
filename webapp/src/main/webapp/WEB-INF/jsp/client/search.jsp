@@ -98,12 +98,12 @@
         </div>
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" class="btn btn-primary btn-lg w-100">
         <spring:message code="components.availability.Search"/>
       </button>
     </form:form>
   </div>
+  <comp:ToastManager toasts="${toasts}"/>
 </div>
 
 <script>
