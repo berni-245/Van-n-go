@@ -49,6 +49,9 @@ public class UserJdbcDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -57,6 +60,9 @@ public class UserJdbcDaoTest {
     @Test
     public void testSuccessfulCreate(){
        long userId = userDao.create(USERNAME2,USERMAIL2,USERPASSWORD2);
+
+       em.flush();
+
        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                jdbcTemplate, "app_user",
                String.format("""
