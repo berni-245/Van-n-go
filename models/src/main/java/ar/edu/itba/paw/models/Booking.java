@@ -112,12 +112,12 @@ public class Booking {
         return client;
     }
 
-    public Optional<Integer> getRating() {
-        return Optional.ofNullable(rating);
+    public Integer getRating() {
+        return rating;
     }
 
-    public Optional<String> getReview() {
-        return Optional.ofNullable(review);
+    public String getReview() {
+        return review;
     }
 
     public Zone getDestinationZone() {

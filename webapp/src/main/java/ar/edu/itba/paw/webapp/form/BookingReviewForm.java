@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 public class BookingReviewForm {
 
-    @Min(0)
+    @Min(1)
     @Max(5)
     private int rating;
 

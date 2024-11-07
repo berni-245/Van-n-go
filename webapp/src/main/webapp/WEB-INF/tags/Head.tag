@@ -36,5 +36,11 @@
     <c:url value="/js/bootstrap-theme-toggler.js" var="bsjs"/>
     <script src="${bsjs}"></script>
 
+    <style>
+        img {
+            object-fit: contain;
+        }
+    </style>
+
     <jsp:doBody/>
 </head>

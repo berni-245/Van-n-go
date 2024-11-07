@@ -1,11 +1,14 @@
 <%@ attribute name="booking" required="true" type="ar.edu.itba.paw.models.Booking" %>
 <%@ attribute name="currentDate" required="true" type="java.time.LocalDate" %>
 <%@ attribute name="loggedUser" required="true" type="ar.edu.itba.paw.models.User" %>
-<%@ tag body-content="empty" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ tag body-content="empty" %>
+
+<%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
 <div class="col">
     <div class="card mb-3 anchor-card shadow h-100">
@@ -46,6 +49,14 @@
                 <c:if test="${booking.state eq BookingState.PENDING or booking.state eq BookingState.REJECTED}">
                     <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
                 </c:if>
+                <c:if test="${booking.state eq BookingState.FINISHED}">
+                    <c:if test="${booking.rating eq null}">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#reviewModal${booking.id}">
+                            <spring:message code="client.review"/>
+                        </button>
+                    </c:if>
+                </c:if>
             </div>
             <c:choose>
                 <c:when test="${booking.driver.pfp eq null}">
@@ -63,4 +74,46 @@
     </div>
 </div>
 
+<c:if test="${booking.state eq BookingState.FINISHED and booking.rating eq null}">
+    <div class="modal fade" id="reviewModal${booking.id}" tabindex="-1"
+         aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel"><c:out
+                            value="${booking.date}"/></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form:form modelAttribute="bookingReviewForm" method="post"
+                               action="/client/history/send/review">
+                        <form:input type="hidden" path="bookingID" value="${booking.id}"/>
+                        <div class="mb-3">
+                            <div class="star-rating d-flex justify-content-evenly" id="starRating${booking.id}">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                                <input type="number" name="rating" id="rating${booking.id}" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <form:label path="review" cssClass="form-label">
+                                <spring:message code="client.make.review" arguments="${booking.driver.username}"/>
+                            </form:label>
+                            <form:input path="review" type="text" required="true" minlength="6" maxlength="255"/>
+                            <form:errors path="review" cssClass="text-danger" element="p"/>
+                            <form:errors element="div" cssClass="alert alert-danger"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <spring:message code="generic.word.confirm"/>
+                        </button>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
 <comp:BookingModal booking="${booking}" currentDate="${currentDate}" loggedUser="${loggedUser}"/>

@@ -5,9 +5,10 @@
 
 <%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="siteName" bsIcons="true">
-    <c:url value="/css/styles.css" var="css"/>
+    <c:url value="/css/bookings.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
 
@@ -39,7 +40,6 @@
         </ul>
 
         <div class="tab-content mt-3" id="statusTabsContent">
-            <comp:ToastManager toasts="${toasts}"/>
             <c:set value="${loggedUser.isDriver ? 'driver' : 'client'}" var="userType"/>
             <comp:BookingCardList id="${BookingState.PENDING}" tabId="pending-tab"
                                   active="${activeTab eq BookingState.PENDING}"
@@ -74,17 +74,9 @@
         </div>
     </div>
 
-
 </main>
 
-<footer class="mt-auto">
-    <div class="container">
-        <p class="float-end mb-1">
-            <a href="#"><spring:message code="public.home.backToTop"/></a>
-        </p>
-        <p class="mb-1">&copy; PAW 2024B G1</p>
-    </div>
-</footer>
+<comp:Footer toasts="${toasts}"/>
 
 </body>
 <script>
@@ -124,6 +116,24 @@
             const tabName = tab.getAttribute('aria-controls');
             tab.addEventListener('click', () => setParamDontNavigate('activeTab', tabName));
         });
+
+        <c:if test="${!loggedUser.isDriver}">
+        document.querySelectorAll('.star-rating').forEach(starContainer => {
+            const stars = starContainer.querySelectorAll('.star');
+            const ratingInput = starContainer.querySelector('input');
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.getAttribute('data-value'), 10);
+                    ratingInput.value = rating;
+                    stars.forEach(s => s.classList.remove('selected'));
+                    for (let i = 0; i < rating; i++) {
+                        stars[i].classList.add('selected');
+                    }
+                });
+            });
+        });
+        </c:if>
     })
 </script>
 </html>

@@ -2,10 +2,12 @@
 <%@ attribute name="currentDate" required="true" type="java.time.LocalDate" %>
 <%@ attribute name="loggedUser" required="true" type="ar.edu.itba.paw.models.User" %>
 <%@ tag body-content="empty" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+
+<%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
 <div class="col">
     <div class="card mb-3 anchor-card shadow h-100">
@@ -29,9 +31,9 @@
                                                        code="components.bookingCard.dateTime"/> <spring:message
                         code="generic.word.${booking.shiftPeriod.name().toLowerCase()}"/></h5>
                 <p class="card-text"><c:out value="${booking.client.username}"/></p>
-                <p class="card-text"><spring:message
-                        code="components.bookingCard.zone"
-                        arguments="${booking.originZone.neighborhoodName}, ${booking.destinationZone.neighborhoodName}"/></p>
+                <p class="card-text">
+                    <comp:ZoneFromTo booking="${booking}"/>
+                </p>
             </div>
             <c:choose>
                 <c:when test="${booking.state eq BookingState.PENDING}">

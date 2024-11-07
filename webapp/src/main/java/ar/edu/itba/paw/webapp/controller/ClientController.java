@@ -45,6 +45,8 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(
             @ModelAttribute("loggedUser") Client loggedUser,
+            @ModelAttribute("bookingReviewForm") BookingReviewForm form,
+            BindingResult erros,
             @RequestParam(name = "pendingPage", defaultValue = "1") int pendingPage,
             @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
             @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
@@ -53,6 +55,9 @@ public class ClientController extends ParentController {
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
             RedirectAttributes redirectAttrs
     ) {
+        if (erros.hasErrors()) {
+            setToasts(redirectAttrs, new Toast(ToastType.danger, "Error in review form handle this better"));
+        }
         return super.userBookings(
                 "client/bookings",
                 cs,
@@ -84,11 +89,6 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/history/send/review", method = RequestMethod.POST)
     public ModelAndView sendReview(
             @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam(name = "pendingPage") int pendingPage,
-            @RequestParam(name = "acceptedPage") int acceptedPage,
-            @RequestParam(name = "finishedPage") int finishedPage,
-            @RequestParam(name = "rejectedPage") int rejectedPage,
-            @RequestParam(name = "canceledPage") int canceledPage,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             BindingResult errors,
             RedirectAttributes redirectAttrs
@@ -101,14 +101,8 @@ public class ClientController extends ParentController {
             log.info("Review sent successfully");
         }
         return redirect(
-                "/client/bookings?pendingPage=%s&acceptedPage=%s&finishedPage=%s&rejectedPage=%s&canceledPage=%s&activeTab=%s",
-                pendingPage,
-                acceptedPage,
-                finishedPage,
-                rejectedPage,
-                canceledPage,
-                acceptedPage,
-                "PENDING"
+                "/client/bookings?activeTab=%s",
+                BookingState.FINISHED
         );
     }
 

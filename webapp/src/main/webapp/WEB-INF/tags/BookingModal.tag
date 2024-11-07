@@ -8,8 +8,7 @@
 <%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
 <div class="modal fade" id="bookingModal${booking.id}" tabindex="-1"
-     aria-labelledby="bookingModalLabel"
-     aria-hidden="true">
+     aria-labelledby="bookingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -42,26 +41,24 @@
             <ul class="modal-body list-group list-group-flush">
 
 
-                    <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
-                    <c:choose>
-                        <c:when test="${loggedUser.isDriver}">
-                            <li class="list-group-item"><c:out value="${booking.client.username}"/></li>
-                            <li class="list-group-item"><c:out value="${booking.client.mail}"/></li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="list-group-item"><c:out value="${booking.driver.username}"/></li>
-                            <li class="list-group-item"><c:out value="${booking.driver.mail}"/></li>
-                        </c:otherwise>
-                    </c:choose>
+                <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
+                <c:choose>
+                    <c:when test="${loggedUser.isDriver}">
+                        <li class="list-group-item"><c:out value="${booking.client.username}"/></li>
+                        <li class="list-group-item"><c:out value="${booking.client.mail}"/></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="list-group-item"><c:out value="${booking.driver.username}"/></li>
+                        <li class="list-group-item"><c:out value="${booking.driver.mail}"/></li>
+                    </c:otherwise>
+                </c:choose>
 
-                    <li class="list-group-item"><spring:message
-                            code="components.bookingCard.zone"
-                            arguments="${booking.originZone.neighborhoodName}, ${booking.destinationZone.neighborhoodName}"/></li>
-                    <li class="list-group-item"><spring:message code="generic.word.description"/>:
-                        <c:out value="${booking.jobDescription}"/></li>
-                    <li class="list-group-item"><spring:message
-                            arguments="${booking.vehicle.plateNumber}"
-                            code="components.bookingModal.vehicle"/></li>
+                <li class="list-group-item"><comp:ZoneFromTo booking="${booking}"/></li>
+                <li class="list-group-item"><spring:message code="generic.word.description"/>:
+                    <c:out value="${booking.jobDescription}"/></li>
+                <li class="list-group-item"><spring:message
+                        arguments="${booking.vehicle.plateNumber}"
+                        code="components.bookingModal.vehicle"/></li>
 
 
                 <c:choose>
@@ -108,7 +105,8 @@
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${!booking.date.isBefore(currentDate)}">
-                                    <li class="list-group-item"><spring:message code="components.bookingModal.cantCancel"/></li>
+                                    <li class="list-group-item"><spring:message
+                                            code="components.bookingModal.cantCancel"/></li>
                                 </c:if>
                             </c:otherwise>
                         </c:choose>
@@ -116,32 +114,28 @@
                     <c:when test="${booking.state eq BookingState.FINISHED}">
                         <comp:PopBookingList booking="${booking}" loggedUser="${loggedUser}"/>
                         <c:choose>
-                            <c:when test="${booking.rating.isPresent()}">
-                                <div class="d-flex justify-content-between mt-2">
-                                    <p><spring:message code="driver.history.rating"/></p>
-                                </div>
-                            <div class="d-flex align-items-center">
-                                <span class="fw-bold text-warning">
-                                    <c:out value="${booking.rating.get()}"/>
-                                </span>
+                            <c:when test="${booking.rating ne null}">
+                                <li class="list-group-item">
+                                    <p class="fw-bold">
+                                        <spring:message code="driver.history.review"/>
+                                    </p>
+                                    <div class="d-flex mb-2">
+                                        <span class="fw-bold text-warning">
+                                            <c:out value="${booking.rating}"/>
+                                        </span>
                                         <div class="ms-2">
-                                            <c:set var="fullStars" value="${booking.rating.get().intValue()}"/>
+                                            <c:set var="fullStars" value="${booking.rating}"/>
                                             <c:set var="emptyStars" value="${5 - fullStars}"/>
-
                                             <c:forEach var="i" begin="1" end="${fullStars}">
                                                 <i class="bi bi-star-fill text-warning"></i>
                                             </c:forEach>
-
                                             <c:forEach var="i" begin="1" end="${emptyStars}">
                                                 <i class="bi bi-star text-secondary"></i>
                                             </c:forEach>
                                         </div>
-                                </div>
-
-                                <div class="d-flex">
-                                    <p class="me-2"><spring:message code="driver.history.review"/></p>
-                                    <p><c:out value="${booking.review.get()}"/></p>
-                                </div>
+                                    </div>
+                                    <p><c:out value="${booking.review}"/></p>
+                                </li>
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${loggedUser.isDriver}">
