@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.models.Rates;
+import ar.edu.itba.paw.models.SearchOrder;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.webapp.validation.ValidZoneId;
 import org.springframework.lang.Nullable;
@@ -33,6 +34,9 @@ public class AvailabilitySearchForm {
 
     @Nullable
     private DayOfWeek weekday;
+
+    @Nullable
+    private SearchOrder order;
 
     public AvailabilitySearchForm(Long zoneId) {
         this.zoneId = zoneId;
@@ -85,4 +89,8 @@ public class AvailabilitySearchForm {
     public void setWeekday(DayOfWeek weekday) {
         this.weekday = weekday;
     }
+
+    public SearchOrder getOrder() {return order;}
+
+    public void setOrder(SearchOrder order) {this.order = order;}
 }

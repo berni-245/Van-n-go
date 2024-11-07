@@ -70,34 +70,7 @@
         </form:select>
       </div>
 
-      <!-- Rating Selection -->
-      <div class="mb-4">
-        <label for="select-rating" class="form-label h4">
-          <spring:message code="client.search.selectRating"/>
-        </label>
-        <form:select path="rating" id="select-rating" cssClass="form-select form-select-lg" autocomplete="off">
-        <form:option value="" label="Any"/>
-          <form:option value="5" label="5 stars"/>
-          <form:option value="4" label="4 stars"/>
-          <form:option value="3" label="3 stars"/>
-        </form:select>
-      </div>
-
-      <!-- Price Range Selection -->
-      <div class="mb-4">
-        <label class="form-label h4">
-          <spring:message code="client.search.selectPriceRange"/>
-        </label>
-        <div class="row g-2">
-          <div class="col">
-            <form:input path="priceMin" type="number" id="price-min" placeholder="Min" cssClass="form-control" />
-          </div>
-          <div class="col">
-            <form:input path="priceMax" type="number" id="price-max" placeholder="Max" cssClass="form-control" />
-          </div>
-        </div>
-      </div>
-
+      <!-- Submit Button -->
       <button type="submit" class="btn btn-primary btn-lg w-100">
         <spring:message code="components.availability.Search"/>
       </button>

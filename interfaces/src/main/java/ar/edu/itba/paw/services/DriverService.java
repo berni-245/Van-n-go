@@ -40,7 +40,7 @@ public interface DriverService extends UserBookingService<Driver> {
             ShiftPeriod[] sundayPeriods
     );
 
-    List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int page);
+    List<Driver> getAll(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int page);
 
     int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 

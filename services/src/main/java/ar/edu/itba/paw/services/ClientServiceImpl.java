@@ -27,7 +27,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Autowired
     private ZoneDao zoneDao;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public ClientServiceImpl(
             UserDao userDao,

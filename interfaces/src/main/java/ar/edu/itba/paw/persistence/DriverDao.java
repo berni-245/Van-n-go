@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.SearchOrder;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Zone;
 
@@ -14,7 +15,7 @@ public interface DriverDao {
 
     Optional<Driver> findById(long id);
 
-    List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, int offset);
+    List<Driver> getAll(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset);
 
     Optional<Driver> findByUsername(String username);
 
