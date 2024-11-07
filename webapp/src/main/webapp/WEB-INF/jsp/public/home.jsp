@@ -52,18 +52,14 @@
             <div class="col-lg-4 mb-4">
                 <h2 class="display-4"><spring:message code="public.home.clientOpinion"/></h2>
                 <p class="border-start border-4 border-primary ps-3 m-0">
-                    <p><spring:message code="public.home.clientOpinion.text"/></p>
-                    <footer class="blockquote-footer">Belon Tusk, <cite title="Source Title">Space X</cite></footer>
+                <p><spring:message code="public.home.clientOpinion.text"/></p>
+                <footer class="blockquote-footer">Belon Tusk, <cite title="Source Title">Space X</cite></footer>
             </div>
         </div>
     </div>
 </section>
 
-<footer class="mt-auto">
-    <div class="container">
-        <comp:ToastManager toasts="${toasts}"/>
-        <p class="mb-1">&copy; PAW 2024B G1</p>
-    </div>
-</footer>
+<comp:Footer toasts="${toasts}"/>
+
 </body>
 </html>
