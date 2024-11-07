@@ -78,7 +78,7 @@ public class ClientController extends ParentController {
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
         LOGGER.info("Uploaded proof of payment successfully");
         // TODO agregar query params.
-        return redirect("/client/bookings");
+        return redirect("/client/bookings?activeTab=%s", BookingState.ACCEPTED);
     }
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/review", method = RequestMethod.GET)
