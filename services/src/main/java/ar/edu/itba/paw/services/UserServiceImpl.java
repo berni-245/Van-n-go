@@ -12,14 +12,13 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
     private final UserDao userDao;
 
-    @Autowired
     protected final MailService mailService;
 
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserServiceImpl(
             UserDao userDao,
             PasswordEncoder passwordEncoder,

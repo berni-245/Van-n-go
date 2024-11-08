@@ -17,22 +17,19 @@ import java.util.Optional;
 
 @Service
 public class ClientServiceImpl extends UserServiceImpl implements ClientService {
-    @Autowired
-    private ClientDao clientDao;
+    private final ClientDao clientDao;
 
-    @Autowired
-    private BookingDao bookingDao;
+    private final BookingDao bookingDao;
 
-    @Autowired
-    private VehicleDao vehicleDao;
+    private final VehicleDao vehicleDao;
 
-    @Autowired
-    private ZoneDao zoneDao;
+    private final ZoneDao zoneDao;
 
     private final PasswordEncoder passwordEncoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
 
+    @Autowired
     public ClientServiceImpl(
             UserDao userDao,
             ClientDao clientDao,

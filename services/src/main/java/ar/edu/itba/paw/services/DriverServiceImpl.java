@@ -19,28 +19,23 @@ import java.util.*;
 
 @Service
 public class DriverServiceImpl extends UserServiceImpl implements DriverService {
-    @Autowired
     private final DriverDao driverDao;
 
-    @Autowired
     private final VehicleDao vehicleDao;
 
-    @Autowired
     private final BookingDao bookingDao;
 
-    @Autowired
     private final ImageDao imageDao;
 
-    @Autowired
     private final ZoneDao zoneDao;
 
-    @Autowired
     private final AvailabilityDao availabilityDao;
 
     private final PasswordEncoder passwordEncoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
 
+    @Autowired
     public DriverServiceImpl(
             UserDao userDao,
             MailService mailService,
