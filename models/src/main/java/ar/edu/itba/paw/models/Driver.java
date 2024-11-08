@@ -24,15 +24,16 @@ public class Driver extends User {
             String password,
             String description,
             Double rating,
-            String cbu
+            String cbu,
+            Language language
     ) {
-        super(username, mail, password);
+        super(username, mail, password, language);
         this.description = description;
         this.rating = rating;
         this.cbu = cbu;
     }
 
-    Driver(){
+    Driver() {
 
     }
 
@@ -44,16 +45,22 @@ public class Driver extends User {
         return rating;
     }
 
-    public String getCbu() {return cbu;}
+    public String getCbu() {
+        return cbu;
+    }
 
     @Override
     public boolean isDriver() {
         return true;
     }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public void setCbu(String cbu) { this.cbu = cbu; }
+    public void setCbu(String cbu) {
+        this.cbu = cbu;
+    }
 
     public List<Vehicle> getVehicles() {
         return vehicles;

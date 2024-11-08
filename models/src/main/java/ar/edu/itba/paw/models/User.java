@@ -25,14 +25,19 @@ public class User {
     @Column
     private Long pfp;
 
+   @Column
+   @Enumerated(EnumType.STRING)
+   private Language language;
+
     User() {
         //This is used by hibernate. Do not remove.
     }
 
-    public User(String username, String mail, String password) {
+    public User(String username, String mail, String password, Language language) {
         this.username = username;
         this.mail = mail;
         this.password = password;
+        this.language = language;
     }
 
     public long getId() {
@@ -83,6 +88,10 @@ public class User {
     public boolean getIsDriver() {
         return isDriver();
     }
+
+    public Language getLanguage() { return language; }
+
+    public void setLanguage(Language language) { this.language = language; }
 
     @Override
     public String toString() {

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +19,8 @@ public class ClientJpaDao implements ClientDao {
     private EntityManager em;
 
     @Override
-    public Client create(String username, String mail, String password) {
-        Client client = new Client(username,mail,password);
+    public Client create(String username, String mail, String password, Language language) {
+        Client client = new Client(username,mail,password,language);
         em.persist(client);
         return client;
     }

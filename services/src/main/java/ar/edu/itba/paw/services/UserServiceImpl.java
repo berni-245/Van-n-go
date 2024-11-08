@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -61,4 +63,12 @@ public class UserServiceImpl implements UserService {
     public int updateUsername(long userId, String updatedUsername){
         return userDao.updateUsername(userId,updatedUsername);
     }
+
+    protected Language getLanguageFromLocale(Locale locale) {
+        if (locale.getLanguage().equals("en")) {
+            return Language.ENGLISH;
+        }
+        return Language.SPANISH;
+    }
+
 }

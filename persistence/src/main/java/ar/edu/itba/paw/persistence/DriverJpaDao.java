@@ -20,8 +20,8 @@ public class DriverJpaDao implements DriverDao {
     private EntityManager em;
 
     @Override
-    public Driver create(String username, String mail, String password, String description) {
-        Driver driver = new Driver(username, mail, password, description, null, null);
+    public Driver create(String username, String mail, String password, String description, Language language) {
+        Driver driver = new Driver(username, mail, password, description, null, null, language);
         em.persist(driver);
         return driver;
     }

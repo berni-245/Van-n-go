@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Client extends User {
 
-    public Client( String username, String mail, String password) {super(username, mail, password);}
+    public Client( String username, String mail, String password, Language language) {super(username, mail, password, language);}
 
     Client(){
         //This is used by hibernate. Do not remove.

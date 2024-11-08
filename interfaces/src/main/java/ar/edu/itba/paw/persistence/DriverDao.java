@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.SearchOrder;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 
 import java.time.DayOfWeek;
 import java.util.List;
@@ -11,7 +8,7 @@ import java.util.Optional;
 
 // Should extend UserDao
 public interface DriverDao {
-    Driver create(String username, String mail, String password, String description);
+    Driver create(String username, String mail, String password, String description, Language language);
 
     Optional<Driver> findById(long id);
 
