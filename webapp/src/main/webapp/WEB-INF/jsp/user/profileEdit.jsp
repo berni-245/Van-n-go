@@ -7,35 +7,7 @@
 <html>
 <comp:Head titleCode="components.header.editUser"/>
 <body class="d-flex flex-column min-vh-100">
-<script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById("changeUserInfoForm").addEventListener("submit", function (event) {
 
-            const initialEmail = "${loggedUser.mail}";
-            const initialUsername = "${loggedUser.username}";
-            const currentEmail = document.getElementById("mail").value;
-            const currentUsername = document.getElementById("username").value;
-            const mailChanged = currentEmail !== initialEmail;
-            const usernameChanged = currentUsername !== initialUsername;
-
-            const mailChangedInput = document.createElement("input");
-            mailChangedInput.type = "hidden";
-            mailChangedInput.name = "mailChanged";
-            mailChangedInput.value = mailChanged;
-
-            const usernameChangedInput = document.createElement("input");
-            usernameChangedInput.type = "hidden";
-            usernameChangedInput.name = "usernameChanged";
-            usernameChangedInput.value = usernameChanged;
-
-
-            this.appendChild(mailChangedInput);
-            this.appendChild(usernameChangedInput);
-        });
-    });
-
-
-</script>
 <comp:Header/>
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -63,6 +35,21 @@
                         </label>
                         <form:input path="mail" type="email" class="form-control"  id="mail"/>
                         <form:errors path="mail" element="p" cssClass="text-danger"/>
+                    </div>
+                    <div class="mt-3">
+                        <label for="select-language">
+                            <spring:message code="client.profile.languageSelect"/>
+                        </label>
+                        <spring:bind path="language">
+                            <form:select path="language" id="select-language" multiple="false" autocomplete="off"
+                                         cssClass="form-select ${status.error ? 'is-invalid' : ''}">
+                                <c:forEach var="lang" items="${languages}">
+                                    <option value="${lang.name()}">
+                                        <spring:message code="generic.word.language.${lang.name().toLowerCase()}"/>
+                                    </option>
+                                </c:forEach>
+                            </form:select>
+                        </spring:bind>
                     </div>
                     <c:choose>
                      <c:when test="${loggedUser.isDriver}">

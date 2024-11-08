@@ -40,7 +40,7 @@ public interface ClientService extends UserBookingService<Client> {
 
     void updatePassword(long id, String password);
 
-    void editProfile(Client client, String username, String mail, Long zoneId);
+    void editProfile(Client client, String username, String mail, Long zoneId, String language);
 
     void cancelBooking(long bookingId, Client client);
 }

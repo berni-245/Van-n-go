@@ -39,10 +39,11 @@ public class ClientJpaDao implements ClientDao {
     }
 
     @Override
-    public void editProfile(Client client, String username, String mail, Zone zone) {
+    public void editProfile(Client client, String username, String mail, Zone zone, Language language) {
         client.setUsername(username);
         client.setMail(mail);
         client.setZone(zone);
+        client.setLanguage(language);
         em.merge(client);
     }
 }

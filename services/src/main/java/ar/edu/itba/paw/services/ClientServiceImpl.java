@@ -111,9 +111,10 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Transactional
     @Override
-    public void editProfile(Client client, String username, String mail, Long zoneId) {
+    public void editProfile(Client client, String username, String mail, Long zoneId, String language) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        clientDao.editProfile(client, username, mail, zone);
+        Language lang = Language.valueOf(language);
+        clientDao.editProfile(client, username, mail, zone, lang);
         LOGGER.info("{} edited it's profile", username);
     }
 

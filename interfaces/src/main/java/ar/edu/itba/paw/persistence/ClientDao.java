@@ -13,5 +13,5 @@ public interface ClientDao {
 
     Optional<Client> findByUsername(String username);
 
-    void editProfile(Client client, String username, String mail, Zone zone);
+    void editProfile(Client client, String username, String mail, Zone zone, Language language);
 }

@@ -3,10 +3,12 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
+import ar.edu.itba.paw.webapp.validation.ValidLanguage;
 import ar.edu.itba.paw.webapp.validation.ValidZoneId;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -45,6 +47,10 @@ public class ChangeUserInfoForm {
     @Length(max = 32)
     @Nullable
     private String cbu;
+
+    @NotEmpty
+    @ValidLanguage
+    private String language;
 
     public String getDescription() {return description;}
 
@@ -92,5 +98,13 @@ public class ChangeUserInfoForm {
 
     public void setOldMail(@NotNull @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") String oldMail) {
         this.oldMail = oldMail;
+    }
+
+    public @NotEmpty String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(@NotEmpty String language) {
+        this.language = language;
     }
 }
