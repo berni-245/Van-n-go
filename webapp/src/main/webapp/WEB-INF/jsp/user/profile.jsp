@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
-<comp:Head titleCode="siteName">
+<comp:Head titleCode="components.header.profile">
 </comp:Head>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>

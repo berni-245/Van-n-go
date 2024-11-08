@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 
 <html>
-<comp:Head titleCode="siteName">
+<comp:Head titleCode="components.header.review">
 </comp:Head>
 <body class="d-flex flex-column min-vh-100">
 <style>

@@ -7,7 +7,7 @@
 
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="siteName" bsIcons="true">
+<comp:Head titleCode="components.header.bookings" bsIcons="true">
     <c:url value="/css/bookings.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
