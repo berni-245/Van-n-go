@@ -12,7 +12,7 @@
 <div class="col">
     <div class="card mb-3 anchor-card shadow h-100">
         <c:choose>
-            <c:when test="${booking.client.pfp==0}">
+            <c:when test="${booking.client.pfp eq null}">
                 <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
                      alt="Client Profile Picture" style="width: 60px; height: 60px;"
                      class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
