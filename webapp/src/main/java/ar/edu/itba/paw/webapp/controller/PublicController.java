@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @Controller
 public class PublicController extends ParentController {
-    private static final Logger log = LoggerFactory.getLogger(PublicController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private ClientService cs;
     @Autowired
@@ -65,7 +65,7 @@ public class PublicController extends ParentController {
             RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
-            log.warn("Invalid params in UserForm");
+            LOGGER.warn("Invalid params in UserForm");
             return createForm(userForm);
         }
         final User user;
@@ -75,7 +75,6 @@ public class PublicController extends ParentController {
             user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), LocaleContextHolder.getLocale());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
-        log.info("User successfully created");
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.create.success"));
         if (user.isDriver())
             return new ModelAndView("redirect:/driver/vehicles");

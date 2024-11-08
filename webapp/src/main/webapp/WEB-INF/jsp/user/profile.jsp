@@ -81,14 +81,7 @@
     </div>
 </div>
 
-<footer class="mt-auto">
-    <div class="container">
-        <p class="float-end mb-1">
-            <a href="#"><spring:message code="public.home.backToTop"/></a>
-        </p>
-        <p class="mb-1">&copy; PAW 2024B G1</p>
-    </div>
-</footer>
+<comp:ToastManager toasts="${toasts}"/>
 
 </body>
 </html>

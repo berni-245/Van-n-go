@@ -141,6 +141,7 @@
                                 </figcaption>
                             </figure>
                             <c:url var="postUrl" value="/client/availability/${driverId}">
+                                <c:param name="zoneId" value="${originZone.id}" />
                                 <c:param name="size" value="${size}" />
                                 <c:param name="priceMin" value="${priceMin}" />
                                 <c:param name="priceMax" value="${priceMax}" />
