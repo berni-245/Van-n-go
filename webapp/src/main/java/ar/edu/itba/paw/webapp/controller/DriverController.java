@@ -53,6 +53,7 @@ public class DriverController extends ParentController {
             RedirectAttributes redirectAttributes
     ) throws IOException {
         if (errors.hasErrors()) {
+            LOGGER.warn("Invalid params in VehicleForm by {}", loggedUser.getUsername());
             return addVehicleGet(vehicleForm);
         }
         String imgFilename = null;
@@ -71,10 +72,7 @@ public class DriverController extends ParentController {
                 imgFilename,
                 imgData
         );
-        List<Toast> toasts = List.of(new Toast(
-                ToastType.success, "toast.vehicle.add.success"
-        ));
-        redirectAttributes.addFlashAttribute("toasts", toasts);
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.add.success"));
         return redirect("/driver/vehicles");
     }
 
@@ -121,10 +119,9 @@ public class DriverController extends ParentController {
             @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
             RedirectAttributes redirectAttributes
     ) {
-        Optional<Vehicle> vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
-        if (vehicle.isEmpty()) return new ModelAndView();
+        Vehicle vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber).orElseThrow();
         ds.updateAvailability(
-                vehicle.get(),
+                vehicle,
                 form.getMondayShiftPeriods(),
                 form.getTuesdayShiftPeriods(),
                 form.getWednesdayShiftPeriods(),
@@ -133,10 +130,7 @@ public class DriverController extends ParentController {
                 form.getSaturdayShiftPeriods(),
                 form.getSundayShiftPeriods()
         );
-        List<Toast> toasts = List.of(new Toast(
-                ToastType.success, "toast.availability.edit.success"
-        ));
-        redirectAttributes.addFlashAttribute("toasts", toasts);
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.availability.edit.success"));
         return redirect("/driver/vehicle/%s/edit", plateNumber);
     }
 
@@ -157,7 +151,7 @@ public class DriverController extends ParentController {
     }
 
 
-    @RequestMapping(path = "/driver/profile")
+    @RequestMapping(path = "/driver/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
         mav.addObject("loggedUser", loggedUser);
@@ -187,7 +181,10 @@ public class DriverController extends ParentController {
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
-        if (errors.hasErrors()) return editProfileForm(loggedUser, form, errors);
+        if (errors.hasErrors()) {
+            LOGGER.warn("Invalid params in ChangeUserInfoForm by {}", loggedUser.getUsername());
+            return editProfileForm(loggedUser, form, errors);
+        }
         ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu());
         return redirect("/driver/profile");
     }
@@ -233,6 +230,7 @@ public class DriverController extends ParentController {
             RedirectAttributes redirectAttributes
     ) throws IOException {
         if (errors.hasErrors()) {
+            LOGGER.warn("Invalid params in VehicleForm for vehicle {}", form.getPlateNumber());
             return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm, null);
         }
         String imgFilename = null;
@@ -253,10 +251,7 @@ public class DriverController extends ParentController {
                 imgFilename,
                 imgData
         );
-        List<Toast> toasts = Collections.singletonList(new Toast(
-                ToastType.success, "toast.vehicle.edit.success"
-        ));
-        redirectAttributes.addFlashAttribute("toasts", toasts);
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.edit.success"));
         return redirect("/driver/vehicle/%s/edit", form.getPlateNumber());
     }
 
@@ -330,10 +325,7 @@ public class DriverController extends ParentController {
         Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (v.isPresent()) {
             ds.deleteVehicle(v.get());
-            List<Toast> toasts = Collections.singletonList(new Toast(
-                    ToastType.success, "toast.vehicle.delete.success"
-            ));
-            redirectAttributes.addFlashAttribute("toasts", toasts);
+            setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.delete.success"));
             return redirect("/driver/vehicles");
         } else {
             LOGGER.error("Vehicle `{}` not found", plateNumber);
@@ -342,8 +334,11 @@ public class DriverController extends ParentController {
     }
 
 
-    @RequestMapping(path = "/driver/change/password")
-    public ModelAndView changePassword(@ModelAttribute("loggedUser") Driver loggedUser, @ModelAttribute("changePasswordForm") ChangePasswordForm form) {
+    @RequestMapping(path = "/driver/change/password", method = RequestMethod.GET)
+    public ModelAndView changePassword(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @ModelAttribute("changePasswordForm") ChangePasswordForm form
+    ) {
         ModelAndView mav = new ModelAndView("public/changePassword");
         mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "driver");
@@ -351,8 +346,13 @@ public class DriverController extends ParentController {
     }
 
     @RequestMapping(path = "/driver/change/password", method = RequestMethod.POST)
-    public ModelAndView postChangePassword(@ModelAttribute("loggedUser") Driver loggedUser, @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form, BindingResult errors) {
+    public ModelAndView postChangePassword(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
+            BindingResult errors
+    ) {
         if (errors.hasErrors()) {
+            LOGGER.warn("Invalid params in ChangePasswordForm for {}", loggedUser.getUsername());
             return changePassword(loggedUser, form);
         }
         ds.updatePassword(loggedUser.getId(), form.getPassword());

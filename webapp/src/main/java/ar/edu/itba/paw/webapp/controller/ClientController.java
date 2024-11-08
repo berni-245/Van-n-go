@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
@@ -76,7 +77,6 @@ public class ClientController extends ParentController {
         if (file == null || file.isEmpty())
             throw new InvalidImageException();
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        LOGGER.info("Uploaded proof of payment successfully");
         // TODO agregar query params.
         return redirect("/client/bookings?activeTab=%s", BookingState.ACCEPTED);
     }
@@ -101,14 +101,15 @@ public class ClientController extends ParentController {
             @RequestParam(name = "driverId") long driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttrs
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingReviewForm");
             return reviewForm(bookingId, driverId, loggedUser, form);
         } else {
             cs.setBookingRatingAndReview(bookingId, form.getRating(), form.getReview());
-            LOGGER.info("Review sent successfully");
+            setToasts(redirectAttrs, new Toast(ToastType.success, "toast.booking.review.success"));
         }
         return redirect(
                 "/client/bookings?activeTab=%s",
@@ -119,11 +120,12 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
     public ModelAndView cancelBooking(
             @PathVariable("id") long bookingId,
-            @ModelAttribute("loggedUser") Client loggedUser
+            @ModelAttribute("loggedUser") Client loggedUser,
+            RedirectAttributes redirectAttributes
     ) {
         cs.cancelBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
-        LOGGER.info("Successfully cancelled booking");
-        return redirect("/");
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.cancel.success"));
+        return redirect("/client/bookings?activeTab=%s", BookingState.CANCELED);
     }
 
     @RequestMapping(path = "/client/search", method = RequestMethod.GET)
@@ -231,7 +233,6 @@ public class ClientController extends ParentController {
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
-        ArrayList<Toast> toasts = new ArrayList<>();
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingForm");
             return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, order, page, loggedUser, form, redirectAttributes);
@@ -246,11 +247,7 @@ public class ClientController extends ParentController {
                 form.getJobDescription(),
                 LocaleContextHolder.getLocale()
         );
-        redirectAttributes.addFlashAttribute("toasts", toasts);
-        toasts.add(new Toast(
-                ToastType.success, "toast.booking.success"
-        ));
-        LOGGER.info("Booking successful");
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.success"));
         return new ModelAndView("redirect:/client/bookings");
     }
 
@@ -270,7 +267,8 @@ public class ClientController extends ParentController {
     public ModelAndView postChangePassword(
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in ChangePasswordForm");
@@ -278,7 +276,7 @@ public class ClientController extends ParentController {
         }
 
         cs.updatePassword(loggedUser.getId(), form.getPassword());
-        LOGGER.info("Password changed successfully");
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
         return redirect("/client/profile");
     }
 
@@ -311,14 +309,15 @@ public class ClientController extends ParentController {
     public ModelAndView editProfile(
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in ChangeUserInfoForm");
             return editProfileForm(loggedUser, form, errors);
         }
         cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId());
-        LOGGER.info("Successfully changed client info");
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
         return redirect("/client/profile");
     }
 
