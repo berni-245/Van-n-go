@@ -1,9 +1,8 @@
+/*
 package ar.edu.itba.paw.persistence;
 
-/*
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.BookingState;
-import ar.edu.itba.paw.models.HourInterval;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql(scripts = {
-        "classpath:db_init.sql", // Adds constant data to tables
         "classpath:add_availability_data.sql" // There will be a vehicle with id 1, who works from 0-4am, on wednesday and thursday in the zone with id 1
 })
 public class BookingJdbcDaoTest {
@@ -278,4 +276,5 @@ public class BookingJdbcDaoTest {
     }
 
 
-}*/
+}
+*/
