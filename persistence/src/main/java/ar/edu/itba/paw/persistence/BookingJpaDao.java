@@ -20,7 +20,6 @@ public class BookingJpaDao implements BookingDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     @Override
     public Booking appointBooking(
             Vehicle vehicle,
@@ -42,7 +41,6 @@ public class BookingJpaDao implements BookingDao {
         return toReturn;
     }
 
-    @Transactional
     @Override
     public void acceptBooking(Booking booking) {
         checkIfVehicleIsAlreadyAccepted(booking.getVehicle(), booking.getDate(), booking.getShiftPeriod());
@@ -54,14 +52,12 @@ public class BookingJpaDao implements BookingDao {
         em.merge(booking);
     }
 
-    @Transactional
     @Override
     public void rejectBooking(Booking booking) {
         booking.setState(BookingState.REJECTED);
         em.merge(booking);
     }
 
-    @Transactional
     @Override
     public void finishBooking(Booking booking) {
         booking.setState(BookingState.FINISHED);
@@ -73,7 +69,6 @@ public class BookingJpaDao implements BookingDao {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }
 
-    @Transactional
     @Override
     public List<Booking> getDriverBookings(Driver driver, BookingState state, int offset) {
         var nativeQueryList = em.createNativeQuery("""
@@ -156,7 +151,6 @@ public class BookingJpaDao implements BookingDao {
                 .getSingleResult();
     }
 
-    @Transactional
     @Override
     public void setRatingAndReview(Booking booking, int rating, String review) {
         int finishedBookingsWithRating = getFinishedBookingsWithRatingCountByDriver(booking.getDriver());

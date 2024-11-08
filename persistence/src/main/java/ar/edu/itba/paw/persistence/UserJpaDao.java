@@ -39,36 +39,32 @@ public class UserJpaDao implements UserDao{
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
     }
 
-    @Transactional
     @Override
     public int updateMail(long userId, String updatedMail) {
         User user = findById(userId);
         if(user != null) {
             user.setMail(updatedMail);
-            em.persist(user);
+            em.merge(user);
         }
         return 0;  //TODO posiblemente deberiamos cambiarlo a void
     }
 
-
-    @Transactional
     @Override
     public int updatePassword(long userId, String updatedPassword) {
         User user = findById(userId);
         if(user != null) {
             user.setPassword(updatedPassword);
-            em.persist(user);
+            em.merge(user);
         }
         return 0;
     }
 
-    @Transactional
     @Override
     public int updateUsername(long userId, String updatedUsername) {
         User user = findById(userId);
         if(user != null) {
             user.setUsername(updatedUsername);
-            em.persist(user);
+            em.merge(user);
         }
         return 0;
     }

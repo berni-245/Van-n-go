@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.persistence.VehicleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -13,6 +14,7 @@ public class VehicleServiceImpl implements VehicleService {
         this.vehicleDao = vehicleDao;
     }
 
+    @Transactional
     @Override
     public boolean plateNumberExists(String plateNumber) {
         return vehicleDao.plateNumberExists(plateNumber);

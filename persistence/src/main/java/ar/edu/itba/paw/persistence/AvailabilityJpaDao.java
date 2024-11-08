@@ -16,7 +16,6 @@ public class AvailabilityJpaDao implements AvailabilityDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     @Override
     public Availability create(Vehicle vehicle, DayOfWeek weekDay, ShiftPeriod period) {
         Availability av = new Availability(vehicle, weekDay, period);
@@ -24,7 +23,6 @@ public class AvailabilityJpaDao implements AvailabilityDao {
         return av;
     }
 
-    @Transactional
     @Override
     public void updateVehicleAvailability(Vehicle vehicle, Map<DayOfWeek, ShiftPeriod[]> periods) {
         em.createQuery("delete from Availability av where av.vehicle = :vehicle")

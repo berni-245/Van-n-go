@@ -35,6 +35,7 @@ public class ImageServiceImpl implements ImageService {
         this.bookingDao = bookingDao;
     }
 
+    @Transactional
     @Override
     public Image getImage(long imgId) {
         return imgDao.getImage(imgId);

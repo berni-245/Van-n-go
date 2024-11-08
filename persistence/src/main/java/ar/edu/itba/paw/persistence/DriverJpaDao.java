@@ -109,7 +109,6 @@ public class DriverJpaDao implements DriverDao {
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
     }
 
-    @Transactional
     @Override
     public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
         driver.setUsername(username);

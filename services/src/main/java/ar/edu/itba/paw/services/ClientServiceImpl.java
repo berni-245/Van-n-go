@@ -56,6 +56,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         return client;
     }
 
+    @Transactional
     @Override
     public Optional<Client> findById(long id) {
         return clientDao.findById(id);
@@ -87,11 +88,13 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         return booking;
     }
 
+    @Transactional
     @Override
     public List<Booking> getBookings(Client client, BookingState state, int page) {
         return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
+    @Transactional
     @Override
     public long getBookingCount(Client client, BookingState state) {
         return bookingDao.getClientBookingCount(client, state);

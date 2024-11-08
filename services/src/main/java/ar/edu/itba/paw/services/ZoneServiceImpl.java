@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.persistence.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +19,19 @@ public class ZoneServiceImpl implements ZoneService {
         this.zoneDao = zoneDao;
     }
 
+    @Transactional
     @Override
     public List<Zone> getAllZones() {
         return zoneDao.getAllZones();
     }
 
+    @Transactional
     @Override
     public Optional<Zone> getZone(long id) {
         return zoneDao.getZone(id);
     }
 
+    @Transactional
     @Override
     public boolean isValidZone(long zoneId) {
         return zoneDao.isValidZone(zoneId);

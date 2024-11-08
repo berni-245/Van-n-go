@@ -38,7 +38,6 @@ public class ClientJpaDao implements ClientDao {
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.getFirst());
     }
 
-    @Transactional
     @Override
     public void editProfile(Client client, String username, String mail, Zone zone) {
         client.setUsername(username);

@@ -66,11 +66,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return driver;
     }
 
+    @Transactional
     @Override
     public Optional<Driver> findById(long id) {
         return driverDao.findById(id);
     }
 
+    @Transactional
     @Override
     public Vehicle addVehicle(
             long driverId,
@@ -92,11 +94,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return v;
     }
 
+    @Transactional
     @Override
     public List<Vehicle> getVehicles(Driver driver) {
         return vehicleDao.getDriverVehicles(driver);
     }
 
+    @Transactional
     @Override
     public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
@@ -105,6 +109,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return vehicleList;
     }
 
+    @Transactional
     @Override
     public void updateAvailability(
             Vehicle vehicle,
@@ -128,6 +133,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         LOGGER.info("Updated weekly availability for plate {}", vehicle.getPlateNumber());
     }
 
+    @Transactional
     @Override
     public List<Driver> getSearchResults(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int page) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
@@ -138,11 +144,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return driverDao.getSearchResults(zone, size, priceMin, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
+    @Transactional
     @Override
     public List<Booking> getBookings(Driver driver, BookingState state, int page) {
         return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
+    @Transactional
     @Override
     public long getBookingCount(Driver driver, BookingState state) {
         return bookingDao.getDriverBookingCount(driver, state);
@@ -163,6 +171,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return days;
     }
 
+    @Transactional
     @Override
     public int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
@@ -173,11 +182,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         return driverDao.getSearchCount(zone, size, priceMin, priceMax, weekday, rating);
     }
 
+    @Transactional
     @Override
     public List<Booking> getBookingsByVehicle(long vehicleId) {
         return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow());
     }
 
+    @Transactional
     @Override
     public List<Booking> getBookingsByVehicle(long vehicleId, LocalDate date) {
         return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow(), date);
@@ -207,6 +218,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         LOGGER.info("User {} rejected booking {}", driver.getUsername(), bookingId);
     }
 
+    @Transactional
     @Override
     public void finishBooking(long bookingId, Driver driver, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
@@ -229,11 +241,13 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         LOGGER.info("User {} canceled booking {}", driver.getUsername(), bookingId);
     }
 
+    @Transactional
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {
         return vehicleDao.findByPlateNumber(driver, plateNumber);
     }
 
+    @Transactional
     @Override
     public void updateVehicle(
             Driver driver,
@@ -257,23 +271,26 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         LOGGER.info("Driver {} updated vehicle {}", driver.getUsername(), v.getPlateNumber());
     }
 
-
+    @Transactional
     @Override
     public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
         driverDao.editProfile(driver, username, mail, description, cbu);
         LOGGER.info("Driver {} updated it's profile", driver.getUsername());
     }
 
+    @Transactional
     @Override
     public List<Vehicle> getVehicles(Driver driver, int page) {
         return vehicleDao.getDriverVehicles(driver, page * Pagination.VEHICLES_PAGE_SIZE);
     }
 
+    @Transactional
     @Override
     public long getVehicleCount(Driver driver) {
         return vehicleDao.getVehicleCount(driver);
     }
 
+    @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
         vehicleDao.deleteVehicle(vehicle);

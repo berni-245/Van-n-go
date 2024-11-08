@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ public class VehicleJpaDao implements VehicleDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     @Override
     public Vehicle create(
             Driver driver,
@@ -102,13 +100,11 @@ public class VehicleJpaDao implements VehicleDao {
         return !query.getResultList().isEmpty();
     }
 
-    @Transactional
     @Override
     public void updateVehicle(Vehicle vehicle) {
         em.merge(vehicle);
     }
 
-    @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
         em.remove(vehicle);
