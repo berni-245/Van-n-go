@@ -3,6 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     private final PasswordEncoder passwordEncoder;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
+
     public ClientServiceImpl(
             UserDao userDao,
             ClientDao clientDao,
@@ -50,6 +54,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
         Client client = clientDao.create(username, username, passwordEncoder.encode(password), getLanguageFromLocale(locale));
+        LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
     }
@@ -77,6 +82,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Booking booking = bookingDao.appointBooking(
                     v, client, zone, destination, date, shiftPeriod, jobDescription
         );
+        LOGGER.info("Successfully appointed booking for {} at {} on period {}", client.getUsername(), date.toString(), shiftPeriod.toString());
         mailService.sendRequestedDriverService(
                 booking.getDriver().getUsername(),booking.getDriver().getMail(),
                 booking.getClient().getUsername(), booking.getClient().getMail(),
@@ -99,25 +105,26 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
     public void setBookingRatingAndReview(long bookingId, int rating, String review) {
         //send mail!
         bookingDao.setRatingAndReview(bookingDao.getBookingById(bookingId).orElseThrow(), rating, review);
+        LOGGER.info("Sent review for booking {}", bookingId);
     }
 
     @Transactional
     @Override
     public void editProfile(Client client, String username, String mail, Long zoneId) {
-        //TODO: That'll do
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         clientDao.editProfile(client, username, mail, zone);
+        LOGGER.info("{} edited it's profile", username);
     }
 
     @Transactional
     @Override
     public void cancelBooking(long bookingId, Client client, Locale locale) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(booking.getClient().equals(client)) {
-            bookingDao.cancelBooking(booking);
-            mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),locale);
-        }else{
+        if(! booking.getClient().equals(client))
             throw new InvalidUserOnBookingCancelException();
-        }
+
+        bookingDao.cancelBooking(booking);
+        mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),locale);
+        LOGGER.info("{} canceled booking {}", client.getUsername(), bookingId);
     }
 }

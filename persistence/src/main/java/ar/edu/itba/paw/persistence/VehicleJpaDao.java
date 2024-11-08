@@ -1,17 +1,12 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
-import org.hibernate.type.BigIntegerType;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.time.DayOfWeek;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

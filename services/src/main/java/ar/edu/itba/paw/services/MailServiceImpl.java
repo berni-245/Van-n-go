@@ -125,6 +125,7 @@ public class MailServiceImpl implements MailService {
         } catch (Exception e) {
             LOGGER.error("Error sending welcome client mail to {}", userName);
         }
+        LOGGER.info("Sent welcome client mail to {}", to);
     }
 
     @Async
@@ -143,6 +144,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending accepted booking message to {}", clientMail);
         }
         sendMail(message);
+        LOGGER.info("Sent accepted booking mail to {}", clientMail);
     }
 
     @Async
@@ -161,6 +163,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending rejected booking message to {}", clientMail);
         }
         sendMail(message);
+        LOGGER.info("Sent rejected booking mail to {}", clientMail);
     }
 
     @Async
@@ -178,6 +181,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending welcome driver mail to {}", userName);
         }
         sendMail(message);
+        LOGGER.info("Sent welcome driver mail to {}", to);
     }
 
     @Async
@@ -213,6 +217,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending driver canceled booking message to {}", clientMail);
         }
         sendMail(message);
+        LOGGER.info("Sent client booking being canceled mail to {}", clientMail);
     }
 
     @Async
@@ -231,6 +236,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending client canceled booking message to {}", driverMail);
         }
         sendMail(message);
+        LOGGER.info("Sent driver booking being canceled mail to {}", driverMail);
     }
 
 
@@ -246,6 +252,7 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending confirm requested service message to {}", clientMail);
         }
         sendMail(message);
+        LOGGER.info("Sent client requested booking service mail to {}", clientMail);
     }
 
     private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription, Locale locale) {
@@ -260,5 +267,6 @@ public class MailServiceImpl implements MailService {
             LOGGER.error("Error sending requested services message to {}", driverMail);
         }
         sendMail(message);
+        LOGGER.info("Sent driver received booking service mail to {}", driverMail);
     }
 }

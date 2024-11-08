@@ -17,12 +17,13 @@ import java.util.Optional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
-    private static final Logger log = LoggerFactory.getLogger(ImageServiceImpl.class);
     private final ImageDao imgDao;
     private final DriverDao driverDao;
     private final ClientDao clientDao;
     private final VehicleDao vehicleDao;
     private final BookingDao bookingDao;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     @Autowired
     public ImageServiceImpl(final ImageDao imgDao, final DriverDao driverDao, final ClientDao clientDao,
@@ -45,11 +46,15 @@ public class ImageServiceImpl implements ImageService {
         validateImage(fileName,bin);
         Optional<Driver> driver = driverDao.findById(userId);
         if (driver.isPresent()) {
-            return imgDao.uploadPfp(bin, fileName, driver.get());
+            long toReturn = imgDao.uploadPfp(bin, fileName, driver.get());
+            LOGGER.info("Uploaded pfp for driver {}", userId);
+            return toReturn;
         }
         Optional<Client> client = clientDao.findById(userId);
         if (client.isPresent()) {
-            return imgDao.uploadPfp(bin, fileName, client.get());
+            long toReturn = imgDao.uploadPfp(bin, fileName, client.get());
+            LOGGER.info("Uploaded pfp for client {}", userId);
+            return toReturn;
         }
 
         throw new UserNotFoundException();
@@ -59,14 +64,18 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
         validateImage(fileName,bin);
-        return imgDao.uploadVehicleImage(bin, fileName, vehicleDao.findById(vehicleId).orElseThrow());
+        long toReturn = imgDao.uploadVehicleImage(bin, fileName, vehicleDao.findById(vehicleId).orElseThrow());
+        LOGGER.info("Uploaded vehicle image for vehicle {}", vehicleId);
+        return toReturn;
     }
 
     @Transactional
     @Override
     public long uploadPop(byte[] bin, String fileName, long bookingId) {
         validateImage(fileName,bin);
-        return imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());
+        long toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());
+        LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
+        return toReturn;
     }
 
     private void validateImage(String filename, byte[] bin) {
