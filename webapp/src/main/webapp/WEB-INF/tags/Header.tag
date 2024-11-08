@@ -38,15 +38,15 @@
                     <c:otherwise>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a href="${pageContext.request.contextPath}/client/bookings"
-                                   class="nav-link ${inHome ? 'active' : ''}">
-                                    <spring:message code="components.header.bookings"/>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a href="${pageContext.request.contextPath}/client/search"
                                    class="nav-link ${inAvailability ? 'active' : ''}">
                                     <spring:message code="components.header.search"/>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="${pageContext.request.contextPath}/client/bookings"
+                                   class="nav-link ${inHome ? 'active' : ''}">
+                                    <spring:message code="components.header.bookings"/>
                                 </a>
                             </li>
                         </ul>

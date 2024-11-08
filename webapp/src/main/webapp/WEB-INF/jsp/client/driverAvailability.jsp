@@ -11,8 +11,11 @@
     <style>
         .calendar-container {
             max-width: 800px;
+            overflow: hidden;
+            padding-bottom: 1rem;
             margin: 0 auto;
             border-radius: 8px;
+            box-sizing: border-box;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -34,8 +37,12 @@
             resize: none;
         }
 
+        .fc-daygrid-day {
+            cursor: pointer;
+        }
+
         .fc .fc-daygrid-day.active-cell {
-            background-color: var(--bs-primary-bg-subtle)
+            background-color: var(--bs-primary-bg-subtle);
         }
 
         .fc-day:not(.fc-day-disabled):not(.active-cell):hover {
@@ -79,11 +86,20 @@
     <div style="width: 50px;"></div>
 </div>
 
-<div class="row mx-0">
+<div class="row mx-0 mb-6 pb-4">
+    <div class="col">
+    <label class="form-label h4">
+        <spring:message code="client.search.selectDate"/>
+    </label>
     <div class="calendar-container">
         <div id="calendar"></div>
     </div>
+    </div>
 
+    <div class="col">
+    <label class="form-label h4">
+        <spring:message code="client.search.selectVehicle"/>
+    </label>
     <div id="confirmForm" class="form-control">
         <div class="accordion" id="accordionExample">
             <c:forEach var="v" items="${vehicles}">
@@ -182,16 +198,16 @@
                                 <button type="submit" class="btn btn-primary mt-2">
                                     <spring:message code="components.availability.Reserve"/>
                                 </button>
-                            </form:form>
-                        </div>
-                    </div>
-                </div>
-            </c:forEach>
+                              </form:form>
+                            </div>
+                       </div>
+                 </div>
+               </c:forEach>
+                  </div>
+             </div>
+            <comp:ToastManager toasts="${toasts}"/>
         </div>
     </div>
-    <comp:ToastManager toasts="${toasts}"/>
-</div>
-
 
 <script type="text/javascript">
     let workingDays = [

@@ -20,8 +20,8 @@ public class OldPasswordMatchValidator implements ConstraintValidator<OldPasswor
     private ClientService cs;
     @Autowired
     private DriverService ds;
-
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public boolean isValid(ChangePasswordForm form, ConstraintValidatorContext context) {
