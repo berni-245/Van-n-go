@@ -101,4 +101,13 @@ public class GlobalExceptionHandler extends ParentController {
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }
+
+    @ExceptionHandler(InvalidMessageException.class)
+    public ModelAndView handleInvalidMessage(InvalidMessageException ex, RedirectAttributes redirectAttributes,
+                                                    HttpServletRequest request) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.invalid.message"));
+        LOGGER.error(ex.getMessage());
+        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        return redirect(currentUrl);
+    }
 }

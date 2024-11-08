@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "message")
@@ -19,9 +20,58 @@ public class Message {
     @Column
     private String content;
 
-    Message() {
+    @Column(name = "sent_by_driver", nullable = false)
+    private boolean sentByDriver;
+
+    @Column(name = "time_sent", nullable = false, updatable = false)
+    private LocalDateTime timeSent;
+
+    @PrePersist
+    protected void onCreate() {
+        this.timeSent = LocalDateTime.now();
+    }
+
+    public Message() {
 
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getTimeSent() {
+        return timeSent;
+    }
+
+    public boolean isSentByDriver() {
+        return sentByDriver;
+    }
+
+    public void setSentByDriver(boolean sentByDriver) {
+        this.sentByDriver = sentByDriver;
+    }
 }

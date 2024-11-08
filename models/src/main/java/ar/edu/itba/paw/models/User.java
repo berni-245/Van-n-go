@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +29,15 @@ public class User {
    @Column
    @Enumerated(EnumType.STRING)
    private Language language;
+
+   //TODO: añadir nullable=false luego de añadirle creationTimes a los usuarios de pampero
+    @Column(name = "creation_time")
+   private LocalDateTime creationTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationTime = LocalDateTime.now();
+    }
 
     User() {
         //This is used by hibernate. Do not remove.
@@ -92,6 +102,10 @@ public class User {
     public Language getLanguage() { return language; }
 
     public void setLanguage(Language language) { this.language = language; }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
 
     @Override
     public String toString() {
