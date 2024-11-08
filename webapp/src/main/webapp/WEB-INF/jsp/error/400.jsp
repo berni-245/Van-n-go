@@ -11,9 +11,9 @@
         <div class="col-md-6 text-center">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title mb-4"><spring:message code="error.500"/></h3>
+                    <h3 class="card-title mb-4"><spring:message code="error.400"/></h3>
                     <p class="card-text">
-                        <spring:message code="error.500.desc"/>
+                        <spring:message code="error.400.desc"/>
                     </p>
                     <a href="${pageContext.request.contextPath}/" class="btn btn-primary mt-3">
                         <spring:message code="components.header.home"/>

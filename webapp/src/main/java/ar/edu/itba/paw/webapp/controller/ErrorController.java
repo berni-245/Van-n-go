@@ -6,22 +6,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ErrorController {
+public class ErrorController extends ParentController{
     // This extra redirect needs to be done or otherwise the page will load without the logged user
+    @RequestMapping("/400")
+    public ModelAndView badRequestRedirect() {
+        return redirect("/badRequest");
+    }
+
     @RequestMapping("/403")
     public ModelAndView forbiddenRedirect() {
-        return new ModelAndView("redirect:/forbidden");
+        return redirect("/forbidden");
     }
 
     @RequestMapping("/404")
     public ModelAndView notFoundRedirect() {
-        return new ModelAndView("redirect:/notFound");
+        return redirect("/notFound");
     }
 
     @RequestMapping("/500")
     public ModelAndView internalServerErrorRedirect() {
-        return new ModelAndView("redirect:/internalError");
+        return redirect("/internalError");
     }
+
+    @RequestMapping("/badRequest")
+    public ModelAndView badRequest() {
+        return new ModelAndView("error/400");
+    }
+
 
     @RequestMapping("/forbidden")
     public ModelAndView forbidden() {
