@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,7 +90,6 @@ public class ClientController extends ParentController {
             @ModelAttribute("bookingReviewForm") BookingReviewForm form
             ) {
         ModelAndView mav = new ModelAndView("client/bookingReview");
-        mav.addObject("loggedUser", loggedUser);
         mav.addObject("driver", ds.findById(driverId).orElseThrow());
         mav.addObject("bookingId", bookingId );
         return mav;
@@ -258,7 +258,6 @@ public class ClientController extends ParentController {
             @ModelAttribute("changePasswordForm") ChangePasswordForm form
     ) {
         ModelAndView mav = new ModelAndView("public/changePassword");
-        mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "client");
         return mav;
     }
@@ -283,7 +282,6 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
-        mav.addObject("loggedUser", loggedUser);
         return mav;
     }
 

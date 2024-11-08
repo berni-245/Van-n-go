@@ -154,7 +154,6 @@ public class DriverController extends ParentController {
     @RequestMapping(path = "/driver/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
-        mav.addObject("loggedUser", loggedUser);
         return mav;
     }
 
@@ -340,7 +339,6 @@ public class DriverController extends ParentController {
             @ModelAttribute("changePasswordForm") ChangePasswordForm form
     ) {
         ModelAndView mav = new ModelAndView("public/changePassword");
-        mav.addObject("loggedUser", loggedUser);
         mav.addObject("userTypePath", "driver");
         return mav;
     }

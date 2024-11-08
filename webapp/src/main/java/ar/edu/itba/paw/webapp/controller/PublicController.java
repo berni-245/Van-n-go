@@ -104,11 +104,7 @@ public class PublicController extends ParentController {
 
     @RequestMapping(path = "/profile")
     public ModelAndView profile(@ModelAttribute("loggedUser") User loggedUser) {
-        ModelAndView mav = new ModelAndView("user/profile");
-        Optional<Driver> test = ds.findById(loggedUser.getId());
-        test.ifPresent(driver -> mav.addObject("loggedDriver", driver));
-        mav.addObject("loggedUser", loggedUser);
-        return mav;
+        return new ModelAndView("user/profile");
     }
 
 

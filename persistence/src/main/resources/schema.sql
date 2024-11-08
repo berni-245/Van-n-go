@@ -98,3 +98,5 @@ create table if not exists vehicle_availability
     shift_period text not null,
     unique (vehicle_id, week_day, shift_period)
 );
+
+create or replace view minimal_price as SELECT driver_id, MIN(hourly_rate) from vehicle group by driver_id;

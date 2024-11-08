@@ -37,8 +37,9 @@ public class DriverJpaDao implements DriverDao {
             SELECT v.driver_id FROM Vehicle v
             JOIN driver d ON d.id = v.driver_id
             JOIN app_user au ON v.driver_id = au.id
-            JOIN Vehicle_zone z ON v.id = z.vehicle_id
-            LEFT JOIN Vehicle_availability a ON v.id = a.vehicle_id
+            JOIN vehicle_zone z ON v.id = z.vehicle_id
+            JOIN minimal_price m ON m.driver_id = v.driver_id
+            JOIN Vehicle_availability a ON v.id = a.vehicle_id
             WHERE z.zone_id = :zoneId
         """);
 
@@ -50,7 +51,7 @@ public class DriverJpaDao implements DriverDao {
         idQuery.append(" GROUP BY v.driver_id");
         if(order != null){
             switch (order) {
-                case PRICE -> {}//idQuery.append(" ORDER BY v.hourly_rate");
+                case PRICE -> idQuery.append(", m.min ORDER BY m.min");
                 case RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
                 case RECENT -> idQuery.append(", d.lastUpdate ORDER BY d.lastUpdate DESC");
                 case ALPHABETICAL -> idQuery.append(", au.username ORDER BY au.username");
@@ -66,7 +67,7 @@ public class DriverJpaDao implements DriverDao {
         }
         if (priceMin != null) idNativeQuery.setParameter("priceMin", priceMin);
         if (priceMax != null) idNativeQuery.setParameter("priceMax", priceMax);
-        if (weekday != null) idNativeQuery.setParameter("weekday", weekday);
+        if (weekday != null) idNativeQuery.setParameter("weekday", weekday.name());
         if (rating != null) idNativeQuery.setParameter("rating", rating.doubleValue());
 
         idNativeQuery.setFirstResult(offset);
@@ -77,12 +78,13 @@ public class DriverJpaDao implements DriverDao {
 
         StringBuilder driverQuery = new StringBuilder("""
             SELECT d FROM Driver d
+            JOIN MinimalPrice mp ON d.id = mp.driverId
             WHERE d.id IN :driverIds
         """);
 
         if (order != null) {
             switch (order) {
-                case PRICE -> {}//driverQuery.append(" ORDER BY v.hourlyRate");
+                case PRICE -> driverQuery.append(" ORDER BY mp.min");
                 case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
                 case RECENT -> driverQuery.append(" ORDER BY d.lastUpdate DESC");
                 case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
@@ -118,13 +120,12 @@ public class DriverJpaDao implements DriverDao {
 
     }
 
-    //TODO: Ver una forma de comprimir estos dos metodos
     @Override
     public int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
         StringBuilder queryString = new StringBuilder("""
                     SELECT COUNT(DISTINCT v.driver) FROM Vehicle v
                     JOIN v.zones z
-                    LEFT JOIN v.availability a
+                    JOIN v.availability a
                     WHERE z = :zone
                 """);
 

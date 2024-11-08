@@ -105,7 +105,9 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
+        List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
+        vehicleList.removeIf(v -> v.getAvailability().isEmpty());
+        return vehicleList;
     }
 
     @Override

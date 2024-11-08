@@ -12,15 +12,12 @@ public class Zone {
     @SequenceGenerator(sequenceName = "zone_id_seq", name = "zone_id_seq", allocationSize = 1)
     private long id;
 
-    //@JoinColumn(nullable = false, name = "country_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Country country;
 
-    //@JoinColumn(nullable = false, name = "province_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Province province;
 
-    //@JoinColumn(nullable = false, name = "neighborhood_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Neighborhood neighborhood;
 
