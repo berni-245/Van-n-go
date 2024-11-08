@@ -11,4 +11,7 @@ public enum Language {
         this.toLocale = locale;
     }
 
+    public String toLocale() {
+        return toLocale;
+    }
 }

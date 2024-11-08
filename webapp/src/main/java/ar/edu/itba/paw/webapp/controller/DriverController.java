@@ -284,7 +284,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.acceptBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        ds.acceptBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 
@@ -293,7 +293,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.finishBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        ds.finishBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=FINISHED");
     }
 
@@ -302,7 +302,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.rejectBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        ds.rejectBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=REJECTED");
     }
 
@@ -311,7 +311,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") long bookingId
     ) {
-        ds.cancelBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        ds.cancelBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 

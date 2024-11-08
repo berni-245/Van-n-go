@@ -71,8 +71,7 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             long destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
-            String jobDescription,
-            Locale locale
+            String jobDescription
     ) {
         Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
@@ -84,7 +83,9 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         mailService.sendRequestedDriverService(
                 booking.getDriver().getUsername(),booking.getDriver().getMail(),
                 booking.getClient().getUsername(), booking.getClient().getMail(),
-                date, jobDescription, booking.getOriginZone().getNeighborhoodName(),booking.getDestinationZone().getNeighborhoodName(),booking.getShiftPeriod() ,locale );
+                date, jobDescription, booking.getOriginZone().getNeighborhoodName(),booking.getDestinationZone().getNeighborhoodName(),booking.getShiftPeriod() ,
+                Locale.of(v.getDriver().getLanguage().toLocale()),
+                Locale.of(client.getLanguage().toLocale()));
         return booking;
     }
 
@@ -118,13 +119,14 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Transactional
     @Override
-    public void cancelBooking(long bookingId, Client client, Locale locale) {
+    public void cancelBooking(long bookingId, Client client) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if(! booking.getClient().equals(client))
             throw new InvalidUserOnBookingCancelException();
 
         bookingDao.cancelBooking(booking);
-        mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),locale);
+        mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),
+                Locale.of(booking.getDriver().getLanguage().toLocale()));
         LOGGER.info("{} canceled booking {}", client.getUsername(), bookingId);
     }
 }

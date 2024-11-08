@@ -11,6 +11,7 @@ public class Client extends User {
         //This is used by hibernate. Do not remove.
     }
 
+
     @Override
     public boolean isClient() {
         return true;

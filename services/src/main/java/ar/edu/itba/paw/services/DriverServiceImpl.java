@@ -196,31 +196,33 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public void acceptBooking(long bookingId, Driver driver, Locale locale) {
+    public void acceptBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if(!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingAcceptException();
         }
         bookingDao.acceptBooking(booking);
-        mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(), locale);
+        mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
+                Locale.of(booking.getClient().getLanguage().toLocale()));
         LOGGER.info("User {} accepted booking {}", driver.getUsername(), bookingId);
     }
 
     @Transactional
     @Override
-    public void rejectBooking(long bookingId, Driver driver, Locale locale) {
+    public void rejectBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if(!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingRejectException();
         }
         bookingDao.rejectBooking(booking);
-        mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(), locale);
+        mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
+                Locale.of(booking.getClient().getLanguage().toLocale()));
         LOGGER.info("User {} rejected booking {}", driver.getUsername(), bookingId);
     }
 
     @Transactional
     @Override
-    public void finishBooking(long bookingId, Driver driver, Locale locale) {
+    public void finishBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if(!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingFinishException();
@@ -231,13 +233,14 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public void cancelBooking(long bookingId, Driver driver, Locale locale) {
+    public void cancelBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if(!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingCancelException();
         }
         bookingDao.cancelBooking(booking);
-        mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),locale);
+        mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),
+                Locale.of(booking.getClient().getLanguage().toLocale()));
         LOGGER.info("User {} canceled booking {}", driver.getUsername(), bookingId);
     }
 

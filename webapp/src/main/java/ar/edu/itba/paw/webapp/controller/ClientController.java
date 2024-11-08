@@ -123,7 +123,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser,
             RedirectAttributes redirectAttributes
     ) {
-        cs.cancelBooking(bookingId, loggedUser, LocaleContextHolder.getLocale());
+        cs.cancelBooking(bookingId, loggedUser);
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.cancel.success"));
         return redirect("/client/bookings?activeTab=%s", BookingState.CANCELED);
     }
@@ -244,8 +244,7 @@ public class ClientController extends ParentController {
                 form.getDestinationZoneId(),
                 form.getDate(),
                 ShiftPeriod.valueOf(form.getShiftPeriod()),
-                form.getJobDescription(),
-                LocaleContextHolder.getLocale()
+                form.getJobDescription()
         );
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.success"));
         return new ModelAndView("redirect:/client/bookings");

@@ -21,8 +21,7 @@ public interface ClientService extends UserBookingService<Client> {
             long destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
-            String jobDescription,
-            Locale locale
+            String jobDescription
     );
 
     default Booking appointBooking(
@@ -32,10 +31,9 @@ public interface ClientService extends UserBookingService<Client> {
             long destinationId,
             String date,
             ShiftPeriod period,
-            String jobDescription,
-            Locale locale
+            String jobDescription
     ) {
-        return appointBooking(vehicleId, client, zoneId, destinationId, LocalDate.parse(date), period, jobDescription, locale);
+        return appointBooking(vehicleId, client, zoneId, destinationId, LocalDate.parse(date), period, jobDescription);
     }
 
     void setBookingRatingAndReview(long bookingId, int rating, String review);
@@ -44,5 +42,5 @@ public interface ClientService extends UserBookingService<Client> {
 
     void editProfile(Client client, String username, String mail, Long zoneId);
 
-    void cancelBooking(long bookingId, Client client, Locale locale);
+    void cancelBooking(long bookingId, Client client);
 }

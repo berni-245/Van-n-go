@@ -23,7 +23,7 @@ public interface MailService {
 
     void sendRequestedDriverService(String driverUsername, String driverMail, String clientUsername,
                                     String clientMail, LocalDate date, String jobDescription,
-                                    String originZone, String destinationZone, ShiftPeriod period, Locale locale);
+                                    String originZone, String destinationZone, ShiftPeriod period, Locale driverlocale, Locale clientLocal);
 
     void sendDriverCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 

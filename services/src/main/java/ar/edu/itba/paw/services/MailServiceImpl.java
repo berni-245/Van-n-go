@@ -20,9 +20,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.time.LocalDate;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 @Service
 //@PropertySource("classpath:resources/mail/mailConfig.properties") //TODO: pasar las configuraciones a mailConfig.properties
@@ -188,17 +186,19 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendRequestedDriverService(String driverUsername, String driverMail, String clientUsername,
                                            String clientMail, LocalDate date, String jobDescription,
-                                           String originZone, String destinationZone, ShiftPeriod period, Locale locale) {
-        Context context = new Context(locale);
-        context.setVariable("driverName", driverUsername);
-        context.setVariable("driverMail", driverMail);
-        context.setVariable("dateRequested", date);
-        context.setVariable("clientName", clientUsername);
-        context.setVariable("clientMail", clientMail);
-        context.setVariable("originZone", originZone);
-        context.setVariable("destinationZone", destinationZone);
-        sendClientRequestedServiceMail(clientMail, context, jobDescription, locale);
-        sendDriverRequestedMail(driverMail, context, jobDescription, locale);
+                                           String originZone, String destinationZone, ShiftPeriod period, Locale driverLocale, Locale clientLocale) {
+        Map<String,Object> params = new HashMap<>();
+        params.put("driverName", driverUsername);
+        params.put("driverMail", driverMail);
+        params.put("dateRequested", date);
+        params.put("clientName", clientUsername);
+        params.put("clientMail", clientMail);
+        params.put("originZone", originZone);
+        params.put("destinationZone", destinationZone);
+        params.put("shiftPeriod", period.toString());
+        params.put("jobDescription", jobDescription);
+        sendClientRequestedServiceMail(clientMail, params, clientLocale);
+        sendDriverRequestedMail(driverMail, params ,driverLocale);
     }
 
     @Async
@@ -240,8 +240,8 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    private void sendClientRequestedServiceMail(String clientMail, Context context, String jobDescription, Locale locale) {
-        context.setVariable("jobDescription", jobDescription);
+    private void sendClientRequestedServiceMail(String clientMail, Map<String,Object> contextParams, Locale locale) {
+        Context context = new Context(locale,contextParams);
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
@@ -255,8 +255,8 @@ public class MailServiceImpl implements MailService {
         LOGGER.info("Sent client requested booking service mail to {}", clientMail);
     }
 
-    private void sendDriverRequestedMail(String driverMail, Context context, String jobDescription, Locale locale) {
-        context.setVariable("jobDescription", jobDescription);
+    private void sendDriverRequestedMail(String driverMail, Map<String,Object> contextParams, Locale locale) {
+        Context context = new Context(locale,contextParams);
         Message message = getMessage();
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
