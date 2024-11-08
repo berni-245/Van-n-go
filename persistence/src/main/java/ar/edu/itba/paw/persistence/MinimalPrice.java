@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.persistence;
 
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;

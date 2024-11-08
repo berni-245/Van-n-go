@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.services;
 
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.ShiftPeriod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ResourceBundleMessageSource;

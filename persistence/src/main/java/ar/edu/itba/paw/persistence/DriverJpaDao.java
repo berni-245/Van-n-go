@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.List;
@@ -75,16 +74,16 @@ public class DriverJpaDao implements DriverDao {
 
         List<Integer> driverIds = idNativeQuery.getResultList();
         if (driverIds.isEmpty()) return Collections.emptyList();
-
+        //JOIN MinimalPrice mp ON d.id = mp.driverId
         StringBuilder driverQuery = new StringBuilder("""
             SELECT d FROM Driver d
-            JOIN MinimalPrice mp ON d.id = mp.driverId
+            
             WHERE d.id IN :driverIds
         """);
 
         if (order != null) {
             switch (order) {
-                case PRICE -> driverQuery.append(" ORDER BY mp.min");
+                case PRICE -> {}//driverQuery.append(" ORDER BY mp.min");
                 case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
                 case RECENT -> driverQuery.append(" ORDER BY d.lastUpdate DESC");
                 case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
