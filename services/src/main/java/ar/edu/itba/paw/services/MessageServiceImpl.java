@@ -54,12 +54,12 @@ public class MessageServiceImpl implements MessageService {
             Driver recipient = driverDao.findById(recipientId)
                     .orElseThrow(InvalidRecipientException::new);
             messageDao.sendMessage((Client) sender, recipient, message, false);
-            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Client) sender).getUsername(), ((Client) sender).getId(), true, message, LocalDateTime.now(), Locale.of(recipient.getLanguage().toLocale()));
+            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Client) sender).getUsername(), ((Client) sender).getId(), true, message, LocalDateTime.now(), recipient.getLanguage().getLocale());
         } else {
             Client recipient = clientDao.findById(recipientId)
                     .orElseThrow(InvalidRecipientException::new);
             messageDao.sendMessage(recipient, (Driver) sender, message, true);
-            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Driver) sender).getUsername(), ((Driver) sender).getId(), false, message, LocalDateTime.now(), Locale.of(recipient.getLanguage().toLocale()));
+            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Driver) sender).getUsername(), ((Driver) sender).getId(), false, message, LocalDateTime.now(), recipient.getLanguage().getLocale());
         }
     }
 

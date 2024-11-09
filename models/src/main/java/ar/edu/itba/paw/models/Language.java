@@ -3,22 +3,22 @@ package ar.edu.itba.paw.models;
 import java.util.Locale;
 
 public enum Language {
-    ENGLISH("en"), SPANISH("es");
+    ENGLISH(Locale.of("en")), SPANISH(Locale.of("es"));
 
-    final String toLocale;
+    final Locale locale;
 
-    Language(String locale) {
-        this.toLocale = locale;
+    Language(Locale locale) {
+        this.locale = locale;
     }
 
-    public String toLocale() {
-        return toLocale;
+    public Locale getLocale() {
+        return locale;
     }
 
     public static Language fromLocale(Locale locale) {
-        if (locale.getLanguage().equals(ENGLISH.toLocale())) {
+        if (locale.getLanguage().equals(ENGLISH.locale.getLanguage())) {
             return ENGLISH;
-        } else if (locale.getLanguage().equals(SPANISH.toLocale())) {
+        } else if (locale.getLanguage().equals(SPANISH.locale.getLanguage())) {
             return SPANISH;
         }
         return null;

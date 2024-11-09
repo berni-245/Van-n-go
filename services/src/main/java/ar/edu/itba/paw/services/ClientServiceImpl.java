@@ -77,8 +77,8 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
                 booking.getDriver().getUsername(), booking.getDriver().getMail(),
                 booking.getClient().getUsername(), booking.getClient().getMail(),
                 date, jobDescription, booking.getOriginZone().getNeighborhoodName(), booking.getDestinationZone().getNeighborhoodName(), booking.getShiftPeriod(),
-                Locale.of(v.getDriver().getLanguage().toLocale()),
-                Locale.of(client.getLanguage().toLocale()));
+                v.getDriver().getLanguage().getLocale(),
+                client.getLanguage().getLocale());
         return booking;
     }
 
@@ -119,7 +119,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
                 booking.getDate(),
                 booking.getDriver().getUsername(),
                 booking.getDriver().getMail(),
-                Locale.of(booking.getDriver().getLanguage().toLocale())
+                booking.getDriver().getLanguage().getLocale()
         );
         return booking;
     }

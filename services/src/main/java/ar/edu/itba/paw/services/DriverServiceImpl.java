@@ -184,7 +184,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         }
         bookingDao.acceptBooking(booking);
         mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
-                Locale.of(booking.getClient().getLanguage().toLocale()));
+                booking.getClient().getLanguage().getLocale());
         LOGGER.info("User {} accepted booking {}", driver.getUsername(), bookingId);
     }
 
@@ -197,7 +197,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         }
         bookingDao.rejectBooking(booking);
         mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
-                Locale.of(booking.getClient().getLanguage().toLocale()));
+                booking.getClient().getLanguage().getLocale());
         LOGGER.info("User {} rejected booking {}", driver.getUsername(), bookingId);
     }
 
@@ -220,7 +220,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
                 booking.getDate(),
                 booking.getClient().getUsername(),
                 booking.getClient().getMail(),
-                Locale.of(booking.getClient().getLanguage().toLocale())
+                booking.getClient().getLanguage().getLocale()
         );
         return booking;
     }
