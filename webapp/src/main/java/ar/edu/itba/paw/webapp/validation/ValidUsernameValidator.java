@@ -1,19 +1,20 @@
 package ar.edu.itba.paw.webapp.validation;
 
-import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class ValidUsernameValidator implements ConstraintValidator<ValidUsername, String> {
-    @Qualifier("userServiceImpl")
     @Autowired
-    private UserService us;
+    private ClientService cs;
+    @Autowired
+    private DriverService ds;
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return username != null && !us.usernameExists(username);
+        return !(cs.usernameExists(username) || ds.usernameExists(username));
     }
 }

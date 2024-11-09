@@ -138,4 +138,14 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         em.merge(driver);
 
     }
+
+    @Override
+    public boolean mailExists(String mail) {
+        final TypedQuery<Driver> query = em.createQuery(
+                "from Driver as d where d.mail = :mail",
+                Driver.class
+        );
+        query.setParameter("mail", mail);
+        return !query.getResultList().isEmpty();
+    }
 }
