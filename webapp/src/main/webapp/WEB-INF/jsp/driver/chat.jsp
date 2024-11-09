@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <p><strong><spring:message code="generic.word.username"/>:</strong> ${recipient.username}</p>
                     <p><strong><spring:message code="generic.word.email"/>:</strong> ${recipient.mail}</p>
-                    <p><strong><spring:message code="generic.word.zone"/>:</strong> ${recipient.creationTime}</p>
+                    <p><strong><spring:message code="generic.word.zone"/>:</strong> ${clientZone}</p>
                     <p><strong><spring:message code="generic.word.created"/>:</strong> ${recipient.creationTime}</p>
                     <!-- Add any other recipient information as needed -->
                 </div>

@@ -289,6 +289,7 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
+        mav.addObject("clientZone",zs.getClientZone(loggedUser));
         return mav;
     }
 

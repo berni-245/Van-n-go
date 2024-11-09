@@ -115,6 +115,7 @@ public class DriverController extends ParentController {
         mav.addObject("recipient", client);
         List<Message> messages = ms.getConversation(client, loggedUser);
         mav.addObject("messages", messages);
+        mav.addObject("clientZone", zs.getClientZone(client));
         return mav;
     }
 

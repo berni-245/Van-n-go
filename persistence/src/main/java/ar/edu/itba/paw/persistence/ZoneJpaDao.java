@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
@@ -34,5 +35,11 @@ public class ZoneJpaDao implements ZoneDao {
         return em.createQuery("From Zone z where z.id in :zoneIds", Zone.class)
                 .setParameter("zoneIds", zoneIds)
                 .getResultList();
+    }
+
+    //TODO: Esta extremadamente curseado pero necesito obligarle a instanciar el zone.
+    @Override
+    public Zone getClientZone(Client client) {
+        return em.createQuery("From Zone z where z = :clientZone", Zone.class).setParameter("clientZone",client.getZone()).getResultList().getFirst();
     }
 }

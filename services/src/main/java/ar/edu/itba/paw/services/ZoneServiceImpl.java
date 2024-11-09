@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.persistence.ZoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,10 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public boolean isValidZone(long zoneId) {
         return zoneDao.isValidZone(zoneId);
+    }
+
+    @Override
+    public Zone getClientZone(Client client) {
+        return zoneDao.getClientZone(client);
     }
 }

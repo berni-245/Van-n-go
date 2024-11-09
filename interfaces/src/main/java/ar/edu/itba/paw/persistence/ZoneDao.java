@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Zone;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface ZoneDao {
     List<Zone> getAllZones();
 
     List<Zone> getZonesById(List<Long> zoneIds);
+
+    Zone getClientZone(Client client);
 }

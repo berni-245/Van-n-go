@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Zone;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface ZoneService {
     Optional<Zone> getZone(long id);
 
     boolean isValidZone(long zoneId);
+
+    Zone getClientZone(Client client);
 }

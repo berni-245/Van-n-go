@@ -61,9 +61,9 @@
                         </p>
                     </c:when>
                     <c:otherwise>
-                        <p class="mb-1"><strong><spring:message code="client.profile.zone"/>: </strong>
+                        <p class="mb-1"><strong><spring:message code="generic.word.zone"/>: </strong>
                             <c:if test="${loggedUser.zone ne null}">
-                                This is where I'd put the client zone if I had it
+                                <c:out value="${clientZone.toString()}"/>
                             </c:if>
                         </p>
                     </c:otherwise>
