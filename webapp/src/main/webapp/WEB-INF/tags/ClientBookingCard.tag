@@ -12,8 +12,21 @@
 
 <div class="col">
     <div class="card mb-3 anchor-card shadow h-100">
+        <c:choose>
+            <c:when test="${booking.driver.pfp eq null}">
+                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                     alt="Driver Profile Picture" style="width: 60px; height: 60px;"
+                     class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                />
+            </c:when>
+            <c:otherwise>
+                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.driver.pfp}"
+                     alt="DriverPfp" style="width: 60px; height: 60px;"
+                     class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
+                />
+            </c:otherwise>
+        </c:choose>
         <div class="card-body d-flex flex-column justify-content-between h-100">
-
             <div>
                 <h5 class="card-title"><c:out value="${booking.date}"/></h5>
                 <p class="card-text"><c:out value="${booking.driver.username}"/></p>
@@ -50,21 +63,15 @@
                     <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
                 </c:if>
             </div>
-            <c:choose>
-                <c:when test="${booking.driver.pfp eq null}">
-                    <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
-                         alt="Driver Profile Picture" class="rounded-circle"
-                         style="width: 60px; height: 60px;"/>
-                </c:when>
-                <c:otherwise>
-                    <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.driver.pfp}"
-                         alt="DriverPfp" class="rounded-circle" style="width: 60px; height: 60px;"/>
-                </c:otherwise>
-            </c:choose>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bookingModal${booking.id}">
-                <spring:message code="generic.phrase.seeDetails"/>
-            </button>
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#bookingModal${booking.id}">
+                    <spring:message code="generic.phrase.seeDetails"/>
+                </button>
+                <a href="${pageContext.request.contextPath}/client/chat?recipientId=${booking.driver.id}" type="button" class="btn btn-secondary">
+                    <spring:message code="generic.word.chat"/>
+                </a>
+            </div>
         </div>
     </div>
 </div>
