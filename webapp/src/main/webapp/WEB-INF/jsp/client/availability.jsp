@@ -104,7 +104,7 @@
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <c:forEach var="driver" items="${drivers}" varStatus="status">
                             <div class="col mb-4">
-                                <div class="card anchor-card h-100">
+                                <div class="card h-100">
                                     <div class="card-body d-flex justify-content-between">
                                         <div>
                                         <h5 class="card-title">${driver.username}</h5>

@@ -11,7 +11,7 @@
 <%@ tag import="ar.edu.itba.paw.models.BookingState" %>
 
 <div class="col">
-    <div class="card mb-3 anchor-card shadow h-100">
+    <div class="card mb-3 shadow h-100">
         <c:choose>
             <c:when test="${booking.driver.pfp eq null}">
                 <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
