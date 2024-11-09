@@ -89,12 +89,6 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver) {
-        return vehicleDao.getDriverVehicles(driver);
-    }
-
-    @Transactional
-    @Override
     public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);

@@ -23,8 +23,6 @@ public interface DriverService extends UserService<Driver> {
             byte[] imgData
     );
 
-    List<Vehicle> getVehicles(Driver driver);
-
     List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday);
 
     void updateAvailability(

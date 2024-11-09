@@ -139,20 +139,4 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         em.merge(driver);
 
     }
-
-    @Override
-    public List<DayOfWeek> getDriverWeekDaysOnZoneAndSize(Driver driver, Zone zone, Size size) {
-        TypedQuery<DayOfWeek> query = em.createQuery("""
-                select a.weekDay from Driver d
-                join Vehicle v join Availability a
-                where :zone in v.zones and
-                v.volume BETWEEN :minVolume AND :maxVolume
-                and d = :driver
-                """, DayOfWeek.class);
-        query.setParameter("zone", zone);
-        query.setParameter("driver", driver);
-        query.setParameter("minVolume", (double) size.getMinVolume());
-        query.setParameter("maxVolume", (double) size.getMaxVolume());
-        return query.getResultList();
-    }
 }
