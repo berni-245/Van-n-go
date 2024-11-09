@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingAcceptException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingFinishException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingRejectException;
@@ -182,6 +183,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingAcceptException();
         }
+        if (!booking.getState().equals(BookingState.PENDING))
+            throw new ForbiddenBookingStateOperationException();
         bookingDao.acceptBooking(booking);
         mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
                 booking.getClient().getLanguage().getLocale());
@@ -195,6 +198,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingRejectException();
         }
+        if (!booking.getState().equals(BookingState.PENDING))
+            throw new ForbiddenBookingStateOperationException();
         bookingDao.rejectBooking(booking);
         mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
                 booking.getClient().getLanguage().getLocale());
@@ -208,6 +213,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingFinishException();
         }
+        if (!booking.getState().equals(BookingState.ACCEPTED))
+            throw new ForbiddenBookingStateOperationException();
         bookingDao.finishBooking(booking);
         LOGGER.info("User {} finished booking {}", driver.getUsername(), bookingId);
     }

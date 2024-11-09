@@ -61,7 +61,7 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
             switch (order) {
                 case PRICE -> idQuery.append(", m.min ORDER BY m.min");
                 case RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
-                case RECENT -> idQuery.append(", d.lastUpdate ORDER BY d.lastUpdate DESC");
+                case RECENT -> idQuery.append(", au.creation_time ORDER BY au.creation_time DESC");
                 case ALPHABETICAL -> idQuery.append(", au.username ORDER BY au.username");
             }
         }
@@ -97,15 +97,12 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                 zone, size, priceMin, priceMax, weekday, rating, order, offset
         );
         if (driverIds.isEmpty()) return Collections.emptyList();
-        // TODO: Preguntar a alejo wtf son los comments estos...
-        //JOIN MinimalPrice mp ON d.id = mp.driverId
-        StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d WHERE d.id IN :driverIds");
+        StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d JOIN MinimalPrice mp ON mp.driverId = d.id WHERE d.id IN :driverIds");
         if (order != null) {
             switch (order) {
-                case PRICE -> {
-                }//driverQuery.append(" ORDER BY mp.min");
+                case PRICE -> driverQuery.append(" ORDER BY mp.min");
                 case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
-                case RECENT -> driverQuery.append(" ORDER BY d.lastUpdate DESC");
+                case RECENT -> driverQuery.append(" ORDER BY d.creationTime DESC");
                 case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
             }
         }
