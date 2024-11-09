@@ -1,8 +1,11 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
+import ar.edu.itba.paw.exceptions.ForbiddenDriverCancelBookingException;
 import ar.edu.itba.paw.exceptions.InvalidUserException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -78,6 +81,11 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         User bookingUser = user.isDriver() ? booking.getDriver() : booking.getClient();
         if (!bookingUser.equals(user)) throw new InvalidUserOnBookingCancelException();
+        if(! booking.getState().equals(BookingState.ACCEPTED))
+            if(user.isDriver())
+                throw new ForbiddenDriverCancelBookingException();
+            else
+                throw new ForbiddenClientCancelBookingException();
         bookingDao.cancelBooking(booking);
         LOGGER.info("{} canceled booking {}", user.getUsername(), bookingId);
         return booking;

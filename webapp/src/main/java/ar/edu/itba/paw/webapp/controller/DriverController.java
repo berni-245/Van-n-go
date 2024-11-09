@@ -329,7 +329,7 @@ public class DriverController implements Bookings {
             @PathVariable("id") int bookingId
     ) {
         ds.cancelBooking(bookingId, loggedUser);
-        return redirect("/driver/bookings?activeTab=ACCEPTED");
+        return redirect("/driver/bookings?activeTab=CANCELED");
     }
 
     @RequestMapping(path = "/driver/vehicle/{plateNumber}/delete", method = RequestMethod.POST)

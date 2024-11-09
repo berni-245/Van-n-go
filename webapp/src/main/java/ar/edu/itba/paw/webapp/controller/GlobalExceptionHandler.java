@@ -61,6 +61,20 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         return redirect("/");
     }
 
+    @ExceptionHandler(ForbiddenClientCancelBookingException.class)
+    public ModelAndView handleForbiddenClientCancelBookingException(ForbiddenClientCancelBookingException ex, RedirectAttributes redirectAttributes) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.forbidden.booking.operation"));
+        LOGGER.error(ex.getMessage());
+        return redirect("/client/bookings");
+    }
+
+    @ExceptionHandler(value = {ForbiddenDriverCancelBookingException.class, ForbiddenBookingStateOperationException.class})
+    public ModelAndView handleForbiddenDriverBookingStateOperation(ForbiddenBookingStateOperationException ex, RedirectAttributes redirectAttributes) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.forbidden.booking.operation"));
+        LOGGER.error(ex.getMessage());
+        return redirect("/driver/bookings");
+    }
+
     @ExceptionHandler(InvalidImageException.class)
     public ModelAndView handleInvalidImageException(InvalidImageException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.image.invalid"));
