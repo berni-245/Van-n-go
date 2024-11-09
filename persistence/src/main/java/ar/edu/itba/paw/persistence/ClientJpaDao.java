@@ -43,4 +43,14 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
         client.setLanguage(language);
         em.merge(client);
     }
+
+    @Override
+    public boolean mailExists(String mail) {
+        final TypedQuery<Client> query = em.createQuery(
+                "from Client as c where c.mail = :mail",
+                Client.class
+        );
+        query.setParameter("mail", mail);
+        return !query.getResultList().isEmpty();
+    }
 }
