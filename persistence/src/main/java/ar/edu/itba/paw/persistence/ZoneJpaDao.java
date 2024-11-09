@@ -37,7 +37,6 @@ public class ZoneJpaDao implements ZoneDao {
                 .getResultList();
     }
 
-    //TODO: Esta extremadamente curseado pero necesito obligarle a instanciar el zone.
     @Override
     public Zone getClientZone(Client client) {
         return em.createQuery("From Zone z where z = :clientZone", Zone.class).setParameter("clientZone",client.getZone()).getResultList().getFirst();

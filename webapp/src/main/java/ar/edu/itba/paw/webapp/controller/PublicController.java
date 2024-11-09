@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -48,6 +49,7 @@ public class PublicController implements Redirect, Toasts {
             @ModelAttribute(value = "toasts", binding = false) ArrayList<Toast> toasts,
             RedirectAttributes redirectAttributes
     ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         redirectAttributes.addFlashAttribute("toasts", toasts);
         if (loggedUser == null || (!loggedUser.isClient()) && !loggedUser.isDriver()) {
             return new ModelAndView("public/home");
