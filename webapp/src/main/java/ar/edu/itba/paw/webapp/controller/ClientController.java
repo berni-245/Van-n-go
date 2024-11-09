@@ -281,7 +281,7 @@ public class ClientController extends ParentController {
             return changePassword(loggedUser, form);
         }
 
-        cs.updatePassword(loggedUser.getId(), form.getPassword());
+        cs.updatePassword(loggedUser, form.getPassword());
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
         return redirect("/client/profile");
     }

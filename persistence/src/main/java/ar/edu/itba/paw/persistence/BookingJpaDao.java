@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +29,7 @@ public class BookingJpaDao implements BookingDao {
             ShiftPeriod period,
             String jobDescription
     ) {
-        if (date.isBefore(LocalDate.now()))
-            throw new TimeAlreadyPassedException();
+        if (date.isBefore(LocalDate.now())) throw new TimeAlreadyPassedException();
         checkVehicleAvailability(vehicle, originZone, date, period);
         checkIfVehicleIsAlreadyAccepted(vehicle, date, period);
         checkIfClientIsAlreadyAppointed(vehicle, client, originZone, date, period);

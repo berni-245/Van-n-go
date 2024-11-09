@@ -9,7 +9,6 @@ import ar.edu.itba.paw.webapp.form.VehicleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -173,8 +170,7 @@ public class DriverController extends ParentController {
 
     @RequestMapping(path = "/driver/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
-        ModelAndView mav = new ModelAndView("user/profile");
-        return mav;
+        return new ModelAndView("user/profile");
     }
 
     @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.GET)
@@ -373,7 +369,7 @@ public class DriverController extends ParentController {
             LOGGER.warn("Invalid params in ChangePasswordForm for {}", loggedUser.getUsername());
             return changePassword(loggedUser, form);
         }
-        ds.updatePassword(loggedUser.getId(), form.getPassword());
+        ds.updatePassword(loggedUser, form.getPassword());
         return new ModelAndView("redirect:/profile");
     }
 

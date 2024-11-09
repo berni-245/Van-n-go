@@ -7,7 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
@@ -87,13 +87,10 @@ public class User {
         return pfp;
     }
 
-    public boolean isDriver() {
-        return false;
-    }
+    abstract public boolean isDriver();
 
-    public boolean isClient() {
-        return false;
-    }
+    abstract public boolean isClient();
+
 
     public boolean getIsDriver() {
         return isDriver();
@@ -111,7 +108,6 @@ public class User {
     public String toString() {
         return "User{id = %d, username='%s', mail='%s'}".formatted(id, username, mail);
     }
-
 
     @Override
     public boolean equals(Object obj) {

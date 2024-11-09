@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-public interface DriverService extends UserBookingService<Driver> {
+public interface DriverService extends UserService<Driver> {
     Driver create(String username, String mail, String password, String description, Locale locale);
 
     Driver findById(long id);
@@ -52,9 +52,9 @@ public interface DriverService extends UserBookingService<Driver> {
         return getBookingsByVehicle(vehicleId, LocalDate.parse(date));
     }
 
-    void acceptBooking(long bookingId,Driver driver);
+    void acceptBooking(long bookingId, Driver driver);
 
-    void rejectBooking(long bookingId,Driver driver);
+    void rejectBooking(long bookingId, Driver driver);
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
@@ -71,8 +71,4 @@ public interface DriverService extends UserBookingService<Driver> {
     long getVehicleCount(Driver driver);
 
     void deleteVehicle(Vehicle vehicle);
-
-    void updatePassword(long id, String password);
-
-    void cancelBooking(long bookingId, Driver driver);
 }

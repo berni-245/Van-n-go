@@ -4,17 +4,12 @@ import ar.edu.itba.paw.models.*;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
 
 // Should extend UserDao
-public interface DriverDao {
+public interface DriverDao extends UserDao<Driver> {
     Driver create(String username, String mail, String password, String description, Language language);
 
-    Optional<Driver> findById(long id);
-
     List<Driver> getSearchResults(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset);
-
-    Optional<Driver> findByUsername(String username);
 
     void editProfile(Driver driver, String username, String mail, String description, String cbu);
 

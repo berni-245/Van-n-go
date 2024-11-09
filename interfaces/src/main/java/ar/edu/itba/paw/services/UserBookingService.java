@@ -13,4 +13,6 @@ public interface UserBookingService<T extends User> {
         long totalBookings = this.getBookingCount(user, state);
         return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
     }
+
+    Booking cancelBooking(long bookingId, T user);
 }

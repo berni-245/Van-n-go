@@ -4,16 +4,16 @@ import ar.edu.itba.paw.models.User;
 
 import java.util.Optional;
 
-public interface UserService {
+public interface UserService<T extends User> extends UserBookingService<T> {
     boolean mailExists(String mail);
 
     boolean usernameExists(String mail);
 
-    Optional<? extends User> findByUsername(String username);
+    Optional<T> findByUsername(String username);
 
-    int updateMail(long userId, String updatedMail);
+    Optional<T> findById(long id);
 
-    void updatePassword(long userId, String updatedPassword);
+    void editProfile(User user, String username, String mail);
 
-    int updateUsername(long userId, String updatedUsername);
+    void updatePassword(User user, String password);
 }

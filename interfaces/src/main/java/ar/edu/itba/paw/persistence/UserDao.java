@@ -4,18 +4,14 @@ import ar.edu.itba.paw.models.User;
 
 import java.util.Optional;
 
-public interface UserDao {
-    //long create(String username, String mail, String password);
-
+public interface UserDao<T extends User> {
     boolean mailExists(String mail);
 
-    boolean usernameExists(String mail);
+    Optional<T> findById(long id);
 
-    Optional<? extends User> findByUsername(String username);
+    Optional<T> findByUsername(String username);
 
-    int updateMail(long userId, String updatedMail);
+    void editProfile(User user, String username, String mail);
 
-    int updatePassword(long userId, String updatedPassword);
-
-    int updateUsername(long userId, String updatedUsername);
+    void updatePassword(User user, String updatedPassword);
 }

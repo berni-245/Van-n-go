@@ -54,6 +54,11 @@ public class Driver extends User {
         return true;
     }
 
+    @Override
+    public boolean isClient() {
+        return false;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

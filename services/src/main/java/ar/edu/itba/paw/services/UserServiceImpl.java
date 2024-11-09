@@ -1,43 +1,50 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Language;
+import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
-import java.util.Optional;
-
 @Service
-public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
+public abstract class UserServiceImpl<T extends User> implements UserService<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final UserDao<T> userDao;
 
     protected final MailService mailService;
 
-    private final PasswordEncoder passwordEncoder;
+    protected final PasswordEncoder passwordEncoder;
+
+    protected final BookingDao bookingDao;
 
     @Autowired
     public UserServiceImpl(
-            UserDao userDao,
+            UserDao<T> userDao,
             PasswordEncoder passwordEncoder,
-            MailService mailService
+            MailService mailService,
+            BookingDao bookingDao
     ) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
+        this.bookingDao = bookingDao;
     }
 
-    protected long createUser(String username, String mail, String password) {
-        return 1;//userDao.create(username, mail, passwordEncoder.encode(password));
-    }
+//    protected long createUser(String username, String mail, String password) {
+//        return 1;//userDao.create(username, mail, passwordEncoder.encode(password));
+//    }
 
     @Transactional
     @Override
-    public Optional<? extends User> findByUsername(String username) {
-        return userDao.findByUsername(username);
+    public boolean usernameExists(String username) {
+        return userDao.findByUsername(username).isPresent();
     }
 
     @Transactional
@@ -48,33 +55,24 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public boolean usernameExists(String username) {
-        return userDao.usernameExists(username);
+    public void editProfile(User user, String username, String mail) {
+        userDao.editProfile(user, username, mail);
     }
 
     @Transactional
     @Override
-    public int updateMail(long userId, String updatedMail) {
-        return userDao.updateMail(userId, updatedMail);
+    public void updatePassword(User user, String password) {
+        userDao.updatePassword(user, passwordEncoder.encode(password));
     }
 
     @Transactional
     @Override
-    public void updatePassword(long userId, String updatedPassword) {
-        userDao.updatePassword(userId, passwordEncoder.encode(updatedPassword));
+    public Booking cancelBooking(long bookingId, T user) {
+        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
+        User bookingUser = user.isDriver() ? booking.getDriver() : booking.getClient();
+        if (!bookingUser.equals(user)) throw new InvalidUserOnBookingCancelException();
+        bookingDao.cancelBooking(booking);
+        LOGGER.info("{} canceled booking {}", user.getUsername(), bookingId);
+        return booking;
     }
-
-    @Transactional
-    @Override
-    public int updateUsername(long userId, String updatedUsername){
-        return userDao.updateUsername(userId,updatedUsername);
-    }
-
-    protected Language getLanguageFromLocale(Locale locale) {
-        if (locale.getLanguage().equals("en")) {
-            return Language.ENGLISH;
-        }
-        return Language.SPANISH;
-    }
-
 }

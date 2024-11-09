@@ -17,22 +17,18 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
-public class ClientServiceImpl extends UserServiceImpl implements ClientService {
+public class ClientServiceImpl extends UserServiceImpl<Client> implements ClientService {
     private final ClientDao clientDao;
-
-    private final BookingDao bookingDao;
 
     private final VehicleDao vehicleDao;
 
     private final ZoneDao zoneDao;
 
-    private final PasswordEncoder passwordEncoder;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     @Autowired
     public ClientServiceImpl(
-            UserDao userDao,
+            UserDao<Client> userDao,
             ClientDao clientDao,
             PasswordEncoder passwordEncoder,
             MailService mailService,
@@ -40,18 +36,16 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
             VehicleDao vehicleDao,
             ZoneDao zoneDao
     ) {
-        super(userDao, passwordEncoder, mailService);
+        super(userDao, passwordEncoder, mailService, bookingDao);
         this.clientDao = clientDao;
-        this.bookingDao = bookingDao;
         this.vehicleDao = vehicleDao;
         this.zoneDao = zoneDao;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
-        Client client = clientDao.create(username, username, passwordEncoder.encode(password), getLanguageFromLocale(locale));
+        Client client = clientDao.create(username, username, passwordEncoder.encode(password), Language.fromLocale(locale));
         LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
@@ -59,12 +53,14 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Transactional
     @Override
-    public Client findById(long id) {
-        Optional<Client> optClient = clientDao.findById(id);
-        if(optClient.isPresent()) {
-            return optClient.get();
-        }
-        throw new InvalidUserException();
+    public Optional<Client> findById(long id) {
+        return clientDao.findById(id);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Client> findByUsername(String username) {
+        return clientDao.findByUsername(username);
     }
 
     @Transactional
@@ -82,13 +78,13 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         Zone destination = zoneDao.getZone(destinationId).orElseThrow();
         Booking booking = bookingDao.appointBooking(
-                    v, client, zone, destination, date, shiftPeriod, jobDescription
+                v, client, zone, destination, date, shiftPeriod, jobDescription
         );
         LOGGER.info("Successfully appointed booking for {} at {} on period {}", client.getUsername(), date.toString(), shiftPeriod.toString());
         mailService.sendRequestedDriverService(
-                booking.getDriver().getUsername(),booking.getDriver().getMail(),
+                booking.getDriver().getUsername(), booking.getDriver().getMail(),
                 booking.getClient().getUsername(), booking.getClient().getMail(),
-                date, jobDescription, booking.getOriginZone().getNeighborhoodName(),booking.getDestinationZone().getNeighborhoodName(),booking.getShiftPeriod() ,
+                date, jobDescription, booking.getOriginZone().getNeighborhoodName(), booking.getDestinationZone().getNeighborhoodName(), booking.getShiftPeriod(),
                 Locale.of(v.getDriver().getLanguage().toLocale()),
                 Locale.of(client.getLanguage().toLocale()));
         return booking;
@@ -120,19 +116,19 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         Language lang = Language.valueOf(language);
         clientDao.editProfile(client, username, mail, zone, lang);
-        LOGGER.info("{} edited it's profile", username);
+        LOGGER.info("{} edited their profile", username);
     }
 
     @Transactional
     @Override
-    public void cancelBooking(long bookingId, Client client) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(! booking.getClient().equals(client))
-            throw new InvalidUserOnBookingCancelException();
-
-        bookingDao.cancelBooking(booking);
-        mailService.sendClientCanceledBooking(booking.getDate(),booking.getDriver().getUsername(),booking.getDriver().getMail(),
-                Locale.of(booking.getDriver().getLanguage().toLocale()));
-        LOGGER.info("{} canceled booking {}", client.getUsername(), bookingId);
+    public Booking cancelBooking(long bookingId, Client client) {
+        Booking booking = super.cancelBooking(bookingId, client);
+        mailService.sendClientCanceledBooking(
+                booking.getDate(),
+                booking.getDriver().getUsername(),
+                booking.getDriver().getMail(),
+                Locale.of(booking.getDriver().getLanguage().toLocale())
+        );
+        return booking;
     }
 }

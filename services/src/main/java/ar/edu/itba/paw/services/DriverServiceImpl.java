@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.exceptions.InvalidUserOnBookingAcceptException;
+import ar.edu.itba.paw.exceptions.InvalidUserOnBookingFinishException;
+import ar.edu.itba.paw.exceptions.InvalidUserOnBookingRejectException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -15,12 +17,10 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class DriverServiceImpl extends UserServiceImpl implements DriverService {
+public class DriverServiceImpl extends UserServiceImpl<Driver> implements DriverService {
     private final DriverDao driverDao;
 
     private final VehicleDao vehicleDao;
-
-    private final BookingDao bookingDao;
 
     private final ImageDao imageDao;
 
@@ -28,13 +28,11 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     private final AvailabilityDao availabilityDao;
 
-    private final PasswordEncoder passwordEncoder;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriverServiceImpl.class);
 
     @Autowired
     public DriverServiceImpl(
-            UserDao userDao,
+            UserDao<Driver> userDao,
             MailService mailService,
             DriverDao driverDao,
             VehicleDao vehicleDao,
@@ -44,32 +42,33 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
             AvailabilityDao availabilityDao,
             PasswordEncoder passwordEncoder
     ) {
-        super(userDao, passwordEncoder, mailService);
+        super(userDao, passwordEncoder, mailService, bookingDao);
         this.driverDao = driverDao;
         this.vehicleDao = vehicleDao;
-        this.bookingDao = bookingDao;
         this.imageDao = imageDao;
         this.zoneDao = zoneDao;
         this.availabilityDao = availabilityDao;
-        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
+    @Override
+    public Optional<Driver> findById(long id) {
+        return driverDao.findById(id);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Driver> findByUsername(String username) {
+        return driverDao.findByUsername(username);
     }
 
     @Transactional
     @Override
     public Driver create(String username, String mail, String password, String description, Locale locale) {
-        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, getLanguageFromLocale(locale));
+        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} driver", username);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
-    }
-
-    @Transactional
-    @Override
-    public Driver findById(long id) {
-        Optional<Driver> aux = driverDao.findById(id);
-        if(aux.isPresent())
-            return aux.get();
-        throw new InvalidUserException();
     }
 
     @Transactional
@@ -137,7 +136,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public List<Driver> getSearchResults(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int page) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
-        if(priceMin != null && priceMax != null && priceMin > priceMax) {
+        if (priceMin != null && priceMax != null && priceMin > priceMax) {
             return Collections.emptyList();
         }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
@@ -160,7 +159,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles) {
         Set<DayOfWeek> days = new HashSet<>();
-        for(Vehicle vehicle : vehicles) {
+        for (Vehicle vehicle : vehicles) {
             for (Availability availability : vehicle.getAvailability()) {
                 days.add(availability.getWeekDay());
                 if (days.size() == DayOfWeek.values().length) {
@@ -175,7 +174,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
         //Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
-        if(priceMin!=null && priceMax!=null&&priceMin>priceMax) {
+        if (priceMin != null && priceMax != null && priceMin > priceMax) {
             return 0;
         }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
@@ -198,7 +197,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public void acceptBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(!booking.getDriver().equals(driver)) {
+        if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingAcceptException();
         }
         bookingDao.acceptBooking(booking);
@@ -211,7 +210,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public void rejectBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(!booking.getDriver().equals(driver)) {
+        if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingRejectException();
         }
         bookingDao.rejectBooking(booking);
@@ -224,7 +223,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     @Override
     public void finishBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(!booking.getDriver().equals(driver)) {
+        if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingFinishException();
         }
         bookingDao.finishBooking(booking);
@@ -233,15 +232,15 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public void cancelBooking(long bookingId, Driver driver) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if(!booking.getDriver().equals(driver)) {
-            throw new InvalidUserOnBookingCancelException();
-        }
-        bookingDao.cancelBooking(booking);
-        mailService.sendDriverCanceledBooking(booking.getDate(),booking.getClient().getUsername(),booking.getClient().getMail(),
-                Locale.of(booking.getClient().getLanguage().toLocale()));
-        LOGGER.info("User {} canceled booking {}", driver.getUsername(), bookingId);
+    public Booking cancelBooking(long bookingId, Driver driver) {
+        Booking booking = super.cancelBooking(bookingId, driver);
+        mailService.sendDriverCanceledBooking(
+                booking.getDate(),
+                booking.getClient().getUsername(),
+                booking.getClient().getMail(),
+                Locale.of(booking.getClient().getLanguage().toLocale())
+        );
+        return booking;
     }
 
     @Transactional
@@ -266,7 +265,7 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
     ) {
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
         v.setZones(zoneDao.getZonesById(zoneIds));
-        if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10*1024*1024) {
+        if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
             long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
             v.setImgId(imgId);
         }
@@ -299,5 +298,4 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
         vehicleDao.deleteVehicle(vehicle);
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
-
 }
