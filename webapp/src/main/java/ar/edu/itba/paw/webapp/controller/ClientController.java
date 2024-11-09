@@ -18,7 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class ClientController extends ParentController {
@@ -78,10 +81,10 @@ public class ClientController extends ParentController {
             @RequestParam(name = "driverId") long driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingReviewForm") BookingReviewForm form
-            ) {
+    ) {
         ModelAndView mav = new ModelAndView("client/bookingReview");
         mav.addObject("driver", ds.findById(driverId));
-        mav.addObject("bookingId", bookingId );
+        mav.addObject("bookingId", bookingId);
         return mav;
     }
 
@@ -147,12 +150,16 @@ public class ClientController extends ParentController {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
-        List<Driver> drivers = ds.getSearchResults(zoneId, size, priceMin, priceMax, weekday, rating, order, page);
-        List<Zone> zones = zs.getAllZones();
-        mav.addObject("drivers", drivers);
-        mav.addObject("zones", zones);
+        mav.addObject(
+                "drivers",
+                ds.getSearchResults(zoneId, size, priceMin, priceMax, weekday, rating, order, page)
+        );
+        mav.addObject("zones", zs.getAllZones());
         mav.addObject("currentPage", page);
-        mav.addObject("totalPages", (int) Math.ceil((double) ds.totalMatches(zoneId, size, priceMin, priceMax, weekday, rating) / Pagination.SEARCH_PAGE_SIZE));
+        mav.addObject(
+                "totalPages",
+                ds.getSearchResultPages(zoneId, size, priceMin, priceMax, weekday, rating)
+        );
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
         mav.addObject("priceMin", priceMin);
@@ -289,6 +296,7 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
+        // TODO: Por qué es necesario esto??
         mav.addObject("clientZone",zs.getClientZone(loggedUser));
         return mav;
     }

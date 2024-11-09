@@ -40,9 +40,24 @@ public interface DriverService extends UserService<Driver> {
             ShiftPeriod[] sundayPeriods
     );
 
-    List<Driver> getSearchResults(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int page);
+    List<Driver> getSearchResults(
+            long zoneId, Size size, Double priceMin, Double priceMax,
+            DayOfWeek weekday, Integer rating, SearchOrder order, int page
+    );
 
-    int totalMatches(long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
+    int getSearchResultCount(
+            long zoneId, Size size, Double priceMin,
+            Double priceMax, DayOfWeek weekday, Integer rating
+    );
+
+    default int getSearchResultPages(
+            long zoneId, Size size, Double priceMin,
+            Double priceMax, DayOfWeek weekday, Integer rating
+    ) {
+        return (int) Math.ceil((double) getSearchResultCount(
+                zoneId, size, priceMin, priceMax, weekday, rating
+        ) / Pagination.SEARCH_PAGE_SIZE);
+    }
 
     List<Booking> getBookingsByVehicle(long vehicleId);
 

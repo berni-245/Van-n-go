@@ -35,11 +35,12 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         final List<Driver> list = query.getResultList();
         if (list.isEmpty()) return Optional.empty();
         return Optional.of(list.getFirst());
-//        return findByUsername(username, Client.class);
     }
 
-    @Override
-    public List<Driver> getSearchResults(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset) {
+    private List<Integer> getSearchResultIds(
+            Zone zone, Size size, Double priceMin, Double priceMax,
+            DayOfWeek weekday, Integer rating, SearchOrder order, Integer offset
+    ) {
         StringBuilder idQuery = new StringBuilder("""
                     SELECT v.driver_id FROM vehicle v
                     JOIN driver d ON d.id = v.driver_id
@@ -77,19 +78,28 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         if (weekday != null) idNativeQuery.setParameter("weekday", weekday.name());
         if (rating != null) idNativeQuery.setParameter("rating", rating.doubleValue());
 
-        idNativeQuery.setFirstResult(offset);
-        idNativeQuery.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
+        if (offset != null) {
+            idNativeQuery.setFirstResult(offset);
+            idNativeQuery.setMaxResults(Pagination.SEARCH_PAGE_SIZE);
+        }
 
         @SuppressWarnings("unchecked")
         List<Integer> driverIds = idNativeQuery.getResultList();
-        if (driverIds.isEmpty()) return Collections.emptyList();
-        //JOIN MinimalPrice mp ON d.id = mp.driverId
-        StringBuilder driverQuery = new StringBuilder("""
-                    SELECT d FROM Driver d
-                
-                    WHERE d.id IN :driverIds
-                """);
+        return driverIds;
+    }
 
+    @Override
+    public List<Driver> getSearchResults(
+            Zone zone, Size size, Double priceMin, Double priceMax,
+            DayOfWeek weekday, Integer rating, SearchOrder order, int offset
+    ) {
+        List<Integer> driverIds = getSearchResultIds(
+                zone, size, priceMin, priceMax, weekday, rating, order, offset
+        );
+        if (driverIds.isEmpty()) return Collections.emptyList();
+        // TODO: Preguntar a alejo wtf son los comments estos...
+        //JOIN MinimalPrice mp ON d.id = mp.driverId
+        StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d WHERE d.id IN :driverIds");
         if (order != null) {
             switch (order) {
                 case PRICE -> {
@@ -108,6 +118,20 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     @Override
+    public int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
+        return getSearchResultIds(
+                zone,
+                size,
+                priceMin,
+                priceMax,
+                weekday,
+                rating,
+                null,
+                null
+        ).size();
+    }
+
+    @Override
     public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
         super.editProfile(driver, username, mail);
         driver.setDescription(description);
@@ -115,40 +139,6 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         em.merge(driver);
 
     }
-
-    @Override
-    public int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
-        StringBuilder queryString = new StringBuilder("""
-                    SELECT COUNT(DISTINCT v.driver) FROM Vehicle v
-                    JOIN v.zones z
-                    JOIN v.availability a
-                    WHERE z = :zone
-                """);
-
-        // Add optional conditions
-        if (size != null) queryString.append(" AND v.volume BETWEEN :minVolume AND :maxVolume");
-        if (priceMin != null) queryString.append(" AND v.hourlyRate >= :priceMin");
-        if (priceMax != null) queryString.append(" AND v.hourlyRate <= :priceMax");
-        if (weekday != null) queryString.append(" AND a.weekDay = :weekday");
-        if (rating != null) queryString.append(" AND v.driver.rating >= :rating");
-
-        TypedQuery<Long> query = em.createQuery(queryString.toString(), Long.class);
-        query.setParameter("zone", zone);
-
-        // Set parameters conditionally
-        if (size != null) {
-            query.setParameter("minVolume", (double) size.getMinVolume());
-            query.setParameter("maxVolume", (double) size.getMaxVolume());
-        }
-        if (priceMin != null) query.setParameter("priceMin", priceMin);
-        if (priceMax != null) query.setParameter("priceMax", priceMax);
-        if (weekday != null) query.setParameter("weekday", weekday);
-        if (rating != null) query.setParameter("rating", rating.doubleValue());
-
-        Long count = query.getSingleResult();
-        return count.intValue();
-    }
-
 
     @Override
     public List<DayOfWeek> getDriverWeekDaysOnZoneAndSize(Driver driver, Zone zone, Size size) {
