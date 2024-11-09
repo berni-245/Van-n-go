@@ -63,7 +63,7 @@ public interface DriverService extends UserService<Driver> {
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
-    void editProfile(Driver driver, String username, String mail, String description, String cbu);
+    void editProfile(Driver driver, String username, String mail, String description, String cbu, String language);
 
     Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 

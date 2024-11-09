@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -16,9 +17,10 @@ public abstract class UserJpaDao<T extends User> implements UserDao<T> {
     public abstract Optional<T> findById(int id);
 
     @Override
-    public void editProfile(User user, String username, String mail) {
+    public void editProfile(User user, String username, String mail, Language language) {
         user.setUsername(username);
         user.setMail(mail);
+        user.setLanguage(language);
         em.merge(user);
     }
 

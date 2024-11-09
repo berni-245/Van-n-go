@@ -10,7 +10,7 @@ public interface DriverDao extends UserDao<Driver> {
 
     List<Driver> getSearchResults(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset);
 
-    void editProfile(Driver driver, String username, String mail, String description, String cbu);
+    void editProfile(Driver driver, String username, String mail, String description, String cbu, Language language);
 
     int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating);
 }

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 
 import java.util.Optional;
@@ -11,7 +12,7 @@ public interface UserDao<T extends User> {
 
     Optional<T> findByUsername(String username);
 
-    void editProfile(User user, String username, String mail);
+    void editProfile(User user, String username, String mail, Language language);
 
     void updatePassword(User user, String updatedPassword);
 }

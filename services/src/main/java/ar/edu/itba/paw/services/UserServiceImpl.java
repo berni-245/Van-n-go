@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidUserException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -62,8 +63,8 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
 
     @Transactional
     @Override
-    public void editProfile(User user, String username, String mail) {
-        userDao.editProfile(user, username, mail);
+    public void editProfile(User user, String username, String mail, Language language) {
+        userDao.editProfile(user, username, mail, language);
     }
 
     @Transactional

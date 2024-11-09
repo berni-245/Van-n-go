@@ -38,9 +38,8 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
 
     @Override
     public void editProfile(Client client, String username, String mail, Zone zone, Language language) {
-        super.editProfile(client, username, mail);
+        super.editProfile(client, username, mail,language);
         client.setZone(zone);
-        client.setLanguage(language);
         em.merge(client);
     }
 

@@ -131,8 +131,8 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     @Override
-    public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
-        super.editProfile(driver, username, mail);
+    public void editProfile(Driver driver, String username, String mail, String description, String cbu, Language language) {
+        super.editProfile(driver, username, mail,language);
         driver.setDescription(description);
         driver.setCbu(cbu);
         em.merge(driver);

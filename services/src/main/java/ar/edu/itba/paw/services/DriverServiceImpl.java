@@ -262,8 +262,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void editProfile(Driver driver, String username, String mail, String description, String cbu) {
-        driverDao.editProfile(driver, username, mail, description, cbu);
+    public void editProfile(Driver driver, String username, String mail, String description, String cbu,String language) {
+        driverDao.editProfile(driver, username, mail, description, cbu, Language.valueOf(language));
         LOGGER.info("Driver {} updated it's profile", driver.getUsername());
     }
 

@@ -203,7 +203,7 @@ public class DriverController implements Bookings {
             LOGGER.warn("Invalid params in ChangeUserInfoForm by {}", loggedUser.getUsername());
             return editProfileForm(loggedUser, form, errors);
         }
-        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu());
+        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu(), form.getLanguage());
         return redirect("/driver/profile");
     }
 
