@@ -1,23 +1,21 @@
 package ar.edu.itba.paw.webapp.validation;
 
-import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ValidChangeUsernameValidator implements ConstraintValidator<ValidChangeUsername, ChangeUserInfoForm> {
-    @Qualifier("userServiceImpl")
+public class ValidChangeUsernameValidator extends ValidatorWithLoggedUser implements ConstraintValidator<ValidChangeUsername, String> {
     @Autowired
-    private UserService us;
+    private ClientService cs;
+    @Autowired
+    private DriverService ds;
 
     @Override
-    public boolean isValid(ChangeUserInfoForm form, ConstraintValidatorContext constraintValidatorContext) {
-        String username = form.getUsername();
-        String oldUsername = form.getOldUsername();
-        if(username.equals(oldUsername)) return true;
-        return   !us.usernameExists(username);
+    public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
+        if (getUser().getUsername().equals(username)) return true;
+        return !(cs.usernameExists(username) || ds.usernameExists(username));
     }
 }

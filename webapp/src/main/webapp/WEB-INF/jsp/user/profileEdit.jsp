@@ -24,8 +24,7 @@
                         <label class="form-label">
                             <spring:message code="generic.word.username"/>
                         </label>
-                        <form:input path="username" type="text" class="form-control"
-                                    id="username"/>
+                        <form:input path="username" type="text" class="form-control" id="username"/>
                         <form:errors path="username" element="p" cssClass="text-danger"/>
                     </div>
                     <div class="mb-3">
@@ -77,8 +76,6 @@
                         </div>
                     </c:otherwise>
                     </c:choose>
-                    <form:input path="oldUsername" type="hidden" id="oldUsername"/>
-                    <form:input path="oldMail" type="hidden" id="oldMail"/>
                     <form:errors element="div" cssClass="alert alert-danger"/>
                     <spring:message code="generic.word.confirm" var="confirm"/>
                     <input type="submit" class="btn btn-success" value="${confirm}">

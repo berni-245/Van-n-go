@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
 import ar.edu.itba.paw.webapp.validation.ValidLanguage;
@@ -14,25 +13,16 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
-@ValidChangeUsername
-@ValidChangeMail
 public class ChangeUserInfoForm {
-
     @NotNull
     @Size(min = 5, max = 20)
     @Pattern(regexp = "^[a-zA-Z]\\w*$")
-    private String oldUsername;
-    @NotNull
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
-    private String oldMail;
-
-    @NotNull
-    @Size(min = 5, max = 20)
-    @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    @ValidChangeUsername
     private String username;
 
     @NotNull
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    @ValidChangeMail
     private String mail;
 
     @Nullable
@@ -43,7 +33,7 @@ public class ChangeUserInfoForm {
     @Length(min = 5, max = 255)
     private String description;
 
-    //TODO:The previous Regex was wrong. No special chars on alias is fucking retarded
+    //TODO:The previous Regex was wrong. No special chars on alias is wrong.
     @Length(max = 32)
     @Nullable
     private String cbu;
@@ -52,9 +42,13 @@ public class ChangeUserInfoForm {
     @ValidLanguage
     private String language;
 
-    public String getDescription() {return description;}
+    public String getDescription() {
+        return description;
+    }
 
-    public String getCbu() {return cbu;}
+    public String getCbu() {
+        return cbu;
+    }
 
     public void setCbu(String cbu) {
         this.cbu = cbu;
@@ -80,31 +74,19 @@ public class ChangeUserInfoForm {
         this.mail = mail;
     }
 
-    public Long getZoneId() {return zoneId;}
-
-    public void setZoneId(Long zoneId) {this.zoneId = zoneId;}
-
-    public @NotNull @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String getOldUsername() {
-        return oldUsername;
+    public Long getZoneId() {
+        return zoneId;
     }
 
-    public void setOldUsername(@NotNull @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String oldUsername) {
-        this.oldUsername = oldUsername;
+    public void setZoneId(Long zoneId) {
+        this.zoneId = zoneId;
     }
 
-    public @NotNull @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") String getOldMail() {
-        return oldMail;
-    }
-
-    public void setOldMail(@NotNull @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") String oldMail) {
-        this.oldMail = oldMail;
-    }
-
-    public @NotEmpty String getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
-    public void setLanguage(@NotEmpty String language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 }

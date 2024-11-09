@@ -179,8 +179,6 @@ public class DriverController extends ParentController {
             @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
-        form.setOldUsername(loggedUser.getUsername());
-        form.setOldMail(loggedUser.getMail());
         if (!errors.hasErrors()) {
             form.setMail(loggedUser.getMail());
             form.setUsername(loggedUser.getUsername());

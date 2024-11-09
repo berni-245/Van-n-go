@@ -305,8 +305,6 @@ public class ClientController extends ParentController {
             @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors
     ) {
-        form.setOldUsername(loggedUser.getUsername());
-        form.setOldMail(loggedUser.getMail());
         form.setZoneId(Optional.ofNullable(loggedUser.getZone()).map(Zone::getId).orElse(null));
         if (!errors.hasErrors()) {
             form.setMail(loggedUser.getMail());
