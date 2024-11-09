@@ -149,7 +149,7 @@ public class PublicController extends ParentController {
     @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProofOfPayment(
-            @RequestParam("popId") long popId,
+            @RequestParam("popId") int popId,
             @ModelAttribute("loggedUser") User loggedUser
     ) {
         Image pop = is.getImage(popId);

@@ -72,7 +72,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String plateNumber,
             double volume,
             String description,
-            List<Long> zoneIds,
+            List<Integer> zoneIds,
             double rate,
             String imgFilename,
             byte[] imgData
@@ -89,7 +89,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
+    public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
         vehicleList.removeIf(v -> v.getAvailability().isEmpty());
@@ -123,7 +123,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Driver> getSearchResults(
-            long zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMin, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     ) {
         // Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
@@ -137,7 +137,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public int getSearchResultCount(
-            long zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMin, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
         // Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
@@ -156,7 +156,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public long getBookingCount(Driver driver, BookingState state) {
+    public int getBookingCount(Driver driver, BookingState state) {
         return bookingDao.getDriverBookingCount(driver, state);
     }
 
@@ -177,7 +177,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void acceptBooking(long bookingId, Driver driver) {
+    public void acceptBooking(int bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingAcceptException();
@@ -190,7 +190,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void rejectBooking(long bookingId, Driver driver) {
+    public void rejectBooking(int bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingRejectException();
@@ -203,7 +203,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void finishBooking(long bookingId, Driver driver) {
+    public void finishBooking(int bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if (!booking.getDriver().equals(driver)) {
             throw new InvalidUserOnBookingFinishException();
@@ -214,7 +214,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public Booking cancelBooking(long bookingId, Driver driver) {
+    public Booking cancelBooking(int bookingId, Driver driver) {
         Booking booking = super.cancelBooking(bookingId, driver);
         mailService.sendDriverCanceledBooking(
                 booking.getDate(),
@@ -226,7 +226,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     }
 
     @Override
-    public Optional<Vehicle> findVehicleById(Driver driver, long vehicleId) {
+    public Optional<Vehicle> findVehicleById(Driver driver, int vehicleId) {
         return vehicleDao.findOwnedById(driver, vehicleId);
     }
 
@@ -240,20 +240,20 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public void updateVehicle(
             Driver driver,
-            long vehicleId,
+            int vehicleId,
             String plateNumber,
             double volume,
             String description,
-            List<Long> zoneIds,
+            List<Integer> zoneIds,
             double rate,
-            Long oldImgId,
+            Integer oldImgId,
             String imgFilename,
             byte[] imgData
     ) {
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
         v.setZones(zoneDao.getZonesById(zoneIds));
         if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
-            long imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
+            int imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
             v.setImgId(imgId);
         }
         vehicleDao.updateVehicle(v);
@@ -275,7 +275,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public long getVehicleCount(Driver driver) {
+    public int getVehicleCount(Driver driver) {
         return vehicleDao.getVehicleCount(driver);
     }
 

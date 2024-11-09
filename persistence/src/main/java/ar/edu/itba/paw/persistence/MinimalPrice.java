@@ -13,12 +13,12 @@ public class MinimalPrice {
 
     @Id
     @Column(name = "driver_id")
-    private Long driverId;
+    private Integer driverId;
 
     @Column(name = "min")
     private Double min;
 
-    public Long getDriverId() {return driverId;}
+    public Integer getDriverId() {return driverId;}
 
     public Double getMin() {return min;}
 }

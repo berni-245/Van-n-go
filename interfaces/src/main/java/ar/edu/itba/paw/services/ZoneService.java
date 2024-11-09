@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface ZoneService {
     List<Zone> getAllZones();
 
-    Optional<Zone> getZone(long id);
+    Optional<Zone> getZone(int id);
 
-    boolean isValidZone(long zoneId);
+    boolean isValidZone(int zoneId);
 
     Zone getClientZone(Client client);
 }

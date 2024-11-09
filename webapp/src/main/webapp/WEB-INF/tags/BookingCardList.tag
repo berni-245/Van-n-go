@@ -5,8 +5,8 @@
 <%@ attribute name="bookings" required="true" type="java.util.List<ar.edu.itba.paw.models.Booking>" %>
 <%@ attribute name="currentDate" required="true" type="java.time.LocalDate" %>
 <%@ attribute name="paramName" required="true" type="java.lang.String" %>
-<%@ attribute name="totalPages" required="true" type="java.lang.Long" %>
-<%@ attribute name="currentPage" required="true" type="java.lang.Long" %>
+<%@ attribute name="totalPages" required="true" type="java.lang.Integer" %>
+<%@ attribute name="currentPage" required="true" type="java.lang.Integer" %>
 <%@ attribute name="loggedUser" required="true" type="ar.edu.itba.paw.models.User" %>
 <%@ tag body-content="empty" %>
 

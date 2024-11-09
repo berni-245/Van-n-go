@@ -28,13 +28,13 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Transactional
     @Override
-    public Optional<Zone> getZone(long id) {
+    public Optional<Zone> getZone(int id) {
         return zoneDao.getZone(id);
     }
 
     @Transactional
     @Override
-    public boolean isValidZone(long zoneId) {
+    public boolean isValidZone(int zoneId) {
         return zoneDao.isValidZone(zoneId);
     }
 

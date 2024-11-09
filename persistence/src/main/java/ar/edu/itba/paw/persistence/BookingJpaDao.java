@@ -69,7 +69,7 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public Optional<Booking> getBookingById(long bookingId) {
+    public Optional<Booking> getBookingById(int bookingId) {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }
 
@@ -87,21 +87,18 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        @SuppressWarnings("unchecked")
-        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
-
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds)
+                .setParameter("bookingIds", nativeQueryList)
                 .getResultList();
     }
 
     @Override
-    public long getDriverBookingCount(Driver driver, BookingState state) {
+    public int getDriverBookingCount(Driver driver, BookingState state) {
         return em.createQuery("""
                         select count(*) from Booking b
                         join Vehicle v on b.vehicle = v
                         where v.driver = :driver and b.state = :state
-                        """, Long.class)
+                        """, Integer.class)
                 .setParameter("driver", driver)
                 .setParameter("state", state)
                 .getSingleResult();
@@ -127,21 +124,18 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        @SuppressWarnings("unchecked")
-        List<Long> bookingIds = nativeQueryList.stream().map(id -> ((Integer) id).longValue()).toList();
-
         return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
-                .setParameter("bookingIds", bookingIds)
+                .setParameter("bookingIds", nativeQueryList)
                 .getResultList();
     }
 
     @Override
-    public long getClientBookingCount(Client client, BookingState state) {
+    public int getClientBookingCount(Client client, BookingState state) {
         return em.createQuery("""
                         select count(*) from Booking b
                         where b.client = :client
                         and b.state = :state
-                        """, Long.class)
+                        """, Integer.class)
                 .setParameter("client", client)
                 .setParameter("state", state)
                 .getSingleResult();

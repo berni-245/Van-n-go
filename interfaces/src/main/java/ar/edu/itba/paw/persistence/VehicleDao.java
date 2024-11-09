@@ -19,9 +19,9 @@ public interface VehicleDao {
             double rate
     );
 
-    Optional<Vehicle> findById(long id);
+    Optional<Vehicle> findById(int id);
 
-    Optional<Vehicle> findOwnedById(Driver driver, long id);
+    Optional<Vehicle> findOwnedById(Driver driver, int id);
 
     Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
@@ -37,5 +37,5 @@ public interface VehicleDao {
 
     List<Vehicle> getDriverVehicles(Driver driver, int offset);
 
-    long getVehicleCount(Driver driver);
+    int getVehicleCount(Driver driver);
 }

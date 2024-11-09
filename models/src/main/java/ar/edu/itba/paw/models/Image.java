@@ -9,7 +9,7 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "image_id_seq")
     @SequenceGenerator(sequenceName = "image_id_seq", name = "image_id_seq", allocationSize = 1)
-    private long id;
+    private int id;
 
     @Column(name = "bin", nullable = false)
     private byte[] data;
@@ -21,13 +21,13 @@ public class Image {
 
     }
 
-    public Image(long id, byte[] data, String fileName) {
+    public Image(int id, byte[] data, String fileName) {
         this.id = id;
         this.data = data;
         this.fileName = fileName;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

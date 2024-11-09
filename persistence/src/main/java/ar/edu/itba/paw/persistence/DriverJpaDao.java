@@ -21,7 +21,7 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     @Override
-    public Optional<Driver> findById(long id) {
+    public Optional<Driver> findById(int id) {
         return Optional.ofNullable(em.find(Driver.class, id));
     }
 
@@ -110,9 +110,8 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
             }
         }
 
-        List<Long> driverIdLong = driverIds.stream().map(Integer::longValue).toList();
         TypedQuery<Driver> finalQuery = em.createQuery(driverQuery.toString(), Driver.class);
-        finalQuery.setParameter("driverIds", driverIdLong);
+        finalQuery.setParameter("driverIds", driverIds);
 
         return finalQuery.getResultList();
     }

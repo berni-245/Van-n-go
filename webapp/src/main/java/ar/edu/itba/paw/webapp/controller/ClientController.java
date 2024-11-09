@@ -65,7 +65,7 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/bookings/upload/pop", method = RequestMethod.POST)
     public ModelAndView submit(
             @RequestParam("proofOfPayment") MultipartFile file,
-            @RequestParam("bookingId") long bookingId,
+            @RequestParam("bookingId") int bookingId,
             @ModelAttribute("loggedUser") Client loggedUser
     ) throws IOException {
         if (file == null || file.isEmpty())
@@ -77,8 +77,8 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/review", method = RequestMethod.GET)
     public ModelAndView reviewForm(
-            @PathVariable("id") long bookingId,
-            @RequestParam(name = "driverId") long driverId,
+            @PathVariable("id") int bookingId,
+            @RequestParam(name = "driverId") int driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingReviewForm") BookingReviewForm form
     ) {
@@ -90,8 +90,8 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/review/send", method = RequestMethod.POST)
     public ModelAndView sendReview(
-            @PathVariable("id") long bookingId,
-            @RequestParam(name = "driverId") long driverId,
+            @PathVariable("id") int bookingId,
+            @RequestParam(name = "driverId") int driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             BindingResult errors,
@@ -112,7 +112,7 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
     public ModelAndView cancelBooking(
-            @PathVariable("id") long bookingId,
+            @PathVariable("id") int bookingId,
             @ModelAttribute("loggedUser") Client loggedUser,
             RedirectAttributes redirectAttributes
     ) {
@@ -136,7 +136,7 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/availability", method = RequestMethod.GET)
     public ModelAndView availability(
-            @RequestParam(name = "zoneId", required = false) Long zoneId,
+            @RequestParam(name = "zoneId", required = false) Integer zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
@@ -147,7 +147,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
     ) {
-        form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1L));
+        form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
         mav.addObject(
@@ -172,8 +172,8 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.GET)
     public ModelAndView driverAvailability(
-            @PathVariable(name = "driverId") long driverId,
-            @RequestParam(name = "zoneId") long zoneId,
+            @PathVariable(name = "driverId") int driverId,
+            @RequestParam(name = "zoneId") int zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
@@ -212,8 +212,8 @@ public class ClientController extends ParentController {
 
     @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.POST)
     public ModelAndView appointBooking(
-            @PathVariable(name = "driverId") long driverId,
-            @RequestParam(name = "zoneId") long zoneId,
+            @PathVariable(name = "driverId") int driverId,
+            @RequestParam(name = "zoneId") int zoneId,
             @RequestParam(name = "size", required = false) Size size,
             @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
@@ -246,7 +246,7 @@ public class ClientController extends ParentController {
     @RequestMapping(path = "/client/chat", method = RequestMethod.GET)
     public ModelAndView chat(
             @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam("recipientId") Long recipientId
+            @RequestParam("recipientId") Integer recipientId
     ) {
         final ModelAndView mav = new ModelAndView("client/chat");
         Driver driver = ds.findById(recipientId);
@@ -260,7 +260,7 @@ public class ClientController extends ParentController {
     public ModelAndView send(
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam("content") String content,
-            @RequestParam("recipientId") Long recipientId
+            @RequestParam("recipientId") Integer recipientId
     ) {
         ms.sendClientMessage(loggedUser,recipientId,content);
         return new ModelAndView("redirect:/client/chat?recipientId=" + recipientId);

@@ -41,24 +41,24 @@ import static org.junit.Assert.*;
 
 public class BookingJpaDaoTest {
     // This booking will accepted and for ve.id = 1, zone.id = 1 on thursday, EVENING
-    private static final long PREEXISTING_ACCEPTED_BOOK = 500;
+    private static final int PREEXISTING_ACCEPTED_BOOK = 500;
     private static final LocalDate ALREADY_ACCEPTED_BOOKED_DATE = LocalDate.of(2030, 5, 2); // It's thursday
 
     // This booking will pending and for ve.id = 1, zone.id = 1, on friday, EVENING
-    private static final long PREEXISTING_PENDING_BOOK = 501;
-    private static final long ANOTHER_PREEXISTING_PENDING_BOOK = 502;
-    private static final long YET_ANOTHER_PREEXISTING_PENDING_BOOK = 503;
-    private static final long BOOKING_COUNT = 4;
-    private static final long DRIVER_BOOKING_PENDING_COUNT = 3;
-    private static final long CLIENT_BOOKING_PENDING_COUNT = 2;
+    private static final int PREEXISTING_PENDING_BOOK = 501;
+    private static final int ANOTHER_PREEXISTING_PENDING_BOOK = 502;
+    private static final int YET_ANOTHER_PREEXISTING_PENDING_BOOK = 503;
+    private static final int BOOKING_COUNT = 4;
+    private static final int DRIVER_BOOKING_PENDING_COUNT = 3;
+    private static final int CLIENT_BOOKING_PENDING_COUNT = 2;
 
-    private static final long VEHICLE_ID = 1;
-    private static final long CLIENT_ID = 1;
-    private static final long CLIENT_ID_TWO = 2;
-    private static final long DRIVER_ID = 3;
-    private static final long ORIGIN_ZONE_ID = 1;
-    private static final long DESTINATION_ZONE_ID = 23;
-    private static final long ZONE_THAT_DRIVER_DOES_NOT_WORK = 2;
+    private static final int VEHICLE_ID = 1;
+    private static final int CLIENT_ID = 1;
+    private static final int CLIENT_ID_TWO = 2;
+    private static final int DRIVER_ID = 3;
+    private static final int ORIGIN_ZONE_ID = 1;
+    private static final int DESTINATION_ZONE_ID = 23;
+    private static final int ZONE_THAT_DRIVER_DOES_NOT_WORK = 2;
 
     private static final LocalDate DATE_FREE_TO_APPOINT = LocalDate.of(2030, 5, 1); // It's a wednesday
     private static final LocalDate ALREADY_PENDING_BOOKED_DATE = LocalDate.of(2030, 5, 3); // It's a friday
@@ -187,7 +187,7 @@ public class BookingJpaDaoTest {
 
     @Test
     public void testAppointBookingOnAlreadyAppointedShiftPeriodForDifferentClients() {
-        //Two different clients can appoint for the same time, as long as there's no accepted booking for that shift period
+        //Two different clients can appoint for the same time, as int as there's no accepted booking for that shift period
 
         Booking secondBooking = bookingDao.appointBooking(
                 vehicle, clientTwo, originZone, destinationZone, ALREADY_PENDING_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION

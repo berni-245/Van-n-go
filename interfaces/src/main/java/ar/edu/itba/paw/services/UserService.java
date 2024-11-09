@@ -9,7 +9,7 @@ public interface UserService<T extends User> extends UserBookingService<T> {
 
     boolean usernameExists(String mail);
 
-    T findById(long id);
+    T findById(int id);
 
     Optional<T> findByUsername(String username);
 

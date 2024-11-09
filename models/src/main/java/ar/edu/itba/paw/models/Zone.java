@@ -10,7 +10,7 @@ public class Zone {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "zone_id_seq")
     @SequenceGenerator(sequenceName = "zone_id_seq", name = "zone_id_seq", allocationSize = 1)
-    private long id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Country country;
@@ -25,11 +25,11 @@ public class Zone {
 
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public long getCountryId() {
+    public int getCountryId() {
         return country.getId();
     }
 
@@ -41,7 +41,7 @@ public class Zone {
         return country.getName();
     }
 
-    public long getProvinceId() {
+    public int getProvinceId() {
         return province.getId();
     }
 
@@ -49,7 +49,7 @@ public class Zone {
         return province.getName();
     }
 
-    public long getNeighborhoodId() {
+    public int getNeighborhoodId() {
         return neighborhood.getId();
     }
 

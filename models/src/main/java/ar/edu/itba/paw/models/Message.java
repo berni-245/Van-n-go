@@ -9,7 +9,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_id_seq")
     @SequenceGenerator(sequenceName = "message_id_seq", name = "message_id_seq", allocationSize = 1)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
@@ -35,7 +35,7 @@ public class Message {
 
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

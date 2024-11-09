@@ -10,7 +10,7 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vehicle_id_seq")
     @SequenceGenerator(sequenceName = "vehicle_id_seq", name = "vehicle_id_seq", allocationSize = 1)
-    private Long id;
+    private Integer id;
 
     @JoinColumn(name = "driver_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,7 +22,7 @@ public class Vehicle {
     @Column(nullable = false)
     private String description;
     @Column(name = "img_id")
-    private Long imgId;
+    private Integer imgId;
     @Column(name = "hourly_rate", nullable = false)
     private double hourlyRate;
 
@@ -44,12 +44,12 @@ public class Vehicle {
     }
 
     public Vehicle(
-            Long id,
+            Integer id,
             Driver driver,
             String plateNumber,
             double volume,
             String description,
-            Long imgId,
+            Integer imgId,
             double hourlyRate
     ) {
         this.id = id;
@@ -66,13 +66,13 @@ public class Vehicle {
             String plateNumber,
             double volume,
             String description,
-            Long imgId,
+            Integer imgId,
             double hourlyRate
     ) {
         this(null, driver, plateNumber, volume, description, imgId, hourlyRate);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -106,11 +106,11 @@ public class Vehicle {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);
     }
 
-    public Long getImgId() {
+    public Integer getImgId() {
         return imgId;
     }
 
-    public void setImgId(Long imgId) {
+    public void setImgId(Integer imgId) {
         this.imgId = imgId;
     }
 

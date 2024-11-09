@@ -58,10 +58,10 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public Booking appointBooking(
-            long vehicleId,
+            int vehicleId,
             Client client,
-            long zoneId,
-            long destinationId,
+            int zoneId,
+            int destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
             String jobDescription
@@ -90,13 +90,13 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public long getBookingCount(Client client, BookingState state) {
+    public int getBookingCount(Client client, BookingState state) {
         return bookingDao.getClientBookingCount(client, state);
     }
 
     @Transactional
     @Override
-    public void setBookingRatingAndReview(long bookingId, int rating, String review) {
+    public void setBookingRatingAndReview(int bookingId, int rating, String review) {
         //send mail!
         bookingDao.setRatingAndReview(bookingDao.getBookingById(bookingId).orElseThrow(), rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
@@ -104,7 +104,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public void editProfile(Client client, String username, String mail, Long zoneId, String language) {
+    public void editProfile(Client client, String username, String mail, Integer zoneId, String language) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
         Language lang = Language.valueOf(language);
         clientDao.editProfile(client, username, mail, zone, lang);
@@ -113,7 +113,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public Booking cancelBooking(long bookingId, Client client) {
+    public Booking cancelBooking(int bookingId, Client client) {
         Booking booking = super.cancelBooking(bookingId, client);
         mailService.sendClientCanceledBooking(
                 booking.getDate(),

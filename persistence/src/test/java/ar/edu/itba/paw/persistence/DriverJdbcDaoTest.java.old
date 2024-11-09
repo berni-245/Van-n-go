@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
         "classpath:add_booking_data.sql" // There will be a vehicle with id 1, who works from 0-4am, on wednesday and thursday in the zone with id 1
 })
 public class DriverJdbcDaoTest {
-    private static final long CLIENT_ID = 1;
-    private static final long DRIVER_ID = 3;
-    private static final long NEW_DRIVER = 420;
+    private static final int CLIENT_ID = 1;
+    private static final int DRIVER_ID = 3;
+    private static final int NEW_DRIVER = 420;
 
     @Autowired
     private DriverJdbcDao driverDao;

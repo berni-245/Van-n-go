@@ -29,11 +29,8 @@ public class MessageJpaDao implements MessageDao {
                 .setMaxResults(Pagination.MAX_MESSAGE_RETRIEVAL)
                 .getResultList();
 
-        @SuppressWarnings("unchecked")
-        List<Long> longMessageIds = messageIds.stream().map(id -> ((BigInteger) id).longValue()).toList();
-
         return em.createQuery("SELECT m FROM Message m WHERE m.id IN :msgIds order by m.timeSent desc", Message.class)
-                .setParameter("msgIds", longMessageIds)
+                .setParameter("msgIds", messageIds)
                 .getResultList();
     }
 

@@ -1,6 +1,6 @@
 <%@ attribute name="paramName" required="true" type="java.lang.String" %>
-<%@ attribute name="totalPages" required="true" type="java.lang.Long" %>
-<%@ attribute name="currentPage" required="true" type="java.lang.Long" %>
+<%@ attribute name="totalPages" required="true" type="java.lang.Integer" %>
+<%@ attribute name="currentPage" required="true" type="java.lang.Integer" %>
 <%@ tag body-content="empty" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

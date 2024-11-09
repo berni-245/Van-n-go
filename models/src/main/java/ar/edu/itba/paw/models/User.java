@@ -12,7 +12,7 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
     @SequenceGenerator(sequenceName = "app_user_id_seq", name = "app_user_id_seq", allocationSize = 1)
-    private long id;
+    private int id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -24,7 +24,7 @@ public abstract class User {
     private String password;
 
     @Column
-    private Long pfp;
+    private Integer pfp;
 
    @Column
    @Enumerated(EnumType.STRING)
@@ -50,7 +50,7 @@ public abstract class User {
         this.language = language;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -79,11 +79,11 @@ public abstract class User {
         this.mail = mail;
     }
 
-    public void setPfp(Long pfp) {
+    public void setPfp(Integer pfp) {
         this.pfp = pfp;
     }
 
-    public Long getPfp() {
+    public Integer getPfp() {
         return pfp;
     }
 

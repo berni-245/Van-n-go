@@ -42,7 +42,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
 
     @Transactional
     @Override
-    public T findById(long id) {
+    public T findById(int id) {
         Optional<T> user = userDao.findById(id);
         if (user.isEmpty()) throw new InvalidUserException();
         return user.get();
@@ -74,7 +74,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
 
     @Transactional
     @Override
-    public Booking cancelBooking(long bookingId, T user) {
+    public Booking cancelBooking(int bookingId, T user) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         User bookingUser = user.isDriver() ? booking.getDriver() : booking.getClient();
         if (!bookingUser.equals(user)) throw new InvalidUserOnBookingCancelException();

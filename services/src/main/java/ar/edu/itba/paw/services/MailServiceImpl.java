@@ -273,7 +273,7 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, long senderId, boolean isRecipientDriver,
+    public void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, int senderId, boolean isRecipientDriver,
                                     String receivedMessage, LocalDateTime timeReceived, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);

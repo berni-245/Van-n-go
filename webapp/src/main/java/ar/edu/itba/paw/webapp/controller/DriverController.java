@@ -106,7 +106,7 @@ public class DriverController extends ParentController {
     @RequestMapping(value = "/driver/chat", method = RequestMethod.GET)
     public ModelAndView chat(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam("recipientId") Long recipientId
+            @RequestParam("recipientId") Integer recipientId
     ) {
         final ModelAndView mav = new ModelAndView("driver/chat");
         Client client = cs.findById(recipientId);
@@ -121,7 +121,7 @@ public class DriverController extends ParentController {
     public ModelAndView send(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("content") String content,
-            @RequestParam("recipientId") Long recipientId
+            @RequestParam("recipientId") Integer recipientId
     ) {
         ms.sendDriverMessage(loggedUser, recipientId, content);
         return new ModelAndView("redirect:/driver/chat?recipientId=" + recipientId);
@@ -160,7 +160,7 @@ public class DriverController extends ParentController {
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
         mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
-        long totalRecords = ds.getVehicleCount(loggedUser);
+        int totalRecords = ds.getVehicleCount(loggedUser);
         int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
@@ -295,7 +295,7 @@ public class DriverController extends ParentController {
     @RequestMapping(path = "/driver/booking/{id:\\d+}/accept", method = RequestMethod.POST)
     public ModelAndView acceptBooking(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") long bookingId
+            @PathVariable("id") int bookingId
     ) {
         ds.acceptBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=ACCEPTED");
@@ -304,7 +304,7 @@ public class DriverController extends ParentController {
     @RequestMapping(path = "/driver/booking/{id:\\d+}/finish", method = RequestMethod.POST)
     public ModelAndView finishBooking(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") long bookingId
+            @PathVariable("id") int bookingId
     ) {
         ds.finishBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=FINISHED");
@@ -313,7 +313,7 @@ public class DriverController extends ParentController {
     @RequestMapping(path = "/driver/booking/{id:\\d+}/reject", method = RequestMethod.POST)
     public ModelAndView rejectBooking(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") long bookingId
+            @PathVariable("id") int bookingId
     ) {
         ds.rejectBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=REJECTED");
@@ -322,7 +322,7 @@ public class DriverController extends ParentController {
     @RequestMapping(path = "/driver/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
     public ModelAndView cancelBooking(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") long bookingId
+            @PathVariable("id") int bookingId
     ) {
         ds.cancelBooking(bookingId, loggedUser);
         return redirect("/driver/bookings?activeTab=ACCEPTED");

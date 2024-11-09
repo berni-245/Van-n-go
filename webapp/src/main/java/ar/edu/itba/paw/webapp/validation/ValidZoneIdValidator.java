@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ValidZoneIdValidator implements ConstraintValidator<ValidZoneId, Long> {
+public class ValidZoneIdValidator implements ConstraintValidator<ValidZoneId, Integer> {
     @Autowired
     private ZoneService zs;
 
     @Override
-    public boolean isValid(Long zoneId, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Integer zoneId, ConstraintValidatorContext constraintValidatorContext) {
         return zoneId == null || zs.isValidZone(zoneId);
     }
 }

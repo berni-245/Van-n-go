@@ -27,7 +27,7 @@ public class ChangeUserInfoForm {
 
     @Nullable
     @ValidZoneId
-    private Long zoneId;
+    private Integer zoneId;
 
     @Nullable
     @Length(min = 5, max = 255)
@@ -74,11 +74,11 @@ public class ChangeUserInfoForm {
         this.mail = mail;
     }
 
-    public Long getZoneId() {
+    public Integer getZoneId() {
         return zoneId;
     }
 
-    public void setZoneId(Long zoneId) {
+    public void setZoneId(Integer zoneId) {
         this.zoneId = zoneId;
     }
 

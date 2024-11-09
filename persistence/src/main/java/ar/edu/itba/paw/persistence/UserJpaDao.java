@@ -24,7 +24,7 @@ public abstract class UserJpaDao<T extends User> implements UserDao<T> {
         return !query.getResultList().isEmpty();
     }
 
-    public abstract Optional<T> findById(long id);
+    public abstract Optional<T> findById(int id);
 
     @Override
     public void editProfile(User user, String username, String mail) {

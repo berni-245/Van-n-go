@@ -4,9 +4,9 @@ import ar.edu.itba.paw.models.Image;
 
 public interface ImageService {
 
-    Image getImage(long imgId);
+    Image getImage(int imgId);
 
-    long uploadPfp(byte[] bin, String fileName, long userId);
+    int uploadPfp(byte[] bin, String fileName, int userId);
 
-    long uploadPop(byte[] bin, String fileName, long bookingId);
+    int uploadPop(byte[] bin, String fileName, int bookingId);
 }

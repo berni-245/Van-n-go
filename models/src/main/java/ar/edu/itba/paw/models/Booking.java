@@ -9,7 +9,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_id_seq")
     @SequenceGenerator(sequenceName = "booking_id_seq", name = "booking_id_seq", allocationSize = 1)
-    private Long id;
+    private Integer id;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,17 +38,17 @@ public class Booking {
     @Column
     private String review;
     @Column(name = "proof_of_payment")
-    private Long pop;
+    private Integer pop;
     @Column(name = "job_description")
     private String jobDescription;
 
     Booking() {
     }
 
-    public Booking(Long id, Client client,  Vehicle vehicle,
+    public Booking(Integer id, Client client,  Vehicle vehicle,
                    Zone originZone, Zone destinationZone, LocalDate date, ShiftPeriod shiftPeriod,
                    BookingState state, Integer rating,
-                   String review, Long pop, String jobDescription) {
+                   String review, Integer pop, String jobDescription) {
         this.id = id;
         this.client = client;
         this.vehicle = vehicle;
@@ -76,7 +76,7 @@ public class Booking {
         this.jobDescription = jobDescription;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -128,7 +128,7 @@ public class Booking {
         return jobDescription;
     }
 
-    public Long getPop() {
+    public Integer getPop() {
         return pop;
     }
 
@@ -140,7 +140,7 @@ public class Booking {
         this.review = review;
     }
 
-    public void setPop(Long pop) {
+    public void setPop(Integer pop) {
         this.pop = pop;
     }
 }

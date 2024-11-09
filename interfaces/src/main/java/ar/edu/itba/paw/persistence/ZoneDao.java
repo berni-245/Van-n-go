@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ZoneDao {
-    Optional<Zone> getZone(long zoneId);
+    Optional<Zone> getZone(int zoneId);
 
-    boolean isValidZone(long zoneId);
+    boolean isValidZone(int zoneId);
 
     List<Zone> getAllZones();
 
-    List<Zone> getZonesById(List<Long> zoneIds);
+    List<Zone> getZonesById(List<Integer> zoneIds);
 
     Zone getClientZone(Client client);
 }

@@ -30,17 +30,17 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public void sendClientMessage(Client sender, Long recipientId, String message) {
+    public void sendClientMessage(Client sender, Integer recipientId, String message) {
         sendMessage(sender, recipientId, message, true);
     }
 
     @Transactional
     @Override
-    public void sendDriverMessage(Driver sender, Long recipientId, String message) {
+    public void sendDriverMessage(Driver sender, Integer recipientId, String message) {
         sendMessage(sender, recipientId, message, false);
     }
 
-    private void sendMessage(Object sender, Long recipientId, String message, boolean isClientSender) {
+    private void sendMessage(Object sender, Integer recipientId, String message, boolean isClientSender) {
         if (message.length() > 255) {
             throw new InvalidMessageException();
         }

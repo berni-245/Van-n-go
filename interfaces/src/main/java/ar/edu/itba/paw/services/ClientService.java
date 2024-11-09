@@ -12,16 +12,16 @@ public interface ClientService extends UserService<Client>, UserBookingService<C
     Client create(String username, String mail, String password, Locale locale);
 
     Booking appointBooking(
-            long vehicleId,
+            int vehicleId,
             Client client,
-            long zoneId,
-            long destinationId,
+            int zoneId,
+            int destinationId,
             LocalDate date,
             ShiftPeriod shiftPeriod,
             String jobDescription
     );
 
-    void setBookingRatingAndReview(long bookingId, int rating, String review);
+    void setBookingRatingAndReview(int bookingId, int rating, String review);
 
-    void editProfile(Client client, String username, String mail, Long zoneId, String language);
+    void editProfile(Client client, String username, String mail, Integer zoneId, String language);
 }

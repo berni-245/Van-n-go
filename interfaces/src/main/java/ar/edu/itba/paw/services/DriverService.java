@@ -17,13 +17,13 @@ public interface DriverService extends UserService<Driver> {
             String plateNumber,
             double volume,
             String description,
-            List<Long> zoneIds,
+            List<Integer> zoneIds,
             double rate,
             String imgFilename,
             byte[] imgData
     );
 
-    List<Vehicle> getVehicles(Driver driver, long zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday);
+    List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday);
 
     void updateAvailability(
             Vehicle vehicle,
@@ -37,17 +37,17 @@ public interface DriverService extends UserService<Driver> {
     );
 
     List<Driver> getSearchResults(
-            long zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMin, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     );
 
     int getSearchResultCount(
-            long zoneId, Size size, Double priceMin,
+            int zoneId, Size size, Double priceMin,
             Double priceMax, DayOfWeek weekday, Integer rating
     );
 
     default int getSearchResultPages(
-            long zoneId, Size size, Double priceMin,
+            int zoneId, Size size, Double priceMin,
             Double priceMax, DayOfWeek weekday, Integer rating
     ) {
         return (int) Math.ceil((double) getSearchResultCount(
@@ -55,11 +55,11 @@ public interface DriverService extends UserService<Driver> {
         ) / Pagination.SEARCH_PAGE_SIZE);
     }
 
-    void acceptBooking(long bookingId, Driver driver);
+    void acceptBooking(int bookingId, Driver driver);
 
-    void rejectBooking(long bookingId, Driver driver);
+    void rejectBooking(int bookingId, Driver driver);
 
-    Optional<Vehicle> findVehicleById(Driver driver, long vehicleId);
+    Optional<Vehicle> findVehicleById(Driver driver, int vehicleId);
 
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
@@ -67,13 +67,13 @@ public interface DriverService extends UserService<Driver> {
 
     Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 
-    void updateVehicle(Driver driver, long vehicleId, String plateNumber, double volume, String description, List<Long> zoneIds, double rate, Long oldImgId, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, int vehicleId, String plateNumber, double volume, String description, List<Integer> zoneIds, double rate, Integer oldImgId, String imgFilename, byte[] imgData);
 
-    void finishBooking(long bookingId, Driver driver);
+    void finishBooking(int bookingId, Driver driver);
 
     List<Vehicle> getVehicles(Driver driver, int page);
 
-    long getVehicleCount(Driver driver);
+    int getVehicleCount(Driver driver);
 
     void deleteVehicle(Vehicle vehicle);
 }

@@ -37,23 +37,23 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public Image getImage(long imgId) {
+    public Image getImage(int imgId) {
         return imgDao.getImage(imgId);
     }
 
     @Transactional
     @Override
-    public long uploadPfp(byte[] bin, String fileName, long userId) {
+    public int uploadPfp(byte[] bin, String fileName, int userId) {
         validateImage(fileName,bin);
         Optional<Driver> driver = driverDao.findById(userId);
         if (driver.isPresent()) {
-            long toReturn = imgDao.uploadPfp(bin, fileName, driver.get());
+            int toReturn = imgDao.uploadPfp(bin, fileName, driver.get());
             LOGGER.info("Uploaded pfp for driver {}", userId);
             return toReturn;
         }
         Optional<Client> client = clientDao.findById(userId);
         if (client.isPresent()) {
-            long toReturn = imgDao.uploadPfp(bin, fileName, client.get());
+            int toReturn = imgDao.uploadPfp(bin, fileName, client.get());
             LOGGER.info("Uploaded pfp for client {}", userId);
             return toReturn;
         }
@@ -63,9 +63,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public long uploadPop(byte[] bin, String fileName, long bookingId) {
+    public int uploadPop(byte[] bin, String fileName, int bookingId) {
         validateImage(fileName,bin);
-        long toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());
+        int toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
         return toReturn;
     }

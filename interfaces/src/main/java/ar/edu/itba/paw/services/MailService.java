@@ -31,6 +31,6 @@ public interface MailService {
     void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 
 
-    void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, long senderId, boolean isRecipientDriver,
+    void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, int senderId, boolean isRecipientDriver,
                              String receivedMessage, LocalDateTime timeReceived, Locale locale);
 }

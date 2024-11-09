@@ -14,7 +14,7 @@ import java.time.DayOfWeek;
 public class AvailabilitySearchForm {
     @ValidZoneId
     @NotNull
-    private Long zoneId;
+    private Integer zoneId;
 
     @Nullable
     private Size size;
@@ -38,15 +38,15 @@ public class AvailabilitySearchForm {
     @Nullable
     private SearchOrder order;
 
-    public AvailabilitySearchForm(Long zoneId) {
+    public AvailabilitySearchForm(Integer zoneId) {
         this.zoneId = zoneId;
     }
 
-    public Long getZoneId() {
+    public Integer getZoneId() {
         return zoneId;
     }
 
-    public void setZoneId(Long zoneId) {
+    public void setZoneId(Integer zoneId) {
         this.zoneId = zoneId;
     }
 

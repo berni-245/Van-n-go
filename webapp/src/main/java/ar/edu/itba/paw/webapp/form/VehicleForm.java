@@ -29,11 +29,11 @@ public class VehicleForm {
     @Max(Rates.MAXIMUM)
     private double rate;
 
-    private List<Long> zoneIds;
+    private List<Integer> zoneIds;
 
-    private long id;
+    private int id;
 
-    private Long imgId;
+    private Integer imgId;
 
     public void setAll(Vehicle vehicle) {
         this.id = vehicle.getId();
@@ -45,11 +45,11 @@ public class VehicleForm {
         this.imgId = vehicle.getImgId();
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -85,19 +85,19 @@ public class VehicleForm {
         this.rate = rate;
     }
 
-    public Long getImgId() {
+    public Integer getImgId() {
         return imgId;
     }
 
-    public void setImgId(Long imgId) {
+    public void setImgId(Integer imgId) {
         this.imgId = imgId;
     }
 
-    public List<Long> getZoneIds() {
+    public List<Integer> getZoneIds() {
         return zoneIds;
     }
 
-    public void setZoneIds(List<Long> zoneIds) {
+    public void setZoneIds(List<Integer> zoneIds) {
         this.zoneIds = zoneIds;
     }
 }

@@ -59,7 +59,7 @@ public class UserJdbcDaoTest {
 
     @Test
     public void testSuccessfulCreate(){
-       long userId = userDao.create(USERNAME2,USERMAIL2,USERPASSWORD2);
+       int userId = userDao.create(USERNAME2,USERMAIL2,USERPASSWORD2);
 
        em.flush();
 

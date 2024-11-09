@@ -16,12 +16,12 @@ public class ZoneJpaDao implements ZoneDao {
     private EntityManager em;
 
     @Override
-    public Optional<Zone> getZone(long zoneId) {
+    public Optional<Zone> getZone(int zoneId) {
         return Optional.ofNullable(em.find(Zone.class, zoneId));
     }
 
     @Override
-    public boolean isValidZone(long zoneId) {
+    public boolean isValidZone(int zoneId) {
         return getZone(zoneId).isPresent();
     }
 
@@ -31,7 +31,7 @@ public class ZoneJpaDao implements ZoneDao {
     }
 
     @Override
-    public List<Zone> getZonesById(List<Long> zoneIds) {
+    public List<Zone> getZonesById(List<Integer> zoneIds) {
         return em.createQuery("From Zone z where z.id in :zoneIds", Zone.class)
                 .setParameter("zoneIds", zoneIds)
                 .getResultList();

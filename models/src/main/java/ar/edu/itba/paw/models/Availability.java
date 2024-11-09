@@ -18,7 +18,7 @@ public class Availability {
             name = "vehicle_availability_id_seq",
             allocationSize = 1
     )
-    private long id;
+    private int id;
 
     //    @JoinColumn(name = "vehicle_id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,7 +41,7 @@ public class Availability {
         this.shiftPeriod = shiftPeriod;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
