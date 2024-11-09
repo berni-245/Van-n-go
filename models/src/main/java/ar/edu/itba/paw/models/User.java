@@ -118,4 +118,6 @@ public abstract class User {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public abstract String getType();
 }

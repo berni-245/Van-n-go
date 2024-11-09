@@ -40,7 +40,7 @@
         </ul>
 
         <div class="tab-content mt-3" id="statusTabsContent">
-            <c:set value="${loggedUser.isDriver ? 'driver' : 'client'}" var="userType"/>
+            <c:set value="${loggedUser.type}" var="userType"/>
             <comp:BookingCardList id="${BookingState.PENDING}" tabId="pending-tab"
                                   active="${activeTab eq BookingState.PENDING}"
                                   callToActionCode="call_to_action.${userType}_bookings.pending"

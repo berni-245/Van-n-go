@@ -85,4 +85,9 @@ public class Driver extends User {
                 getId(), getUsername(), getMail(), getDescription(), getCbu()
         );
     }
+
+    @Override
+    public String getType() {
+        return "driver";
+    }
 }

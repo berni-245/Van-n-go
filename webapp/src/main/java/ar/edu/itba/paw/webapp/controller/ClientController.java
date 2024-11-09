@@ -271,9 +271,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("changePasswordForm") ChangePasswordForm form
     ) {
-        ModelAndView mav = new ModelAndView("public/changePassword");
-        mav.addObject("userTypePath", "client");
-        return mav;
+        return new ModelAndView("public/changePassword");
     }
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.POST)

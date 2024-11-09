@@ -72,8 +72,7 @@
                                 <span class="d-sm-inline mx-1">${loggedUser.username}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                                <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
-                                <c:url value='/${userPath}/profile' var="profileUrl"/>
+                                <c:url value='/${loggedUser.type}/profile' var="profileUrl"/>
                                 <li class="dropdown-item" onclick="window.location='${profileUrl}';" style="cursor: pointer;">
                                     <div class="nav-link icon-link text-body-emphasis" aria-current="page">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">

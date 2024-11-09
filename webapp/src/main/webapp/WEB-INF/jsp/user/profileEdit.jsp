@@ -17,8 +17,7 @@
                     <h5 class="card-title text-center mb-4">
                         <spring:message code="user.editUser.edit"/>
                     </h5>
-                    <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
-                    <c:url var="postUrl" value="/${userPath}/profile/edit"/>
+                    <c:url var="postUrl" value="/${loggedUser.type}/profile/edit"/>
                     <form:form action="${postUrl}" method="post" modelAttribute="changeUserInfoForm"
                                id="changeUserInfoForm">
                     <div class="mb-3">

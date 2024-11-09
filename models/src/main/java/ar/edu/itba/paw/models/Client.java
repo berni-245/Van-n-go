@@ -36,4 +36,9 @@ public class Client extends User {
     public void setZone(Zone zone) {
         this.zone = zone;
     }
+
+    @Override
+    public String getType() {
+        return "client";
+    }
 }

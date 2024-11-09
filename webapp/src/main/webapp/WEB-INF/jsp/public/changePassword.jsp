@@ -15,7 +15,7 @@
             <h1><c:out value="${loggedUser.username}"/></h1>
         </div>
         <div class="card-body">
-            <c:url var="postUrl" value="/${userTypePath}/change/password"/>
+            <c:url var="postUrl" value="/${loggedUser.type}/change/password"/>
             <form:form action="${postUrl}" method="post" modelAttribute="changePasswordForm"
                        id="changePasswordForm">
                 <div class="mb-3">

@@ -352,9 +352,7 @@ public class DriverController extends ParentController {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @ModelAttribute("changePasswordForm") ChangePasswordForm form
     ) {
-        ModelAndView mav = new ModelAndView("public/changePassword");
-        mav.addObject("userTypePath", "driver");
-        return mav;
+        return new ModelAndView("public/changePassword");
     }
 
     @RequestMapping(path = "/driver/change/password", method = RequestMethod.POST)

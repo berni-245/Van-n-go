@@ -41,7 +41,6 @@
             <ul class="modal-body list-group list-group-flush">
 
 
-                <c:set var="userPath" value="${loggedUser.isDriver ? 'driver' : 'client'}"/>
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                         <li class="list-group-item"><c:out value="${booking.client.username}"/></li>
@@ -162,5 +161,5 @@
 </div>
 
 <c:if test="${booking.state eq BookingState.ACCEPTED && currentDate.isBefore(booking.date.minusDays(2))}">
-    <comp:CancelBookingModal booking="${booking}" userPath="${userPath}"/>
+    <comp:CancelBookingModal booking="${booking}" userPath="${loggedUser.type}"/>
 </c:if>
