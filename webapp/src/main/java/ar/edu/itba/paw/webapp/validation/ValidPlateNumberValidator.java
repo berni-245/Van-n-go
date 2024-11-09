@@ -19,12 +19,13 @@ public class ValidPlateNumberValidator extends ValidatorWithLoggedUser implement
 
     @Override
     public boolean isValid(VehicleForm form, ConstraintValidatorContext constraintValidatorContext) {
-        Optional<Vehicle> mayBeVehicle = ds.findVehicleById((Driver) getUser(), form.getId());
-        if (mayBeVehicle.isEmpty()) return false;
-        Vehicle vehicle = mayBeVehicle.get();
         String newPN = form.getPlateNumber();
-//        if (newPN == null) return false;
-        if (vehicle.getPlateNumber().equals(newPN)) return true;
+        if (form.getId() != null) {
+            Optional<Vehicle> mayBeVehicle = ds.findVehicleById((Driver) getUser(), form.getId());
+            if (mayBeVehicle.isEmpty()) return false;
+            Vehicle vehicle = mayBeVehicle.get();
+            if (vehicle.getPlateNumber().equals(newPN)) return true;
+        }
         return !vs.plateNumberExists(newPN);
     }
 }

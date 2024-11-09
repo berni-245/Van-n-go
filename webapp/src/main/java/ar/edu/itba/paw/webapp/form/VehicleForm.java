@@ -31,6 +31,7 @@ public class VehicleForm {
 
     private List<Integer> zoneIds;
 
+    @Nullable
     private int id;
 
     private Integer imgId;
@@ -45,11 +46,11 @@ public class VehicleForm {
         this.imgId = vehicle.getImgId();
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

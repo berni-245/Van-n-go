@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Toast;
 import ar.edu.itba.paw.models.ToastType;
+import ar.edu.itba.paw.webapp.interfaces.Redirect;
+import ar.edu.itba.paw.webapp.interfaces.Toasts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @ControllerAdvice
-public class GlobalExceptionHandler extends ParentController {
+public class GlobalExceptionHandler implements Redirect, Toasts {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -77,7 +79,7 @@ public class GlobalExceptionHandler extends ParentController {
 
     @ExceptionHandler(TimeAlreadyPassedException.class)
     public ModelAndView handleTimeAlreadyPassed(TimeAlreadyPassedException ex, RedirectAttributes redirectAttributes,
-                                                     HttpServletRequest request) {
+                                                HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.time.already.passed"));
         LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
@@ -86,7 +88,7 @@ public class GlobalExceptionHandler extends ParentController {
 
     @ExceptionHandler(VehicleIsAlreadyAcceptedException.class)
     public ModelAndView handleVehicleIsAlreadyAccepted(VehicleIsAlreadyAcceptedException ex, RedirectAttributes redirectAttributes,
-                                                HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.is.already.accepted"));
         LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
@@ -95,7 +97,7 @@ public class GlobalExceptionHandler extends ParentController {
 
     @ExceptionHandler(VehicleNotAvailableException.class)
     public ModelAndView handleVehicleNotAvailable(VehicleNotAvailableException ex, RedirectAttributes redirectAttributes,
-                                                       HttpServletRequest request) {
+                                                  HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.not.available"));
         LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
@@ -104,7 +106,7 @@ public class GlobalExceptionHandler extends ParentController {
 
     @ExceptionHandler(InvalidMessageException.class)
     public ModelAndView handleInvalidMessage(InvalidMessageException ex, RedirectAttributes redirectAttributes,
-                                                    HttpServletRequest request) {
+                                             HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.invalid.message"));
         LOGGER.error(ex.getMessage());
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();

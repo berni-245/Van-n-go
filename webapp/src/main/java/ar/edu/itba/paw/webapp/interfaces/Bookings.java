@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.controller;
+package ar.edu.itba.paw.webapp.interfaces;
 
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Toast;
@@ -10,14 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 @Controller
-public class ParentController {
-    protected ModelAndView redirect(String formattedPath, Object... args) {
-        return new ModelAndView("redirect:" + formattedPath.formatted(args));
-    }
-
+public interface Bookings extends Redirect, Toasts {
     private <T extends User> boolean addBookingData(UserBookingService<T> bs, ModelAndView mav, T user, BookingState state, int currentPage) {
         int totPages = bs.getBookingPages(user, state);
         if (totPages == 0) return true;
@@ -30,7 +25,7 @@ public class ParentController {
         return true;
     }
 
-    protected <T extends User> ModelAndView userBookings(
+    default <T extends User> ModelAndView userBookings(
             String mavPath,
             UserBookingService<T> bs,
             T loggedUser,
@@ -57,9 +52,5 @@ public class ParentController {
 
         mav.addObject("activeTab", activeTab);
         return mav;
-    }
-
-    protected void setToasts(RedirectAttributes redirectAttributes, Toast... toasts) {
-        redirectAttributes.addFlashAttribute("toasts", Arrays.stream(toasts).toList());
     }
 }

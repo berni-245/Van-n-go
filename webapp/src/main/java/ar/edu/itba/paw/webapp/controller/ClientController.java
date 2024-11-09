@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.exceptions.InvalidRecipientException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.*;
+import ar.edu.itba.paw.webapp.interfaces.Bookings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-public class ClientController extends ParentController {
+public class ClientController implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
     @Autowired
     private DriverService ds;
@@ -48,7 +48,7 @@ public class ClientController extends ParentController {
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
             RedirectAttributes redirectAttrs
     ) {
-        return super.userBookings(
+        return userBookings(
                 "client/bookings",
                 cs,
                 loggedUser,
@@ -260,7 +260,7 @@ public class ClientController extends ParentController {
             @RequestParam("content") String content,
             @RequestParam("recipientId") Integer recipientId
     ) {
-        ms.sendClientMessage(loggedUser,recipientId,content);
+        ms.sendClientMessage(loggedUser, recipientId, content);
         return new ModelAndView("redirect:/client/chat?recipientId=" + recipientId);
     }
 
@@ -293,7 +293,7 @@ public class ClientController extends ParentController {
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
         // TODO: Por qué es necesario esto??
-        mav.addObject("clientZone",zs.getClientZone(loggedUser));
+        mav.addObject("clientZone", zs.getClientZone(loggedUser));
         return mav;
     }
 
