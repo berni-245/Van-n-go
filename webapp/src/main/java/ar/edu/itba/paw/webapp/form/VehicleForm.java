@@ -31,7 +31,8 @@ public class VehicleForm {
 
     private List<Long> zoneIds;
 
-    private long id;
+    @Nullable
+    private Long id;
 
     private Long imgId;
 
@@ -45,11 +46,11 @@ public class VehicleForm {
         this.imgId = vehicle.getImgId();
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
