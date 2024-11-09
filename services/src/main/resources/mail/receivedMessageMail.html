@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">New Message </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://pawserver.it.itba.edu.ar/paw-2024b-01/css/bootstrap.min.css">
+    <style>
+        .button-primary {
+            display: inline-block;
+            font-weight: 400;
+            color: #fff;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            background-color: #0d6efd; /* Color azul de Bootstrap */
+            border: 1px solid #0d6efd;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.375rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+            border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button-primary a {
+            color: inherit;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button-primary a:hover {
+            color: inherit;
+        }
+    </style>
+</head>
+<body style="background-color: #f8f9fa; font-family: Arial, sans-serif; padding: 20px;">
+<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 5px; padding: 20px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">
+
+
+    <h1 th:text="#{mail.receivedMessage.head(${senderUsername})}" class="text-center m-2">You have received a message from {user]</h1>
+
+    <div class="card m-2">
+        <div class="card-header">
+            <h4 th:text="#{mail.receivedMessage.userWrote(${senderUsername},${dateReceived},${timeReceived})}">{User} wrote on {date} at {time]:</h4>
+        </div>
+        <div class="card-body">
+            <p th:text="${receivedMessage}">Hey! I´m outside waiting for you.</p>
+        </div>
+    </div>
+    <p th:text="#{mail.receivedMessage.moreDetails(${senderUsername})}">You can reply and see more messages on your chat with {user} at Van N' Go</p>
+    <div class="text-center">
+        <button class="button-primary">
+            <a href="${seeChatUrl}" style="color: white"
+               th:text="#{mail.receivedMessage.seeChat(${senderUsername})}">See chat with {user}</a>
+        </button>
+    </div>
+
+
+    <footer th:text="#{mail.footer}" class= "text-center m-2" style="color: #6c757d; font-size: 12px;">Thanks for using Van N' Go</footer>
+</div>
+</body>

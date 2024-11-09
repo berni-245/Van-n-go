@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.awt.print.Book;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public interface MailService {
@@ -28,4 +29,8 @@ public interface MailService {
     void sendDriverCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 
     void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale);
+
+
+    void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, long senderId, boolean isRecipientDriver,
+                             String receivedMessage, LocalDateTime timeReceived, Locale locale);
 }

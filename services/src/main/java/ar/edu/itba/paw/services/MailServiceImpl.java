@@ -20,10 +20,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-//@PropertySource("classpath:resources/mail/mailConfig.properties") //TODO: pasar las configuraciones a mailConfig.properties
 public class MailServiceImpl implements MailService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
     private final TemplateEngine templateEngine;
@@ -268,5 +269,36 @@ public class MailServiceImpl implements MailService {
         }
         sendMail(message);
         LOGGER.info("Sent driver received booking service mail to {}", driverMail);
+    }
+
+    @Async
+    @Override
+    public void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, long senderId, boolean isRecipientDriver,
+                                    String receivedMessage, LocalDateTime timeReceived, Locale locale) {
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("recipientUserName", recipientUserName);
+        context.setVariable("senderUsername", senderUsername);
+        context.setVariable("receivedMessage", receivedMessage);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        context.setVariable("timeReceived", timeReceived.format(timeFormatter));
+
+        if(isRecipientDriver){
+            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/driver/chat?recipientId=%d".formatted(senderId));
+        }else{
+            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/client/chat?recipientId=%d".formatted(senderId));
+        }
+        String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipientMail));
+            message.setSubject(messageSource.getMessage("subject.receivedMessage", new Object[]{senderUsername}, locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception e) {
+            LOGGER.error("Error sending new message mail to {}", recipientUserName);
+        }
+        sendMail(message);
+        LOGGER.info("Sent new message mail to {}", recipientUserName);
     }
 }
