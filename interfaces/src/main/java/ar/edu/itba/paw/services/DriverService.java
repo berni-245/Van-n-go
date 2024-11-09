@@ -71,6 +71,8 @@ public interface DriverService extends UserService<Driver> {
 
     void rejectBooking(long bookingId, Driver driver);
 
+    Optional<Vehicle> findVehicleById(Driver driver, long vehicleId);
+
     Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber);
 
     void editProfile(Driver driver, String username, String mail, String description, String cbu);

@@ -15,10 +15,6 @@ import java.util.List;
 
 @ValidPlateNumber
 public class VehicleForm {
-    @Nullable
-    @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
-    private String ogPlateNumber;
-
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
     private String plateNumber;
 
@@ -55,14 +51,6 @@ public class VehicleForm {
 
     public long getId() {
         return id;
-    }
-
-    public String getOgPlateNumber() {
-        return ogPlateNumber;
-    }
-
-    public void setOgPlateNumber(String ogPlateNumber) {
-        this.ogPlateNumber = ogPlateNumber;
     }
 
     public String getPlateNumber() {

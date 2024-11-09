@@ -21,6 +21,8 @@ public interface VehicleDao {
 
     Optional<Vehicle> findById(long id);
 
+    Optional<Vehicle> findOwnedById(Driver driver, long id);
+
     Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
     List<Vehicle> getDriverVehicles(Driver driver);

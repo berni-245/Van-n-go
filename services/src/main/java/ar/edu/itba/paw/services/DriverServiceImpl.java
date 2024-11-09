@@ -249,6 +249,11 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         return booking;
     }
 
+    @Override
+    public Optional<Vehicle> findVehicleById(Driver driver, long vehicleId) {
+        return vehicleDao.findOwnedById(driver, vehicleId);
+    }
+
     @Transactional
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {

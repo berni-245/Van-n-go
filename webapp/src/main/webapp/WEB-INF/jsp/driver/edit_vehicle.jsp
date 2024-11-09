@@ -30,7 +30,6 @@
                     deleteAction="/driver/vehicle/${vehicle.plateNumber}/delete"
             >
                 <form:input type="hidden" path="id" cssClass="form-control"/>
-                <input type="hidden" name="ogPlateNumber" value="${vehicle.plateNumber}">
             </comp:VehicleForm>
         </div>
 

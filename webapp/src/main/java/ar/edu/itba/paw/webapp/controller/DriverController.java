@@ -211,8 +211,7 @@ public class DriverController extends ParentController {
             @PathVariable(name = "plateNumber") String plateNumber,
             @ModelAttribute("vehicleForm") VehicleForm form,
             BindingResult errors,
-            @ModelAttribute("availabilityForm") AvailabilityForm avForm,
-            Model model
+            @ModelAttribute("availabilityForm") AvailabilityForm avForm
     ) {
         var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
         if (vehicle.isPresent()) {
@@ -227,7 +226,6 @@ public class DriverController extends ParentController {
             mav.addObject("days", days);
             mav.addObject("shiftPeriods", ShiftPeriod.values());
             mav.addObject("zones", zs.getAllZones());
-            mav.addObject("toasts", model.getAttribute("toasts"));
             return mav;
         } else {
             return new ModelAndView();
@@ -246,7 +244,7 @@ public class DriverController extends ParentController {
     ) throws IOException {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in VehicleForm for vehicle {}", form.getPlateNumber());
-            return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm, null);
+            return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm);
         }
         String imgFilename = null;
         byte[] imgData = null;
