@@ -80,7 +80,7 @@ public class DriverController extends ParentController {
     @ResponseBody
     public ResponseEntity<byte[]> getVehicleImage(
             @RequestParam("imgId") int imgId,
-            @ModelAttribute("loggedUser") User loggedUser
+            @ModelAttribute("loggedUser") Driver loggedUser
     ) {
         Image vehicleImg = is.getImage(imgId);
         if (vehicleImg == null) {

@@ -66,7 +66,7 @@ public class ClientController extends ParentController {
     public ModelAndView submit(
             @RequestParam("proofOfPayment") MultipartFile file,
             @RequestParam("bookingId") long bookingId,
-            @ModelAttribute("loggedUser") User loggedUser
+            @ModelAttribute("loggedUser") Client loggedUser
     ) throws IOException {
         if (file == null || file.isEmpty())
             throw new InvalidImageException();
