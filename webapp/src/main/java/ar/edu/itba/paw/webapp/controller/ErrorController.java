@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.interfaces.Redirect;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ErrorController extends ParentController{
+public class ErrorController implements Redirect {
     // This extra redirect needs to be done or otherwise the page will load without the logged user
     @RequestMapping("/400")
     public ModelAndView badRequestRedirect() {

@@ -6,6 +6,7 @@ import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
 import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
 import ar.edu.itba.paw.webapp.form.VehicleForm;
+import ar.edu.itba.paw.webapp.interfaces.Bookings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class DriverController extends ParentController {
+public class DriverController implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverController.class);
     @Autowired
     private DriverService ds;
@@ -281,7 +282,7 @@ public class DriverController extends ParentController {
             @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
             RedirectAttributes redirectAttrs
     ) {
-        return super.userBookings(
+        return userBookings(
                 "driver/bookings",
                 ds,
                 loggedUser,

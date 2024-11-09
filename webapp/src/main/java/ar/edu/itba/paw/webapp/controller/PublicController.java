@@ -5,6 +5,8 @@ import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.interfaces.Redirect;
+import ar.edu.itba.paw.webapp.interfaces.Toasts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Controller
-public class PublicController extends ParentController {
+public class PublicController implements Redirect, Toasts {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private ClientService cs;
@@ -48,10 +49,11 @@ public class PublicController extends ParentController {
             RedirectAttributes redirectAttributes
     ) {
         redirectAttributes.addFlashAttribute("toasts", toasts);
-        if (loggedUser == null || (!loggedUser.isClient()) && !loggedUser.isDriver())
+        if (loggedUser == null || (!loggedUser.isClient()) && !loggedUser.isDriver()) {
             return new ModelAndView("public/home");
+        }
 
-        if(loggedUser.isClient())
+        if (loggedUser.isClient())
             return redirect("/client/search");
         else {
             return redirect("/driver/bookings");
@@ -69,16 +71,27 @@ public class PublicController extends ParentController {
             return createForm(userForm);
         }
         final User user;
-        if (userForm.getUserType().equals(UserRole.DRIVER.name()))
-            user = ds.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), null, LocaleContextHolder.getLocale());
-        else
-            user = cs.create(userForm.getUsername(), userForm.getMail(), userForm.getPassword(), LocaleContextHolder.getLocale());
+        if (userForm.getUserType().equals(UserRole.DRIVER.name())) {
+            user = ds.create(
+                    userForm.getUsername(),
+                    userForm.getMail(),
+                    userForm.getPassword(),
+                    null,
+                    LocaleContextHolder.getLocale()
+            );
+        } else {
+            user = cs.create(
+                    userForm.getUsername(),
+                    userForm.getMail(),
+                    userForm.getPassword(),
+                    LocaleContextHolder.getLocale()
+            );
+        }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.create.success"));
-        if (user.isDriver())
-            return new ModelAndView("redirect:/driver/vehicles");
-        return new ModelAndView("redirect:/client/search");
+        if (user.isDriver()) return new ModelAndView("redirect:/driver/vehicles");
+        else return new ModelAndView("redirect:/client/search");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
