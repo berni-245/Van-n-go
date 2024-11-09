@@ -21,7 +21,7 @@ public class Vehicle {
     private double volume;
     @Column(nullable = false)
     private String description;
-    @Column(name = "img_id", nullable = false)
+    @Column(name = "img_id")
     private Long imgId;
     @Column(name = "hourly_rate", nullable = false)
     private double hourlyRate;
@@ -132,8 +132,7 @@ public class Vehicle {
         return Objects.hash(id);
     }
 
-    public Size getSize() { //revisar.. no es muy lindo
-
+    public Size getSize() {
         if (volume >= Size.SMALL.getMinVolume() && volume < Size.MEDIUM.getMinVolume()) {
             return Size.SMALL;
         } else if (volume >= Size.MEDIUM.getMinVolume() && volume < Size.LARGE.getMinVolume()) {

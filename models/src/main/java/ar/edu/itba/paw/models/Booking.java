@@ -25,7 +25,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Zone destinationZone;
 
-    @Column
+    @Column(nullable = false)
     private LocalDate date;
     @Column(name = "shift_period")
     @Enumerated(EnumType.STRING)

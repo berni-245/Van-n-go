@@ -65,6 +65,12 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
+    public void cancelBooking(Booking booking) {
+        booking.setState(BookingState.CANCELED);
+        em.merge(booking);
+    }
+
+    @Override
     public Optional<Booking> getBookingById(long bookingId) {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }
@@ -163,12 +169,6 @@ public class BookingJpaDao implements BookingDao {
         }
         double newRating = ((oldRating * finishedBookingsWithRating) + rating) / (finishedBookingsWithRating + 1);
         driver.setRating(newRating);
-    }
-
-    @Override
-    public void cancelBooking(Booking booking) {
-        booking.setState(BookingState.CANCELED);
-        em.merge(booking);
     }
 
     private int getFinishedBookingsWithRatingCountByDriver(Driver driver) {

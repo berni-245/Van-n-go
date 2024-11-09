@@ -16,7 +16,7 @@ public class Country {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "code", nullable = false, length = 2)
+    @Column(name = "code", nullable = false)
     private String code;
 
     public Integer getId() {
