@@ -55,14 +55,6 @@ public interface DriverService extends UserService<Driver> {
         ) / Pagination.SEARCH_PAGE_SIZE);
     }
 
-    List<Booking> getBookingsByVehicle(long vehicleId);
-
-    List<Booking> getBookingsByVehicle(long vehicleId, LocalDate date);
-
-    default List<Booking> getBookingsByVehicle(long vehicleId, String date) {
-        return getBookingsByVehicle(vehicleId, LocalDate.parse(date));
-    }
-
     void acceptBooking(long bookingId, Driver driver);
 
     void rejectBooking(long bookingId, Driver driver);

@@ -115,14 +115,6 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date) {
-        TypedQuery<Booking> query = em.createQuery("From Booking as b where b.vehicle = :vehicle and b.date = :date", Booking.class);
-        query.setParameter("vehicle", vehicle);
-        query.setParameter("date", date.toString());
-        return query.getResultList();
-    }
-
-    @Override
     public List<Booking> getClientBookings(Client client, BookingState state, int offset) {
         var nativeQueryList = em.createNativeQuery("""
                         select b.id

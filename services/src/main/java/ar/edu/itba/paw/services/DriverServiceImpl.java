@@ -177,18 +177,6 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Booking> getBookingsByVehicle(long vehicleId) {
-        return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow());
-    }
-
-    @Transactional
-    @Override
-    public List<Booking> getBookingsByVehicle(long vehicleId, LocalDate date) {
-        return bookingDao.getBookingsByVehicle(vehicleDao.findById(vehicleId).orElseThrow(), date);
-    }
-
-    @Transactional
-    @Override
     public void acceptBooking(long bookingId, Driver driver) {
         Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
         if (!booking.getDriver().equals(driver)) {

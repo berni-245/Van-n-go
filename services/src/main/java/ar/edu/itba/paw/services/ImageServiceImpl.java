@@ -63,15 +63,6 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public long uploadVehicleImage(byte[] bin, String fileName, long vehicleId) {
-        validateImage(fileName,bin);
-        long toReturn = imgDao.uploadVehicleImage(bin, fileName, vehicleDao.findById(vehicleId).orElseThrow());
-        LOGGER.info("Uploaded vehicle image for vehicle {}", vehicleId);
-        return toReturn;
-    }
-
-    @Transactional
-    @Override
     public long uploadPop(byte[] bin, String fileName, long bookingId) {
         validateImage(fileName,bin);
         long toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());

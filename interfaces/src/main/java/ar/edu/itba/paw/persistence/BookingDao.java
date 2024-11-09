@@ -31,8 +31,6 @@ public interface BookingDao {
 
     List<Booking> getBookingsByVehicle(Vehicle vehicle);
 
-    List<Booking> getBookingsByVehicle(Vehicle vehicle, LocalDate date);
-
     List<Booking> getClientBookings(Client client, BookingState state, int offset);
 
     long getClientBookingCount(Client client, BookingState state);

@@ -8,7 +8,5 @@ public interface ImageService {
 
     long uploadPfp(byte[] bin, String fileName, long userId);
 
-    long uploadVehicleImage(byte[] bin, String fileName, long vehicleId);
-
     long uploadPop(byte[] bin, String fileName, long bookingId);
 }
