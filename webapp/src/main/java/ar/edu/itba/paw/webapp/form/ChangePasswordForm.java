@@ -5,20 +5,11 @@ import ar.edu.itba.paw.webapp.validation.OldPasswordMatch;
 import ar.edu.itba.paw.webapp.validation.PasswordMatch;
 import ar.edu.itba.paw.webapp.validation.PasswordValidator;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @PasswordMatch
-@OldPasswordMatch
 public class ChangePasswordForm implements PasswordValidator {
-
-    @NotNull
-    private long userId;
-
-    @NotNull
-    private boolean isDriver;
-
     @Size(min = 8, max = 32)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
     private String password;
@@ -27,16 +18,8 @@ public class ChangePasswordForm implements PasswordValidator {
     private String confirmPassword;
 
     @Size(min = 8, max = 32)
+    @OldPasswordMatch
     private String oldPassword;
-
-    @NotNull
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(@NotNull long userId) {
-        this.userId = userId;
-    }
 
     @Override
     public String getPassword() {
@@ -58,20 +41,11 @@ public class ChangePasswordForm implements PasswordValidator {
         this.confirmPassword = confirmPassword;
     }
 
-    public @Size(min = 8, max = 32) String getOldPassword() {
+    public String getOldPassword() {
         return oldPassword;
     }
 
-    public void setOldPassword(@Size(min = 8, max = 32) String oldPassword) {
+    public void setOldPassword(String oldPassword) {
         this.oldPassword = oldPassword;
-    }
-
-
-    public boolean isDriver() {
-        return isDriver;
-    }
-
-    public void setDriver(boolean driver) {
-        isDriver = driver;
     }
 }

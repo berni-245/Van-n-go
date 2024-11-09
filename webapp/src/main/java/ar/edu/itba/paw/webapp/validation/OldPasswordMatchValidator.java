@@ -1,33 +1,17 @@
 package ar.edu.itba.paw.webapp.validation;
 
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.services.ClientService;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
-import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Optional;
 
-public class OldPasswordMatchValidator implements ConstraintValidator<OldPasswordMatch, ChangePasswordForm> {
-
-    @Autowired
-    private ClientService cs;
-    @Autowired
-    private DriverService ds;
+public class OldPasswordMatchValidator extends ValidatorWithLoggedUser implements ConstraintValidator<OldPasswordMatch, String> {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean isValid(ChangePasswordForm form, ConstraintValidatorContext context) {
-        User user;
-        if(form.isDriver()) user = ds.findById(form.getUserId());
-        else user = cs.findById(form.getUserId());
-        return user.getPassword().equals(passwordEncoder.encode(form.getPassword()));
+    public boolean isValid(String oldPassword, ConstraintValidatorContext context) {
+        return passwordEncoder.matches(oldPassword, getUser().getPassword());
     }
 }

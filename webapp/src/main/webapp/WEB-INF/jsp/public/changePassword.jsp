@@ -19,7 +19,6 @@
             <form:form action="${postUrl}" method="post" modelAttribute="changePasswordForm"
                        id="changePasswordForm">
                 <div class="mb-3">
-                    <form:input type="hidden" path="driver"  value="${loggedUser.isDriver}"/>
                     <label class="form-label">
                         <spring:message code="public.changePassword.oldPassword"/>
                     </label>
@@ -40,7 +39,6 @@
                     <form:input type="password" path="confirmPassword" class="form-control" value=""/>
                     <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
                 </div>
-                <form:input type="hidden" path="userId" class="form-control" value="${loggedUser.id}"/>
 
                 <form:errors element="div" cssClass="alert alert-danger"/>
                 <spring:message code="generic.word.confirm" var="confirm"/>
