@@ -77,11 +77,15 @@
                     </div>
                 </c:when>
             </c:choose>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bookingModal${booking.id}">
-                <spring:message code="generic.phrase.seeDetails"/>
-            </button>
-
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#bookingModal${booking.id}">
+                    <spring:message code="generic.phrase.seeDetails"/>
+                </button>
+                <a href="${pageContext.request.contextPath}/driver/chat?recipientId=${booking.client.id}" type="button" class="btn btn-secondary">
+                    <spring:message code="generic.word.chat"/>
+                </a>
+            </div>
         </div>
     </div>
 </div>
