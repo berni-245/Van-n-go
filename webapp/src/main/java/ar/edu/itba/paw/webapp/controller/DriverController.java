@@ -185,8 +185,11 @@ public class DriverController extends ParentController {
             form.setUsername(loggedUser.getUsername());
             form.setCbu(loggedUser.getCbu());
             form.setDescription(loggedUser.getDescription());
+            form.setLanguage(loggedUser.getLanguage().name());
         }
-        return new ModelAndView("/user/profileEdit");
+        ModelAndView mav = new ModelAndView("/user/profileEdit");
+        mav.addObject("languages", Language.values());
+        return mav;
     }
 
     @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.POST)

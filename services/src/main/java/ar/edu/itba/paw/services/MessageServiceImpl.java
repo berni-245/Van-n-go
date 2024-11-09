@@ -11,7 +11,10 @@ import ar.edu.itba.paw.persistence.MessageDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 
 @Service
@@ -20,12 +23,14 @@ public class MessageServiceImpl implements MessageService {
     private final MessageDao messageDao;
     private final DriverDao driverDao;
     private final ClientDao clientDao;
+    private final MailService mailService;
 
     @Autowired
-    public MessageServiceImpl(MessageDao messageDao, DriverDao driverDao, ClientDao clientDao) {
+    public MessageServiceImpl(MessageDao messageDao, DriverDao driverDao, ClientDao clientDao, MailService mailService) {
         this.messageDao = messageDao;
         this.driverDao = driverDao;
         this.clientDao = clientDao;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -49,10 +54,12 @@ public class MessageServiceImpl implements MessageService {
             Driver recipient = driverDao.findById(recipientId)
                     .orElseThrow(InvalidRecipientException::new);
             messageDao.sendMessage((Client) sender, recipient, message, false);
+            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Client) sender).getUsername(), ((Client) sender).getId(), true, message, LocalDateTime.now(), Locale.of(recipient.getLanguage().toLocale()));
         } else {
             Client recipient = clientDao.findById(recipientId)
                     .orElseThrow(InvalidRecipientException::new);
             messageDao.sendMessage(recipient, (Driver) sender, message, true);
+            mailService.sendReceivedMessage(recipient.getUsername(), recipient.getMail(), ((Driver) sender).getUsername(), ((Driver) sender).getId(), false, message, LocalDateTime.now(), Locale.of(recipient.getLanguage().toLocale()));
         }
     }
 
