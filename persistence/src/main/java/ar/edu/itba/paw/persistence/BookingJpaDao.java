@@ -98,10 +98,10 @@ public class BookingJpaDao implements BookingDao {
                         select count(*) from Booking b
                         join Vehicle v on b.vehicle = v
                         where v.driver = :driver and b.state = :state
-                        """, Integer.class)
+                        """, Long.class)
                 .setParameter("driver", driver)
                 .setParameter("state", state)
-                .getSingleResult();
+                .getSingleResult().intValue();
     }
 
     @Override
@@ -135,10 +135,10 @@ public class BookingJpaDao implements BookingDao {
                         select count(*) from Booking b
                         where b.client = :client
                         and b.state = :state
-                        """, Integer.class)
+                        """, Long.class)
                 .setParameter("client", client)
                 .setParameter("state", state)
-                .getSingleResult();
+                .getSingleResult().intValue();
     }
 
     @Override

@@ -29,7 +29,7 @@ public class MessageJpaDao implements MessageDao {
                 .setMaxResults(Pagination.MAX_MESSAGE_RETRIEVAL)
                 .getResultList();
 
-        return em.createQuery("SELECT m FROM Message m WHERE m.id IN :msgIds order by m.timeSent desc", Message.class)
+        return em.createQuery("SELECT m FROM Message m WHERE m.id IN (:msgIds) order by m.timeSent desc", Message.class)
                 .setParameter("msgIds", messageIds)
                 .getResultList();
     }

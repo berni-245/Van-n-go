@@ -147,8 +147,8 @@ public class VehicleJpaDao implements VehicleDao {
         return em.createQuery("""
                     select count(*) from Vehicle v
                     where v.driver = :driver
-                    """, Integer.class)
+                    """, Long.class)
                 .setParameter("driver", driver)
-                .getSingleResult();
+                .getSingleResult().intValue();
     }
 }
