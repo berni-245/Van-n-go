@@ -361,13 +361,15 @@ public class DriverController extends ParentController {
     public ModelAndView postChangePassword(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in ChangePasswordForm for {}", loggedUser.getUsername());
             return changePassword(loggedUser, form);
         }
         ds.updatePassword(loggedUser, form.getPassword());
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
         return new ModelAndView("redirect:/profile");
     }
 

@@ -182,8 +182,7 @@ public class ClientController extends ParentController {
             @RequestParam(name = "order", required = false) SearchOrder order,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingForm") BookingForm form,
-            RedirectAttributes redirectAttributes
+            @ModelAttribute("bookingForm") BookingForm form
     ) {
         Driver driver = ds.findById(driverId);
         final ModelAndView mav = new ModelAndView("client/driverAvailability");
@@ -206,7 +205,6 @@ public class ClientController extends ParentController {
         mav.addObject("weekday", weekday);
         mav.addObject("order", order);
         mav.addObject("page", page);
-        mav.addObject("toasts", redirectAttributes.getAttribute("toasts"));
         return mav;
     }
 
@@ -228,7 +226,7 @@ public class ClientController extends ParentController {
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingForm");
-            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, order, page, loggedUser, form, redirectAttributes);
+            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, order, page, loggedUser, form);
         }
         cs.appointBooking(
                 form.getVehicleId(),
