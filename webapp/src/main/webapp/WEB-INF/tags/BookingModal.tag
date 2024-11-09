@@ -58,7 +58,7 @@
                 <li class="list-group-item"><spring:message
                         arguments="${booking.vehicle.plateNumber}"
                         code="components.bookingModal.vehicle"/></li>
-
+                <li class="list-group-item"><spring:message arguments="${booking.vehicle.hourlyRate}" code="components.bookingModal.hourlyRate" /></li>
 
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
