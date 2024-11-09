@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ClientService extends UserBookingService<Client> {
     Client create(String username, String mail, String password, Locale locale);
 
-    Optional<Client> findById(long id);
+    Client findById(long id);
 
     Booking appointBooking(
             long vehicleId,

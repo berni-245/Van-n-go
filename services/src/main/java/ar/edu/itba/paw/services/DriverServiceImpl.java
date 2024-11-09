@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingAcceptException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingFinishException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingRejectException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -68,8 +65,11 @@ public class DriverServiceImpl extends UserServiceImpl implements DriverService 
 
     @Transactional
     @Override
-    public Optional<Driver> findById(long id) {
-        return driverDao.findById(id);
+    public Driver findById(long id) {
+        Optional<Driver> aux = driverDao.findById(id);
+        if(aux.isPresent())
+            return aux.get();
+        throw new InvalidUserException();
     }
 
     @Transactional

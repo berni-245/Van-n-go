@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.AvailabilityForm;
 import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
 import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
@@ -34,15 +32,13 @@ public class DriverController extends ParentController {
     @Autowired
     private DriverService ds;
     @Autowired
+    private ClientService cs;
+    @Autowired
     private ZoneService zs;
     @Autowired
     private ImageService is;
-
-    public DriverController(final DriverService ds, ZoneService zs, ImageService is) {
-        this.ds = ds;
-        this.zs = zs;
-        this.is = is;
-    }
+    @Autowired
+    private MessageService ms;
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehiclePost(
@@ -107,6 +103,29 @@ public class DriverController extends ParentController {
         headers.setContentLength(vehicleImg.getData().length);
         headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)).cachePublic());
         return new ResponseEntity<>(vehicleImg.getData(), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/driver/chat", method = RequestMethod.GET)
+    public ModelAndView chat(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam("recipientId") Long recipientId
+    ) {
+        final ModelAndView mav = new ModelAndView("driver/chat");
+        Client client = cs.findById(recipientId);
+        mav.addObject("recipient", client);
+        List<Message> messages = ms.getConversation(client, loggedUser);
+        mav.addObject("messages", messages);
+        return mav;
+    }
+
+    @RequestMapping(path = "/driver/send", method = RequestMethod.POST)
+    public ModelAndView send(
+            @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam("content") String content,
+            @RequestParam("recipientId") Long recipientId
+    ) {
+        ms.sendDriverMessage(loggedUser,recipientId,content);
+        return new ModelAndView("redirect:/driver/chat?recipientId=" + recipientId);
     }
 
     @RequestMapping(

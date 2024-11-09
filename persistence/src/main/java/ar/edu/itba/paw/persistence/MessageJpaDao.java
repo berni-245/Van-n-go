@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.Pagination;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -18,8 +20,7 @@ public class MessageJpaDao implements MessageDao {
 
     @Override
     public List<Message> getConversation(Client client, Driver driver) {
-        @SuppressWarnings("unchecked")
-        List<Long> messageIds = em.createNativeQuery("""
+        var messageIds = em.createNativeQuery("""
                     SELECT m.id FROM message m
                     WHERE m.client_id = :clientId AND m.driver_id = :driverId
                     ORDER BY m.time_sent DESC
@@ -28,8 +29,11 @@ public class MessageJpaDao implements MessageDao {
                 .setMaxResults(Pagination.MAX_MESSAGE_RETRIEVAL)
                 .getResultList();
 
-        return em.createQuery("SELECT m FROM Message m WHERE m.id = :msgIds order by m.timeSent desc", Message.class)
-                .setParameter("msgIds", messageIds)
+        @SuppressWarnings("unchecked")
+        List<Long> longMessageIds = messageIds.stream().map(id -> ((BigInteger) id).longValue()).toList();
+
+        return em.createQuery("SELECT m FROM Message m WHERE m.id IN :msgIds order by m.timeSent desc", Message.class)
+                .setParameter("msgIds", longMessageIds)
                 .getResultList();
     }
 

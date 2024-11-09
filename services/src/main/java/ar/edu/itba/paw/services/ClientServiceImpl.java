@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidUserException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
@@ -58,8 +59,12 @@ public class ClientServiceImpl extends UserServiceImpl implements ClientService 
 
     @Transactional
     @Override
-    public Optional<Client> findById(long id) {
-        return clientDao.findById(id);
+    public Client findById(long id) {
+        Optional<Client> optClient = clientDao.findById(id);
+        if(optClient.isPresent()) {
+            return optClient.get();
+        }
+        throw new InvalidUserException();
     }
 
     @Transactional

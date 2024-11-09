@@ -25,9 +25,9 @@ public class OldPasswordMatchValidator implements ConstraintValidator<OldPasswor
 
     @Override
     public boolean isValid(ChangePasswordForm form, ConstraintValidatorContext context) {
-        Optional<? extends User> user;
+        User user;
         if(form.isDriver()) user = ds.findById(form.getUserId());
         else user = cs.findById(form.getUserId());
-        return user.filter(value -> passwordEncoder.matches(form.getOldPassword(), value.getPassword())).isPresent();
+        return user.getPassword().equals(passwordEncoder.encode(form.getPassword()));
     }
 }

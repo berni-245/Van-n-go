@@ -1,20 +1,14 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.exceptions.UserNotFoundException;
+import ar.edu.itba.paw.exceptions.InvalidRecipientException;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.ClientService;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.services.ZoneService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,13 +31,8 @@ public class ClientController extends ParentController {
     private ClientService cs;
     @Autowired
     private ImageService is;
-
-    public ClientController(DriverService ds, ClientService cs, ZoneService zs, ImageService is) {
-        this.ds = ds;
-        this.cs = cs;
-        this.zs = zs;
-        this.is = is;
-    }
+    @Autowired
+    private MessageService ms;
 
     @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(
@@ -91,7 +80,7 @@ public class ClientController extends ParentController {
             @ModelAttribute("bookingReviewForm") BookingReviewForm form
             ) {
         ModelAndView mav = new ModelAndView("client/bookingReview");
-        mav.addObject("driver", ds.findById(driverId).orElseThrow());
+        mav.addObject("driver", ds.findById(driverId));
         mav.addObject("bookingId", bookingId );
         return mav;
     }
@@ -189,33 +178,29 @@ public class ClientController extends ParentController {
             @ModelAttribute("bookingForm") BookingForm form,
             RedirectAttributes redirectAttributes
     ) {
-        Optional<Driver> driver = ds.findById(driverId);
-        if (driver.isPresent()) {
-            final ModelAndView mav = new ModelAndView("client/driverAvailability");
-            mav.addObject("driverId", driverId);
-            Zone originZone = zs.getZone(zoneId).orElseThrow();
-            List<Vehicle> vehicles = ds.getVehicles(driver.get(), zoneId, size, priceMin, priceMax, weekday);
-            Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
-            List<Zone> zones = zs.getAllZones();
-            mav.addObject("zones", zones);
-            mav.addObject("vehicles", vehicles);
-            mav.addObject("workingDays", workingDays);
-            mav.addObject("shiftPeriods", ShiftPeriod.values());
-            mav.addObject("driver", driver.get());
-            mav.addObject("originZone", originZone);
-            mav.addObject("size", size);
-            mav.addObject("sizeLowerCase", size);
-            mav.addObject("priceMin", priceMin);
-            mav.addObject("priceMax", priceMax);
-            mav.addObject("rating", rating);
-            mav.addObject("weekday", weekday);
-            mav.addObject("order", order);
-            mav.addObject("page", page);
-            mav.addObject("toasts", redirectAttributes.getAttribute("toasts"));
-            return mav;
-        } else {
-            return new ModelAndView("redirect:/403");
-        }
+        Driver driver = ds.findById(driverId);
+        final ModelAndView mav = new ModelAndView("client/driverAvailability");
+        mav.addObject("driverId", driverId);
+        Zone originZone = zs.getZone(zoneId).orElseThrow();
+        List<Vehicle> vehicles = ds.getVehicles(driver, zoneId, size, priceMin, priceMax, weekday);
+        Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
+        List<Zone> zones = zs.getAllZones();
+        mav.addObject("zones", zones);
+        mav.addObject("vehicles", vehicles);
+        mav.addObject("workingDays", workingDays);
+        mav.addObject("shiftPeriods", ShiftPeriod.values());
+        mav.addObject("driver", driver);
+        mav.addObject("originZone", originZone);
+        mav.addObject("size", size);
+        mav.addObject("sizeLowerCase", size);
+        mav.addObject("priceMin", priceMin);
+        mav.addObject("priceMax", priceMax);
+        mav.addObject("rating", rating);
+        mav.addObject("weekday", weekday);
+        mav.addObject("order", order);
+        mav.addObject("page", page);
+        mav.addObject("toasts", redirectAttributes.getAttribute("toasts"));
+        return mav;
     }
 
     @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.POST)
@@ -251,6 +236,28 @@ public class ClientController extends ParentController {
         return new ModelAndView("redirect:/client/bookings");
     }
 
+    @RequestMapping(path = "/client/chat", method = RequestMethod.GET)
+    public ModelAndView chat(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam("recipientId") Long recipientId
+    ) {
+        final ModelAndView mav = new ModelAndView("client/chat");
+        Driver driver = ds.findById(recipientId);
+        mav.addObject("recipient", driver);
+        List<Message> messages = ms.getConversation(loggedUser, driver);
+        mav.addObject("messages", messages);
+        return mav;
+    }
+
+    @RequestMapping(path = "/client/send", method = RequestMethod.POST)
+    public ModelAndView send(
+            @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam("content") String content,
+            @RequestParam("recipientId") Long recipientId
+    ) {
+        ms.sendClientMessage(loggedUser,recipientId,content);
+        return new ModelAndView("redirect:/client/chat?recipientId=" + recipientId);
+    }
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.GET)
     public ModelAndView changePassword(

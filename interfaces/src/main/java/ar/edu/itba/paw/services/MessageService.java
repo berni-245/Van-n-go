@@ -6,9 +6,9 @@ import ar.edu.itba.paw.models.Message;
 import java.util.List;
 
 public interface MessageService {
-    void sendClientMessage(Client sender, Driver recipient, String message);
+    void sendClientMessage(Client sender, Long recipient, String message);
 
-    void sendDriverMessage(Driver sender, Client recipient, String message);
+    void sendDriverMessage(Driver sender, Long recipient, String message);
 
-    List<Message> getConversation(Driver driver, Client client);
+    List<Message> getConversation(Client client, Driver driver);
 }

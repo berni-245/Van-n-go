@@ -12,7 +12,7 @@ import java.util.Set;
 public interface DriverService extends UserBookingService<Driver> {
     Driver create(String username, String mail, String password, String description, Locale locale);
 
-    Optional<Driver> findById(long id);
+    Driver findById(long id);
 
     Vehicle addVehicle(
             long driverId,
