@@ -57,7 +57,6 @@ public class TestConfig {
         ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
 
         dbp.addScript(pgSql);
-        dbp.addScript(schemaSql);
         dbp.addScript(dbInit);
         return dbp;
     }
@@ -78,7 +77,7 @@ public class TestConfig {
 
         final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect","org.hibernate.dialect.HSQLDialect");
-        properties.setProperty("hibernate.hbm2ddl.auto", "none");
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }

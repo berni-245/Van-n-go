@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 @Sql(scripts = {
         "classpath:db_init.sql", // Adds constant data to tables
-        "classpath:add_availability_data.sql" // There will be a vehicle with id 1, who works from 0-4am, on wednesday and thursday in the zone with id 1
+        "classpath:add_booking_data.sql" // There will be a vehicle with id 1, who works from 0-4am, on wednesday and thursday in the zone with id 1
 })
 public class DriverJdbcDaoTest {
     private static final long CLIENT_ID = 1;
