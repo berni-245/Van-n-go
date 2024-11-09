@@ -32,7 +32,7 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
     }
 
     @Override
-    public Optional<Client> findById(int id) { //TODO: revisar si podemos omitir el optional
+    public Optional<Client> findById(int id) {
         return Optional.ofNullable(em.find(Client.class, id));
     }
 

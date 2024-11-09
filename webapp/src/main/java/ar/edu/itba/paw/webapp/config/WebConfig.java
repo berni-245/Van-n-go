@@ -162,8 +162,6 @@ public class WebConfig implements WebMvcConfigurer {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "update"); //Mapping from hibernate to ddl tries non-destructive operations while creating tables
         properties.setProperty("hibernate.dialect","org.hibernate.dialect.PostgreSQL92Dialect");
-        properties.setProperty("hibernate.show_sql", "true"); //TODO: sacar antes de mandar a prod!!!!! Esto es solo para imprimir a salida estandar el sql que manda hibernate a la bd
-        properties.setProperty("format_sql", "true");         //TODO: sacar antes de mandar a prod!!!!!
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }

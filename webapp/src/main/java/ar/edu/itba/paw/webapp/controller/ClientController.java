@@ -71,7 +71,6 @@ public class ClientController implements Bookings {
         if (file == null || file.isEmpty())
             throw new InvalidImageException();
         is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
-        // TODO agregar query params.
         return redirect("/client/bookings?activeTab=%s", BookingState.ACCEPTED);
     }
 
@@ -292,7 +291,6 @@ public class ClientController implements Bookings {
     @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
         ModelAndView mav = new ModelAndView("user/profile");
-        // TODO: Por qué es necesario esto??
         mav.addObject("clientZone", zs.getClientZone(loggedUser));
         return mav;
     }

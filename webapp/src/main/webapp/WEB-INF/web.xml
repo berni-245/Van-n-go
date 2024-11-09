@@ -94,11 +94,4 @@
         <location>/404</location>
     </error-page>
 
-<!--    TODO De-comment when deploying, Do not delete-->
-<!--    <error-page>-->
-<!--        <error-code>500</error-code>-->
-<!--        <location>/500</location>-->
-<!--    </error-page>-->
-
-
 </web-app>

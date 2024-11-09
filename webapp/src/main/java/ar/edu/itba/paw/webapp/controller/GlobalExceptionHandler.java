@@ -121,4 +121,11 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         return redirect(currentUrl);
     }
+
+    // TODO De-comment when deploying, Do not delete
+//    @ExceptionHandler(Exception.class)
+//    public ModelAndView handleGenericException(Exception ex, RedirectAttributes redirectAttributes) {
+//        LOGGER.error(ex.getMessage());
+//        return redirect("/internalError");
+//    }
 }

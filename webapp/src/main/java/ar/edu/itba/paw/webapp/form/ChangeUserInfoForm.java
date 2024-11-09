@@ -33,7 +33,7 @@ public class ChangeUserInfoForm {
     @Length(min = 5, max = 255)
     private String description;
 
-    //TODO:The previous Regex was wrong. No special chars on alias is wrong.
+    @Pattern(regexp = "^[A-Za-z0-9.-]+$")
     @Length(max = 32)
     @Nullable
     private String cbu;

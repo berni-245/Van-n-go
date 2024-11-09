@@ -31,7 +31,7 @@ public abstract class User {
    private Language language;
 
    //TODO: añadir nullable=false luego de añadirle creationTimes a los usuarios de pampero
-    @Column(name = "creation_time")
+   @Column(name = "creation_time")
    private LocalDateTime creationTime;
 
     @PrePersist
