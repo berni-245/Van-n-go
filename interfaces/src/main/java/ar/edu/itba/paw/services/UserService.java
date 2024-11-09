@@ -9,9 +9,9 @@ public interface UserService<T extends User> extends UserBookingService<T> {
 
     boolean usernameExists(String mail);
 
-    Optional<T> findByUsername(String username);
+    T findById(long id);
 
-    Optional<T> findById(long id);
+    Optional<T> findByUsername(String username);
 
     void editProfile(User user, String username, String mail);
 

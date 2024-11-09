@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidUserException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -49,12 +47,6 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
         LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
-    }
-
-    @Transactional
-    @Override
-    public Optional<Client> findById(long id) {
-        return clientDao.findById(id);
     }
 
     @Transactional

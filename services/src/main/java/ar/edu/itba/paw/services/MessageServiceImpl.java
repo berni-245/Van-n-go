@@ -22,7 +22,7 @@ public class MessageServiceImpl implements MessageService {
     private final ClientDao clientDao;
 
     @Autowired
-    public MessageServiceImpl(final MessageDao messageDao, final DriverDao driverDao, final ClientDao clientDao) {
+    public MessageServiceImpl(MessageDao messageDao, DriverDao driverDao, ClientDao clientDao) {
         this.messageDao = messageDao;
         this.driverDao = driverDao;
         this.clientDao = clientDao;

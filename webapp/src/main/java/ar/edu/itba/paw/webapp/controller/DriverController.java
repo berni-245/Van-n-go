@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -56,7 +57,7 @@ public class DriverController extends ParentController {
             imgData = vehicleImg.getBytes();
         }
         ds.addVehicle(
-                loggedUser.getId(),
+                loggedUser,
                 vehicleForm.getPlateNumber(),
                 vehicleForm.getVolume(),
                 vehicleForm.getDescription(),
@@ -122,7 +123,7 @@ public class DriverController extends ParentController {
             @RequestParam("content") String content,
             @RequestParam("recipientId") Long recipientId
     ) {
-        ms.sendDriverMessage(loggedUser,recipientId,content);
+        ms.sendDriverMessage(loggedUser, recipientId, content);
         return new ModelAndView("redirect:/driver/chat?recipientId=" + recipientId);
     }
 

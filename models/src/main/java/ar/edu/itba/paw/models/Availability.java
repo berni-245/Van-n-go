@@ -20,7 +20,7 @@ public class Availability {
     )
     private long id;
 
-//    @JoinColumn(name = "vehicle_id")
+    //    @JoinColumn(name = "vehicle_id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Vehicle vehicle;   // on delete cascade?
 

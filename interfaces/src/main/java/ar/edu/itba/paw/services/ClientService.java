@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.ShiftPeriod;
 
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Optional;
 
 public interface ClientService extends UserService<Client>, UserBookingService<Client> {
     Client create(String username, String mail, String password, Locale locale);

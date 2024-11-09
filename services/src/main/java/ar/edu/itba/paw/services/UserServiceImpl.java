@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidUserException;
 import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.User;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public abstract class UserServiceImpl<T extends User> implements UserService<T> {
@@ -37,9 +40,13 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
         this.bookingDao = bookingDao;
     }
 
-//    protected long createUser(String username, String mail, String password) {
-//        return 1;//userDao.create(username, mail, passwordEncoder.encode(password));
-//    }
+    @Transactional
+    @Override
+    public T findById(long id) {
+        Optional<T> user = userDao.findById(id);
+        if (user.isEmpty()) throw new InvalidUserException();
+        return user.get();
+    }
 
     @Transactional
     @Override

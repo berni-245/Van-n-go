@@ -52,12 +52,6 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public Optional<Driver> findById(long id) {
-        return driverDao.findById(id);
-    }
-
-    @Transactional
-    @Override
     public Optional<Driver> findByUsername(String username) {
         return driverDao.findByUsername(username);
     }
@@ -74,7 +68,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public Vehicle addVehicle(
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,
@@ -84,12 +78,12 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             byte[] imgData
     ) {
         Vehicle v = vehicleDao.create(
-                driverDao.findById(driverId).orElseThrow(), plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
+                driver, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
         );
         if (imgFilename != null && imgData != null && imgData.length > 0) {
             imageDao.uploadVehicleImage(imgData, imgFilename, v);
         }
-        LOGGER.info("{} added a vehicle with plate {}", driverId, plateNumber);
+        LOGGER.info("{} added a vehicle with plate {}", driver, plateNumber);
         return v;
     }
 

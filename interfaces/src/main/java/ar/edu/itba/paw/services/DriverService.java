@@ -12,10 +12,8 @@ import java.util.Set;
 public interface DriverService extends UserService<Driver> {
     Driver create(String username, String mail, String password, String description, Locale locale);
 
-    Driver findById(long id);
-
     Vehicle addVehicle(
-            long driverId,
+            Driver driver,
             String plateNumber,
             double volume,
             String description,
