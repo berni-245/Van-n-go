@@ -82,7 +82,7 @@ public class DriverController implements Bookings {
     @ResponseBody
     public ResponseEntity<byte[]> getVehicleImage(
             @RequestParam("imgId") int imgId,
-            @ModelAttribute("loggedUser") Driver loggedUser
+            @ModelAttribute("loggedUser") User loggedUser
     ) {
         Image vehicleImg = is.getImage(imgId);
         if (vehicleImg == null) {

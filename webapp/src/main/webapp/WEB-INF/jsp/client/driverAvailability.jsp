@@ -126,16 +126,16 @@
                          data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <figure class="figure">
-                                <c:if test="${v.imgId <= 0}">
+                                <c:choose>
+                                <c:when test="${v.imgId eq null}">
                                     <c:url value='/images/defaultVehicle.png' var="imgUrl"/>
-                                    <img id="vehicleImagePreview" src="${imgUrl}"
-                                         alt=" Vehicle Image Preview" class="card-img-top"/>
-                                </c:if>
-                                <c:if test="${v.imgId > 0}">
+                                </c:when>
+                                <c:otherwise>
                                     <c:url value='/vehicle/image?imgId=${v.imgId}' var="imgUrl"/>
-                                    <img id="vehicleImagePreview" src="${imgUrl}"
-                                         alt="Vehicle Image Preview" class="card-img-top"/>
-                                </c:if>
+                                </c:otherwise>
+                                </c:choose>
+                                <img id="vehicleImagePreview" src="${imgUrl}"
+                                     alt="Vehicle Image Preview" class="card-img-top"/>
                                 <figcaption class="figure-caption">
                                     <c:out value="${v.description}"/>
                                 </figcaption>
