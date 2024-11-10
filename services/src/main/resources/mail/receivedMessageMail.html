@@ -52,7 +52,7 @@
     <p th:text="#{mail.receivedMessage.moreDetails(${senderUsername})}">You can reply and see more messages on your chat with {user} at Van N' Go</p>
     <div class="text-center">
         <button class="button-primary">
-            <a href="${seeChatUrl}" style="color: white"
+            <a th:href="${seeChatUrl}" style="color: white"
                th:text="#{mail.receivedMessage.seeChat(${senderUsername})}">See chat with {user}</a>
         </button>
     </div>
