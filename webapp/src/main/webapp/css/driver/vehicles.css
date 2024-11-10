@@ -1,0 +1,27 @@
+.anchor-card {
+    text-decoration: none;
+    box-shadow: var(--bs-box-shadow);
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.anchor-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.vehicle-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3rem;
+}
+
+.fixed-bottom-left {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    z-index: 1000;
+}

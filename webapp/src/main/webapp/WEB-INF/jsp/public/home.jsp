@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="siteName">
-    <c:url value="/css/home.css" var="css"/>
+    <c:url value="/css/public/home.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
 

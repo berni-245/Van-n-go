@@ -48,11 +48,8 @@
         <script src="${goBackJs}"></script>
     </c:if>
 
-    <style>
-        img {
-            object-fit: contain;
-        }
-    </style>
+    <c:url value="/css/global.css" var="globalCss"/>
+    <link rel="stylesheet" href="${globalCss}">
 
     <jsp:doBody/>
 </head>

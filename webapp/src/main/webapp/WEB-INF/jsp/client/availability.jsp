@@ -7,8 +7,6 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.availability" tomselect="true" bsIcons="true">
-    <c:url value="/css/styles.css" var="css"/>
-    <link rel="stylesheet" href="${css}">
     <c:url value="/js/client/availability.js" var="js"/>
     <script src="${js}"></script>
 </comp:Head>

@@ -6,22 +6,17 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.search" tomselect="true" bsIcons="true">
-  <c:url value="/css/styles.css" var="css"/>
-  <link rel="stylesheet" href="${css}">
-</comp:Head>
+<comp:Head titleCode="components.header.search" tomselect="true"/>
 <body>
 <comp:Header inAvailability="true"/>
 <div class="container d-flex justify-content-center mt-5">
   <div class="col-md-6 col-lg-5 text-center">
-    <!-- Page Title -->
     <h1 class="display-5 mb-5">
       <spring:message code="siteName"/>
     </h1>
 
     <c:url var="postUrl" value="/client/availability"/>
     <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">
-      <!-- Zone Selection -->
       <div class="mb-4">
         <spring:message code="driver.add_availability.selectZones" var="selectZones"/>
         <spring:bind path="zoneId">
@@ -35,7 +30,6 @@
         </spring:bind>
       </div>
 
-      <!-- Size Selection -->
       <div class="mb-4">
         <label for="select-size" class="form-label h4">
           <spring:message code="generic.word.size"/>
@@ -53,7 +47,6 @@
         </form:select>
       </div>
 
-      <!-- Day of the Week Selection -->
       <div class="mb-4">
         <label for="select-day" class="form-label h4">
           <spring:message code="client.search.selectWeekday"/>
@@ -70,7 +63,6 @@
         </form:select>
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" class="btn btn-primary btn-lg w-100">
         <spring:message code="components.availability.Search"/>
       </button>

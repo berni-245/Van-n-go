@@ -5,18 +5,8 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.vehicles" tomselect="true" goBack="true">
-    <style>
-        .btn-check:not(:checked) ~ .toggle-label:hover {
-            background-color: var(--bs-primary-bg-subtle);
-            border-color: var(--bs-primary-bg-subtle);
-        }
-
-        .btn-check:checked ~ .toggle-label:not(:hover) {
-            color: var(--bs-btn-active-color);
-            background-color: var(--bs-btn-active-bg);
-            border-color: var(--bs-btn-active-border-color);
-        }
-    </style>
+    <c:url value="/css/driver/edit_vehicle.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
 </comp:Head>
 
 <body>

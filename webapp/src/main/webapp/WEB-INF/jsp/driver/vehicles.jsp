@@ -5,25 +5,8 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.vehicles">
-    <c:url value="/css/styles.css" var="css"/>
+    <c:url value="/css/driver/vehicles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
-    <style>
-        .vehicle-description {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-height: 3rem;
-        }
-
-        .fixed-bottom-left {
-            position: fixed;
-            bottom: 40px;
-            left: 40px;
-            z-index: 1000;
-        }
-    </style>
 </comp:Head>
 
 <body>
