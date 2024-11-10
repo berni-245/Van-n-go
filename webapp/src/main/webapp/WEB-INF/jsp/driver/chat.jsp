@@ -37,7 +37,7 @@
                             <c:when test="${!message.sentByDriver}">
                                 <div class="message p-2 rounded text-dark"
                                      style="background-color: #d1e7dd; color: #212529; word-break: break-word; max-width: 70%; font-size: 1.1em;">
-                                    <p class="mb-1">${message.content}</p>
+                                    <p class="mb-1"><c:out value="${message.content}"/></p>
                                     <small class="text-dark" style="color: #212529;">
                                             ${message.timeSent.toLocalDate().toString().substring(8,10)}/${message.timeSent.toLocalDate().toString().substring(5,7)} ${message.timeSent.toLocalTime().toString().substring(0,5)}
                                     </small>
@@ -56,7 +56,7 @@
 
                                 <div class="message p-2 rounded text-dark"
                                      style="background-color: #f8d7da; color: #212529; word-break: break-word; max-width: 70%; font-size: 1.1em;">
-                                    <p class="mb-1">${message.content}</p>
+                                    <p class="mb-1"><c:out value="${message.content}"/></p>
                                     <small class="text-dark" style="color: #212529;">
                                             ${message.timeSent.toLocalDate().toString().substring(8,10)}/${message.timeSent.toLocalDate().toString().substring(5,7)} ${message.timeSent.toLocalTime().toString().substring(0,5)}
                                     </small>
