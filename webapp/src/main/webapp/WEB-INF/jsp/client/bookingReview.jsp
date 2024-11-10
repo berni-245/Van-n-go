@@ -2,16 +2,24 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.review">
-  <c:url value="/css/bookings.css" var="css"/>
+  <c:url value="/css/client/bookingReview.css" var="css"/>
   <link rel="stylesheet" href="${css}">
+  <c:url value="/js/client/bookingReview.js" var="js"/>
+  <script src="${js}"></script>
+  <c:url value="/js/goBackButton.js" var="js"/>
+  <script src="${js}"></script>
 </comp:Head>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header />
 
 <div class="container mt-5">
+  <button id="go-back-button" class="btn btn-secondary mb-4">
+    <spring:message code="generic.phrase.goBack"/>
+  </button>
   <div class="card">
     <div class="card-header text-center">
       <h1><spring:message code="client.rating.header" arguments="${driver.username}"/></h1>
@@ -64,26 +72,4 @@
 </div>
 
 </body>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.starRating').forEach(starContainer => {
-            const stars = starContainer.querySelectorAll('.star');
-            const ratingInput = starContainer.nextElementSibling;
-
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    const rating = parseInt(star.getAttribute('data-value'), 10);
-                    ratingInput.value = rating;
-
-
-                    stars.forEach(s => s.classList.remove('selected'));
-                    for (let i = 0; i < rating; i++) {
-                        stars[i].classList.add('selected');
-                    }
-                });
-            });
-        });
-    });
-</script>
 </html>

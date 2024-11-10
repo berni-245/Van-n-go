@@ -7,10 +7,7 @@
 
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.bookings" bsIcons="true">
-    <c:url value="/css/bookings.css" var="css"/>
-    <link rel="stylesheet" href="${css}">
-</comp:Head>
+<comp:Head titleCode="components.header.bookings" bsIcons="true"/>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:Header inHome="true"/>
@@ -116,24 +113,6 @@
             const tabName = tab.getAttribute('aria-controls');
             tab.addEventListener('click', () => setParamDontNavigate('activeTab', tabName));
         });
-
-        <c:if test="${!loggedUser.isDriver}">
-        document.querySelectorAll('.star-rating').forEach(starContainer => {
-            const stars = starContainer.querySelectorAll('.star');
-            const ratingInput = starContainer.querySelector('input');
-
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    const rating = parseInt(star.getAttribute('data-value'), 10);
-                    ratingInput.value = rating;
-                    stars.forEach(s => s.classList.remove('selected'));
-                    for (let i = 0; i < rating; i++) {
-                        stars[i].classList.add('selected');
-                    }
-                });
-            });
-        });
-        </c:if>
     })
 </script>
 </html>
