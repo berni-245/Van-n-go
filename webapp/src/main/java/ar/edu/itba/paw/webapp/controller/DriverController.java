@@ -197,12 +197,14 @@ public class DriverController implements Bookings {
     public ModelAndView editProfile(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in ChangeUserInfoForm by {}", loggedUser.getUsername());
             return editProfileForm(loggedUser, form, errors);
         }
+        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
         ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu(), form.getLanguage());
         return redirect("/driver/profile");
     }
