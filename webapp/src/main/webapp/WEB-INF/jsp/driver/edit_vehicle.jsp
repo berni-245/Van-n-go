@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.vehicles" tomselect="true" goBack="true">
+<comp:Head titleCode="components.header.vehicles" tomselect="true">
     <c:url value="/css/driver/edit_vehicle.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
@@ -12,7 +12,7 @@
 <body>
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-start mb-5">
-    <comp:GoBackButton/>
+    <comp:GoBackButton path="/driver/vehicles"/>
 <div class="container mt-3">
     <div class="d-flex justify-content-between flex-sm-wrap">
         <div class="w-50">

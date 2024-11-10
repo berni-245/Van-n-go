@@ -4,11 +4,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="siteName" goBack="true"/>
+<comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 
-<comp:GoBackButton/>
+<comp:GoBackButton path="/client/bookings"/>
 
 <c:choose>
     <c:when test="${loggedUser.pfp ne null}">

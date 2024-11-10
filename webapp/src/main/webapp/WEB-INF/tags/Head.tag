@@ -2,7 +2,6 @@
 <%@ attribute name="tomselect" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="calendar" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
-<%@ attribute name="goBack" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="passInput" required="false" type="java.lang.Boolean" %>
 
 <%@ tag body-content="scriptless" %>
@@ -46,11 +45,6 @@
 
     <c:url value="/js/bootstrap-theme-toggler.js" var="bsjs"/>
     <script src="${bsjs}"></script>
-
-    <c:if test="${goBack}">
-        <c:url value="/js/goBackButton.js" var="goBackJs"/>
-        <script src="${goBackJs}"></script>
-    </c:if>
 
     <c:if test="${passInput}">
         <c:url value="/js/showHidePassInput.js" var="passInputJs"/>

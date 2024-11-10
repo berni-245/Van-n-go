@@ -4,10 +4,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.editPass" passInput="true" goBack="true"/>
+<comp:Head titleCode="components.header.editPass" passInput="true"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-<comp:GoBackButton/>
+<comp:GoBackButton path="/${loggedUser.type}/profile"/>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">

@@ -5,11 +5,11 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.editUser" goBack="true"/>
+<comp:Head titleCode="components.header.editUser"/>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-<comp:GoBackButton/>
+<comp:GoBackButton path="/${loggedUser.type}/profile"/>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">

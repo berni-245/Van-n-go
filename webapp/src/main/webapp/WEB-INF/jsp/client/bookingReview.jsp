@@ -5,7 +5,7 @@
 
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.review" goBack="true">
+<comp:Head titleCode="components.header.review">
     <c:url value="/css/client/bookingReview.css" var="css"/>
     <link rel="stylesheet" href="${css}">
     <c:url value="/js/client/bookingReview.js" var="js"/>
@@ -14,7 +14,7 @@
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 
-<comp:GoBackButton/>
+<comp:GoBackButton path="/client/bookings?activeTab=FINISHED"/>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">

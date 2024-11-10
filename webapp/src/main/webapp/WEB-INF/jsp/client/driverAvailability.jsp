@@ -5,14 +5,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.availability" goBack="true" calendar="true">
+<comp:Head titleCode="components.header.availability" calendar="true">
     <c:url value="/css/client/driverAvailability.css" var="css"/>
     <link rel="stylesheet" href="${css}">
 </comp:Head>
 <body>
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-center mb-5">
-    <comp:GoBackButton path=""/>
+    <comp:GoBackButton path="/client/availability"/>
     <h1 class="text-center mb-0 flex-grow-1">
         <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
     </h1>
