@@ -29,8 +29,6 @@ public interface BookingDao {
 
     int getDriverBookingCount(Driver driver, BookingState state);
 
-    List<Booking> getBookingsByVehicle(Vehicle vehicle);
-
     List<Booking> getClientBookings(Client client, BookingState state, int offset);
 
     int getClientBookingCount(Client client, BookingState state);

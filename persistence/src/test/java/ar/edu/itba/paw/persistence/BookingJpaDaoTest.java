@@ -260,19 +260,6 @@ public class BookingJpaDaoTest {
     }
 
     @Test
-    public void testGetBookingsByVehicle() {
-        List<Booking> bookings = bookingDao.getBookingsByVehicle(vehicle);
-
-        assertEquals(BOOKING_COUNT, bookings.size());
-        Iterator<Booking> iterator = bookings.iterator();
-        assertEquals(PREEXISTING_ACCEPTED_BOOK, iterator.next().getId());
-        assertEquals(PREEXISTING_PENDING_BOOK, iterator.next().getId());
-        assertEquals(ANOTHER_PREEXISTING_PENDING_BOOK, iterator.next().getId());
-        assertEquals(YET_ANOTHER_PREEXISTING_PENDING_BOOK, iterator.next().getId());
-
-    }
-
-    @Test
     public void testAcceptBooking() {
         bookingDao.acceptBooking(preexistingPendingBooking);
 
