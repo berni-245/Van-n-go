@@ -15,7 +15,7 @@
                 <h5 class="modal-title me-2" id="bookingModalLabel"><spring:message arguments="${booking.date}"
                                                                                     code="components.bookingCard.dateTime"/>
                     <spring:message
-                            code="generic.word.${booking.shiftPeriod.name().toLowerCase()}"/></h5>
+                            code="generic.word.${booking.shiftPeriod.lowerCaseText}"/></h5>
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
                         <span class="badge bg-primary"><spring:message code="generic.word.pending.bookings"/></span>
