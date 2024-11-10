@@ -46,7 +46,7 @@
                       code="client.make.review"
                       arguments="${driver.username}"/>
             <p>
-            <form:input path="review" type="text"/>
+            <form:textarea path="review" rows="4" cols="50" maxlength="255" htmlEscape="true"/>
             <form:errors path="review" cssClass="text-danger" element="p"/>
             <form:errors element="div" cssClass="alert alert-danger"/>
           </div>
