@@ -4,9 +4,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="siteName"/>
+<comp:Head titleCode="siteName" goBack="true"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
+
+<comp:GoBackButton/>
 
 <c:choose>
     <c:when test="${loggedUser.pfp ne null}">
@@ -26,23 +28,13 @@
 </c:choose>
 
 <div class="container my-4">
-    <!-- Chat Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="${pageContext.request.contextPath}/driver/bookings" class="btn btn-secondary">
-            <spring:message code="generic.phrase.goBack"/>
-        </a>
-    </div>
-
     <div class="row">
-        <!-- Chat Column -->
         <div class="col-lg-8">
-            <!-- Chat Messages Area -->
             <div class="chat-box border rounded p-3 mb-3 d-flex flex-column-reverse" style="height: 60vh; overflow-y: auto;">
                 <c:forEach var="message" items="${messages}">
                     <div class="d-flex <c:choose><c:when test="${!message.sentByDriver}">justify-content-end</c:when><c:otherwise>justify-content-start</c:otherwise></c:choose> mb-2 align-items-end">
                         <c:choose>
                             <c:when test="${!message.sentByDriver}">
-                                <!-- Message Bubble -->
                                 <div class="message p-2 rounded text-dark"
                                      style="background-color: #d1e7dd; color: #212529; word-break: break-word; max-width: 70%; font-size: 1.1em;">
                                     <p class="mb-1">${message.content}</p>
@@ -51,20 +43,17 @@
                                     </small>
                                 </div>
 
-                                <!-- Profile Picture & Username -->
                                 <div class="text-end ms-2">
                                     <small class="d-block text-muted">${recipient.username}</small>
                                     <img src="${clientPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <!-- Profile Picture & Username -->
                                 <div class="text-start me-2">
                                     <small class="d-block text-muted">${loggedUser.username}</small>
                                     <img src="${driverPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
 
-                                <!-- Message Bubble -->
                                 <div class="message p-2 rounded text-dark"
                                      style="background-color: #f8d7da; color: #212529; word-break: break-word; max-width: 70%; font-size: 1.1em;">
                                     <p class="mb-1">${message.content}</p>
@@ -78,7 +67,6 @@
                 </c:forEach>
             </div>
 
-            <!-- Message Sending Form -->
             <form action="<c:url value='/driver/send'/>" method="POST" class="d-flex">
                 <input type="hidden" name="recipientId" value="${recipient.id}"/>
                 <input type="hidden" name="bookingId" value="${booking.id}" />
@@ -87,7 +75,6 @@
             </form>
         </div>
 
-        <!-- Recipient Info Card Column -->
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
@@ -127,7 +114,6 @@
                         <strong><spring:message code="generic.booking.shift.period"/>:</strong>
                         <spring:message code="generic.word.${booking.shiftPeriod.capitalizedText}"/>
                     </p>
-                    <!-- Add any other recipient information as needed -->
                 </div>
             </div>
         </div>

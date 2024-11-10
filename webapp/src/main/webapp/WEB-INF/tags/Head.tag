@@ -1,6 +1,8 @@
 <%@ attribute name="titleCode" required="true" type="java.lang.String" %>
 <%@ attribute name="tomselect" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="calendar" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="goBack" required="false" type="java.lang.Boolean" %>
 
 <%@ tag body-content="scriptless" %>
 
@@ -26,6 +28,11 @@
         <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     </c:if>
 
+    <c:if test="${calendar}">
+        <c:url value="/js/full-callendar.min.js" var="calendarJs"/>
+        <script src="${calendarJs}"></script>
+    </c:if>
+
     <c:if test="${bsIcons}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </c:if>
@@ -35,6 +42,11 @@
 
     <c:url value="/js/bootstrap-theme-toggler.js" var="bsjs"/>
     <script src="${bsjs}"></script>
+
+    <c:if test="${goBack}">
+        <c:url value="/js/goBackButton.js" var="goBackJs"/>
+        <script src="${goBackJs}"></script>
+    </c:if>
 
     <style>
         img {

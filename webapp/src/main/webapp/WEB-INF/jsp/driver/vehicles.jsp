@@ -16,6 +16,7 @@
             text-overflow: ellipsis;
             max-height: 3rem;
         }
+
         .fixed-bottom-left {
             position: fixed;
             bottom: 40px;
@@ -31,11 +32,13 @@
     <h3 class="mb-3"><spring:message code="generic.phrase.your_vehicles"/></h3>
     <c:choose>
         <c:when test="${empty vehicles}">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mt-5 display-4 font-weight-bold"><spring:message
-                            code="call_to_action.driver_vehicles"/></p>
-                </div>
+            <div class="d-flex flex-column">
+            <comp:CallToAction code="call_to_action.driver_vehicles"/>
+            <a class="btn btn-primary mt-5 fs-2"
+               href="${pageContext.request.contextPath}/driver/vehicle/add"
+               role="button">
+                <spring:message code="generic.phrase.add_vehicle"/>
+            </a>
             </div>
         </c:when>
         <c:otherwise>
@@ -92,14 +95,14 @@
                     </ul>
                 </nav>
             </c:if>
+            <a class="btn btn-primary fixed-bottom-left"
+               href="${pageContext.request.contextPath}/driver/vehicle/add"
+               role="button"
+            >
+                <spring:message code="generic.phrase.add_vehicle"/>
+            </a>
         </c:otherwise>
     </c:choose>
-    <a class="btn btn-primary fixed-bottom-left"
-       href="${pageContext.request.contextPath}/driver/vehicle/add"
-       role="button"
-    >
-        <spring:message code="generic.phrase.add_vehicle"/>
-    </a>
 </div>
 
 <comp:ToastManager toasts="${toasts}"/>

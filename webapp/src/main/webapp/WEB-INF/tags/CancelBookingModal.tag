@@ -22,7 +22,9 @@
                             code="components.bookingModal.cancelBooking"/>
                     </button>
                 </form>
-                <button class="btn btn-primary"  data-bs-dismiss="modal"><spring:message code="generic.phrase.goBack"/></button>
+                <button class="btn btn-primary"  data-bs-dismiss="modal">
+                    <spring:message code="generic.phrase.goBack"/>
+                </button>
             </div>
         </div>
     </div>
