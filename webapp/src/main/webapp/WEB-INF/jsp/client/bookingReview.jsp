@@ -5,18 +5,10 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.review">
+  <c:url value="/css/bookings.css" var="css"/>
+  <link rel="stylesheet" href="${css}">
 </comp:Head>
 <body class="d-flex flex-column min-vh-100">
-<style>
-    .star {
-        font-size: 2rem;
-        cursor: pointer;
-        color: gray;
-    }
-    .star.selected {
-        color: gold;
-    }
-</style>
 <comp:Header />
 
 <div class="container mt-5">
