@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Table(name = "zone")
 @Entity
@@ -61,5 +62,15 @@ public class Zone {
     public String toString() {
         return "%s, %s, %s".formatted(neighborhood.getName(),
                 province.getName(), country.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Zone zone && id == zone.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
