@@ -44,7 +44,8 @@
 
         <div class="row g-3">
             <div class="col-sm-2">
-                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price" class="form-control" value="${priceMax}"/>
+                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price" class="form-control"
+                       value="${priceMax}"/>
             </div>
 
             <div class="col-sm-3">
@@ -103,57 +104,64 @@
                                 <div class="card h-100">
                                     <div class="card-body d-flex justify-content-between">
                                         <div>
-                                        <h5 class="card-title"><c:out value="${driver.username}"/></h5>
-                                        <p class="card-text"><c:out value="${driver.description}"/></p>
-                                        <div class="d-flex align-items-center">
+                                            <h5 class="card-title"><c:out value="${driver.username}"/></h5>
+                                            <p class="card-text"><c:out value="${driver.description}"/></p>
+                                            <div class="d-flex align-items-center">
 
-                                            <c:choose>
-                                                <c:when test="${driver.rating != null}">
+                                                <c:choose>
+                                                    <c:when test="${driver.rating != null}">
 
                                                     <span class="fw-bold text-warning">
-                                                           <fmt:formatNumber value="${driver.rating}" type="number" maxFractionDigits="2" />
+                                                           <fmt:formatNumber value="${driver.rating}" type="number"
+                                                                             maxFractionDigits="2"/>
                                                     </span>
 
 
-                                                    <div class="ms-2">
-                                                        <c:set var="fullStars" value="${driver.rating.intValue()}"/>
-                                                        <c:set var="halfStar"
-                                                               value="${(driver.rating - driver.rating.intValue() >= 0.5) ? true : false}"/>
-                                                        <c:set var="emptyStars"
-                                                               value="${5 - fullStars - (halfStar ? 1 : 0)}"/>
+                                                        <div class="ms-2">
+                                                            <c:set var="fullStars" value="${driver.rating.intValue()}"/>
+                                                            <c:set var="halfStar"
+                                                                   value="${(driver.rating - driver.rating.intValue() >= 0.5) ? true : false}"/>
+                                                            <c:set var="emptyStars"
+                                                                   value="${5 - fullStars - (halfStar ? 1 : 0)}"/>
 
 
-                                                        <c:forEach var="i" begin="1" end="${fullStars}">
-                                                            <i class="bi bi-star-fill text-warning"></i>
-                                                        </c:forEach>
+                                                            <c:forEach var="i" begin="1" end="${fullStars}">
+                                                                <i class="bi bi-star-fill text-warning"></i>
+                                                            </c:forEach>
 
 
-                                                        <c:if test="${halfStar}">
-                                                            <i class="bi bi-star-half text-warning"></i>
-                                                        </c:if>
+                                                            <c:if test="${halfStar}">
+                                                                <i class="bi bi-star-half text-warning"></i>
+                                                            </c:if>
 
 
-                                                        <c:forEach var="i" begin="1" end="${emptyStars}">
-                                                            <i class="bi bi-star text-secondary"></i>
-                                                        </c:forEach>
-                                                    </div>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span><spring:message code="client.availability.no_rating"/></span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                        <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}&page=${currentPage}"
-                                           class="btn btn-primary">
-                                            <spring:message code="components.availability.SeeAvailability"/>
-                                        </a>
+                                                            <c:forEach var="i" begin="1" end="${emptyStars}">
+                                                                <i class="bi bi-star text-secondary"></i>
+                                                            </c:forEach>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span><spring:message
+                                                                code="client.availability.no_rating"/></span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}&page=${currentPage}"
+                                               class="btn btn-primary">
+                                                <spring:message code="components.availability.SeeAvailability"/>
+                                            </a>
                                         </div>
                                         <c:choose>
                                             <c:when test="${driver.pfp eq null}">
-                                                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png" alt="Driver Profile Picture" class="rounded-circle object-fit: cover" style="width: 60px; height: 60px;"/>
+                                                <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
+                                                     alt="Driver Profile Picture"
+                                                     class="rounded-circle object-fit: cover"
+                                                     style="width: 60px; height: 60px;"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${driver.pfp}" alt="DriverPfp" class="rounded-circle object-fit: cover" style="width: 60px; height: 60px;"/>
+                                                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${driver.pfp}"
+                                                     alt="DriverPfp" class="rounded-circle object-fit: cover"
+                                                     style="width: 60px; height: 60px;"/>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -165,15 +173,22 @@
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}" tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message code="generic.word.previous"/></a>
+                                    <a class="page-link"
+                                       href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}"
+                                       tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message
+                                            code="generic.word.previous"/></a>
                                 </li>
                                 <c:forEach begin="0" end="${totalPages - 1}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}">${i + 1}</a>
+                                        <a class="page-link"
+                                           href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}">${i + 1}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}" aria-disabled="${currentPage == totalPages - 1}"><spring:message code="generic.word.next"/>&raquo;</a>
+                                    <a class="page-link"
+                                       href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}"
+                                       aria-disabled="${currentPage == totalPages - 1}"><spring:message
+                                            code="generic.word.next"/>&raquo;</a>
                                 </li>
                             </ul>
                         </nav>
