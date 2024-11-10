@@ -129,36 +129,7 @@ public class PublicController implements Redirect, Toasts {
             @RequestParam("userPfp") int userPfp,
             @ModelAttribute("loggedUser") User loggedUser
     ) {
-        return getValidatedPfp(is.getImage(userPfp));
-    }
-
-    @RequestMapping(value = "/profile/picture", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getProfilePicture(@ModelAttribute("loggedUser") User loggedUser) {
-        return getValidatedPfp(is.getImage(loggedUser.getPfp()));
-    }
-
-    private ResponseEntity<byte[]> getValidatedPfp(Image pfp) {
-        if (pfp != null && pfp.getData() != null) {
-            String fileName = pfp.getFileName();
-            String contentType;
-            if (fileName == null)
-                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-            if (fileName.toLowerCase().endsWith(".png")) {
-                contentType = "image/png";
-            } else if (fileName.toLowerCase().endsWith(".jpeg") || fileName.toLowerCase().endsWith(".jpg")) {
-                contentType = "image/jpeg";
-            } else {
-                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-            }
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(contentType));
-            headers.setContentLength(pfp.getData().length);
-            headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)).cachePublic());
-            return new ResponseEntity<>(pfp.getData(), headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return getValidatedImage(is.getImage(userPfp));
     }
 
     @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
@@ -167,13 +138,36 @@ public class PublicController implements Redirect, Toasts {
             @RequestParam("popId") int popId,
             @ModelAttribute("loggedUser") User loggedUser
     ) {
-        Image pop = is.getImage(popId);
-        if (pop != null && pop.getFileName().endsWith(".pdf")) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)).cachePublic());
-            return new ResponseEntity<>(pop.getData(), headers, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return getValidatedImage(is.getImage(popId));
+    }
+
+    @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getVehicleImage(
+            @RequestParam("imgId") int imgId,
+            @ModelAttribute("loggedUser") User loggedUser
+    ) {
+        return getValidatedImage(is.getImage(imgId));
+    }
+
+    private ResponseEntity<byte[]> getValidatedImage(Image img) {
+        if(img == null || img.getData() == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String fileName = img.getFileName();
+        String contentType;
+        if(fileName == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        String fileNameLower = fileName.toLowerCase();
+        if(fileNameLower.endsWith(".png")) contentType = "image/png";
+        else if(fileNameLower.endsWith(".jpeg") || fileNameLower.endsWith(".jpg")) contentType = "image/jpeg";
+        else if(fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
+        else if(fileNameLower.endsWith(".webp")) contentType = "image/webp";
+        else if(fileNameLower.endsWith(".heic") || fileNameLower.endsWith(".heif")) contentType = "image/heic";
+        else return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        headers.setContentLength(img.getData().length);
+        headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)));
+        return new ResponseEntity<>(img.getData(), headers, HttpStatus.OK);
     }
 }

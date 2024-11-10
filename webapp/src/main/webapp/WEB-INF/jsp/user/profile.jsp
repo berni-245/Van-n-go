@@ -20,12 +20,12 @@
                 <form id="uploadProfilePicForm" method="post" action="<c:url value='/upload/pfp'/>"
                       enctype="multipart/form-data">
                     <input type="file" id="profilePicInput" name="profilePicture" class="d-none"
-                           accept="image/png, image/jpeg"
+                           accept="image/png, image/jpeg, image/webp, image/heic"
                            onchange="document.getElementById('uploadProfilePicForm').submit();">
                     <label for="profilePicInput" style="cursor: pointer;">
                         <c:choose>
                             <c:when test="${loggedUser.pfp ne null}">
-                                <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
+                                <img src="<c:url value='/user/pfp?userPfp=${loggedUser.pfp}'/>" alt="Profile Picture"
                                      class="rounded-circle border object-fit: cover" width="150" height="150">
                             </c:when>
                             <c:otherwise>
@@ -44,20 +44,24 @@
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                         <p class="mb-1"><strong><spring:message code="generic.word.description"/>: </strong>
-                            <c:if test="${loggedUser.description ne null}">
-                                <c:out value="${loggedUser.description}"/>
-                            </c:if>
-                            <c:if test="${loggedUser.description eq null}">
-                                <spring:message code="public.profile.noDescription"/>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${loggedUser.description ne null}">
+                                    <c:out value="${loggedUser.description}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="public.profile.noDescription"/>
+                                </c:otherwise>
+                            </c:choose>
                         </p>
                         <p class="mb-1"><strong><spring:message code="generic.word.cbu"/>: </strong>
-                            <c:if test="${loggedUser.cbu ne null}">
+                            <c:choose>
+                            <c:when test="${loggedUser.cbu ne null}">
                                 <c:out value="${loggedUser.cbu}"/>
-                            </c:if>
-                            <c:if test="${loggedUser.cbu eq null}">
+                            </c:when>
+                            <c:otherwise>
                                 <spring:message code="public.profile.noCbu"/>
-                            </c:if>
+                            </c:otherwise>
+                            </c:choose>
                         </p>
 
                         <div>

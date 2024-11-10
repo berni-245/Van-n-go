@@ -61,7 +61,7 @@
                                data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                 <c:choose>
                                 <c:when test="${loggedUser.pfp ne null}">
-                                    <c:url value='/profile/picture' var="pfpUrl"/>
+                                    <c:url value='/user/pfp?userPfp=${loggedUser.pfp}' var="pfpUrl"/>
                                 </c:when>
                                 <c:otherwise>
                                     <c:url value='/images/defaultUserPfp.png' var="pfpUrl"/>

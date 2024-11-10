@@ -14,7 +14,7 @@
         <label class="form-label w-100">
             <spring:message code="driver.add_vehicle.image"/>
             <input type="file" id="vehicle.imgId" name="vehicleImg"
-                   accept="image/png, image/jpeg" class="form-control mt-2"
+                   accept="image/png, image/jpeg, image/webp, image/heic" class="form-control mt-2"
                    onchange="previewVehicleImage(event)"
             />
         </label>

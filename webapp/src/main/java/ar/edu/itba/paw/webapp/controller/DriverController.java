@@ -78,32 +78,6 @@ public class DriverController implements Bookings {
         return mav;
     }
 
-    @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getVehicleImage(
-            @RequestParam("imgId") int imgId,
-            @ModelAttribute("loggedUser") User loggedUser
-    ) {
-        Image vehicleImg = is.getImage(imgId);
-        if (vehicleImg == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        String fileName = vehicleImg.getFileName();
-        String contentType;
-        if (fileName == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        if (fileName.toLowerCase().endsWith(".png")) contentType = "image/png";
-        else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
-            contentType = "image/jpeg";
-        } else {
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(null);
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(contentType));
-        headers.setContentLength(vehicleImg.getData().length);
-        headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)).cachePublic());
-        return new ResponseEntity<>(vehicleImg.getData(), headers, HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/driver/chat", method = RequestMethod.GET)
     public ModelAndView chat(
             @ModelAttribute("loggedUser") Driver loggedUser,

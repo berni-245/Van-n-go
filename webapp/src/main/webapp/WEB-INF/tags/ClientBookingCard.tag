@@ -43,7 +43,7 @@
                                 <input type="hidden" name="bookingId" value="${booking.id}">
                                 <input type="hidden" name="driverId" value="${booking.driver.id}">
                                 <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
-                                       class="d-none" accept="application/pdf"
+                                       class="d-none" accept="application/pdf, image/png, image/jpeg, image/webp, image/heic"
                                        onchange="document.getElementById('uploadProofOfPaymentForm_${booking.id}').submit();">
                                 <label for="proofInput_${booking.id}"
                                        style="cursor: pointer; text-decoration: underline;">
