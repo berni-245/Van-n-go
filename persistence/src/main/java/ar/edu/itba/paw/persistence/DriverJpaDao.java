@@ -38,7 +38,7 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     private List<Integer> getSearchResultIds(
-            Zone zone, Size size, Double priceMin, Double priceMax,
+            Zone zone, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, Integer offset
     ) {
         StringBuilder idQuery = new StringBuilder("""
@@ -52,7 +52,6 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                 """);
 
         if (size != null) idQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");
-        if (priceMin != null) idQuery.append(" AND v.hourly_rate >= :priceMin");
         if (priceMax != null) idQuery.append(" AND v.hourly_rate <= :priceMax");
         if (weekday != null) idQuery.append(" AND a.week_day = :weekday");
         if (rating != null) idQuery.append(" AND d.rating >= :rating");
@@ -73,7 +72,6 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
             idNativeQuery.setParameter("minVolume", (double) size.getMinVolume());
             idNativeQuery.setParameter("maxVolume", (double) size.getMaxVolume());
         }
-        if (priceMin != null) idNativeQuery.setParameter("priceMin", priceMin);
         if (priceMax != null) idNativeQuery.setParameter("priceMax", priceMax);
         if (weekday != null) idNativeQuery.setParameter("weekday", weekday.name());
         if (rating != null) idNativeQuery.setParameter("rating", rating.doubleValue());
@@ -90,11 +88,11 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
 
     @Override
     public List<Driver> getSearchResults(
-            Zone zone, Size size, Double priceMin, Double priceMax,
+            Zone zone, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int offset
     ) {
         List<Integer> driverIds = getSearchResultIds(
-                zone, size, priceMin, priceMax, weekday, rating, order, offset
+                zone, size, priceMax, weekday, rating, order, offset
         );
         if (driverIds.isEmpty()) return Collections.emptyList();
         StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d JOIN MinimalPrice mp ON mp.driverId = d.id WHERE d.id IN :driverIds");
@@ -114,11 +112,10 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     @Override
-    public int getSearchCount(Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday, Integer rating) {
+    public int getSearchCount(Zone zone, Size size, Double priceMax, DayOfWeek weekday, Integer rating) {
         return getSearchResultIds(
                 zone,
                 size,
-                priceMin,
                 priceMax,
                 weekday,
                 rating,

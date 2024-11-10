@@ -11,8 +11,8 @@
 </comp:Head>
 <body>
 <comp:Header/>
-<comp:GoBackButton/>
 <div class="d-flex justify-content-between align-items-center mb-5">
+    <comp:GoBackButton/>
     <h1 class="text-center mb-0 flex-grow-1">
         <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
     </h1>
@@ -76,7 +76,6 @@
                                 <c:url var="postUrl" value="/client/availability/${driverId}">
                                     <c:param name="zoneId" value="${originZone.id}"/>
                                     <c:param name="size" value="${size}"/>
-                                    <c:param name="priceMin" value="${priceMin}"/>
                                     <c:param name="priceMax" value="${priceMax}"/>
                                     <c:param name="weekday" value="${weekday}"/>
                                     <c:param name="rating" value="${rating}"/>

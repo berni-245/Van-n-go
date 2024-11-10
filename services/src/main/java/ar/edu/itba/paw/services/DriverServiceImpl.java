@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -90,9 +89,9 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
+    public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMin, priceMax, weekday);
+        List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMax, weekday);
         vehicleList.removeIf(v -> v.getAvailability().isEmpty());
         return vehicleList;
     }
@@ -124,29 +123,21 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Driver> getSearchResults(
-            int zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     ) {
-        // Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
-        if (priceMin != null && priceMax != null && priceMin > priceMax) {
-            return Collections.emptyList();
-        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getSearchResults(zone, size, priceMin, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getSearchResults(zone, size, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
     }
 
     @Transactional
     @Override
     public int getSearchResultCount(
-            int zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        // Esto es por si alguien manda un POST con un priceMin>priceMax desde la consola
-        if (priceMin != null && priceMax != null && priceMin > priceMax) {
-            return 0;
-        }
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getSearchCount(zone, size, priceMin, priceMax, weekday, rating);
+        return driverDao.getSearchCount(zone, size, priceMax, weekday, rating);
     }
 
     @Transactional

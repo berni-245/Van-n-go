@@ -67,7 +67,7 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMin, Double priceMax, DayOfWeek weekday) {
+    public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday) {
         StringBuilder queryString = new StringBuilder("""
                         SELECT DISTINCT v FROM Vehicle v
                         JOIN v.zones z
@@ -76,8 +76,6 @@ public class VehicleJpaDao implements VehicleDao {
                         """);
         if(size != null)
             queryString.append(" AND v.volume BETWEEN :minVol AND :maxVol");
-        if(priceMin != null)
-            queryString.append(" AND v.hourlyRate >= :priceMin");
         if(priceMax != null)
             queryString.append(" AND v.hourlyRate <= :priceMax");
         if(weekday != null)
@@ -88,9 +86,6 @@ public class VehicleJpaDao implements VehicleDao {
         if(size != null){
             query.setParameter("minVol", (double) size.getMinVolume());
             query.setParameter("maxVol", (double) size.getMaxVolume());
-        }
-        if(priceMin != null){
-            query.setParameter("priceMin", priceMin);
         }
         if(priceMax != null){
             query.setParameter("priceMax", priceMax);

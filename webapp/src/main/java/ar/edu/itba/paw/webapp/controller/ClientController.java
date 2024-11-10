@@ -137,7 +137,6 @@ public class ClientController implements Bookings {
     public ModelAndView availability(
             @RequestParam(name = "zoneId", required = false) Integer zoneId,
             @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
@@ -151,17 +150,16 @@ public class ClientController implements Bookings {
         final ModelAndView mav = new ModelAndView("client/availability");
         mav.addObject(
                 "drivers",
-                ds.getSearchResults(zoneId, size, priceMin, priceMax, weekday, rating, order, page)
+                ds.getSearchResults(zoneId, size, priceMax, weekday, rating, order, page)
         );
         mav.addObject("zones", zs.getAllZones());
         mav.addObject("currentPage", page);
         mav.addObject(
                 "totalPages",
-                ds.getSearchResultPages(zoneId, size, priceMin, priceMax, weekday, rating)
+                ds.getSearchResultPages(zoneId, size, priceMax, weekday, rating)
         );
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
-        mav.addObject("priceMin", priceMin);
         mav.addObject("priceMax", priceMax);
         mav.addObject("weekday", weekday);
         mav.addObject("rating", rating);
@@ -174,7 +172,6 @@ public class ClientController implements Bookings {
             @PathVariable(name = "driverId") int driverId,
             @RequestParam(name = "zoneId") int zoneId,
             @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
@@ -187,7 +184,7 @@ public class ClientController implements Bookings {
         final ModelAndView mav = new ModelAndView("client/driverAvailability");
         mav.addObject("driverId", driverId);
         Zone originZone = zs.getZone(zoneId).orElseThrow();
-        List<Vehicle> vehicles = ds.getVehicles(driver, zoneId, size, priceMin, priceMax, weekday);
+        List<Vehicle> vehicles = ds.getVehicles(driver, zoneId, size, priceMax, weekday);
         Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
         List<Zone> zones = zs.getAllZones();
         mav.addObject("zones", zones);
@@ -198,7 +195,6 @@ public class ClientController implements Bookings {
         mav.addObject("originZone", originZone);
         mav.addObject("size", size);
         mav.addObject("sizeLowerCase", size);
-        mav.addObject("priceMin", priceMin);
         mav.addObject("priceMax", priceMax);
         mav.addObject("rating", rating);
         mav.addObject("weekday", weekday);
@@ -212,7 +208,6 @@ public class ClientController implements Bookings {
             @PathVariable(name = "driverId") int driverId,
             @RequestParam(name = "zoneId") int zoneId,
             @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMin", required = false) Double priceMin,
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
@@ -225,7 +220,7 @@ public class ClientController implements Bookings {
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingForm");
-            return driverAvailability(driverId, zoneId, size, priceMin, priceMax, weekday, rating, order, page, loggedUser, form);
+            return driverAvailability(driverId, zoneId, size, priceMax, weekday, rating, order, page, loggedUser, form);
         }
         cs.appointBooking(
                 form.getVehicleId(),

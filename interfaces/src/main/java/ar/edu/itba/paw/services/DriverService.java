@@ -3,7 +3,6 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.*;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -23,7 +22,7 @@ public interface DriverService extends UserService<Driver> {
             byte[] imgData
     );
 
-    List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMin, Double priceMax, DayOfWeek weekday);
+    List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday);
 
     void updateAvailability(
             Vehicle vehicle,
@@ -37,21 +36,21 @@ public interface DriverService extends UserService<Driver> {
     );
 
     List<Driver> getSearchResults(
-            int zoneId, Size size, Double priceMin, Double priceMax,
+            int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     );
 
     int getSearchResultCount(
-            int zoneId, Size size, Double priceMin,
+            int zoneId, Size size,
             Double priceMax, DayOfWeek weekday, Integer rating
     );
 
     default int getSearchResultPages(
-            int zoneId, Size size, Double priceMin,
-            Double priceMax, DayOfWeek weekday, Integer rating
+            int zoneId, Size size, Double priceMax,
+            DayOfWeek weekday, Integer rating
     ) {
         return (int) Math.ceil((double) getSearchResultCount(
-                zoneId, size, priceMin, priceMax, weekday, rating
+                zoneId, size, priceMax, weekday, rating
         ) / Pagination.SEARCH_PAGE_SIZE);
     }
 

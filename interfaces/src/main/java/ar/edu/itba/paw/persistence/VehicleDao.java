@@ -27,7 +27,7 @@ public interface VehicleDao {
 
     List<Vehicle> getDriverVehicles(Driver driver);
 
-    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double minPrice, Double maxPrice, DayOfWeek weekday);
+    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double maxPrice, DayOfWeek weekday);
 
     boolean plateNumberExists(String plateNumber);
 
