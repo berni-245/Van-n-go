@@ -65,7 +65,7 @@
                     <p><strong><spring:message code="generic.word.zone"/>:</strong> ${clientZone}</p>
                     <p><strong><spring:message code="generic.word.created"/>:</strong> ${recipient.creationTime}</p>
                     <p><strong><spring:message code="generic.booking.date"/>:</strong> ${booking.date}</p>
-                    <p><strong><spring:message code="generic.booking.shift.period"/>:</strong> <spring:message code="${booking.shiftPeriod.code}"/></p>
+                    <p><strong><spring:message code="generic.booking.shift.period"/>:</strong> <spring:message code="generic.word.${booking.shiftPeriod.lowerCaseText}"/></p>
                     <!-- Add any other recipient information as needed -->
                 </div>
             </div>

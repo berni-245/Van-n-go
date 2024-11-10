@@ -1,17 +1,17 @@
 package ar.edu.itba.paw.models;
 
 public enum ShiftPeriod {
-    MORNING("generic.word.morning"),
-    AFTERNOON("generic.word.afternoon"),
-    EVENING("generic.word.evening");
+    MORNING("morning"),
+    AFTERNOON("afternoon"),
+    EVENING("evening");
 
-    private final String code;
+    private final String lowerCaseText;
 
-    ShiftPeriod(String code) {
-        this.code = code;
+    ShiftPeriod(String lowerCaseText) {
+        this.lowerCaseText = lowerCaseText;
     }
 
-    public String getCode() {
-        return code;
+    public String getLowerCaseText() {
+        return lowerCaseText;
     }
 }
