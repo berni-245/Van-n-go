@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
-
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">

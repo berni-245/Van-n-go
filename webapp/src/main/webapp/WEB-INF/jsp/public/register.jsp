@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
-
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.register"/>
 <body class="d-flex flex-column min-vh-100">

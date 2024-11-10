@@ -3,7 +3,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">

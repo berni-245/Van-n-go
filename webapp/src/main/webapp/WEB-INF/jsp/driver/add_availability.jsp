@@ -2,7 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
-
+<!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.availability" tomselect="true">
     <c:url value="/css/weekdaySelector.css" var="css"/>
