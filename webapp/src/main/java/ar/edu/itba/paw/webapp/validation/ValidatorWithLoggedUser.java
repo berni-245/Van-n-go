@@ -6,19 +6,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ValidatorWithLoggedUser {
-    private final User user;
-
-    ValidatorWithLoggedUser() {
+    public User getUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof PawUserDetails pud) {
-            this.user = pud.getUser();
+            return pud.getUser();
         } else {
             // TODO: Make custom exception.
             throw new RuntimeException("Idk unauthorized?");
         }
-    }
-
-    public User getUser() {
-        return user;
     }
 }
