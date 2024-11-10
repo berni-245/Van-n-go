@@ -20,9 +20,8 @@ public class Availability {
     )
     private int id;
 
-    //    @JoinColumn(name = "vehicle_id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Vehicle vehicle;   // on delete cascade?
+    private Vehicle vehicle;
 
     @Column(name = "week_day", nullable = false)
     @Enumerated(EnumType.STRING)

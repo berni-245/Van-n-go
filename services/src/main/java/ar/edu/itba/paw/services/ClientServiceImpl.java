@@ -97,7 +97,6 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public void setBookingRatingAndReview(int bookingId, int rating, String review) {
-        //send mail!
         bookingDao.setRatingAndReview(bookingDao.getBookingById(bookingId).orElseThrow(), rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
     }

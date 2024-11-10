@@ -74,7 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setCacheSeconds(5); // Not performant, only for development.
+        ms.setCacheSeconds(5); //TODO? Not performant, only for development.
         ms.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         ms.addBasenames("classpath:i18n/messages");
 
@@ -87,7 +87,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         ds.setDriverClass(org.postgresql.Driver.class);
 
-        // lo de abajo cambiará en el servidor que usaremos nosotros
         ds.setUrl("jdbc:postgresql://localhost/paw-2024b-01");
         ds.setUsername("paw-2024b-01");
         ds.setPassword("9vegcAS5x");
@@ -156,7 +155,7 @@ public class WebConfig implements WebMvcConfigurer {
         factoryBean.setJpaVendorAdapter(vendorAdapter);
 
         final Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update"); //Mapping from hibernate to ddl tries non-destructive operations while creating tables
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect","org.hibernate.dialect.PostgreSQL92Dialect");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
