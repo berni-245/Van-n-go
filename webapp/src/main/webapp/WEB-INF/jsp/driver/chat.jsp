@@ -103,12 +103,30 @@
                          class="rounded-circle me-2; object-fit: cover;" width="120" height="120">
                 </div>
                 <div class="card-body">
-                    <p><strong><spring:message code="generic.word.username"/>:</strong> <c:out value="${recipient.username}"/> </p>
-                    <p><strong><spring:message code="generic.word.email"/>:</strong> <c:out value="${recipient.mail}"/></p>
-                    <p><strong><spring:message code="generic.word.zone"/>:</strong> <c:out value="${clientZone}"/></p>
-                    <p><strong><spring:message code="generic.word.created"/>:</strong> <c:out value="${recipient.creationTime.toLocalDate()}"/></p>
-                    <p><strong><spring:message code="generic.booking.date"/>:</strong> <c:out value="${booking.date}"/></p>
-                    <p><strong><spring:message code="generic.booking.shift.period"/>:</strong> <spring:message code="generic.word.${booking.shiftPeriod.capitalizedText}"/></p>
+                    <p>
+                        <strong><spring:message code="generic.word.username"/>:</strong>
+                        <c:out value="${recipient.username}"/>
+                    </p>
+                    <p>
+                        <strong><spring:message code="generic.word.email"/>:</strong>
+                        <c:out value="${recipient.mail}"/>
+                    </p>
+                    <p>
+                        <strong><spring:message code="generic.word.zone"/>:</strong>
+                        <c:out value="${clientZone}"/>
+                    </p>
+                    <p>
+                        <strong><spring:message code="generic.word.created"/>:</strong>
+                        <c:out value="${recipient.creationTime.toLocalDate()}"/>
+                    </p>
+                    <p>
+                        <strong><spring:message code="generic.booking.date"/>:</strong>
+                        <c:out value="${booking.date}"/>
+                    </p>
+                    <p>
+                        <strong><spring:message code="generic.booking.shift.period"/>:</strong>
+                        <spring:message code="generic.word.${booking.shiftPeriod.capitalizedText}"/>
+                    </p>
                     <!-- Add any other recipient information as needed -->
                 </div>
             </div>
