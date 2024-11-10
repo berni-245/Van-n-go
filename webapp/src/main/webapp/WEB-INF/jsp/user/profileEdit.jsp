@@ -43,8 +43,8 @@
                             <form:select path="language" id="select-language" multiple="false" autocomplete="off"
                                          cssClass="form-select ${status.error ? 'is-invalid' : ''}">
                                 <c:forEach var="lang" items="${languages}">
-                                    <option value="${lang.name()}">
-                                        <spring:message code="generic.word.language.${lang.name().toLowerCase()}"/>
+                                    <option value="${lang.name()}" ${loggedUser.language eq lang ? 'selected' : ''}>
+                                        <spring:message code="generic.word.language.${lang.lowerCaseText}"/>
                                     </option>
                                 </c:forEach>
                             </form:select>

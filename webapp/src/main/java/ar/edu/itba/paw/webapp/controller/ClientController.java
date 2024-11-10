@@ -304,7 +304,6 @@ public class ClientController implements Bookings {
         if (!errors.hasErrors()) {
             form.setMail(loggedUser.getMail());
             form.setUsername(loggedUser.getUsername());
-            form.setLanguage(loggedUser.getLanguage().name());
         }
         ModelAndView mav = new ModelAndView("/user/profileEdit");
         mav.addObject("zones", zs.getAllZones());

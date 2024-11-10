@@ -3,16 +3,24 @@ package ar.edu.itba.paw.models;
 import java.util.Locale;
 
 public enum Language {
-    ENGLISH(Locale.of("en")), SPANISH(Locale.of("es"));
+    ENGLISH(Locale.of("en"),"english"), SPANISH(Locale.of("es"),"spanish");
 
     final Locale locale;
 
-    Language(Locale locale) {
+    private final String lowerCaseText;
+
+
+    Language(Locale locale, String lowerCaseText) {
         this.locale = locale;
+        this.lowerCaseText = lowerCaseText;
     }
 
     public Locale getLocale() {
         return locale;
+    }
+
+    public String getLowerCaseText() {
+        return lowerCaseText;
     }
 
     public static Language fromLocale(Locale locale) {
