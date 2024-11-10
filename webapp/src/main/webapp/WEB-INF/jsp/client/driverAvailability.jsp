@@ -12,7 +12,28 @@
 <body>
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-center mb-5">
-    <comp:GoBackButton path="/client/availability"/>
+    <c:url var="searchParams" value="/client/availability">
+        <c:param name="zoneId" value="${originZone}"/>
+        <c:if test="${size ne null}">
+            <c:param name="size" value="${size}"/>
+        </c:if>
+        <c:if test="${priceMax ne null}">
+            <c:param name="priceMax" value="${priceMax}"/>
+        </c:if>
+        <c:if test="${weekday ne null}">
+            <c:param name="weekday" value="${weekday}"/>
+        </c:if>
+        <c:if test="${rating ne null}">
+            <c:param name="rating" value="${rating}"/>
+        </c:if>
+        <c:if test="${order ne null}">
+            <c:param name="order" value="${order}"/>
+        </c:if>
+        <c:if test="${page ne null}">
+            <c:param name="page" value="${page}"/>
+        </c:if>
+    </c:url>
+    <comp:GoBackButton path="${searchParams}"/>
     <h1 class="text-center mb-0 flex-grow-1">
         <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
     </h1>
@@ -80,6 +101,7 @@
                                     <c:param name="weekday" value="${weekday}"/>
                                     <c:param name="rating" value="${rating}"/>
                                     <c:param name="order" value="${order}"/>
+                                    <c:param name="page" value="${page}"/>
                                 </c:url>
                                 <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">
                                     <input type="hidden" name="vehicleId" value="${v.id}">

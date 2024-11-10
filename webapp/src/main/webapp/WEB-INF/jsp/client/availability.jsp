@@ -29,7 +29,7 @@
                 </spring:bind>
             </div>
             <div class="col-sm">
-                <spring:message code="generic.word.size" var="sizeLabel"/>
+                <spring:message code="client.search.size" var="sizeLabel"/>
                 <form:select path="size" id="select-size" cssClass="form-control">
                     <form:option value="" label="${sizeLabel}"/>
                     <spring:message var="small" code="generic.word.small"/>
@@ -44,7 +44,7 @@
 
         <div class="row g-3">
             <div class="col-sm-2">
-                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price"
+                <input type="number" step="1" min="100" max="100000" name="priceMax" placeholder="Max Price"
                        class="form-control" value="${priceMax}"/>
             </div>
 
@@ -73,9 +73,7 @@
             </div>
 
             <div class="col-sm-3">
-                <spring:message code="client.search.selectOrder" var="weekdayLabel"/>
                 <form:select path="order" id="select-weekday" cssClass="form-select">
-                    <form:option value="" label="${weekdayLabel}"/>
                     <form:option value="ALPHABETICAL" label="Alphetical"/>
                     <form:option value="RECENT" label="Most Recent"/>
                     <form:option value="PRICE" label="Lowest Price"/>
@@ -148,11 +146,24 @@
                                             </div>
                                             <c:url var="avUrl" value="/client/availability/${driver.id}">
                                                 <c:param name="zoneId" value="${zoneId}"/>
-                                                <c:param name="size" value="${size}"/>
-                                                <c:param name="priceMax" value="${priceMax}"/>
-                                                <c:param name="weekday" value="${weekday}"/>
-                                                <c:param name="rating" value="${rating}"/>
-                                                <c:param name="order" value="${order}"/>
+                                                <c:if test="${size ne null}">
+                                                    <c:param name="size" value="${size}"/>
+                                                </c:if>
+                                                <c:if test="${priceMax ne null}">
+                                                    <c:param name="priceMax" value="${priceMax}"/>
+                                                </c:if>
+                                                <c:if test="${weekday ne null}">
+                                                    <c:param name="weekday" value="${weekday}"/>
+                                                </c:if>
+                                                <c:if test="${rating ne null}">
+                                                    <c:param name="rating" value="${rating}"/>
+                                                </c:if>
+                                                <c:if test="${order ne null}">
+                                                    <c:param name="order" value="${order}"/>
+                                                </c:if>
+                                                <c:if test="${currentPage ne null}">
+                                                    <c:param name="page" value="${currentPage}"/>
+                                                </c:if>
                                             </c:url>
                                             <a href="${avUrl}" class="btn btn-primary">
                                                 <spring:message code="components.availability.SeeAvailability"/>
@@ -176,24 +187,42 @@
                             </div>
                         </c:forEach>
                     </div>
+                    <c:url var="searchParams" value="/client/availability">
+                        <c:param name="zoneId" value="${zoneId}"/>
+                        <c:if test="${size ne null}">
+                            <c:param name="size" value="${size}"/>
+                        </c:if>
+                        <c:if test="${priceMax ne null}">
+                            <c:param name="priceMax" value="${priceMax}"/>
+                        </c:if>
+                        <c:if test="${weekday ne null}">
+                            <c:param name="weekday" value="${weekday}"/>
+                        </c:if>
+                        <c:if test="${rating ne null}">
+                            <c:param name="rating" value="${rating}"/>
+                        </c:if>
+                        <c:if test="${order ne null}">
+                            <c:param name="order" value="${order}"/>
+                        </c:if>
+                    </c:url>
                     <c:if test="${totalPages > 1}">
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="?page=${currentPage - 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}"
+                                       href="${searchParams}&page=${currentPage - 1}"
                                        tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message
                                             code="generic.word.previous"/></a>
                                 </li>
                                 <c:forEach begin="0" end="${totalPages - 1}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
                                         <a class="page-link"
-                                           href="?page=${i}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}">${i + 1}</a>
+                                           href="${searchParams}&page=${i}">${i + 1}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="?page=${currentPage + 1}&zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}"
+                                       href="${searchParams}&page=${currentPage + 1}"
                                        aria-disabled="${currentPage == totalPages - 1}"><spring:message
                                             code="generic.word.next"/>&raquo;</a>
                                 </li>

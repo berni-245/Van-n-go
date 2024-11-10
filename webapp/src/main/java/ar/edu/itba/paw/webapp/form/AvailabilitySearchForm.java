@@ -26,9 +26,6 @@ public class AvailabilitySearchForm {
 
     @Nullable
     @Min(Rates.MINIMUM)
-    private Double priceMin;
-
-    @Nullable
     @Max(Rates.MAXIMUM)
     private Double priceMax;
 
@@ -64,14 +61,6 @@ public class AvailabilitySearchForm {
 
     public void setRating(Integer rating) {
         this.rating = rating;
-    }
-
-    public Double getPriceMin() {
-        return priceMin;
-    }
-
-    public void setPriceMin(Double priceMin) {
-        this.priceMin = priceMin;
     }
 
     public Double getPriceMax() {

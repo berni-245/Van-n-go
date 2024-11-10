@@ -49,7 +49,7 @@
 
       <div class="mb-4">
         <label for="select-day" class="form-label h4">
-          <spring:message code="client.search.selectWeekday"/>
+          <spring:message code="generic.word.weekday"/>
         </label>
         <form:select path="weekday" id="select-day" cssClass="form-select form-select-lg" autocomplete="off">
           <form:option value="" label="Any"/>

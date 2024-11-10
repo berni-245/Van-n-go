@@ -178,6 +178,7 @@ public class ClientController implements Bookings {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "order", required = false) SearchOrder order,
+            @RequestParam(name = "page", defaultValue = "0") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
@@ -200,6 +201,7 @@ public class ClientController implements Bookings {
         mav.addObject("rating", rating);
         mav.addObject("weekday", weekday);
         mav.addObject("order", order);
+        mav.addObject("page", page);
         return mav;
     }
 
@@ -212,6 +214,7 @@ public class ClientController implements Bookings {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "order", required = false) SearchOrder order,
+            @RequestParam(name = "page", defaultValue = "0") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingForm") BookingForm form,
             BindingResult errors,
@@ -219,7 +222,7 @@ public class ClientController implements Bookings {
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingForm");
-            return driverAvailability(driverId, zoneId, size, priceMax, weekday, rating, order, loggedUser, form);
+            return driverAvailability(driverId, zoneId, size, priceMax, weekday, rating, order, page, loggedUser, form);
         }
         cs.appointBooking(
                 form.getVehicleId(),
