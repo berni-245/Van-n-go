@@ -33,6 +33,7 @@ public class MailServiceImpl implements MailService {
 
     private final String FROM = "van.n.go.paw@gmail.com";
     private final String password = "lrbe ukez jvkk fleu";
+    private final String baseUrl = "http://pawserver.it.itba.edu.ar/paw-2024b-01/";
     private final Authenticator auth;
     private final Properties properties;
 
@@ -284,12 +285,9 @@ public class MailServiceImpl implements MailService {
         context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         context.setVariable("timeReceived", timeReceived.format(timeFormatter));
-
-        if(recipient.isDriver()){
-            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/driver/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId()));
-        }else{
-            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/client/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId()));
-        }
+        String chatPath = "/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId());
+        String userPath = recipient.isDriver() ? "driver" : "client";
+        context.setVariable("seeChatUrl", baseUrl + userPath + chatPath);
         String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient.getMail()));
