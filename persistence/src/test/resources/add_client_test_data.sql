@@ -1,6 +1,7 @@
-insert into app_user (id, username, mail, password) values
-    (1, 'JuanClient', 'juanC@mail.com', '123321'),
-    (500, 'AnotherJuanClient', 'AjuanC@mail.com', '123321');
+insert into app_user (id, username, mail, password, language) values
+    (500, 'AnotherJuanClient', 'AjuanC@mail.com', '123321', 'SPANISH'),
+    (501, 'YetAnotherJuanClient', 'YAjuanC@mail.com', '123321', 'SPANISH');
 
-insert into client (user_id) values
-    (500);
+insert into client (id, zone_id) values
+    (500, 1),
+    (501, 1);
