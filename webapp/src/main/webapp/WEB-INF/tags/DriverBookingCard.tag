@@ -82,7 +82,7 @@
                         data-bs-target="#bookingModal${booking.id}">
                     <spring:message code="generic.phrase.seeDetails"/>
                 </button>
-                <a href="${pageContext.request.contextPath}/driver/chat?recipientId=${booking.client.id}" type="button" class="btn btn-secondary">
+                <a href="${pageContext.request.contextPath}/driver/chat?bookingId=${booking.id}&recipientId=${booking.client.id}" type="button" class="btn btn-secondary">
                     <spring:message code="generic.word.chat"/>
                 </a>
             </div>

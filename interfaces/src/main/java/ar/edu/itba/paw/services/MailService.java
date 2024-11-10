@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.ShiftPeriod;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 import org.springframework.scheduling.annotation.Async;
 
 import java.awt.print.Book;
@@ -31,6 +28,5 @@ public interface MailService {
     void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 
 
-    void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, int senderId, boolean isRecipientDriver,
-                             String receivedMessage, LocalDateTime timeReceived, Locale locale);
+    void sendReceivedMessage(User recipient, User sender, int bookingId, String receivedMessage, LocalDateTime timeReceived, Locale locale);
 }

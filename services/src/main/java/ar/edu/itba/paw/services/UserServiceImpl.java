@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
-import ar.edu.itba.paw.exceptions.ForbiddenDriverCancelBookingException;
-import ar.edu.itba.paw.exceptions.InvalidUserException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingCancelException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.BookingState;
@@ -48,7 +45,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Override
     public T findById(int id) {
         Optional<T> user = userDao.findById(id);
-        if (user.isEmpty()) throw new InvalidUserException();
+        if (user.isEmpty()) throw new UserNotFoundException();
         return user.get();
     }
 
@@ -74,6 +71,12 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Override
     public void updatePassword(User user, String password) {
         userDao.updatePassword(user, passwordEncoder.encode(password));
+    }
+
+    @Transactional
+    @Override
+    public Optional<Booking> getBookingById(int bookingId) {
+        return bookingDao.getBookingById(bookingId);
     }
 
     @Transactional

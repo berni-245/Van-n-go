@@ -243,12 +243,15 @@ public class ClientController implements Bookings {
     @RequestMapping(path = "/client/chat", method = RequestMethod.GET)
     public ModelAndView chat(
             @ModelAttribute("loggedUser") Client loggedUser,
+            @RequestParam("bookingId") Integer bookingId,
             @RequestParam("recipientId") Integer recipientId
     ) {
         final ModelAndView mav = new ModelAndView("client/chat");
         Driver driver = ds.findById(recipientId);
+        Booking booking = ds.getBookingById(bookingId).orElseThrow();
+        List<Message> messages = ms.getConversation(booking, loggedUser, driver);
         mav.addObject("recipient", driver);
-        List<Message> messages = ms.getConversation(loggedUser, driver);
+        mav.addObject("booking", booking);
         mav.addObject("messages", messages);
         return mav;
     }
@@ -257,10 +260,11 @@ public class ClientController implements Bookings {
     public ModelAndView send(
             @ModelAttribute("loggedUser") Client loggedUser,
             @RequestParam("content") String content,
+            @RequestParam("bookingId") Integer bookingId,
             @RequestParam("recipientId") Integer recipientId
     ) {
-        ms.sendClientMessage(loggedUser, recipientId, content);
-        return new ModelAndView("redirect:/client/chat?recipientId=" + recipientId);
+        ms.sendClientMessage(bookingId, loggedUser, recipientId, content);
+        return redirect("/client/chat?bookingId=%d&recipientId=%d", bookingId, recipientId);
     }
 
     @RequestMapping(path = "/client/change/password", method = RequestMethod.GET)

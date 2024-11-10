@@ -88,8 +88,8 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
                                                      HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.client.already.appointed"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        String currentPostUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        return redirect(currentPostUrl);
     }
 
     @ExceptionHandler(TimeAlreadyPassedException.class)
@@ -97,8 +97,8 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
                                                 HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.time.already.passed"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        String currentPostUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        return redirect(currentPostUrl);
     }
 
     @ExceptionHandler(VehicleIsAlreadyAcceptedException.class)
@@ -106,8 +106,8 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
                                                        HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.is.already.accepted"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        String currentPostUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        return redirect(currentPostUrl);
     }
 
     @ExceptionHandler(VehicleNotAvailableException.class)
@@ -115,26 +115,22 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
                                                   HttpServletRequest request) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.booking.vehicle.not.available"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        String currentPostUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        return redirect(currentPostUrl);
     }
 
     @ExceptionHandler(InvalidMessageException.class)
-    public ModelAndView handleInvalidMessage(InvalidMessageException ex, RedirectAttributes redirectAttributes,
-                                             HttpServletRequest request) {
+    public ModelAndView handleInvalidMessage(InvalidMessageException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.invalid.message"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        return redirect("/internalError");
     }
 
-    @ExceptionHandler(InvalidRecipientException.class)
-    public ModelAndView handleInvalidMessage(InvalidRecipientException ex, RedirectAttributes redirectAttributes,
-                                             HttpServletRequest request) {
-        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.message.invalid.recipient"));
+    @ExceptionHandler(ForbiddenConversationException.class)
+    public ModelAndView handleForbiddenConversation(ForbiddenConversationException ex, RedirectAttributes redirectAttributes) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.message.forbidden.conversation"));
         LOGGER.error(ex.getMessage());
-        String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-        return redirect(currentUrl);
+        return redirect("/forbidden");
     }
 
     @ExceptionHandler(NoSuchElementException.class)

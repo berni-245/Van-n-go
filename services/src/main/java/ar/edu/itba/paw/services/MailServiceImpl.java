@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -273,32 +274,31 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendReceivedMessage(String recipientUserName, String recipientMail, String senderUsername, int senderId, boolean isRecipientDriver,
-                                    String receivedMessage, LocalDateTime timeReceived, Locale locale) {
+    public void sendReceivedMessage(User recipient, User sender, int bookingId, String receivedMessage, LocalDateTime timeReceived, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);
-        context.setVariable("recipientUserName", recipientUserName);
-        context.setVariable("senderUsername", senderUsername);
+        context.setVariable("recipientUserName", recipient.getUsername());
+        context.setVariable("senderUsername", sender.getUsername());
         context.setVariable("receivedMessage", receivedMessage);
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
         context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         context.setVariable("timeReceived", timeReceived.format(timeFormatter));
 
-        if(isRecipientDriver){
-            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/driver/chat?recipientId=%d".formatted(senderId));
+        if(recipient.isDriver()){
+            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/driver/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId()));
         }else{
-            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/client/chat?recipientId=%d".formatted(senderId));
+            context.setVariable("seeChatUrl", "http://pawserver.it.itba.edu.ar/paw-2024b-01/client/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId()));
         }
         String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);
         try {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipientMail));
-            message.setSubject(messageSource.getMessage("subject.receivedMessage", new Object[]{senderUsername}, locale));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient.getMail()));
+            message.setSubject(messageSource.getMessage("subject.receivedMessage", new Object[]{sender.getUsername()}, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception e) {
-            LOGGER.error("Error sending new message mail to {}", recipientUserName);
+            LOGGER.error("Error sending new message mail to {}", recipient.getUsername());
         }
         sendMail(message);
-        LOGGER.info("Sent new message mail to {}", recipientUserName);
+        LOGGER.info("Sent new message mail to {}", recipient.getUsername());
     }
 }

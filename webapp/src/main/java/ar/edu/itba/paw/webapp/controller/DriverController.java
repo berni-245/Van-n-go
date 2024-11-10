@@ -107,12 +107,15 @@ public class DriverController implements Bookings {
     @RequestMapping(value = "/driver/chat", method = RequestMethod.GET)
     public ModelAndView chat(
             @ModelAttribute("loggedUser") Driver loggedUser,
+            @RequestParam("bookingId") Integer bookingId,
             @RequestParam("recipientId") Integer recipientId
     ) {
         final ModelAndView mav = new ModelAndView("driver/chat");
         Client client = cs.findById(recipientId);
+        Booking booking = cs.getBookingById(bookingId).orElseThrow();
+        List<Message> messages = ms.getConversation(booking, client, loggedUser);
         mav.addObject("recipient", client);
-        List<Message> messages = ms.getConversation(client, loggedUser);
+        mav.addObject("booking", booking);
         mav.addObject("messages", messages);
         mav.addObject("clientZone", zs.getClientZone(client));
         return mav;
@@ -122,10 +125,11 @@ public class DriverController implements Bookings {
     public ModelAndView send(
             @ModelAttribute("loggedUser") Driver loggedUser,
             @RequestParam("content") String content,
+            @RequestParam("bookingId") Integer bookingId,
             @RequestParam("recipientId") Integer recipientId
     ) {
-        ms.sendDriverMessage(loggedUser, recipientId, content);
-        return new ModelAndView("redirect:/driver/chat?recipientId=" + recipientId);
+        ms.sendDriverMessage(bookingId, loggedUser, recipientId, content);
+        return redirect("/driver/chat?bookingId=%d&recipientId=%d", bookingId, recipientId);
     }
 
     @RequestMapping(

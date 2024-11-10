@@ -3,9 +3,12 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserBookingService<T extends User> {
     List<Booking> getBookings(T user, BookingState state, int page);
+
+    Optional<Booking> getBookingById(int bookingId);
 
     int getBookingCount(T user, BookingState state);
 

@@ -11,7 +11,6 @@
 <div class="container my-4">
     <!-- Chat Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>${recipient.username}</h2>
         <a href="${pageContext.request.contextPath}/client/bookings" class="btn btn-secondary">
             <spring:message code="generic.phrase.goBack"/>
         </a>
@@ -37,9 +36,14 @@
             </div>
 
             <!-- Message Sending Form -->
+            <c:url value='/client/send' var="postUrl">
+                <c:param name="recipientId" value="${recipient.id}"/>
+                <c:param name="bookingId" value="${booking.id}"/>
+            </c:url>
             <form action="<c:url value='/client/send'/>" method="POST" class="d-flex">
                 <input type="hidden" name="recipientId" value="${recipient.id}"/>
-                <input type="text" name="content" class="form-control me-2" placeholder="Type a message..." required maxlength="255"/>
+                <input type="hidden" name="bookingId" value="${booking.id}" />
+                <input type="text" name="content" class="form-control me-2" placeholder="<spring:message code="generic.type.message"/>" required maxlength="255"/>
                 <button type="submit" class="btn btn-primary"><spring:message code="generic.word.send"/></button>
             </form>
         </div>
@@ -64,7 +68,9 @@
                     <p><strong><spring:message code="generic.word.email"/>:</strong> ${recipient.mail}</p>
                     <p><strong><spring:message code="generic.word.description"/>:</strong> ${recipient.description}</p>
                     <p><strong><spring:message code="generic.word.cbu"/>:</strong> ${recipient.cbu}</p>
-                    <p><strong>Joined:</strong> ${recipient.creationTime}</p>
+                    <p><strong><spring:message code="generic.word.joined"/>:</strong> ${recipient.creationTime}</p>
+                    <p><strong><spring:message code="generic.booking.date"/>:</strong> ${booking.date}</p>
+                    <p><strong><spring:message code="generic.booking.shift.period"/>:</strong> <spring:message code="${booking.shiftPeriod.code}"/></p>
                     <!-- Add any other recipient information as needed -->
                 </div>
             </div>
