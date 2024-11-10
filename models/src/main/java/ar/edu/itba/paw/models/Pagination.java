@@ -5,4 +5,12 @@ public class Pagination {
     public static final int SEARCH_PAGE_SIZE = 12;
     public static final int VEHICLES_PAGE_SIZE = 6;
     public static final int MAX_MESSAGE_RETRIEVAL = 100;
+
+    public static int validatePage(int page, int totalPages) {
+        if(page < 0)
+            return 0;
+        if(page > totalPages)
+            return totalPages-1;
+        return page;
+    }
 }

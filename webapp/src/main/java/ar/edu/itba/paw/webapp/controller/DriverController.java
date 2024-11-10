@@ -138,9 +138,9 @@ public class DriverController implements Bookings {
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
+        int totalPages = ds.getVehicleCount(loggedUser);
+        page = Pagination.validatePage(page,totalPages);
         mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
-        int totalRecords = ds.getVehicleCount(loggedUser);
-        int totalPages = (int) Math.ceil((double) totalRecords / Pagination.VEHICLES_PAGE_SIZE);
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
         mav.addObject("toasts", model.getAttribute("toasts"));

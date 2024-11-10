@@ -148,16 +148,18 @@ public class ClientController implements Bookings {
         form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
         zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
+        int totalPages = ds.getSearchResultPages(zoneId, size, priceMax, weekday, rating);
+        page = Pagination.validatePage(page, totalPages);
         mav.addObject(
                 "drivers",
                 ds.getSearchResults(zoneId, size, priceMax, weekday, rating, order, page)
         );
         mav.addObject("zones", zs.getAllZones());
-        mav.addObject("currentPage", page);
         mav.addObject(
                 "totalPages",
-                ds.getSearchResultPages(zoneId, size, priceMax, weekday, rating)
+                totalPages
         );
+        mav.addObject("currentPage", page);
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
         mav.addObject("priceMax", priceMax);

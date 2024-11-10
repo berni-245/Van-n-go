@@ -274,7 +274,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public int getVehicleCount(Driver driver) {
-        return vehicleDao.getVehicleCount(driver);
+        return (int) Math.ceil((double) vehicleDao.getVehicleCount(driver) / Pagination.VEHICLES_PAGE_SIZE);
     }
 
     @Transactional
