@@ -61,7 +61,7 @@
                         </c:otherwise>
                     </c:choose>
                     <img src="${recipientPfpUrl}" alt="Profile Picture"
-                         class="rounded-circle me-2" width="120" height="120">
+                         class="rounded-circle me-2; object-fit: cover;" width="120" height="120">
                 </div>
                 <div class="card-body">
                     <p><strong><spring:message code="generic.word.username"/>:</strong> ${recipient.username}</p>

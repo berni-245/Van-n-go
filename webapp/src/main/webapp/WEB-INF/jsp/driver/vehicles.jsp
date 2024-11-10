@@ -49,11 +49,11 @@
                                     <c:when test="${v.imgId ne null}">
                                         <img id="vehicleImagePreview"
                                              src="<c:url value='/vehicle/image?imgId=${v.imgId}' />"
-                                             alt="Vehicle Image Preview" class="card-img-top"/>
+                                             alt="Vehicle Image Preview" class="object-fit: cover; card-img-top"/>
                                     </c:when>
                                     <c:otherwise>
                                         <img src="${pageContext.request.contextPath}/images/defaultVehicle.png"
-                                             alt="DefaultVehiclePicture">
+                                             class="object-fit: cover" alt="DefaultVehiclePicture">
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="card-body">

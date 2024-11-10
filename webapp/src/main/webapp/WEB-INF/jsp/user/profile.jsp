@@ -26,11 +26,11 @@
                         <c:choose>
                             <c:when test="${loggedUser.pfp ne null}">
                                 <img src="<c:url value='/profile/picture'/>" alt="Profile Picture"
-                                     class="rounded-circle border" width="150" height="150">
+                                     class="rounded-circle border object-fit: cover" width="150" height="150">
                             </c:when>
                             <c:otherwise>
                                 <img src="${pageContext.request.contextPath}/images/defaultUserPfp.png"
-                                     alt="No Profile Picture" class="rounded-circle border mb-2" width="150"
+                                     alt="No Profile Picture object-fit: cover" class="rounded-circle border mb-2" width="150"
                                      height="150">
                             </c:otherwise>
                         </c:choose>

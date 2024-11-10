@@ -135,7 +135,7 @@
                                 </c:otherwise>
                                 </c:choose>
                                 <img id="vehicleImagePreview" src="${imgUrl}"
-                                     alt="Vehicle Image Preview" class="card-img-top"/>
+                                     alt="Vehicle Image Preview" class="object-fit: cover; card-img-top"/>
                                 <figcaption class="figure-caption">
                                     <c:out value="${v.description}"/>
                                 </figcaption>
