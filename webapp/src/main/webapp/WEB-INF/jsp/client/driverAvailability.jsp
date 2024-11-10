@@ -12,7 +12,7 @@
 <body>
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-center mb-5">
-    <comp:GoBackButton/>
+    <comp:GoBackButton path=""/>
     <h1 class="text-center mb-0 flex-grow-1">
         <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
     </h1>
@@ -79,7 +79,6 @@
                                     <c:param name="priceMax" value="${priceMax}"/>
                                     <c:param name="weekday" value="${weekday}"/>
                                     <c:param name="rating" value="${rating}"/>
-                                    <c:param name="page" value="${page}"/>
                                     <c:param name="order" value="${order}"/>
                                 </c:url>
                                 <form:form action="${postUrl}" method="post" modelAttribute="bookingForm">

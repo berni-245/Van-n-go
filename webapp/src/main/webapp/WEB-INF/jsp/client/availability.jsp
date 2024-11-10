@@ -44,8 +44,8 @@
 
         <div class="row g-3">
             <div class="col-sm-2">
-                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price" class="form-control"
-                       value="${priceMax}"/>
+                <input type="number" step="0.01" min="0" name="priceMax" placeholder="Max Price"
+                       class="form-control" value="${priceMax}"/>
             </div>
 
             <div class="col-sm-3">
@@ -146,8 +146,15 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </div>
-                                            <a href="${pageContext.request.contextPath}/client/availability/${driver.id}?zoneId=${zoneId}&size=${size}&priceMax=${priceMax}&weekday=${weekday}&rating=${rating}&order=${order}&page=${currentPage}"
-                                               class="btn btn-primary">
+                                            <c:url var="avUrl" value="/client/availability/${driver.id}">
+                                                <c:param name="zoneId" value="${zoneId}"/>
+                                                <c:param name="size" value="${size}"/>
+                                                <c:param name="priceMax" value="${priceMax}"/>
+                                                <c:param name="weekday" value="${weekday}"/>
+                                                <c:param name="rating" value="${rating}"/>
+                                                <c:param name="order" value="${order}"/>
+                                            </c:url>
+                                            <a href="${avUrl}" class="btn btn-primary">
                                                 <spring:message code="components.availability.SeeAvailability"/>
                                             </a>
                                         </div>
