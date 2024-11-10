@@ -43,7 +43,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public Client create(String username, String mail, String password, Locale locale) {
-        Client client = clientDao.create(username, username, passwordEncoder.encode(password), Language.fromLocale(locale));
+        Client client = clientDao.create(username, mail, passwordEncoder.encode(password), Language.fromLocale(locale));
         LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;

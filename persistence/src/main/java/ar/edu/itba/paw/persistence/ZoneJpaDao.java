@@ -39,6 +39,7 @@ public class ZoneJpaDao implements ZoneDao {
 
     @Override
     public Zone getClientZone(Client client) {
-        return em.createQuery("From Zone z where z = :clientZone", Zone.class).setParameter("clientZone",client.getZone()).getResultList().getFirst();
+        List<Zone> zone = em.createQuery("From Zone z where z = :clientZone", Zone.class).setParameter("clientZone",client.getZone()).getResultList();
+        return zone.isEmpty() ? null : zone.getFirst();
     }
 }
