@@ -32,7 +32,7 @@ public class VehicleForm {
     private List<Integer> zoneIds;
 
     @Nullable
-    private int id;
+    private Integer id;
 
     private Integer imgId;
 
