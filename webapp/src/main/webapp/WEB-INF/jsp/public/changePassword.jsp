@@ -4,11 +4,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.editPass">
-</comp:Head>
+<comp:Head titleCode="components.header.editPass" passInput="true" goBack="true"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-
+<comp:GoBackButton/>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">
@@ -19,25 +18,16 @@
             <form:form action="${postUrl}" method="post" modelAttribute="changePasswordForm"
                        id="changePasswordForm">
                 <div class="mb-3">
-                    <label class="form-label">
-                        <spring:message code="public.changePassword.oldPassword"/>
-                    </label>
-                    <form:input type="password" path="oldPassword" class="form-control" id="password" value=""/>
-                    <form:errors path="oldPassword" element="p" cssClass="text-danger"/>
+                    <comp:ShowHidePassInput isFormInput="true" labelCode="public.changePassword.oldPassword"
+                                            path="oldPassword"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">
-                        <spring:message code="generic.word.password"/>
-                    </label>
-                    <form:input type="password" path="password" class="form-control" id="password" value=""/>
-                    <form:errors path="password" element="p" cssClass="text-danger"/>
+                    <comp:ShowHidePassInput isFormInput="true" labelCode="generic.word.password"
+                                            path="password"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">
-                        <spring:message code="public.register.confirmPassword"/>
-                    </label>
-                    <form:input type="password" path="confirmPassword" class="form-control" value=""/>
-                    <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
+                    <comp:ShowHidePassInput isFormInput="true" labelCode="public.register.confirmPassword"
+                                            path="confirmPassword"/>
                 </div>
 
                 <form:errors element="div" cssClass="alert alert-danger"/>
@@ -60,4 +50,3 @@
 
 </body>
 </html>
-

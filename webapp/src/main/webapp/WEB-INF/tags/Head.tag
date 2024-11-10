@@ -3,6 +3,7 @@
 <%@ attribute name="calendar" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="goBack" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="passInput" required="false" type="java.lang.Boolean" %>
 
 <%@ tag body-content="scriptless" %>
 
@@ -21,6 +22,9 @@
 
     <c:url value="/js/bootstrap.min.js" var="bsjs"/>
     <script src="${bsjs}"></script>
+
+    <c:url value="/css/global.css" var="globalCss"/>
+    <link rel="stylesheet" href="${globalCss}">
 
     <c:if test="${tomselect}">
         <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css"
@@ -48,8 +52,10 @@
         <script src="${goBackJs}"></script>
     </c:if>
 
-    <c:url value="/css/global.css" var="globalCss"/>
-    <link rel="stylesheet" href="${globalCss}">
+    <c:if test="${passInput}">
+        <c:url value="/js/showHidePassInput.js" var="passInputJs"/>
+        <script src="${passInputJs}"></script>
+    </c:if>
 
     <jsp:doBody/>
 </head>
