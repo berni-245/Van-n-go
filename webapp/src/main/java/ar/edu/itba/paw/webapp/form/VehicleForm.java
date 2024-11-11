@@ -23,7 +23,7 @@ public class VehicleForm {
     @Max(Size.MAX)
     private double volume;
 
-    @Length(max = 40)
+    @Length(max = 255)
     private String description;
 
     @Min(Rates.MINIMUM)
