@@ -3,7 +3,6 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Entity
 public class Booking {
@@ -42,6 +41,8 @@ public class Booking {
     private Integer pop;
     @Column(name = "job_description")
     private String jobDescription;
+
+    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
     Booking() {
     }
@@ -147,8 +148,13 @@ public class Booking {
 
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
 
-    public String getFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return getDate().format(formatter);
+    public String getClientFormattedDate() {
+        var clientDf = FORMATTER.withLocale(client.getLanguage().getLocale());
+        return getDate().format(clientDf);
+    }
+
+    public String getDriverFormattedDate() {
+        var driverDf = FORMATTER.withLocale(vehicle.getDriver().getLanguage().getLocale());
+        return getDate().format(driverDf);
     }
 }
