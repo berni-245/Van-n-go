@@ -13,8 +13,8 @@
 </comp:Head>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-
-<comp:GoBackButton path="/client/bookings?activeTab=FINISHED"/>
+<c:url var="finishedBookingsUrl" value="/client/bookings?activeTab=FINISHED"/>
+<comp:GoBackButton path="${finishedBookingsUrl}"/>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">

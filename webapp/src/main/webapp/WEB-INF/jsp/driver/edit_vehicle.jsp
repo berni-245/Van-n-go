@@ -12,7 +12,8 @@
 <body>
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-start mb-5">
-    <comp:GoBackButton path="/driver/vehicles"/>
+    <c:url value="/driver/vehicles" var="vehiclesUrl"/>
+    <comp:GoBackButton path="${vehiclesUrl}"/>
 <div class="container mt-3">
     <div class="d-flex justify-content-between flex-sm-wrap">
         <div class="w-50">

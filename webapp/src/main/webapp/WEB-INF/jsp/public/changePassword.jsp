@@ -7,7 +7,8 @@
 <comp:Head titleCode="components.header.editPass" passInput="true"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-<comp:GoBackButton path="/${loggedUser.type}/profile"/>
+<c:url var="profileUrl" value="/${loggedUser.type}/profile"/>
+<comp:GoBackButton path="${profileUrl}"/>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">

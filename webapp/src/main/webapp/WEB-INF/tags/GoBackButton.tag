@@ -4,8 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:url var="url" value="${path}"/>
-<a href="${url}" id="go-back-button" class="btn me-auto">
+<a href="${path}" id="go-back-button" class="btn me-auto">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left"
          viewBox="0 0 16 16">
         <path fill-rule="evenodd"

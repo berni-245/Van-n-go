@@ -7,8 +7,8 @@
 <comp:Head titleCode="siteName"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
-
-<comp:GoBackButton path="/driver/bookings"/>
+<c:url value="/driver/bookings" var="bookingsUrl"/>
+<comp:GoBackButton path="${bookingsUrl}"/>
 
 <c:choose>
     <c:when test="${loggedUser.pfp ne null}">

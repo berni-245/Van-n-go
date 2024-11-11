@@ -10,7 +10,8 @@
 <comp:Header/>
 <div class="d-flex align-items-start mb-5">
     <div class="me-3">
-<comp:GoBackButton path="/driver/vehicles"/>
+        <c:url var="vehiclesUrl" value="/driver/vehicles"/>
+<comp:GoBackButton path="${vehiclesUrl}"/>
     </div>
         <div class="col-md-7 offset-md-2">
             <div class="d-flex align-items-center mb-4">
