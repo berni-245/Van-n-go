@@ -36,4 +36,6 @@ public interface BookingDao {
     void setRatingAndReview(Booking booking, int rating, String review);
 
     void cancelBooking(Booking booking);
+
+    void checkPending();
 }

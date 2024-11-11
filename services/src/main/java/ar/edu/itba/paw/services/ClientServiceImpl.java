@@ -85,6 +85,8 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public List<Booking> getBookings(Client client, BookingState state, int page) {
+        if(state.equals(BookingState.PENDING)||state.equals(BookingState.REJECTED))
+            bookingDao.checkPending();
         return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 

@@ -69,6 +69,16 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
+    public void checkPending() {
+        TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b FROM Booking b WHERE b.state = :state and b.date < current_date", Booking.class);
+        bookingQuery.setParameter("state", BookingState.PENDING);
+        List<Booking> bookings = bookingQuery.getResultList();
+        for (Booking booking : bookings) {
+            rejectBooking(booking);
+        }
+    }
+
+    @Override
     public Optional<Booking> getBookingById(int bookingId) {
         return Optional.ofNullable(em.find(Booking.class, bookingId));
     }

@@ -143,6 +143,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Booking> getBookings(Driver driver, BookingState state, int page) {
+        if(state.equals(BookingState.PENDING)||state.equals(BookingState.REJECTED))
+            bookingDao.checkPending();
         return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
 
