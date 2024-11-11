@@ -30,12 +30,12 @@ public class ChangeUserInfoForm {
     private Integer zoneId;
 
     @Nullable
-    @Length(min = 5, max = 255)
+    @Length(max = 255)
     private String description;
 
-    @Pattern(regexp = "^[A-Za-z0-9.-]+$")
-    @Length(max = 32)
     @Nullable
+    @Pattern(regexp = "^[A-Za-z0-9.-]*$")
+    @Length(max = 32)
     private String cbu;
 
     @NotEmpty
