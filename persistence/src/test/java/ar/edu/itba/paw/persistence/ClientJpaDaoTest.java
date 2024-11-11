@@ -156,6 +156,8 @@ public class ClientJpaDaoTest {
         ));
     }
 
+    // Remember that there's a preexistingClient with PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL and SPANISH lang
+
     @Test
     public void testEditProfileName() {
         clientDao.editProfile(preexistingClient, CHANGED_USERNAME, PREEXISTING_MAIL, SPANISH);
@@ -219,6 +221,8 @@ public class ClientJpaDaoTest {
                         PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }
+
+    // Remember that there's a preexistingClient with PREEXISTING_ID, and zone_id = 1
 
     @Test
     public void testEditProfileZone() {

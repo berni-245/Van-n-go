@@ -172,6 +172,8 @@ public class DriverJpaDaoTest {
         ));
     }
 
+    // Remember that there's a preexistingDriver with PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL and SPANISH lang
+
     @Test
     public void testEditProfileName() {
         driverDao.editProfile(preexistingDriver, CHANGED_USERNAME, PREEXISTING_MAIL, SPANISH);
@@ -236,6 +238,8 @@ public class DriverJpaDaoTest {
         ));
     }
 
+    // Remember that there's a preexistingDriver with PREEXISTING_ID, PREEXISTING_DESCRIPTION and PREEXISTING_CBU
+
     @Test
     public void testEditProfileDescription() {
         driverDao.editProfile(preexistingDriver, PREEXISTING_USERNAME, PREEXISTING_MAIL, CHANGED_DESCRIPTION, PREEXISTING_CBU, SPANISH);
@@ -269,7 +273,7 @@ public class DriverJpaDaoTest {
     @Test
     public void testGetSearchResults() {
         List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, PREEXISTING_VEHICLE_SIZE, MAX_PRICE, DAY_OF_WEEK, MIN_RATING, null, 0);
-
+        // There's two match for this filters in the data added for this test
         assertEquals(DRIVER_COUNT, matchingDrivers.size());
         assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID)));
         assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID_TWO)));
