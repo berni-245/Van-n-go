@@ -28,7 +28,7 @@
         <div class="card-body d-flex flex-column justify-content-between h-100">
             <div>
                 <h5 class="card-title w-75">
-                    <spring:message arguments="${booking.date}"
+                    <spring:message arguments="${booking.formattedDate}"
                                     code="components.bookingCard.dateTime"/>
                     <spring:message code="generic.word.${booking.shiftPeriod.lowerCaseText}"/>
                 </h5>
