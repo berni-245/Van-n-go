@@ -13,8 +13,13 @@
     <div class="mb-4">
         <label class="form-label w-100">
             <spring:message code="driver.add_vehicle.image"/>
-            <input type="file" id="img-input" name="vehicleImg" class="form-control mt-2"
-                   accept="image/png, image/jpeg, image/webp, image/heic"/>
+            <div class="input-group custom-file-button mt-2">
+                <label class="input-group-text" for="img-input">
+                    <spring:message code="generic.phrase.choose.file"/>
+                </label>
+                <input type="file" id="img-input" name="vehicleImg" class="form-control"
+                       accept="image/png, image/jpeg, image/webp, image/heic"/>
+            </div>
         </label>
         <div class="form-group mt-4 d-flex align-items-center">
             <div class="me-3">
