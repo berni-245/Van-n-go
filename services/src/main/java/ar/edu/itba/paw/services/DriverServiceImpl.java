@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
 import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
@@ -15,6 +16,8 @@ import java.util.*;
 
 @Service
 public class DriverServiceImpl extends UserServiceImpl<Driver> implements DriverService {
+    private final static int MAX_VEHICLES_PER_DRIVER = 100;
+
     private final DriverDao driverDao;
 
     private final VehicleDao vehicleDao;
@@ -79,6 +82,9 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String imgFilename,
             byte[] imgData
     ) {
+        if (vehicleDao.getVehicleCount(driver) >= MAX_VEHICLES_PER_DRIVER) {
+            throw new DriverVehicleLimitReachedException(driver);
+        }
         Vehicle v = vehicleDao.create(
                 driver, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
         );

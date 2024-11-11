@@ -121,6 +121,15 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         return redirect("/notFound");
     }
 
+    @ExceptionHandler(DriverVehicleLimitReachedException.class)
+    public ModelAndView handleDriverVehicleLimitReached(
+            DriverVehicleLimitReachedException ex, RedirectAttributes redirectAttributes
+    ) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.driver.vehicle.limit.reached"));
+        LOGGER.error(ex.getMessage());
+        return redirect("/driver/vehicles");
+    }
+
     // TODO De-comment when deploying, Do not delete
 //    @ExceptionHandler(Exception.class)
 //    public ModelAndView handleGenericException(Exception ex, RedirectAttributes redirectAttributes) {
