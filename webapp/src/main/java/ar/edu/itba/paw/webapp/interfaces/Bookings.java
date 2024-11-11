@@ -47,7 +47,7 @@ public interface Bookings extends Redirect, Toasts {
                          !addBookingData(bs, mav, loggedUser, BookingState.CANCELED, canceledPage);
         if (errors) {
             setToasts(redirectAttrs, new Toast(ToastType.danger, "toast.booking.page.invalid"));
-            return redirect("/notFound");
+            return redirect("/error/notFound");
         }
 
         mav.addObject("activeTab", activeTab);

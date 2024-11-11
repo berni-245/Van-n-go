@@ -49,7 +49,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/client/search", "/client/availability").not().hasRole(UserRole.DRIVER.name())
                 .antMatchers("/driver/**").hasRole(UserRole.DRIVER.name())
                 .antMatchers("/client/**").hasRole(UserRole.CLIENT.name())
-                .antMatchers("/","/home").permitAll()
+                .antMatchers("/","/home","/error/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .and().formLogin()
                 .successHandler(customSavedRequestAwareAuthenticationSuccessHandler)
@@ -66,14 +66,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/home")
                 .and().exceptionHandling()
-                .accessDeniedPage("/403")
+                .accessDeniedPage("/error/403")
                 .and().csrf().disable();
     }
 
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/css/**", "/js/**", "/images/**", "/icons/**", "/favicon.ico", "/403");
+                .antMatchers("/css/**", "/js/**", "/images/**", "/icons/**", "/favicon.ico", "/error/403");
     }
 
 

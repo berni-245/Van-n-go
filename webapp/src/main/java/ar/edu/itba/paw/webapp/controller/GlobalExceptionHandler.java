@@ -24,14 +24,14 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
     public ModelAndView handleUserNotFound(UserNotFoundException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.not.found"));
         LOGGER.error(ex.getMessage());
-        return redirect("/notFound");
+        return redirect("/error/notFound");
     }
 
     @ExceptionHandler(IOException.class)
     public ModelAndView handleIO(IOException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.io.error"));
         LOGGER.error(ex.getMessage());
-        return redirect("/internalError");
+        return redirect("/error/internalError");
     }
 
     @ExceptionHandler(InvalidUserOnBookingCancelException.class)
@@ -123,27 +123,27 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
     public ModelAndView handleInvalidMessage(InvalidMessageException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.invalid.message"));
         LOGGER.error(ex.getMessage());
-        return redirect("/internalError");
+        return redirect("/error/internalError");
     }
 
     @ExceptionHandler(ForbiddenConversationException.class)
     public ModelAndView handleForbiddenConversation(ForbiddenConversationException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.message.forbidden.conversation"));
         LOGGER.error(ex.getMessage());
-        return redirect("/forbidden");
+        return redirect("/error/forbidden");
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ModelAndView handleNoSuchElement(NoSuchElementException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.no.such.element"));
         LOGGER.error(ex.getMessage());
-        return redirect("/notFound");
+        return redirect("/error/notFound");
     }
 
     // TODO De-comment when deploying, Do not delete
 //    @ExceptionHandler(Exception.class)
 //    public ModelAndView handleGenericException(Exception ex, RedirectAttributes redirectAttributes) {
 //        LOGGER.error(ex.getMessage());
-//        return redirect("/internalError");
+//        return redirect("/error/internalError");
 //    }
 }

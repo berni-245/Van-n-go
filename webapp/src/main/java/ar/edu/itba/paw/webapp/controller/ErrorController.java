@@ -8,43 +8,43 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ErrorController implements Redirect {
     // This extra redirect needs to be done or otherwise the page will load without the logged user
-    @RequestMapping("/400")
+    @RequestMapping("/error/400")
     public ModelAndView badRequestRedirect() {
-        return redirect("/badRequest");
+        return redirect("/error/badRequest");
     }
 
-    @RequestMapping("/403")
+    @RequestMapping("/error/403")
     public ModelAndView forbiddenRedirect() {
-        return redirect("/forbidden");
+        return redirect("/error/forbidden");
     }
 
-    @RequestMapping("/404")
+    @RequestMapping("/error/404")
     public ModelAndView notFoundRedirect() {
-        return redirect("/notFound");
+        return redirect("/error/notFound");
     }
 
-    @RequestMapping("/500")
+    @RequestMapping("/error/500")
     public ModelAndView internalServerErrorRedirect() {
-        return redirect("/internalError");
+        return redirect("/error/internalError");
     }
 
-    @RequestMapping("/badRequest")
+    @RequestMapping("/error/badRequest")
     public ModelAndView badRequest() {
         return new ModelAndView("error/400");
     }
 
 
-    @RequestMapping("/forbidden")
+    @RequestMapping("/error/forbidden")
     public ModelAndView forbidden() {
         return new ModelAndView("error/403");
     }
 
-    @RequestMapping("/notFound")
+    @RequestMapping("/error/notFound")
     public ModelAndView notFound() {
         return new ModelAndView("error/404");
     }
 
-    @RequestMapping("/internalError")
+    @RequestMapping("/error/internalError")
     public ModelAndView internalServerError() {
         return new ModelAndView("error/500");
     }
