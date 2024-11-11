@@ -110,13 +110,15 @@
             </c:when>
             <c:otherwise>
                 <div class="container">
-                    <div class="row row-cols-1 row-cols-md-3 g-4 mt-0">
+                    <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 mt-0">
                         <c:forEach var="driver" items="${drivers}" varStatus="status">
                             <div class="col mb-4">
                                 <div class="card h-100">
                                     <div class="card-body d-flex justify-content-between">
                                         <div>
-                                            <h5 class="card-title"><c:out value="${driver.username}"/></h5>
+                                            <h5 class="card-title w-75">
+                                                <c:out value="${driver.username}"/>
+                                            </h5>
                                             <p class="card-text"><c:out value="${driver.description}"/></p>
                                             <div class="d-flex align-items-center">
 
