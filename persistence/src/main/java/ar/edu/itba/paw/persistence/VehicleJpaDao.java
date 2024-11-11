@@ -57,16 +57,6 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public List<Vehicle> getDriverVehicles(Driver driver) {
-        TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where v.driver = :driver order by v.plateNumber",
-                Vehicle.class
-        );
-        query.setParameter("driver", driver);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday) {
         StringBuilder queryString = new StringBuilder("""
                         SELECT DISTINCT v FROM Vehicle v

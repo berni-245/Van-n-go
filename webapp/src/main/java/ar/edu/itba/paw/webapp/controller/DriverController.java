@@ -137,7 +137,7 @@ public class DriverController implements Bookings {
     @RequestMapping(path = "/driver/vehicles")
     public ModelAndView vehiclesDashboard(
             @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             Model model
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");

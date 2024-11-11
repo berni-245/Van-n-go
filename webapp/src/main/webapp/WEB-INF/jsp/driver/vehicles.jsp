@@ -7,6 +7,8 @@
 <comp:Head titleCode="components.header.vehicles">
     <c:url value="/css/driver/vehicles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <c:url value="/js/PaginationTag.js" var="js"/>
+    <script type="module" src="${js}"></script>
 </comp:Head>
 
 <body>
@@ -16,12 +18,12 @@
     <c:choose>
         <c:when test="${empty vehicles}">
             <div class="d-flex flex-column">
-            <comp:CallToAction code="call_to_action.driver_vehicles"/>
-            <a class="btn btn-primary mt-5 fs-2"
-               href="${pageContext.request.contextPath}/driver/vehicle/add"
-               role="button">
-                <spring:message code="generic.phrase.add_vehicle"/>
-            </a>
+                <comp:CallToAction code="call_to_action.driver_vehicles"/>
+                <a class="btn btn-primary mt-5 fs-2"
+                   href="${pageContext.request.contextPath}/driver/vehicle/add"
+                   role="button">
+                    <spring:message code="generic.phrase.add_vehicle"/>
+                </a>
             </div>
         </c:when>
         <c:otherwise>
@@ -59,25 +61,7 @@
                     </div>
                 </c:forEach>
             </div>
-            <c:if test="${totalPages > 1}">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                            <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1"
-                               aria-disabled="${currentPage == 0}">&laquo; Previous</a>
-                        </li>
-                        <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                            <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                <a class="page-link" href="?page=${i}">${i + 1}</a>
-                            </li>
-                        </c:forEach>
-                        <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                            <a class="page-link" href="?page=${currentPage + 1}"
-                               aria-disabled="${currentPage == totalPages - 1}">Next &raquo;</a>
-                        </li>
-                    </ul>
-                </nav>
-            </c:if>
+            <comp:Pagination paramName="page" totalPages="${totalPages}" currentPage="${currentPage}"/>
             <a class="btn btn-primary fixed-bottom-left"
                href="${pageContext.request.contextPath}/driver/vehicle/add"
                role="button"

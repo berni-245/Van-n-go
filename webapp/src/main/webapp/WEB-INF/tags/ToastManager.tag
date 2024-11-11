@@ -13,9 +13,5 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toasts = document.querySelectorAll('.toast-container > .toast');
-        toasts.forEach(toast => (new bootstrap.Toast(toast)).show());
-    })
-</script>
+<c:url var="js" value="/js/ToastManagerTag.js"/>
+<script src="${js}"></script>

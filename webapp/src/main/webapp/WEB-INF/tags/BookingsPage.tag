@@ -7,7 +7,12 @@
 
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.bookings" bsIcons="true"/>
+<comp:Head titleCode="components.header.bookings" bsIcons="true">
+    <c:url value="/js/PaginationTag.js" var="js"/>
+    <script type="module" src="${js}"></script>
+    <c:url value="/js/Tabs.js" var="js"/>
+    <script type="module" src="${js}"></script>
+</comp:Head>
 
 <body class="d-flex flex-column min-vh-100">
 <comp:Header inHome="true"/>
@@ -76,43 +81,4 @@
 <comp:Footer toasts="${toasts}"/>
 
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        function setParam(paramName, value) {
-            const url = new URL(window.location.href);
-            url.searchParams.set(paramName, value);
-            return url.toString();
-        }
-
-        function setParamAndNavigate(paramName, value) {
-            window.location.href = setParam(paramName, value);
-        }
-
-        function setParamDontNavigate(paramName, value) {
-            const url = setParam(paramName, value)
-            window.history.pushState({path: url}, null, url);
-        }
-
-        // Go back to previous method and use history.pushState for the tab buttons.
-        document.querySelectorAll('.pagination').forEach(pagination => {
-            const paramName = pagination.getAttribute('param-name');
-            const currentPage = parseInt(pagination.getAttribute('current-page'));
-            pagination.querySelector('.pagination-prev').addEventListener(
-                'click',
-                () => setParamAndNavigate(paramName, currentPage - 1)
-            );
-            pagination.querySelector('.pagination-next').addEventListener(
-                'click',
-                () => setParamAndNavigate(paramName, currentPage + 1)
-            );
-            pagination.querySelectorAll('.pagination-page').forEach(p => {
-                p.addEventListener('click', () => setParamAndNavigate(paramName, p.textContent));
-            })
-        });
-        document.querySelectorAll('[role="tab"]').forEach(tab => {
-            const tabName = tab.getAttribute('aria-controls');
-            tab.addEventListener('click', () => setParamDontNavigate('activeTab', tabName));
-        });
-    })
-</script>
 </html>

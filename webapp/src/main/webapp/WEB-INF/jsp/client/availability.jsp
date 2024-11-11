@@ -7,8 +7,10 @@
 <!DOCTYPE html>
 <html>
 <comp:Head titleCode="components.header.availability" tomselect="true" bsIcons="true">
-    <c:url value="/js/client/availability.js" var="js"/>
+    <c:url value="/js/client/zoneSelect.js" var="js"/>
     <script src="${js}"></script>
+    <c:url value="/js/PaginationTag.js" var="js"/>
+    <script type="module" src="${js}"></script>
 </comp:Head>
 
 <body>
@@ -217,30 +219,7 @@
                             <c:param name="order" value="${order}"/>
                         </c:if>
                     </c:url>
-                    <c:if test="${totalPages > 1}">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                                    <a class="page-link"
-                                       href="${searchParams}&page=${currentPage - 1}"
-                                       tabindex="-1" aria-disabled="${currentPage == 0}">&laquo; <spring:message
-                                            code="generic.word.previous"/></a>
-                                </li>
-                                <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link"
-                                           href="${searchParams}&page=${i}">${i + 1}</a>
-                                    </li>
-                                </c:forEach>
-                                <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link"
-                                       href="${searchParams}&page=${currentPage + 1}"
-                                       aria-disabled="${currentPage == totalPages - 1}"><spring:message
-                                            code="generic.word.next"/>&raquo;</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </c:if>
+                    <comp:Pagination paramName="page" totalPages="${totalPages}" currentPage="${currentPage}"/>
                 </div>
             </c:otherwise>
         </c:choose>

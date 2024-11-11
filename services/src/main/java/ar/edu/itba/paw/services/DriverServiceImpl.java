@@ -129,7 +129,10 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     ) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        return driverDao.getSearchResults(zone, size, priceMax, weekday, rating, order, page * Pagination.SEARCH_PAGE_SIZE);
+        return driverDao.getSearchResults(
+                zone, size, priceMax, weekday, rating, order,
+                (page - 1) * Pagination.SEARCH_PAGE_SIZE
+        );
     }
 
     @Transactional
@@ -268,7 +271,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Vehicle> getVehicles(Driver driver, int page) {
-        return vehicleDao.getDriverVehicles(driver, page * Pagination.VEHICLES_PAGE_SIZE);
+        return vehicleDao.getDriverVehicles(driver, (page - 1) * Pagination.VEHICLES_PAGE_SIZE);
     }
 
     @Transactional

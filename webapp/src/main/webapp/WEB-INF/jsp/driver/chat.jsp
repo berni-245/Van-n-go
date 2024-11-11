@@ -70,7 +70,7 @@
             <form action="<c:url value='/driver/send'/>" method="POST" class="d-flex">
                 <input type="hidden" name="recipientId" value="${recipient.id}"/>
                 <input type="hidden" name="bookingId" value="${booking.id}" />
-                <input type="text" name="content" class="form-control me-2" placeholder="<spring:message code="generic.type.message"/>" required maxlength="255"/>
+                <input type="text" name="content" class="form-control me-2" placeholder="<spring:message code="generic.phrase.type.message"/>" required maxlength="255"/>
                 <button type="submit" class="btn btn-primary"><spring:message code="generic.word.send"/></button>
             </form>
         </div>

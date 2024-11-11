@@ -150,12 +150,17 @@ public class ClientController implements Bookings {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "order", defaultValue = "ALPHABETICAL") SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "1") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
     ) {
         if (loggedUser != null) {
-            form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
+            form.setZoneId(
+                    Objects.requireNonNullElseGet(
+                            zoneId,
+                            () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1
+                    )
+            );
             zoneId = form.getZoneId();
         } else if (zoneId == null) {
             zoneId = 1;
@@ -169,10 +174,7 @@ public class ClientController implements Bookings {
                 ds.getSearchResults(zoneId, size, priceMax, weekday, rating, order, page)
         );
         mav.addObject("zones", zs.getAllZones());
-        mav.addObject(
-                "totalPages",
-                totalPages
-        );
+        mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
         mav.addObject("zoneId", zoneId);
         mav.addObject("size", size);
@@ -192,7 +194,7 @@ public class ClientController implements Bookings {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "order", required = false) SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "1") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingForm") BookingForm form
     ) {
@@ -228,7 +230,7 @@ public class ClientController implements Bookings {
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(name = "order", required = false) SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "1") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingForm") BookingForm form,
             BindingResult errors,
@@ -248,7 +250,7 @@ public class ClientController implements Bookings {
                 form.getJobDescription()
         );
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.success"));
-        return new ModelAndView("redirect:/client/bookings");
+        return redirect("/client/bookings");
     }
 
     @RequestMapping(path = "/client/chat", method = RequestMethod.GET)

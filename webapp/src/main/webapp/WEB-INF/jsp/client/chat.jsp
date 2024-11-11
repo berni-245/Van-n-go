@@ -74,7 +74,7 @@
             <form action="<c:url value='/client/send'/>" method="POST" class="d-flex">
                 <input type="hidden" name="recipientId" value="${recipient.id}"/>
                 <input type="hidden" name="bookingId" value="${booking.id}" />
-                <input type="text" name="content" class="form-control me-2" placeholder="<spring:message code="generic.type.message"/>" required maxlength="255"/>
+                <input type="text" name="content" class="form-control me-2" placeholder="<spring:message code="generic.phrase.type.message"/>" required maxlength="255"/>
                 <button type="submit" class="btn btn-primary"><spring:message code="generic.word.send"/></button>
             </form>
         </div>
@@ -111,7 +111,7 @@
                         <c:out value="${recipient.cbu}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.joined"/>:</strong>
+                        <strong><spring:message code="generic.phrase.user.since"/>:</strong>
                         <c:out value="${recipient.creationTime.toLocalDate()}"/>
                     </p>
                     <p>

@@ -6,7 +6,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.search" tomselect="true"/>
+<comp:Head titleCode="components.header.search" tomselect="true">
+  <c:url value="/js/client/zoneSelect.js" var="js"/>
+  <script src="${js}"></script>
+</comp:Head>
 <body>
 <comp:Header inAvailability="true"/>
 <div class="container d-flex justify-content-center mt-5">
@@ -79,9 +82,5 @@
   </div>
   <comp:ToastManager toasts="${toasts}"/>
 </div>
-
-<script>
-  new TomSelect("#select-zones");
-</script>
 </body>
 </html>

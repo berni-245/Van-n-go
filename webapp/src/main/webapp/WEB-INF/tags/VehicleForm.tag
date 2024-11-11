@@ -13,10 +13,8 @@
     <div class="mb-4">
         <label class="form-label w-100">
             <spring:message code="driver.add_vehicle.image"/>
-            <input type="file" id="vehicle.imgId" name="vehicleImg"
-                   accept="image/png, image/jpeg, image/webp, image/heic" class="form-control mt-2"
-                   onchange="previewVehicleImage(event)"
-            />
+            <input type="file" id="img-input" name="vehicleImg" class="form-control mt-2"
+                   accept="image/png, image/jpeg, image/webp, image/heic"/>
         </label>
         <div class="form-group mt-4 d-flex align-items-center">
             <div class="me-3">
@@ -92,8 +90,8 @@
                     data-bs-target="#confirmDeleteModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                      class="bi bi-trash" viewBox="0 0 16 16">
-                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
                 </svg>
             </button>
         </c:if>
@@ -123,30 +121,5 @@
     </div>
 </c:if>
 
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-        new TomSelect("#select-zones", {
-            sortField: {
-                field: 'text',
-                direction: 'asc'
-            },
-            onItemAdd: function () {
-                this.setTextboxValue('');
-                this.refreshOptions();
-            }
-        });
-
-        function previewVehicleImage(event) {
-            const fileInput = event.target;
-            const file = fileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const previewImage = document.getElementById("vehicleImagePreview");
-                    previewImage.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    })
-</script>
+<c:url value="/js/driver/VehicleFormTag.js" var="js"/>
+<script src="${js}"></script>
