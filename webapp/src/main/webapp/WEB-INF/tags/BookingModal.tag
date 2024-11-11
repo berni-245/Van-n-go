@@ -142,13 +142,11 @@
                                 </c:if>
                                 <c:if  test="${!loggedUser.isDriver}">
                                     <p><spring:message code="client.history.noRating"/></p>
-                                    <c:url var="ratingUrl" value="/client/booking/${booking.id}/review" >
-                                        <c:param name="driverId" value="${booking.driver.id}"/>
-                                    </c:url>
+                                    <c:url var="ratingUrl"
+                                           value="/client/booking/${booking.id}/review"/>
                                     <a href="${ratingUrl}" class="btn btn-primary">
                                         <spring:message code="client.review"/>
                                     </a>
-
                                 </c:if>
                             </c:otherwise>
                         </c:choose>

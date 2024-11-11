@@ -22,39 +22,32 @@
         </div>
         <div class="card-body">
             <div class=" text-center">
-                <c:url var="postUrl" value="/client/booking/${bookingId}/review/send">
-                    <c:param name="driverId" value="${driver.id}"/>
-                </c:url>
-                <form:form modelAttribute="bookingReviewForm" method="post"
-                           action="${postUrl}">
+                <c:url var="postUrl" value="/client/booking/${bookingId}/review/send"/>
+                <form:form modelAttribute="bookingReviewForm" method="post" action="${postUrl}">
                     <div class="mb-3">
                         <form:label path="rating" cssClass="form-label">
-                            <spring:message
-                                    code="client.rating.select"
-                                    arguments="${driver.username}"/>
+                            <spring:message code="client.rating.select" arguments="${driver.username}"/>
                         </form:label>
-                        <div class="starRating" id="starRating">
+                        <div id="star-rating" class="d-flex justify-content-evenly">
                             <span class="star" data-value="1">&#9733;</span>
                             <span class="star" data-value="2">&#9733;</span>
                             <span class="star" data-value="3">&#9733;</span>
                             <span class="star" data-value="4">&#9733;</span>
                             <span class="star" data-value="5">&#9733;</span>
+                            <form:input path="rating" type="number" name="rating"
+                                        id="rating-input" min="1"/>
                         </div>
-                        <input type="hidden" name="rating" id="rating" value="0">
-
+                        <form:errors path="rating" cssClass="text-danger" element="p"/>
                     </div>
 
                     <div class="mb-3">
                         <p>
-                                <spring:message
-                                        code="client.make.review"
-                                        arguments="${driver.username}"/>
-                        <p>
-                                <form:textarea path="review" rows="4" cols="50" maxlength="255" htmlEscape="true"/>
-                                <form:errors path="review" cssClass="text-danger" element="p"/>
-                                <form:errors element="div" cssClass="alert alert-danger"/>
+                            <spring:message code="client.make.review" arguments="${driver.username}"/>
+                        </p>
+                        <form:textarea path="review" rows="4" cols="50" maxlength="255"
+                                       htmlEscape="true" required="true"/>
+                        <form:errors path="review" cssClass="text-danger" element="p"/>
                     </div>
-
 
                     <button type="submit" class="btn btn-primary mt-3">
                         <spring:message code="generic.word.confirm"/>
