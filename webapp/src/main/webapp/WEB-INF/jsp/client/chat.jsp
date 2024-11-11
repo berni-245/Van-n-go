@@ -44,13 +44,13 @@
                                 </div>
 
                                 <div class="text-end ms-2">
-                                    <small class="d-block text-muted">${recipient.username}</small>
+                                    <small class="d-block text-muted"><c:out value="${recipient.username}" /></small>
                                     <img src="${driverPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
                             </c:when>
                             <c:otherwise>
                                 <div class="text-start me-2">
-                                    <small class="d-block text-muted">${loggedUser.username}</small>
+                                    <small class="d-block text-muted"><c:out value="${loggedUser.username}" /></small>
                                     <img src="${clientPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
 
@@ -102,14 +102,18 @@
                         <spring:message code="generic.phrase.email" arguments="${recipient.mail}" var="recipientMail"/>
                         <c:out value="${recipientMail}"/>
                     </p>
-                    <p>
-                        <spring:message code="generic.phrase.description" arguments="${recipient.description}" var="recipientDescription"/>
-                        <c:out value="${recipientDescription}"/>
-                    </p>
-                    <p>
-                        <spring:message code="generic.phrase.cbu" arguments="${recipient.cbu}" var="recipientCbu"/>
-                        <c:out value="${recipientCbu}"/>
-                    </p>
+                    <c:if test="${recipient.description ne null}">
+                        <p>
+                            <spring:message code="generic.phrase.description" arguments="${recipient.description}" var="recipientDescription"/>
+                            <c:out value="${recipientDescription}"/>
+                        </p>
+                    </c:if>
+                    <c:if test="${recipient.cbu ne null}">
+                        <p>
+                            <spring:message code="generic.phrase.cbu" arguments="${recipient.cbu}" var="recipientCbu"/>
+                            <c:out value="${recipientCbu}"/>
+                        </p>
+                    </c:if>
                     <p>
                         <spring:message code="generic.phrase.user.since" arguments="${recipient.creationTime.toLocalDate()}"/>
                     </p>

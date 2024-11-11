@@ -44,13 +44,13 @@
                                 </div>
 
                                 <div class="text-end ms-2">
-                                    <small class="d-block text-muted">${recipient.username}</small>
+                                    <small class="d-block text-muted"><c:out value="${recipient.username}" /></small>
                                     <img src="${clientPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
                             </c:when>
                             <c:otherwise>
                                 <div class="text-start me-2">
-                                    <small class="d-block text-muted">${loggedUser.username}</small>
+                                    <small class="d-block text-muted"><c:out value="${loggedUser.username}" /></small>
                                     <img src="${driverPfpUrl}" class="rounded-circle" alt="Profile Picture" style="width: 64px; height: 64px;">
                                 </div>
 
@@ -98,9 +98,11 @@
                         <spring:message code="generic.phrase.email" arguments="${recipient.mail}" var="recipientMail"/>
                         <c:out value="${recipientMail}"/>
                     </p>
-                    <p>
-                        <spring:message code="generic.phrase.zone" arguments="${clientZone}"/>
-                    </p>
+                    <c:if test="${clientZone ne null}">
+                        <p>
+                            <spring:message code="generic.phrase.zone" arguments="${clientZone}"/>
+                        </p>
+                    </c:if>
                     <p>
                         <spring:message code="generic.phrase.created" arguments="${recipient.creationTime.toLocalDate()}"/>
                     </p>
