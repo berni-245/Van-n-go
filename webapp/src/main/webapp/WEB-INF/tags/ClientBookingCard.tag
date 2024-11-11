@@ -59,7 +59,7 @@
                         </c:otherwise>
                     </c:choose>
                 </c:if>
-                <c:if test="${booking.state eq BookingState.PENDING or booking.state eq BookingState.REJECTED}">
+                <c:if test="${booking.state eq BookingState.PENDING}">
                     <p><spring:message code="client.bookings.bookingUnconfirmed"/></p>
                 </c:if>
             </div>
