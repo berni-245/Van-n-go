@@ -10,7 +10,6 @@ insert into driver (id) values (3);
 insert into vehicle (id, driver_id, plate_number, volume_m3, description, hourly_rate)
     values (1, 3, 'AAA999', 100, 'hola', 100);
 
--- JuanDriver trabaja en zona de id 1 a la noche los miércoles, jueves y viernes en su vehículo de id 1
 insert into vehicle_zone (vehicle_id, zone_id) values (1, 1);
 
 insert into vehicle_availability (id, week_day, vehicle_id, shift_period) values

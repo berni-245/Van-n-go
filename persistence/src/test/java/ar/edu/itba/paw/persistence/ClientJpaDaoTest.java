@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Language;
+import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 @Rollback
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-@Sql(scripts = "classpath:add_client_test_data.sql")
+@Sql(scripts = "classpath:add_client_data.sql")
 public class ClientJpaDaoTest {
     private final static Language ENGLISH = Language.ENGLISH;
     private final static Language SPANISH = Language.SPANISH;
@@ -37,20 +37,22 @@ public class ClientJpaDaoTest {
     private final static String MAIL_NOT_CREATED = "juanC@mail.com";
     private final static String PASSWORD_NOT_CREATED = "123321";
 
-    private final static int USER_ID_EXISTING = 500;
-    private final static String USERNAME_EXISTING = "AnotherJuanClient";
-    private final static String MAIL_EXISTING = "AjuanC@mail.com";
-    private final static String PASSWORD_EXISTING = "123321";
+    private final static int PREEXISTING_ID = 500;
+    private final static String PREEXISTING_USERNAME = "AnotherJuanClient";
+    private final static String PREEXISTING_MAIL = "AjuanC@mail.com";
+    private final static String PREEXISTING_PASSWORD = "123321";
 
     private final static String CHANGED_USERNAME = "Carlos";
     private final static String CHANGED_MAIL = "Carlos@mail.com";
     private final static String CHANGED_PASSWORD = "321123";
+    private final static int CHANGED_ZONE_ID = 3;
 
-    private final static String MAIL_EXISTING_TWO = "YAjuanC@mail.com";
+    private final static String PREEXISTING_MAIL_TWO = "YAjuanC@mail.com";
 
     private final static int USER_ID_NOT_EXISTING = -1;
 
-    private static Client existingClient;
+    private static Client preexistingClient;
+    private static Zone changedZone;
 
     @PersistenceContext
     private EntityManager em;
@@ -66,7 +68,8 @@ public class ClientJpaDaoTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        existingClient = em.find(Client.class, USER_ID_EXISTING);
+        preexistingClient = em.find(Client.class, PREEXISTING_ID);
+        changedZone = em.find(Zone.class, CHANGED_ZONE_ID);
     }
 
     @Test
@@ -91,27 +94,14 @@ public class ClientJpaDaoTest {
 
     @Test
     public void testFindById() {
-        Optional<Client> optionalClient = clientDao.findById(USER_ID_EXISTING);
+        Optional<Client> optionalClient = clientDao.findById(PREEXISTING_ID);
         assertTrue(optionalClient.isPresent());
         Client client = optionalClient.get();
 
-        assertEquals(USER_ID_EXISTING, client.getId());
-        assertEquals(USERNAME_EXISTING, client.getUsername());
-        assertEquals(MAIL_EXISTING, client.getMail());
-        assertEquals(PASSWORD_EXISTING, client.getPassword());
-        assertEquals(SPANISH, client.getLanguage());
-    }
-
-    @Test
-    public void testFindByUsername() {
-        Optional<Client> optionalClient = clientDao.findByUsername(USERNAME_EXISTING);
-        assertTrue(optionalClient.isPresent());
-        Client client = optionalClient.get();
-
-        assertEquals(USER_ID_EXISTING, client.getId());
-        assertEquals(USERNAME_EXISTING, client.getUsername());
-        assertEquals(MAIL_EXISTING, client.getMail());
-        assertEquals(PASSWORD_EXISTING, client.getPassword());
+        assertEquals(PREEXISTING_ID, client.getId());
+        assertEquals(PREEXISTING_USERNAME, client.getUsername());
+        assertEquals(PREEXISTING_MAIL, client.getMail());
+        assertEquals(PREEXISTING_PASSWORD, client.getPassword());
         assertEquals(SPANISH, client.getLanguage());
     }
 
@@ -123,8 +113,28 @@ public class ClientJpaDaoTest {
     }
 
     @Test
+    public void testFindByUsername() {
+        Optional<Client> optionalClient = clientDao.findByUsername(PREEXISTING_USERNAME);
+        assertTrue(optionalClient.isPresent());
+        Client client = optionalClient.get();
+
+        assertEquals(PREEXISTING_ID, client.getId());
+        assertEquals(PREEXISTING_USERNAME, client.getUsername());
+        assertEquals(PREEXISTING_MAIL, client.getMail());
+        assertEquals(PREEXISTING_PASSWORD, client.getPassword());
+        assertEquals(SPANISH, client.getLanguage());
+    }
+
+    @Test
+    public void testWrongUsernameInFindByUsername() {
+        Optional<Client> client = clientDao.findByUsername(USERNAME_NOT_CREATED);
+
+        assertTrue(client.isEmpty());
+    }
+
+    @Test
     public void testMailExists() {
-        assertTrue(clientDao.mailExists(MAIL_EXISTING_TWO));
+        assertTrue(clientDao.mailExists(PREEXISTING_MAIL_TWO));
     }
 
     @Test
@@ -134,22 +144,22 @@ public class ClientJpaDaoTest {
 
     @Test
     public void testChangePassword() {
-        clientDao.updatePassword(existingClient, CHANGED_PASSWORD);
-        assertEquals(CHANGED_PASSWORD, existingClient.getPassword());
+        clientDao.updatePassword(preexistingClient, CHANGED_PASSWORD);
+        assertEquals(CHANGED_PASSWORD, preexistingClient.getPassword());
 
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
                         id = '%d' and password = '%s'
-                        """, USER_ID_EXISTING, CHANGED_PASSWORD)
+                        """, PREEXISTING_ID, CHANGED_PASSWORD)
         ));
     }
 
     @Test
     public void testEditProfileName() {
-        clientDao.editProfile(existingClient, CHANGED_USERNAME, MAIL_EXISTING, SPANISH);
-        assertEquals(CHANGED_USERNAME, existingClient.getUsername());
+        clientDao.editProfile(preexistingClient, CHANGED_USERNAME, PREEXISTING_MAIL, SPANISH);
+        assertEquals(CHANGED_USERNAME, preexistingClient.getUsername());
 
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -157,15 +167,15 @@ public class ClientJpaDaoTest {
                 String.format("""
                         id = '%d' and username = '%s' and mail = '%s' and
                         password = '%s' and language = '%s'
-                        """, USER_ID_EXISTING, CHANGED_USERNAME, MAIL_EXISTING,
-                        PASSWORD_EXISTING, SPANISH.name())
+                        """, PREEXISTING_ID, CHANGED_USERNAME, PREEXISTING_MAIL,
+                        PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
 
     @Test
     public void testEditProfileMail() {
-        clientDao.editProfile(existingClient, USERNAME_EXISTING, CHANGED_MAIL, SPANISH);
-        assertEquals(CHANGED_MAIL, existingClient.getMail());
+        clientDao.editProfile(preexistingClient, PREEXISTING_USERNAME, CHANGED_MAIL, SPANISH);
+        assertEquals(CHANGED_MAIL, preexistingClient.getMail());
 
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -173,15 +183,15 @@ public class ClientJpaDaoTest {
                 String.format("""
                         id = '%d' and username = '%s' and mail = '%s' and
                         password = '%s' and language = '%s'
-                        """, USER_ID_EXISTING, USERNAME_EXISTING, CHANGED_MAIL,
-                        PASSWORD_EXISTING, SPANISH.name())
+                        """, PREEXISTING_ID, PREEXISTING_USERNAME, CHANGED_MAIL,
+                        PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
 
     @Test
     public void testEditProfileLanguage() {
-        clientDao.editProfile(existingClient, USERNAME_EXISTING, MAIL_EXISTING, ENGLISH);
-        assertEquals(ENGLISH, existingClient.getLanguage());
+        clientDao.editProfile(preexistingClient, PREEXISTING_USERNAME, PREEXISTING_MAIL, ENGLISH);
+        assertEquals(ENGLISH, preexistingClient.getLanguage());
 
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -189,15 +199,15 @@ public class ClientJpaDaoTest {
                 String.format("""
                         id = '%d' and username = '%s' and mail = '%s' and
                         password = '%s' and language = '%s'
-                        """, USER_ID_EXISTING, USERNAME_EXISTING, MAIL_EXISTING,
-                        PASSWORD_EXISTING, ENGLISH.name())
+                        """, PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL,
+                        PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }
 
     @Test
     public void testEditProfileMultipleAttributes() {
-        clientDao.editProfile(existingClient, CHANGED_USERNAME, CHANGED_MAIL, ENGLISH);
-        assertEquals(CHANGED_USERNAME, existingClient.getUsername());
+        clientDao.editProfile(preexistingClient, CHANGED_USERNAME, CHANGED_MAIL, ENGLISH);
+        assertEquals(CHANGED_USERNAME, preexistingClient.getUsername());
 
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -205,8 +215,22 @@ public class ClientJpaDaoTest {
                 String.format("""
                         id = '%d' and username = '%s' and mail = '%s' and
                         password = '%s' and language = '%s'
-                        """, USER_ID_EXISTING, CHANGED_USERNAME, CHANGED_MAIL,
-                        PASSWORD_EXISTING, ENGLISH.name())
+                        """, PREEXISTING_ID, CHANGED_USERNAME, CHANGED_MAIL,
+                        PREEXISTING_PASSWORD, ENGLISH.name())
+        ));
+    }
+
+    @Test
+    public void testEditProfileZone() {
+        clientDao.editProfile(preexistingClient, PREEXISTING_USERNAME, PREEXISTING_MAIL, changedZone, SPANISH);
+        assertEquals(changedZone, preexistingClient.getZone());
+
+        em.flush();
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
+                jdbcTemplate, "client",
+                String.format("""
+                        id = '%d' and zone_id = '%d'
+                        """, PREEXISTING_ID, CHANGED_ZONE_ID)
         ));
     }
 }

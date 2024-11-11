@@ -66,7 +66,10 @@ public class Zone {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Zone zone && id == zone.id;
+        return obj instanceof Zone zone &&
+                getCountryId() == zone.getCountryId() &&
+                getProvinceId() == zone.getProvinceId() &&
+                getNeighborhoodId() == zone.getNeighborhoodId();
     }
 
     @Override
