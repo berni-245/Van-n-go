@@ -122,9 +122,10 @@
                                                                       element="div"
                                                                       required="true"
                                                     />
+                                                    <spring:message var="spStr" code="generic.word.${sp}"/>
                                                     <label class="btn btn-primary"
                                                            for="sp-${sp}-${v.plateNumber}">
-                                                        <c:out value="${sp}"/>
+                                                        <c:out value="${spStr}"/>
                                                     </label>
                                                 </div>
                                             </c:forEach>
