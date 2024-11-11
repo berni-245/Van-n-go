@@ -35,7 +35,8 @@
                     <p><spring:message code="driver.home.booking.confirmed"/></p>
                     <c:choose>
                         <c:when test="${empty booking.pop or booking.pop == 0}">
-                            <spring:message code="client.bookings.transfer" arguments="${booking.driver.cbu}"/>
+                            <spring:message code="client.bookings.transfer" arguments="${booking.driver.cbu}" var="cbu"/>
+                            <c:out value="${cbu}"/>
                             <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
                                   action="<c:url value='/client/bookings/upload/pop'/>"
                                   enctype="multipart/form-data">

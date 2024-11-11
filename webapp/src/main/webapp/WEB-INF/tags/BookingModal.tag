@@ -59,15 +59,18 @@
 
                 <li class="list-group-item"><comp:ZoneFromTo booking="${booking}"/></li>
                 <li class="list-group-item">
-                    <spring:message code="generic.phrase.job.description.withDescription" arguments="${booking.jobDescription}"/>
+                    <spring:message code="generic.phrase.job.description.withDescription" arguments="${booking.jobDescription}" var="jobDescription"/>
+                    <c:out value="${jobDescription}"/>
                 </li>
                 <li class="list-group-item">
                     <spring:message arguments="${booking.vehicle.plateNumber}"
-                                    code="components.bookingModal.vehicle"/>
+                                    code="components.bookingModal.vehicle" var="plateNumber"/>
+                    <c:out value="${plateNumber}"/>
                 </li>
                 <li class="list-group-item">
                     <spring:message arguments="${booking.vehicle.hourlyRate}"
-                                    code="components.bookingModal.hourlyRate"/>
+                                    code="components.bookingModal.hourlyRate" var="rate"/>
+                    <c:out value="${rate}"/>
                 </li>
 
                 <c:choose>

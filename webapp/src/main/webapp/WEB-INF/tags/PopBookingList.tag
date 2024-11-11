@@ -27,7 +27,10 @@
                     <li class="list-group-item"><p><spring:message code="public.profile.noCbu"/></p></li>
                 </c:if>
                 <c:if test="${booking.driver.cbu != null}">
-                    <li class="list-group-item"><spring:message code="client.bookings.transfer" arguments="${booking.driver.cbu}"/></li>
+                    <li class="list-group-item">
+                        <spring:message code="client.bookings.transfer" arguments="${booking.driver.cbu}" var="cbu"/>
+                        <c:out value="${cbu}"/>
+                    </li>
                 </c:if>
                 <li class="list-group-item">
                     <form id="uploadProofOfPaymentForm_${booking.id}" method="post"
