@@ -91,27 +91,24 @@
                 </div>
                 <div class="card-body">
                     <p>
-                        <strong><spring:message code="generic.word.username"/>:</strong>
-                        <c:out value="${recipient.username}"/>
+                        <spring:message code="generic.phrase.username" arguments="${recipient.username}" var="recipientUsername"/>
+                        <c:out value="${recipientUsername}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.email"/>:</strong>
-                        <c:out value="${recipient.mail}"/>
+                        <spring:message code="generic.phrase.email" arguments="${recipient.mail}" var="recipientMail"/>
+                        <c:out value="${recipientMail}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.zone"/>:</strong>
-                        <c:out value="${clientZone}"/>
+                        <spring:message code="generic.phrase.zone" arguments="${clientZone}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.created"/>:</strong>
-                        <c:out value="${recipient.creationTime.toLocalDate()}"/>
+                        <spring:message code="generic.phrase.created" arguments="${recipient.creationTime.toLocalDate()}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.booking.date"/>:</strong>
-                        <c:out value="${booking.date}"/>
+                        <spring:message code="generic.booking.date" arguments="${booking.date}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.booking.shift.period"/>:</strong>
+                        <spring:message code="generic.booking.shift.period"/>
                         <spring:message code="generic.word.${booking.shiftPeriod.capitalizedText}"/>
                     </p>
                 </div>

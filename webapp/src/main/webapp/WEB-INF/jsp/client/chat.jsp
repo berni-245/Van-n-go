@@ -95,31 +95,29 @@
                 </div>
                 <div class="card-body">
                     <p>
-                        <strong><spring:message code="generic.word.username"/>:</strong>
-                        <c:out value="${recipient.username}"/>
+                        <spring:message code="generic.phrase.username" arguments="${recipient.username}" var="recipientUsername"/>
+                        <c:out value="${recipientUsername}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.email"/>:</strong>
-                        <c:out value="${recipient.mail}"/>
+                        <spring:message code="generic.phrase.email" arguments="${recipient.mail}" var="recipientMail"/>
+                        <c:out value="${recipientMail}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.description"/>:</strong>
-                        <c:out value="${recipient.description}"/>
+                        <spring:message code="generic.phrase.description" arguments="${recipient.description}" var="recipientDescription"/>
+                        <c:out value="${recipientDescription}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.word.cbu"/>:</strong>
-                        <c:out value="${recipient.cbu}"/>
+                        <spring:message code="generic.phrase.cbu" arguments="${recipient.cbu}" var="recipientCbu"/>
+                        <c:out value="${recipientCbu}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.phrase.user.since"/>:</strong>
-                        <c:out value="${recipient.creationTime.toLocalDate()}"/>
+                        <spring:message code="generic.phrase.user.since" arguments="${recipient.creationTime.toLocalDate()}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.booking.date"/>:</strong>
-                        <c:out value="${booking.date}"/>
+                        <spring:message code="generic.booking.date" arguments="${booking.date}"/>
                     </p>
                     <p>
-                        <strong><spring:message code="generic.booking.shift.period"/>:</strong>
+                        <spring:message code="generic.booking.shift.period"/>
                         <spring:message code="generic.word.${booking.shiftPeriod.capitalizedText}"/>
                     </p>
                 </div>
