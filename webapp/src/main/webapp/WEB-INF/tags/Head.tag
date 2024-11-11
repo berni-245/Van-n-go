@@ -3,6 +3,7 @@
 <%@ attribute name="calendar" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="bsIcons" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="passInput" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="tooltips" required="false" type="java.lang.Boolean" %>
 
 <%@ tag body-content="scriptless" %>
 
@@ -46,6 +47,11 @@
     <c:if test="${passInput}">
         <c:url value="/js/showHidePassInput.js" var="passInputJs"/>
         <script src="${passInputJs}"></script>
+    </c:if>
+
+    <c:if test="${tooltips}">
+        <c:url value="/js/tooltips.js" var="tooltipsJs"/>
+        <script src="${tooltipsJs}"></script>
     </c:if>
 
 <%--    Goes last so it has priority over all previous stylesheets.--%>

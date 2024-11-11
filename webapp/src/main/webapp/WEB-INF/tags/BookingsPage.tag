@@ -7,7 +7,7 @@
 
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.bookings" bsIcons="true">
+<comp:Head titleCode="components.header.bookings" tooltips="true">
     <c:url value="/js/PaginationTag.js" var="js"/>
     <script type="module" src="${js}"></script>
     <c:url value="/js/Tabs.js" var="js"/>

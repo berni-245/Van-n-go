@@ -27,29 +27,38 @@
         </c:choose>
         <div class="card-body d-flex flex-column justify-content-between h-100">
             <div>
-                <h5 class="card-title w-75"><spring:message arguments="${booking.date}"
-                                                       code="components.bookingCard.dateTime"/> <spring:message
-                        code="generic.word.${booking.shiftPeriod.lowerCaseText}"/></h5>
+                <h5 class="card-title w-75">
+                    <spring:message arguments="${booking.date}"
+                                    code="components.bookingCard.dateTime"/>
+                    <spring:message code="generic.word.${booking.shiftPeriod.lowerCaseText}"/>
+                </h5>
                 <p class="card-text"><c:out value="${booking.client.username}"/></p>
-                <p class="card-text">
-                    <comp:ZoneFromTo booking="${booking}"/>
-                </p>
+                <p class="card-text"><comp:ZoneFromTo booking="${booking}"/></p>
             </div>
             <c:choose>
                 <c:when test="${booking.state eq BookingState.PENDING}">
                     <div class="d-flex justify-content-around mt-2">
-                        <c:url value="/driver/booking/${booking.id}/accept" var="bookingAcceptUrl"/>
-                        <form action="${bookingAcceptUrl}" method="POST" class="mb-1">
-                            <button type="submit" class="btn btn-success">
-                                <spring:message code="driver.home.booking.accept"/>
-                            </button>
-                        </form>
-                        <c:url value="/driver/booking/${booking.id}/reject" var="bookingRejectUrl"/>
-                        <form action="${bookingRejectUrl}" method="POST" class="mb-1">
-                            <button type="submit" class="btn btn-danger">
-                                <spring:message code="driver.home.booking.reject"/>
-                            </button>
-                        </form>
+                        <div class="d-flex flex-lg-row flex-md-column gap-1">
+                            <c:url value="/driver/booking/${booking.id}/accept" var="bookingAcceptUrl"/>
+                            <form action="${bookingAcceptUrl}" method="POST" class="mb-1">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <spring:message code="driver.home.booking.accept"/>
+                                </button>
+                            </form>
+                            <c:url value="/driver/booking/${booking.id}/reject" var="bookingRejectUrl"/>
+                            <form action="${bookingRejectUrl}" method="POST" class="mb-1">
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <spring:message code="driver.home.booking.reject"/>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="d-flex flex-lg-row flex-md-column gap-1">
+                            <comp:SeeDetailsBtutton targetId="bookingModal${booking.id}"
+                                                    tooltipCode="generic.phrase.seeDetails"/>
+                            <comp:ChatButton
+                                    path="/driver/chat?bookingId=${booking.id}&recipientId=${booking.client.id}"
+                                    tooltipCode="generic.word.chat"/>
+                        </div>
                     </div>
                 </c:when>
                 <c:when test="${booking.state eq BookingState.ACCEPTED}">
@@ -77,15 +86,14 @@
                     </div>
                 </c:when>
             </c:choose>
-            <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#bookingModal${booking.id}">
-                    <spring:message code="generic.phrase.seeDetails"/>
-                </button>
-                <a href="${pageContext.request.contextPath}/driver/chat?bookingId=${booking.id}&recipientId=${booking.client.id}" type="button" class="btn btn-secondary">
-                    <spring:message code="generic.word.chat"/>
-                </a>
-            </div>
+            <c:if test="${booking.state ne BookingState.PENDING}">
+                <div class="d-flex justify-content-between">
+                    <comp:SeeDetailsBtutton targetId="bookingModal${booking.id}"
+                                            tooltipCode="generic.phrase.seeDetails"/>
+                    <comp:ChatButton path="/driver/chat?bookingId=${booking.id}&recipientId=${booking.client.id}"
+                                     tooltipCode="generic.word.chat"/>
+                </div>
+            </c:if>
         </div>
     </div>
 </div>

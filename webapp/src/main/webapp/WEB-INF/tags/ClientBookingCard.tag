@@ -43,7 +43,8 @@
                                 <input type="hidden" name="bookingId" value="${booking.id}">
                                 <input type="hidden" name="driverId" value="${booking.driver.id}">
                                 <input type="file" id="proofInput_${booking.id}" name="proofOfPayment"
-                                       class="d-none" accept="application/pdf, image/png, image/jpeg, image/webp, image/heic"
+                                       class="d-none"
+                                       accept="application/pdf, image/png, image/jpeg, image/webp, image/heic"
                                        onchange="document.getElementById('uploadProofOfPaymentForm_${booking.id}').submit();">
                                 <label for="proofInput_${booking.id}"
                                        style="cursor: pointer; text-decoration: underline;">
@@ -64,13 +65,10 @@
                 </c:if>
             </div>
             <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#bookingModal${booking.id}">
-                    <spring:message code="generic.phrase.seeDetails"/>
-                </button>
-                <a href="${pageContext.request.contextPath}/client/chat?bookingId=${booking.id}&recipientId=${booking.driver.id}" type="button" class="btn btn-secondary">
-                    <spring:message code="generic.word.chat"/>
-                </a>
+                <comp:SeeDetailsBtutton targetId="bookingModal${booking.id}"
+                                        tooltipCode="generic.phrase.seeDetails"/>
+                <comp:ChatButton path="/client/chat?bookingId=${booking.id}&recipientId=${booking.driver.id}"
+                                 tooltipCode="generic.word.chat"/>
             </div>
         </div>
     </div>
