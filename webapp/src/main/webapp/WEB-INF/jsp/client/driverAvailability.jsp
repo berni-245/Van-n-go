@@ -13,7 +13,7 @@
 <comp:Header/>
 <div class="d-flex justify-content-between align-items-center mb-5">
     <c:url var="searchParams" value="/client/availability">
-        <c:param name="zoneId" value="${originZone}"/>
+        <c:param name="zoneId" value="${originZone.id}"/>
         <c:if test="${size ne null}">
             <c:param name="size" value="${size}"/>
         </c:if>

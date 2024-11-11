@@ -64,7 +64,7 @@
                     <spring:message var="Friday" code="day.friday"/>
                     <form:option value="FRIDAY" label="${Friday}"/>
                     <spring:message var="Saturday" code="day.saturday"/>
-                    <form:option value="SATURDAY" label="${Saturday}}"/>
+                    <form:option value="SATURDAY" label="${Saturday}"/>
                     <spring:message var="Sunday" code="day.sunday"/>
                     <form:option value="SUNDAY" label="${Sunday}"/>
                 </form:select>
