@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.config;
 import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.controller.CustomAuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.controller.CustomSavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +30,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     private PawUserDetailsService userDetailsService;
     @Autowired
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    @Autowired
+    private CustomSavedRequestAwareAuthenticationSuccessHandler customSavedRequestAwareAuthenticationSuccessHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -48,9 +51,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/","/home").permitAll()
                 .antMatchers("/**").authenticated()
                 .and().formLogin()
+                .successHandler(customSavedRequestAwareAuthenticationSuccessHandler)
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
-                .defaultSuccessUrl("/", true)
                 .loginPage("/login")
                 .failureHandler(customAuthenticationFailureHandler)
                 .and().rememberMe()
@@ -71,6 +74,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/css/**", "/js/**", "/images/**", "/icons/**", "/favicon.ico", "/403");
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -16,9 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Duration;
@@ -38,6 +41,8 @@ public class DriverController implements Bookings {
     private ImageService is;
     @Autowired
     private MessageService ms;
+    @Autowired
+    private LocaleResolver localeResolver;
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehiclePost(
@@ -176,7 +181,8 @@ public class DriverController implements Bookings {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
             BindingResult errors,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request, HttpServletResponse response
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in ChangeUserInfoForm by {}", loggedUser.getUsername());
@@ -184,6 +190,7 @@ public class DriverController implements Bookings {
         }
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
         ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu(), form.getLanguage());
+        localeResolver.setLocale(request,response,loggedUser.getLanguage().getLocale());
         return redirect("/driver/profile");
     }
 
