@@ -248,4 +248,6 @@ public class DriverServiceImplTest {
 
         fail();
     }
+
+    // There's not point in testing methods that are only wrappers to their daos because they were already tested in persistence
 }
