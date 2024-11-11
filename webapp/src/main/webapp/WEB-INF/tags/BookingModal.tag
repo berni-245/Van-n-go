@@ -133,7 +133,7 @@
                                             </c:forEach>
                                         </div>
                                     </div>
-                                    <p><c:out value="${booking.review}"/></p>
+                                    <p style="word-break: break-word"><c:out value="${booking.review}"/></p>
                                 </li>
                             </c:when>
                             <c:otherwise>
