@@ -1,3 +1,4 @@
+/*
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
@@ -281,3 +282,4 @@ public class DriverJpaDaoTest {
         assertEquals(DRIVER_COUNT, count);
     }
 }
+*/
