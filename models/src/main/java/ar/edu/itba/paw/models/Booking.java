@@ -143,4 +143,6 @@ public class Booking {
     public void setPop(Integer pop) {
         this.pop = pop;
     }
+
+    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
 }

@@ -101,6 +101,8 @@ public class Vehicle {
         this.zones = zones;
     }
 
+    public void setDriver(Driver driver) { this.driver = driver; }
+
     @Override
     public String toString() {
         return "%s||%s||%.2f".formatted(plateNumber, description, volume);

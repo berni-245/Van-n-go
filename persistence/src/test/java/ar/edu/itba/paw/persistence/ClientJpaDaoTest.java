@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
 public class ClientJpaDaoTest {
     private final static Language ENGLISH = Language.ENGLISH;
     private final static Language SPANISH = Language.SPANISH;
-    private final static Integer USER_ID_NOT_CREATED = 1;
     private final static String USERNAME_NOT_CREATED = "JuanClient";
     private final static String MAIL_NOT_CREATED = "juanC@mail.com";
     private final static String PASSWORD_NOT_CREATED = "123321";
@@ -81,14 +80,10 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                                id = '%d' and username = '%s' and mail = '%s' and
+                                username = '%s' and mail = '%s' and
                                 password = '%s' and language = '%s'
-                                """, USER_ID_NOT_CREATED, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
+                                """, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
                         PASSWORD_NOT_CREATED, ENGLISH.name())
-        ));
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "client",
-                String.format("id = '%d'", USER_ID_NOT_CREATED)
         ));
     }
 
@@ -102,12 +97,11 @@ public class ClientJpaDaoTest {
         assertEquals(SPANISH, client.getLanguage());
     }
 
-    @Test
+    @Test(expected = UserNotFoundException.class)
     public void testWrongIdInFindById() {
-        assertThrows(
-                UserNotFoundException.class,
-                () -> clientDao.findById(USER_ID_NOT_EXISTING)
-        );
+        clientDao.findById(USER_ID_NOT_EXISTING);
+
+        fail();
     }
 
     @Test

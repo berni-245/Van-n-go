@@ -119,14 +119,12 @@ public class BookingJpaDaoTest {
 
     // Remember that there's an accepted booking for another client in ALREADY_ACCEPTED_BOOKED_DATE for EVENING
 
-    @Test
+    @Test(expected = VehicleIsAlreadyAcceptedException.class)
     public void testAppointBookingOnTopOfAnotherAcceptedBooking() {
-        assertThrows(
-                VehicleIsAlreadyAcceptedException.class,
-                () -> bookingDao.appointBooking(
-                        vehicle, client, originZone, destinationZone, ALREADY_ACCEPTED_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION
-                )
-        );
+
+        bookingDao.appointBooking(vehicle, client, originZone, destinationZone, ALREADY_ACCEPTED_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION);
+
+        fail();
     }
 
     @Test
@@ -150,14 +148,13 @@ public class BookingJpaDaoTest {
 
     // Remember that there's a pending booking for the same client (ID = 1) in ALREADY_PENDING_BOOKED_DATE for EVENING
 
-    @Test
+    @Test(expected = ClientAlreadyAppointedException.class)
     public void testAppointBookingOnTopOfAnotherBookingByTheSameClient() {
-        assertThrows(
-                ClientAlreadyAppointedException.class,
-                () -> bookingDao.appointBooking(
-                        vehicle, client, originZone, destinationZone, ALREADY_PENDING_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION
-                )
+        bookingDao.appointBooking(
+                vehicle, client, originZone, destinationZone, ALREADY_PENDING_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION
         );
+
+        fail();
     }
 
 
@@ -201,43 +198,38 @@ public class BookingJpaDaoTest {
 
     // Remember that vehicle id 1 only works on EVENING in DATE_FREE_TO_APPOINT in zone id 1
 
-    @Test
+    @Test(expected = VehicleNotAvailableException.class)
     public void testAppointBookingWrongTimeForVehicle() {
-        assertThrows(
-                VehicleNotAvailableException.class,
-                () -> bookingDao.appointBooking(
-                        vehicle, client, originZone, destinationZone, DATE_FREE_TO_APPOINT, ShiftPeriod.MORNING, JOB_DESCRIPTION
-                )
+        bookingDao.appointBooking(
+                vehicle, client, originZone, destinationZone, DATE_FREE_TO_APPOINT, ShiftPeriod.MORNING, JOB_DESCRIPTION
         );
+
+        fail();
     }
 
-    @Test
+    @Test(expected = VehicleNotAvailableException.class)
     public void testAppointBookingWrongZoneForVehicle() {
-        assertThrows(
-                VehicleNotAvailableException.class,
-                () -> bookingDao.appointBooking(
-                        vehicle, client, zoneThatDriverDoesNotWork, destinationZone, DATE_FREE_TO_APPOINT, ShiftPeriod.EVENING, JOB_DESCRIPTION
-                )
+        bookingDao.appointBooking(
+                vehicle, client, zoneThatDriverDoesNotWork, destinationZone, DATE_FREE_TO_APPOINT, ShiftPeriod.EVENING, JOB_DESCRIPTION
         );
+
+        fail();
     }
 
-    @Test
+    @Test(expected = TimeAlreadyPassedException.class)
     public void testAppointBookingDayPreviousToNow() {
-        assertThrows(
-                TimeAlreadyPassedException.class,
-                () -> bookingDao.appointBooking(
-                        vehicle, client, originZone, destinationZone, DATE_OLDER_THAN_NOW, ShiftPeriod.EVENING, JOB_DESCRIPTION
-                )
-
+        bookingDao.appointBooking(
+                vehicle, client, originZone, destinationZone, DATE_OLDER_THAN_NOW, ShiftPeriod.EVENING, JOB_DESCRIPTION
         );
+
+        fail();
     }
 
-    @Test
+    @Test(expected = ForbiddenUserBookingAccessException.class)
     public void testGetBookingFromAnotherClient() {
-        assertThrows(
-                ForbiddenUserBookingAccessException.class,
-                () -> bookingDao.getClientBookingById(client, PREEXISTING_ACCEPTED_BOOK)
-        );
+        bookingDao.getClientBookingById(client, PREEXISTING_ACCEPTED_BOOK);
+
+        fail();
     }
 
     @Test
@@ -246,12 +238,11 @@ public class BookingJpaDaoTest {
         assertEquals(PREEXISTING_ACCEPTED_BOOK, booking.getId());
     }
 
-    @Test
+    @Test(expected = ForbiddenUserBookingAccessException.class)
     public void testGetBookingFromAnotherDriver() {
-        assertThrows(
-                ForbiddenUserBookingAccessException.class,
-                () -> bookingDao.getDriverBookingById(driverTwo, PREEXISTING_ACCEPTED_BOOK)
-        );
+        bookingDao.getDriverBookingById(driverTwo, PREEXISTING_ACCEPTED_BOOK);
+
+        fail();
     }
 
     @Test
