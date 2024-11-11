@@ -1,5 +1,5 @@
-insert into app_user (id, username, mail, password, language) values
-    (1, 'JuanClient', 'juanC@mail.com', '123321', 'SPANISH');
+insert into app_user (id, username, mail, password, language, creation_time) values
+    (1, 'JuanClient', 'juanC@mail.com', '123321', 'SPANISH', '2024-11-7 12:00:00');
 
 insert into driver (id) values (1);
 
@@ -9,13 +9,8 @@ insert into vehicle (id, driver_id, plate_number, volume_m3, description, hourly
 insert into vehicle_zone (vehicle_id, zone_id) values (1, 1);
 
 insert into vehicle_availability (id, week_day, vehicle_id, shift_period) values
--- miércoles
-    (10, 'WEDNESDAY', 1, 'EVENING'),
--- jueves
-    (2, 'THURSDAY', 1, 'AFTERNOON'),
-    (3, 'THURSDAY', 1, 'EVENING'),
 -- viernes
-    (4, 'FRIDAY', 1, 'MORNING'),
-    (5, 'FRIDAY', 1, 'AFTERNOON'),
-    (6, 'FRIDAY', 1, 'EVENING')
+    (10, 'FRIDAY', 1, 'MORNING'),
+    (11, 'FRIDAY', 1, 'AFTERNOON'),
+    (12, 'FRIDAY', 1, 'EVENING')
 ;
