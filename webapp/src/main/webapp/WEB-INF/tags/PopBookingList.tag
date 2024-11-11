@@ -13,7 +13,7 @@
             <li class="list-group-item"><spring:message code="driver.home.unpaid"/></li>
         </c:if>
         <c:if test="${booking.pop ne null}">
-            <c:url value='/booking/pop?popId=${booking.pop}' var="popUrl"/>
+            <c:url value='/images/query?imgId=${booking.pop}' var="popUrl"/>
             <li class="list-group-item"><a href="${popUrl}" target="_blank">
                 <spring:message code="driver.home.paid"/>
             </a></li>
@@ -49,7 +49,7 @@
             </c:when>
             <c:otherwise>
                 <li class="list-group-item"><a
-                        href="<c:url value='/booking/pop?popId=${booking.pop}' />" target="_blank">
+                        href="<c:url value='/images/query?imgId=${booking.pop}' />" target="_blank">
                     <spring:message code="client.bookings.popProvided"/>
                 </a></li>
             </c:otherwise>

@@ -36,7 +36,7 @@
                                 <c:choose>
                                     <c:when test="${v.imgId ne null}">
                                         <img id="vehicleImagePreview"
-                                             src="<c:url value='/vehicle/image?imgId=${v.imgId}' />"
+                                             src="<c:url value='/images/query?imgId=${v.imgId}' />"
                                              alt="Vehicle Image Preview" class="object-fit: cover; card-img-top"/>
                                     </c:when>
                                     <c:otherwise>

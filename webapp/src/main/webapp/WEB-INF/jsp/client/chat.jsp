@@ -12,7 +12,7 @@
 
 <c:choose>
     <c:when test="${loggedUser.pfp ne null}">
-        <c:url var="clientPfpUrl" value="/user/pfp?userPfp=${loggedUser.pfp}"/>
+        <c:url var="clientPfpUrl" value="/images/query?imgId=${loggedUser.pfp}"/>
     </c:when>
     <c:otherwise>
         <c:url var="clientPfpUrl" value="/images/defaultUserPfp.png"/>
@@ -20,7 +20,7 @@
 </c:choose>
 <c:choose>
     <c:when test="${recipient.pfp ne null}">
-        <c:url var="driverPfpUrl" value="/user/pfp?userPfp=${recipient.pfp}"/>
+        <c:url var="driverPfpUrl" value="/images/query?imgId=${recipient.pfp}"/>
     </c:when>
     <c:otherwise>
         <c:url var="driverPfpUrl" value="/images/defaultUserPfp.png"/>
@@ -84,7 +84,7 @@
                 <div class="card-header">
                     <c:choose>
                         <c:when test="${recipient.pfp ne null}">
-                            <c:url value='/user/pfp?userPfp=${recipient.pfp}' var="recipientPfpUrl"/>
+                            <c:url value='/images/query?imgId=${recipient.pfp}' var="recipientPfpUrl"/>
                         </c:when>
                         <c:otherwise>
                             <c:url value='/images/defaultUserPfp.png' var="recipientPfpUrl"/>
