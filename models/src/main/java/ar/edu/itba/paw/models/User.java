@@ -111,7 +111,7 @@ public abstract class User {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User user && id == user.id;
+        return obj instanceof User user && id.equals(user.id);
     }
 
     @Override

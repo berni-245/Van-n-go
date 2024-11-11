@@ -32,12 +32,12 @@ import static org.junit.Assert.*;
 public class ClientJpaDaoTest {
     private final static Language ENGLISH = Language.ENGLISH;
     private final static Language SPANISH = Language.SPANISH;
-    private final static int USER_ID_NOT_CREATED = 1;
+    private final static Integer USER_ID_NOT_CREATED = 1;
     private final static String USERNAME_NOT_CREATED = "JuanClient";
     private final static String MAIL_NOT_CREATED = "juanC@mail.com";
     private final static String PASSWORD_NOT_CREATED = "123321";
 
-    private final static int PREEXISTING_ID = 500;
+    private final static Integer PREEXISTING_ID = 500;
     private final static String PREEXISTING_USERNAME = "AnotherJuanClient";
     private final static String PREEXISTING_MAIL = "AjuanC@mail.com";
     private final static String PREEXISTING_PASSWORD = "123321";
@@ -45,11 +45,11 @@ public class ClientJpaDaoTest {
     private final static String CHANGED_USERNAME = "Carlos";
     private final static String CHANGED_MAIL = "Carlos@mail.com";
     private final static String CHANGED_PASSWORD = "321123";
-    private final static int CHANGED_ZONE_ID = 3;
+    private final static Integer CHANGED_ZONE_ID = 3;
 
     private final static String PREEXISTING_MAIL_TWO = "YAjuanC@mail.com";
 
-    private final static int USER_ID_NOT_EXISTING = -1;
+    private final static Integer USER_ID_NOT_EXISTING = -1;
 
     private static Client preexistingClient;
     private static Zone changedZone;

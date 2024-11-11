@@ -41,24 +41,24 @@ import static org.junit.Assert.*;
 
 public class BookingJpaDaoTest {
     // This booking will accepted and for ve.id = 1, zone.id = 1 on thursday, EVENING
-    private static final int PREEXISTING_ACCEPTED_BOOK = 500;
+    private static final Integer PREEXISTING_ACCEPTED_BOOK = 500;
     private static final LocalDate ALREADY_ACCEPTED_BOOKED_DATE = LocalDate.of(2030, 5, 2); // It's thursday
 
     // This booking will pending and for ve.id = 1, zone.id = 1, on friday, EVENING
-    private static final int PREEXISTING_PENDING_BOOK = 501;
-    private static final int ANOTHER_PREEXISTING_PENDING_BOOK = 502;
-    private static final int YET_ANOTHER_PREEXISTING_PENDING_BOOK = 503;
+    private static final Integer PREEXISTING_PENDING_BOOK = 501;
+    private static final Integer ANOTHER_PREEXISTING_PENDING_BOOK = 502;
+    private static final Integer YET_ANOTHER_PREEXISTING_PENDING_BOOK = 503;
     private static final int BOOKING_COUNT = 4;
     private static final int DRIVER_BOOKING_PENDING_COUNT = 3;
     private static final int CLIENT_BOOKING_PENDING_COUNT = 2;
 
-    private static final int VEHICLE_ID = 1;
-    private static final int CLIENT_ID = 1;
-    private static final int CLIENT_ID_TWO = 2;
-    private static final int DRIVER_ID = 3;
-    private static final int ORIGIN_ZONE_ID = 1;
-    private static final int DESTINATION_ZONE_ID = 23;
-    private static final int ZONE_THAT_DRIVER_DOES_NOT_WORK = 2;
+    private static final Integer VEHICLE_ID = 1;
+    private static final Integer CLIENT_ID = 1;
+    private static final Integer CLIENT_ID_TWO = 2;
+    private static final Integer DRIVER_ID = 3;
+    private static final Integer ORIGIN_ZONE_ID = 1;
+    private static final Integer DESTINATION_ZONE_ID = 23;
+    private static final Integer ZONE_THAT_DRIVER_DOES_NOT_WORK = 2;
 
     private static final LocalDate DATE_FREE_TO_APPOINT = LocalDate.of(2030, 5, 1); // It's a wednesday
     private static final LocalDate ALREADY_PENDING_BOOKED_DATE = LocalDate.of(2030, 5, 3); // It's a friday
@@ -246,17 +246,17 @@ public class BookingJpaDaoTest {
         List<Booking> bookings = bookingDao.getDriverBookings(driver, BookingState.PENDING, 0);
 
         assertEquals(DRIVER_BOOKING_PENDING_COUNT, bookings.size());
-        assertTrue(bookings.stream().anyMatch(b -> b.getId() == PREEXISTING_PENDING_BOOK));
-        assertTrue(bookings.stream().anyMatch(b -> b.getId() == ANOTHER_PREEXISTING_PENDING_BOOK));
-        assertTrue(bookings.stream().anyMatch(b -> b.getId() == YET_ANOTHER_PREEXISTING_PENDING_BOOK));
+        assertTrue(bookings.stream().anyMatch(b -> b.getId().equals(PREEXISTING_PENDING_BOOK)));
+        assertTrue(bookings.stream().anyMatch(b -> b.getId().equals(ANOTHER_PREEXISTING_PENDING_BOOK)));
+        assertTrue(bookings.stream().anyMatch(b -> b.getId().equals(YET_ANOTHER_PREEXISTING_PENDING_BOOK)));
     }
 
     @Test
     public void testGetBookingsByClient() {
         List<Booking> bookings = bookingDao.getClientBookings(client, BookingState.PENDING, 0);
         assertEquals(CLIENT_BOOKING_PENDING_COUNT, bookings.size());
-        assertTrue(bookings.stream().anyMatch(b -> b.getId() == PREEXISTING_PENDING_BOOK));
-        assertTrue(bookings.stream().anyMatch(b -> b.getId() == YET_ANOTHER_PREEXISTING_PENDING_BOOK));
+        assertTrue(bookings.stream().anyMatch(b -> b.getId().equals(PREEXISTING_PENDING_BOOK)));
+        assertTrue(bookings.stream().anyMatch(b -> b.getId().equals(YET_ANOTHER_PREEXISTING_PENDING_BOOK)));
     }
 
     @Test

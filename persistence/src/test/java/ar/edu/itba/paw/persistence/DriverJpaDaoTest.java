@@ -37,26 +37,26 @@ import static org.junit.Assert.*;
 public class DriverJpaDaoTest {
     private final static Language ENGLISH = Language.ENGLISH;
     private final static Language SPANISH = Language.SPANISH;
-    private final static int USER_ID_NOT_CREATED = 1;
+    private final static Integer USER_ID_NOT_CREATED = 1;
     private final static String USERNAME_NOT_CREATED = "JuanDriver";
     private final static String MAIL_NOT_CREATED = "juanC@mail.com";
     private final static String PASSWORD_NOT_CREATED = "123321";
     private final static String DESCRIPTION = "Hago fletes";
 
-    private final static int PREEXISTING_ID = 500;
+    private final static Integer PREEXISTING_ID = 500;
     private final static String PREEXISTING_USERNAME = "THEDriver";
     private final static String PREEXISTING_MAIL = "driver@mail.com";
     private final static String PREEXISTING_PASSWORD = "123321";
     private final static String PREEXISTING_DESCRIPTION = "Im the driver";
     private final static String PREEXISTING_CBU = "0720072007200720072044";
 
-    private final static int PREEXISTING_VEHICLE_ZONE = 1;
+    private final static Integer PREEXISTING_VEHICLE_ZONE = 1;
     private final static Size PREEXISTING_VEHICLE_SIZE = Size.LARGE;
     private final static double MAX_PRICE = 200;
     private final static DayOfWeek DAY_OF_WEEK = DayOfWeek.WEDNESDAY;
     private final static Integer MIN_RATING = 3;
 
-    private final static int PREEXISTING_ID_TWO = 501;
+    private final static Integer PREEXISTING_ID_TWO = 501;
     private final static String PREEXISTING_MAIL_TWO = "YAdriver@mail.com";
 
     private final static int DRIVER_COUNT = 2;
@@ -271,8 +271,8 @@ public class DriverJpaDaoTest {
         List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, PREEXISTING_VEHICLE_SIZE, MAX_PRICE, DAY_OF_WEEK, MIN_RATING, null, 0);
 
         assertEquals(DRIVER_COUNT, matchingDrivers.size());
-        assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId() == PREEXISTING_ID));
-        assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId() == PREEXISTING_ID_TWO));
+        assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID)));
+        assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID_TWO)));
     }
 
     @Test
