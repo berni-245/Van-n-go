@@ -119,12 +119,19 @@ public class PublicController implements Redirect, Toasts {
         return new ModelAndView("user/profile");
     }
 
+    @RequestMapping(value = "/images/query", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> searchImage(
+            @RequestParam("imgId") int imgId
+    ) {
+        return getValidatedImage(is.getImage(imgId));
+    }
+
 
     @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getUserPicture(
-            @RequestParam("userPfp") int userPfp,
-            @ModelAttribute("loggedUser") User loggedUser
+            @RequestParam("userPfp") int userPfp
     ) {
         return getValidatedImage(is.getImage(userPfp));
     }
@@ -132,8 +139,7 @@ public class PublicController implements Redirect, Toasts {
     @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getProofOfPayment(
-            @RequestParam("popId") int popId,
-            @ModelAttribute("loggedUser") User loggedUser
+            @RequestParam("popId") int popId
     ) {
         return getValidatedImage(is.getImage(popId));
     }
@@ -141,8 +147,7 @@ public class PublicController implements Redirect, Toasts {
     @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> getVehicleImage(
-            @RequestParam("imgId") int imgId,
-            @ModelAttribute("loggedUser") User loggedUser
+            @RequestParam("imgId") int imgId
     ) {
         return getValidatedImage(is.getImage(imgId));
     }

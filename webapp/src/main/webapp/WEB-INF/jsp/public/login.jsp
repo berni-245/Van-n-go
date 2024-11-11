@@ -27,11 +27,16 @@
                         <div class="mb-3">
                             <comp:ShowHidePassInput isFormInput="false" labelCode="generic.word.password" name="j_password"/>
                         </div>
-                        <div class="mb-3 form-check">
+                        <div class="form-check m-1">
                             <input id="rememberMe" name="j_rememberme" type="checkbox" class="form-check-input"/>
                             <label for="rememberMe" class="form-check-label">
                                 <spring:message code="public.login.rememberMe"/>
                             </label>
+                        </div>
+                        <div class="mb-3">
+                            <a href="${pageContext.request.contextPath}/register">
+                                <spring:message code="public.login.noAccount"/>
+                            </a>
                         </div>
                         <div class="d-grid">
                             <spring:message code="public.login.login" var="login"/>

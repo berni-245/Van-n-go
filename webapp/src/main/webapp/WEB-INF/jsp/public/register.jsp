@@ -52,11 +52,11 @@
                             <spring:message code="public.register.selectUserType"/>
                         </label>
                         <form:select path="userType" cssClass="form-select">
-                            <form:option value="DRIVER" label="Admin">
-                                <spring:message code="public.register.driver"/>
-                            </form:option>
                             <form:option value="CLIENT" label="User">
                                 <spring:message code="public.register.client"/>
+                            </form:option>
+                            <form:option value="DRIVER" label="Admin">
+                                <spring:message code="public.register.driver"/>
                             </form:option>
                         </form:select>
                     </div>

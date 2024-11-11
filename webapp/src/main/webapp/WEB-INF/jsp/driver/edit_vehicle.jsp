@@ -16,6 +16,9 @@
 <div class="container mt-3">
     <div class="d-flex justify-content-between flex-sm-wrap">
         <div class="w-50">
+            <h3 class="text-center my-2">
+                <spring:message code="driver.vehicle.edit" />
+            </h3>
             <comp:VehicleForm
                     action="/driver/vehicle/${vehicle.plateNumber}/edit"
                     modelAttribute="vehicleForm"
@@ -26,6 +29,9 @@
         </div>
 
         <div>
+            <h3 class="text-center my-2">
+                <spring:message code="driver.availability.edit"/>
+            </h3>
             <c:url var="postUrl" value="/driver/vehicle/${vehicle.plateNumber}/edit/availability"/>
             <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
                 <c:forEach var="day" items="${days}">

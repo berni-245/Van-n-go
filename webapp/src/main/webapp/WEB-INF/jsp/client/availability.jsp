@@ -76,9 +76,10 @@
                 <spring:message code="client.search.selectRating" var="ratingLabel"/>
                 <form:select path="rating" id="select-rating" cssClass="form-select">
                     <form:option value="" label="${ratingLabel}"/>
-                    <form:option value="3" label="3"/>
-                    <form:option value="4" label="4"/>
-                    <form:option value="5" label="5"/>
+                    <form:option value="3" label="3☆+"/>
+                    <form:option value="4" label="4☆+"/>
+                    <spring:message var="MaxRatingLabel" code="client.search.maxRating"/>
+                    <form:option value="5" label="${MaxRatingLabel}"/>
                 </form:select>
             </div>
 
@@ -193,7 +194,7 @@
                                                      style="width: 60px; height: 60px;"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${driver.pfp}"
+                                                <img src="${pageContext.request.contextPath}/images/query?imgId=${driver.pfp}"
                                                      alt="DriverPfp" class="rounded-circle object-fit: cover"
                                                      style="width: 60px; height: 60px;"/>
                                             </c:otherwise>
