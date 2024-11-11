@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.Zone;
@@ -32,8 +33,10 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
     }
 
     @Override
-    public Optional<Client> findById(int id) {
-        return Optional.ofNullable(em.find(Client.class, id));
+    public Client findById(int id) {
+        Client c = em.find(Client.class, id);
+        if (c == null) throw new UserNotFoundException();
+        return c;
     }
 
     @Override

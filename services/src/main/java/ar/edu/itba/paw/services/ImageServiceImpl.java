@@ -3,17 +3,14 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidImageException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Image;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -43,35 +40,24 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public int uploadPfp(byte[] bin, String fileName, int userId) {
-        validateImage(fileName,bin);
-        Optional<Driver> driver = driverDao.findById(userId);
-        if (driver.isPresent()) {
-            int toReturn = imgDao.uploadPfp(bin, fileName, driver.get());
-            LOGGER.info("Uploaded pfp for driver {}", userId);
-            return toReturn;
-        }
-        Optional<Client> client = clientDao.findById(userId);
-        if (client.isPresent()) {
-            int toReturn = imgDao.uploadPfp(bin, fileName, client.get());
-            LOGGER.info("Uploaded pfp for client {}", userId);
-            return toReturn;
-        }
-
-        throw new UserNotFoundException();
+    public int uploadPfp(User user, byte[] bin, String fileName) {
+        validateImage(fileName, bin);
+        int toReturn = imgDao.uploadPfp(bin, fileName, user);
+        LOGGER.info("Uploaded pfp for user {}", user.getId());
+        return toReturn;
     }
 
     @Transactional
     @Override
-    public int uploadPop(byte[] bin, String fileName, int bookingId) {
-        validateImage(fileName,bin);
-        int toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getBookingById(bookingId).orElseThrow());
+    public int uploadPop(Client client, byte[] bin, String fileName, int bookingId) {
+        validateImage(fileName, bin);
+        int toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getClientBookingById(client, bookingId));
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
         return toReturn;
     }
 
     private void validateImage(String filename, byte[] bin) {
-        if(bin == null || bin.length > 10*1024*1024 || filename == null || filename.isEmpty())
+        if (bin == null || bin.length > 10 * 1024 * 1024 || filename == null || filename.isEmpty())
             throw new InvalidImageException();
     }
 }

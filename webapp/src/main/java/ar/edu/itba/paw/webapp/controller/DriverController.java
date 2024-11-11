@@ -10,7 +10,6 @@ import ar.edu.itba.paw.webapp.interfaces.Bookings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +89,7 @@ public class DriverController implements Bookings {
     ) {
         final ModelAndView mav = new ModelAndView("driver/chat");
         Client client = cs.findById(recipientId);
-        Booking booking = cs.getBookingById(bookingId).orElseThrow();
+        Booking booking = ds.getBookingById(loggedUser, bookingId);
         List<Message> messages = ms.getConversation(booking, client, loggedUser);
         mav.addObject("recipient", client);
         mav.addObject("booking", booking);
@@ -144,7 +142,7 @@ public class DriverController implements Bookings {
     ) {
         final ModelAndView mav = new ModelAndView("driver/vehicles");
         int totalPages = ds.getVehicleCount(loggedUser);
-        page = Pagination.validatePage(page,totalPages);
+        page = Pagination.validatePage(page, totalPages);
         mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", page);
@@ -190,7 +188,7 @@ public class DriverController implements Bookings {
         }
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
         ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu(), form.getLanguage());
-        localeResolver.setLocale(request,response,loggedUser.getLanguage().getLocale());
+        localeResolver.setLocale(request, response, loggedUser.getLanguage().getLocale());
         return redirect("/driver/profile");
     }
 
@@ -288,7 +286,7 @@ public class DriverController implements Bookings {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") int bookingId
     ) {
-        ds.acceptBooking(bookingId, loggedUser);
+        ds.acceptBooking(loggedUser, bookingId);
         return redirect("/driver/bookings?activeTab=ACCEPTED");
     }
 
@@ -297,7 +295,7 @@ public class DriverController implements Bookings {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") int bookingId
     ) {
-        ds.finishBooking(bookingId, loggedUser);
+        ds.finishBooking(loggedUser, bookingId);
         return redirect("/driver/bookings?activeTab=FINISHED");
     }
 
@@ -306,7 +304,7 @@ public class DriverController implements Bookings {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") int bookingId
     ) {
-        ds.rejectBooking(bookingId, loggedUser);
+        ds.rejectBooking(loggedUser, bookingId);
         return redirect("/driver/bookings?activeTab=REJECTED");
     }
 
@@ -315,7 +313,7 @@ public class DriverController implements Bookings {
             @ModelAttribute("loggedUser") Driver loggedUser,
             @PathVariable("id") int bookingId
     ) {
-        ds.cancelBooking(bookingId, loggedUser);
+        ds.cancelBooking(loggedUser, bookingId);
         return redirect("/driver/bookings?activeTab=CANCELED");
     }
 

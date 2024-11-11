@@ -23,7 +23,9 @@ public interface BookingDao {
 
     void finishBooking(Booking booking);
 
-    Optional<Booking> getBookingById(int bookingId);
+    Booking getClientBookingById(Client client, int bookingId);
+
+    Booking getDriverBookingById(Driver driver, int bookingId);
 
     List<Booking> getDriverBookings(Driver driver, BookingState state, int offset);
 

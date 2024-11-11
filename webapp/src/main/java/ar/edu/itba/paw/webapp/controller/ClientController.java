@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.LocaleResolver;
@@ -73,29 +74,32 @@ public class ClientController implements Bookings {
             @RequestParam("bookingId") int bookingId,
             @ModelAttribute("loggedUser") Client loggedUser
     ) throws IOException {
-        if (file == null || file.isEmpty())
-            throw new InvalidImageException();
-        is.uploadPop(file.getBytes(), file.getOriginalFilename(), bookingId);
+        if (file == null || file.isEmpty()) throw new InvalidImageException();
+        is.uploadPop(loggedUser, file.getBytes(), file.getOriginalFilename(), bookingId);
         return redirect("/client/bookings?activeTab=%s", BookingState.ACCEPTED);
     }
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/review", method = RequestMethod.GET)
     public ModelAndView reviewForm(
             @PathVariable("id") int bookingId,
-            @RequestParam(name = "driverId") int driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("bookingReviewForm") BookingReviewForm form
     ) {
         ModelAndView mav = new ModelAndView("client/bookingReview");
-        mav.addObject("driver", ds.findById(driverId));
+        Booking b = cs.getBookingById(loggedUser, bookingId);
+        mav.addObject("driver", b.getDriver());
         mav.addObject("bookingId", bookingId);
         return mav;
+    }
+
+    @InitBinder("bookingReviewForm")
+    public void initBinder(WebDataBinder binder) {
+        binder.setIgnoreInvalidFields(false);
     }
 
     @RequestMapping(path = "/client/booking/{id:\\d+}/review/send", method = RequestMethod.POST)
     public ModelAndView sendReview(
             @PathVariable("id") int bookingId,
-            @RequestParam(name = "driverId") int driverId,
             @ModelAttribute("loggedUser") Client loggedUser,
             @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
             BindingResult errors,
@@ -103,9 +107,9 @@ public class ClientController implements Bookings {
     ) {
         if (errors.hasErrors()) {
             LOGGER.warn("Invalid params in BookingReviewForm");
-            return reviewForm(bookingId, driverId, loggedUser, form);
+            return reviewForm(bookingId, loggedUser, form);
         } else {
-            cs.setBookingRatingAndReview(bookingId, form.getRating(), form.getReview());
+            cs.setBookingRatingAndReview(loggedUser, bookingId, form.getRating(), form.getReview());
             setToasts(redirectAttrs, new Toast(ToastType.success, "toast.booking.review.success"));
         }
         return redirect(
@@ -120,7 +124,7 @@ public class ClientController implements Bookings {
             @ModelAttribute("loggedUser") Client loggedUser,
             RedirectAttributes redirectAttributes
     ) {
-        cs.cancelBooking(bookingId, loggedUser);
+        cs.cancelBooking(loggedUser, bookingId);
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.cancel.success"));
         return redirect("/client/bookings?activeTab=%s", BookingState.CANCELED);
     }
@@ -150,10 +154,10 @@ public class ClientController implements Bookings {
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
     ) {
-        if(loggedUser != null) {
+        if (loggedUser != null) {
             form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
             zoneId = form.getZoneId();
-        }else if(zoneId == null) {
+        } else if (zoneId == null) {
             zoneId = 1;
         }
 
@@ -255,7 +259,7 @@ public class ClientController implements Bookings {
     ) {
         final ModelAndView mav = new ModelAndView("client/chat");
         Driver driver = ds.findById(recipientId);
-        Booking booking = ds.getBookingById(bookingId).orElseThrow();
+        Booking booking = cs.getBookingById(loggedUser, bookingId);
         List<Message> messages = ms.getConversation(booking, loggedUser, driver);
         mav.addObject("recipient", driver);
         mav.addObject("booking", booking);
@@ -336,7 +340,7 @@ public class ClientController implements Bookings {
             return editProfileForm(loggedUser, form, errors);
         }
         cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId(), form.getLanguage());
-        localeResolver.setLocale(request,response,loggedUser.getLanguage().getLocale());
+        localeResolver.setLocale(request, response, loggedUser.getLanguage().getLocale());
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
         return redirect("/client/profile");
     }

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserBookingService<T extends User> {
     List<Booking> getBookings(T user, BookingState state, int page);
 
-    Optional<Booking> getBookingById(int bookingId);
+    Booking getBookingById(T user, int id);
 
     int getBookingCount(T user, BookingState state);
 
@@ -17,5 +17,5 @@ public interface UserBookingService<T extends User> {
         return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
     }
 
-    Booking cancelBooking(int bookingId, T user);
+    Booking cancelBooking(T user, int bookingId);
 }

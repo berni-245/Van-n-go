@@ -54,9 +54,9 @@ public interface DriverService extends UserService<Driver> {
         ) / Pagination.SEARCH_PAGE_SIZE);
     }
 
-    void acceptBooking(int bookingId, Driver driver);
+    void acceptBooking(Driver driver, int bookingId);
 
-    void rejectBooking(int bookingId, Driver driver);
+    void rejectBooking(Driver driver, int bookingId);
 
     Optional<Vehicle> findVehicleById(Driver driver, int vehicleId);
 
@@ -66,9 +66,9 @@ public interface DriverService extends UserService<Driver> {
 
     Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 
-    void updateVehicle(Driver driver, int vehicleId, String plateNumber, double volume, String description, List<Integer> zoneIds, double rate, Integer oldImgId, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, Integer vehicleId, String plateNumber, double volume, String description, List<Integer> zoneIds, double rate, Integer oldImgId, String imgFilename, byte[] imgData);
 
-    void finishBooking(int bookingId, Driver driver);
+    void finishBooking(Driver driver, int bookingId);
 
     List<Vehicle> getVehicles(Driver driver, int page);
 

@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
-import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
-import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
-import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
@@ -22,9 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -56,6 +51,7 @@ public class BookingJpaDaoTest {
     private static final Integer CLIENT_ID = 1;
     private static final Integer CLIENT_ID_TWO = 2;
     private static final Integer DRIVER_ID = 3;
+    private static final Integer DRIVER_ID_TWO = 4;
     private static final Integer ORIGIN_ZONE_ID = 1;
     private static final Integer DESTINATION_ZONE_ID = 23;
     private static final Integer ZONE_THAT_DRIVER_DOES_NOT_WORK = 2;
@@ -74,6 +70,7 @@ public class BookingJpaDaoTest {
     private static Zone destinationZone;
     private static Zone zoneThatDriverDoesNotWork;
     private static Driver driver;
+    private static Driver driverTwo;
     private static Booking preexistingPendingBooking;
     private static Booking preexistingAcceptedBooking;
 
@@ -98,6 +95,7 @@ public class BookingJpaDaoTest {
         zoneThatDriverDoesNotWork = em.find(Zone.class, ZONE_THAT_DRIVER_DOES_NOT_WORK);
         clientTwo = em.find(Client.class, CLIENT_ID_TWO);
         driver = em.find(Driver.class, DRIVER_ID);
+        driverTwo = em.find(Driver.class, DRIVER_ID_TWO);
         preexistingPendingBooking = em.find(Booking.class, PREEXISTING_PENDING_BOOK);
         preexistingAcceptedBooking = em.find(Booking.class, PREEXISTING_ACCEPTED_BOOK);
     }
@@ -126,7 +124,7 @@ public class BookingJpaDaoTest {
         assertThrows(
                 VehicleIsAlreadyAcceptedException.class,
                 () -> bookingDao.appointBooking(
-                    vehicle, client, originZone, destinationZone, ALREADY_ACCEPTED_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION
+                        vehicle, client, originZone, destinationZone, ALREADY_ACCEPTED_BOOKED_DATE, ShiftPeriod.EVENING, JOB_DESCRIPTION
                 )
         );
     }
@@ -171,14 +169,14 @@ public class BookingJpaDaoTest {
         assertNotNull(booking);
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "booking",
-                String.format("""
-                                id = '%d' and date = '%s' and shift_period = '%s' and
-                                client_id = '%d' and vehicle_id = '%d' and
-                                origin_zone_id = '%d' and destination_zone_id = '%d' and state = '%s'""",
-                        booking.getId(), ALREADY_PENDING_BOOKED_DATE, ShiftPeriod.MORNING.name(),
-                        CLIENT_ID, VEHICLE_ID,
-                        ORIGIN_ZONE_ID, DESTINATION_ZONE_ID, BookingState.PENDING.name())
+                        jdbcTemplate, "booking",
+                        String.format("""
+                                        id = '%d' and date = '%s' and shift_period = '%s' and
+                                        client_id = '%d' and vehicle_id = '%d' and
+                                        origin_zone_id = '%d' and destination_zone_id = '%d' and state = '%s'""",
+                                booking.getId(), ALREADY_PENDING_BOOKED_DATE, ShiftPeriod.MORNING.name(),
+                                CLIENT_ID, VEHICLE_ID,
+                                ORIGIN_ZONE_ID, DESTINATION_ZONE_ID, BookingState.PENDING.name())
                 )
         );
     }
@@ -235,12 +233,33 @@ public class BookingJpaDaoTest {
     }
 
     @Test
-    public void testGetBookingById() {
-        Optional<Booking> optionalBooking = bookingDao.getBookingById(PREEXISTING_ACCEPTED_BOOK);
-        assertTrue(optionalBooking.isPresent());
-        Booking booking = optionalBooking.get();
+    public void testGetBookingFromAnotherClient() {
+        assertThrows(
+                ForbiddenUserBookingAccessException.class,
+                () -> bookingDao.getClientBookingById(client, PREEXISTING_ACCEPTED_BOOK)
+        );
+    }
+
+    @Test
+    public void testGetBookingFromOwnerClient() {
+        Booking booking = bookingDao.getClientBookingById(clientTwo, PREEXISTING_ACCEPTED_BOOK);
         assertEquals(PREEXISTING_ACCEPTED_BOOK, booking.getId());
     }
+
+    @Test
+    public void testGetBookingFromAnotherDriver() {
+        assertThrows(
+                ForbiddenUserBookingAccessException.class,
+                () -> bookingDao.getDriverBookingById(driverTwo, PREEXISTING_ACCEPTED_BOOK)
+        );
+    }
+
+    @Test
+    public void testGetBookingFromOwnerDriver() {
+        Booking booking = bookingDao.getDriverBookingById(driver, PREEXISTING_ACCEPTED_BOOK);
+        assertEquals(PREEXISTING_ACCEPTED_BOOK, booking.getId());
+    }
+
     @Test
     public void testGetBookingsByDriver() {
         List<Booking> bookings = bookingDao.getDriverBookings(driver, BookingState.PENDING, 0);

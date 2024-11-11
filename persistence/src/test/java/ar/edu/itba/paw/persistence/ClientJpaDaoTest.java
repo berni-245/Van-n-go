@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.Zone;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -81,10 +81,10 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, USER_ID_NOT_CREATED, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
-                             PASSWORD_NOT_CREATED, ENGLISH.name())
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, USER_ID_NOT_CREATED, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
+                        PASSWORD_NOT_CREATED, ENGLISH.name())
         ));
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "client",
@@ -94,10 +94,7 @@ public class ClientJpaDaoTest {
 
     @Test
     public void testFindById() {
-        Optional<Client> optionalClient = clientDao.findById(PREEXISTING_ID);
-        assertTrue(optionalClient.isPresent());
-        Client client = optionalClient.get();
-
+        Client client = clientDao.findById(PREEXISTING_ID);
         assertEquals(PREEXISTING_ID, client.getId());
         assertEquals(PREEXISTING_USERNAME, client.getUsername());
         assertEquals(PREEXISTING_MAIL, client.getMail());
@@ -107,9 +104,10 @@ public class ClientJpaDaoTest {
 
     @Test
     public void testWrongIdInFindById() {
-        Optional<Client> client = clientDao.findById(USER_ID_NOT_EXISTING);
-
-        assertTrue(client.isEmpty());
+        assertThrows(
+                UserNotFoundException.class,
+                () -> clientDao.findById(USER_ID_NOT_EXISTING)
+        );
     }
 
     @Test
@@ -167,9 +165,9 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, CHANGED_USERNAME, PREEXISTING_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, CHANGED_USERNAME, PREEXISTING_MAIL,
                         PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
@@ -183,9 +181,9 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, PREEXISTING_USERNAME, CHANGED_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, PREEXISTING_USERNAME, CHANGED_MAIL,
                         PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
@@ -199,9 +197,9 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL,
                         PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }
@@ -215,9 +213,9 @@ public class ClientJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, CHANGED_USERNAME, CHANGED_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, CHANGED_USERNAME, CHANGED_MAIL,
                         PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }

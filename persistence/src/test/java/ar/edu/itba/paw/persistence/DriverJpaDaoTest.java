@@ -1,6 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Language;
+import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -97,9 +100,9 @@ public class DriverJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, USER_ID_NOT_CREATED, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, USER_ID_NOT_CREATED, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
                         PASSWORD_NOT_CREATED, ENGLISH.name())
         ));
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
@@ -110,10 +113,7 @@ public class DriverJpaDaoTest {
 
     @Test
     public void testFindById() {
-        Optional <Driver> optionalDriver = driverDao.findById(PREEXISTING_ID);
-        assertTrue(optionalDriver.isPresent());
-        Driver driver = optionalDriver.get();
-
+        Driver driver = driverDao.findById(PREEXISTING_ID);
         assertEquals(PREEXISTING_ID, driver.getId());
         assertEquals(PREEXISTING_USERNAME, driver.getUsername());
         assertEquals(PREEXISTING_MAIL, driver.getMail());
@@ -123,9 +123,9 @@ public class DriverJpaDaoTest {
 
     @Test
     public void testWrongIdInFindById() {
-        Optional<Driver> driver = driverDao.findById(USER_ID_NOT_CREATED);
-
-        assertTrue(driver.isEmpty());
+        assertThrows(
+                UserNotFoundException.class,
+                () -> driverDao.findById(USER_ID_NOT_CREATED));
     }
 
     @Test
@@ -183,9 +183,9 @@ public class DriverJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, CHANGED_USERNAME, PREEXISTING_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, CHANGED_USERNAME, PREEXISTING_MAIL,
                         PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
@@ -199,9 +199,9 @@ public class DriverJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, PREEXISTING_USERNAME, CHANGED_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, PREEXISTING_USERNAME, CHANGED_MAIL,
                         PREEXISTING_PASSWORD, SPANISH.name())
         ));
     }
@@ -215,9 +215,9 @@ public class DriverJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, PREEXISTING_USERNAME, PREEXISTING_MAIL,
                         PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }
@@ -231,9 +231,9 @@ public class DriverJpaDaoTest {
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "app_user",
                 String.format("""
-                        id = '%d' and username = '%s' and mail = '%s' and
-                        password = '%s' and language = '%s'
-                        """, PREEXISTING_ID, CHANGED_USERNAME, CHANGED_MAIL,
+                                id = '%d' and username = '%s' and mail = '%s' and
+                                password = '%s' and language = '%s'
+                                """, PREEXISTING_ID, CHANGED_USERNAME, CHANGED_MAIL,
                         PREEXISTING_PASSWORD, ENGLISH.name())
         ));
     }

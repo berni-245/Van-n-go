@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -21,8 +22,10 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
     }
 
     @Override
-    public Optional<Driver> findById(int id) {
-        return Optional.ofNullable(em.find(Driver.class, id));
+    public Driver findById(int id) {
+        Driver d = em.find(Driver.class, id);
+        if (d == null) throw new UserNotFoundException();
+        return d;
     }
 
     @Override

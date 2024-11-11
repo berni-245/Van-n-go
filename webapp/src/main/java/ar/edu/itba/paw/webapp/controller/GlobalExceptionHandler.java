@@ -34,34 +34,6 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         return redirect("/error/internalError");
     }
 
-    @ExceptionHandler(InvalidUserOnBookingCancelException.class)
-    public ModelAndView handleInvalidUserOnBookingCancel(InvalidUserOnBookingCancelException ex, RedirectAttributes redirectAttributes) {
-        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.cancel"));
-        LOGGER.error(ex.getMessage());
-        return redirect("/");
-    }
-
-    @ExceptionHandler(InvalidUserOnBookingAcceptException.class)
-    public ModelAndView handleInvalidUserOnBookingAccept(InvalidUserOnBookingAcceptException ex, RedirectAttributes redirectAttributes) {
-        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.accept"));
-        LOGGER.error(ex.getMessage());
-        return redirect("/");
-    }
-
-    @ExceptionHandler(InvalidUserOnBookingRejectException.class)
-    public ModelAndView handleInvalidUserOnBookingReject(InvalidUserOnBookingRejectException ex, RedirectAttributes redirectAttributes) {
-        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.reject"));
-        LOGGER.error(ex.getMessage());
-        return redirect("/");
-    }
-
-    @ExceptionHandler(InvalidUserOnBookingFinishException.class)
-    public ModelAndView handleInvalidUserOnBookingFinish(InvalidUserOnBookingFinishException ex, RedirectAttributes redirectAttributes) {
-        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.invalid.user.booking.finish"));
-        LOGGER.error(ex.getMessage());
-        return redirect("/");
-    }
-
     @ExceptionHandler(ForbiddenClientCancelBookingException.class)
     public ModelAndView handleForbiddenClientCancelBookingException(ForbiddenClientCancelBookingException ex, RedirectAttributes redirectAttributes) {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.forbidden.booking.operation"));
@@ -138,6 +110,15 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.no.such.element"));
         LOGGER.error(ex.getMessage());
         return redirect("/error/notFound");
+    }
+
+    @ExceptionHandler(ForbiddenUserBookingAccessException.class)
+    public ModelAndView handleForbiddenUserBookingAccess(
+            ForbiddenUserBookingAccessException ex, RedirectAttributes redirectAttributes
+    ) {
+        setToasts(redirectAttributes, new Toast(ToastType.danger, "toast.user.forbidden.booking"));
+        LOGGER.error(ex.getMessage());
+        return redirect("/notFound");
     }
 
     // TODO De-comment when deploying, Do not delete

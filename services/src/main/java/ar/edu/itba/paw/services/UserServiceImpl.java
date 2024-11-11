@@ -1,9 +1,10 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
+import ar.edu.itba.paw.exceptions.ForbiddenDriverCancelBookingException;
 import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.BookingState;
+import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public abstract class UserServiceImpl<T extends User> implements UserService<T> {
@@ -44,9 +43,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Transactional
     @Override
     public T findById(int id) {
-        Optional<T> user = userDao.findById(id);
-        if (user.isEmpty()) throw new UserNotFoundException();
-        return user.get();
+        return userDao.findById(id);
     }
 
     @Transactional
@@ -75,21 +72,12 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
 
     @Transactional
     @Override
-    public Optional<Booking> getBookingById(int bookingId) {
-        return bookingDao.getBookingById(bookingId);
-    }
-
-    @Transactional
-    @Override
-    public Booking cancelBooking(int bookingId, T user) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        User bookingUser = user.isDriver() ? booking.getDriver() : booking.getClient();
-        if (!bookingUser.equals(user)) throw new InvalidUserOnBookingCancelException();
-        if(! booking.getState().equals(BookingState.ACCEPTED))
-            if(user.isDriver())
-                throw new ForbiddenDriverCancelBookingException();
-            else
-                throw new ForbiddenClientCancelBookingException();
+    public Booking cancelBooking(T user, int bookingId) {
+        Booking booking = getBookingById(user, bookingId);
+        if (!booking.getState().equals(BookingState.ACCEPTED)) {
+            if (user.isDriver()) throw new ForbiddenDriverCancelBookingException();
+            else throw new ForbiddenClientCancelBookingException();
+        }
         bookingDao.cancelBooking(booking);
         LOGGER.info("{} canceled booking {}", user.getUsername(), bookingId);
         return booking;

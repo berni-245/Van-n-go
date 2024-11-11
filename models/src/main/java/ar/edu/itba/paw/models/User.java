@@ -26,7 +26,7 @@ public abstract class User {
     @Column
     private Integer pfp;
 
-   @Column
+   @Column(nullable = false)
    @Enumerated(EnumType.STRING)
    private Language language;
 

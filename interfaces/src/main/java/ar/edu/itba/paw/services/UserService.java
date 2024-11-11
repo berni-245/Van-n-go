@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 

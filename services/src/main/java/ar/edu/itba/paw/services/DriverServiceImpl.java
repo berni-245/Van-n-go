@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingAcceptException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingFinishException;
-import ar.edu.itba.paw.exceptions.InvalidUserOnBookingRejectException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -54,6 +51,11 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public Optional<Driver> findByUsername(String username) {
         return driverDao.findByUsername(username);
+    }
+
+    @Override
+    public Booking getBookingById(Driver user, int id) {
+        return bookingDao.getDriverBookingById(user, id);
     }
 
     @Transactional
@@ -143,7 +145,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Booking> getBookings(Driver driver, BookingState state, int page) {
-        if(state.equals(BookingState.PENDING)||state.equals(BookingState.REJECTED))
+        if (state.equals(BookingState.PENDING) || state.equals(BookingState.REJECTED))
             bookingDao.checkPending();
         return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
@@ -171,13 +173,11 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void acceptBooking(int bookingId, Driver driver) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if (!booking.getDriver().equals(driver)) {
-            throw new InvalidUserOnBookingAcceptException();
-        }
-        if (!booking.getState().equals(BookingState.PENDING))
+    public void acceptBooking(Driver driver, int bookingId) {
+        Booking booking = getBookingById(driver, bookingId);
+        if (!booking.getState().equals(BookingState.PENDING)) {
             throw new ForbiddenBookingStateOperationException();
+        }
         bookingDao.acceptBooking(booking);
         mailService.sendAcceptedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
                 booking.getClient().getLanguage().getLocale());
@@ -186,36 +186,34 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void rejectBooking(int bookingId, Driver driver) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if (!booking.getDriver().equals(driver)) {
-            throw new InvalidUserOnBookingRejectException();
-        }
-        if (!booking.getState().equals(BookingState.PENDING))
+    public void rejectBooking(Driver driver, int bookingId) {
+        Booking booking = bookingDao.getDriverBookingById(driver, bookingId);
+        if (!booking.getState().equals(BookingState.PENDING)) {
             throw new ForbiddenBookingStateOperationException();
+        }
         bookingDao.rejectBooking(booking);
-        mailService.sendRejectedBooking(booking.getDate(), booking.getDriver().getUsername(), booking.getClient().getMail(),
-                booking.getClient().getLanguage().getLocale());
+        mailService.sendRejectedBooking(
+                booking.getDate(), booking.getDriver().getUsername(),
+                booking.getClient().getMail(), booking.getClient().getLanguage().getLocale()
+        );
         LOGGER.info("User {} rejected booking {}", driver.getUsername(), bookingId);
     }
 
     @Transactional
     @Override
-    public void finishBooking(int bookingId, Driver driver) {
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        if (!booking.getDriver().equals(driver)) {
-            throw new InvalidUserOnBookingFinishException();
-        }
-        if (!booking.getState().equals(BookingState.ACCEPTED))
+    public void finishBooking(Driver driver, int bookingId) {
+        Booking booking = bookingDao.getDriverBookingById(driver, bookingId);
+        if (!booking.getState().equals(BookingState.ACCEPTED)) {
             throw new ForbiddenBookingStateOperationException();
+        }
         bookingDao.finishBooking(booking);
         LOGGER.info("User {} finished booking {}", driver.getUsername(), bookingId);
     }
 
     @Transactional
     @Override
-    public Booking cancelBooking(int bookingId, Driver driver) {
-        Booking booking = super.cancelBooking(bookingId, driver);
+    public Booking cancelBooking(Driver driver, int bookingId) {
+        Booking booking = super.cancelBooking(driver, bookingId);
         mailService.sendDriverCanceledBooking(
                 booking.getDate(),
                 booking.getClient().getUsername(),
@@ -240,7 +238,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public void updateVehicle(
             Driver driver,
-            int vehicleId,
+            Integer vehicleId,
             String plateNumber,
             double volume,
             String description,
@@ -262,7 +260,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public void editProfile(Driver driver, String username, String mail, String description, String cbu,String language) {
+    public void editProfile(Driver driver, String username, String mail, String description, String cbu, String language) {
         driverDao.editProfile(driver, username, mail, description, cbu, Language.valueOf(language));
         LOGGER.info("Driver {} updated it's profile", driver.getUsername());
     }

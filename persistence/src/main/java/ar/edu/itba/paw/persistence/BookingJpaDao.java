@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.exceptions.ClientAlreadyAppointedException;
-import ar.edu.itba.paw.exceptions.TimeAlreadyPassedException;
-import ar.edu.itba.paw.exceptions.VehicleIsAlreadyAcceptedException;
-import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class BookingJpaDao implements BookingDao {
@@ -79,8 +75,21 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public Optional<Booking> getBookingById(int bookingId) {
-        return Optional.ofNullable(em.find(Booking.class, bookingId));
+    public Booking getClientBookingById(Client client, int bookingId) {
+        return em.createQuery("from Booking where id = :id and client = :client", Booking.class)
+                .setParameter("id", bookingId)
+                .setParameter("client", client)
+                .getResultList().stream().findFirst()
+                .orElseThrow(() -> new ForbiddenUserBookingAccessException(client, bookingId));
+    }
+
+    @Override
+    public Booking getDriverBookingById(Driver driver, int bookingId) {
+        return em.createQuery("from Booking where id = :id and vehicle.driver = :driver", Booking.class)
+                .setParameter("id", bookingId)
+                .setParameter("driver", driver)
+                .getResultList().stream().findFirst()
+                .orElseThrow(() -> new ForbiddenUserBookingAccessException(driver, bookingId));
     }
 
     @Override

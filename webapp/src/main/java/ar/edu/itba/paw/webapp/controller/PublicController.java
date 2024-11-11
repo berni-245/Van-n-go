@@ -112,7 +112,9 @@ public class PublicController implements Redirect, Toasts {
             @ModelAttribute("loggedUser") User loggedUser
     ) throws IOException {
         if (file != null && !file.isEmpty()) {
-            loggedUser.setPfp(is.uploadPfp(file.getBytes(), file.getOriginalFilename(), loggedUser.getId()));
+            loggedUser.setPfp(
+                    is.uploadPfp(loggedUser, file.getBytes(), file.getOriginalFilename())
+            );
         }
         return "redirect:/profile";
     }
@@ -151,18 +153,18 @@ public class PublicController implements Redirect, Toasts {
     }
 
     private ResponseEntity<byte[]> getValidatedImage(Image img) {
-        if(img == null || img.getData() == null)
+        if (img == null || img.getData() == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         String fileName = img.getFileName();
         String contentType;
-        if(fileName == null)
+        if (fileName == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         String fileNameLower = fileName.toLowerCase();
-        if(fileNameLower.endsWith(".png")) contentType = "image/png";
-        else if(fileNameLower.endsWith(".jpeg") || fileNameLower.endsWith(".jpg")) contentType = "image/jpeg";
-        else if(fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
-        else if(fileNameLower.endsWith(".webp")) contentType = "image/webp";
-        else if(fileNameLower.endsWith(".heic") || fileNameLower.endsWith(".heif")) contentType = "image/heic";
+        if (fileNameLower.endsWith(".png")) contentType = "image/png";
+        else if (fileNameLower.endsWith(".jpeg") || fileNameLower.endsWith(".jpg")) contentType = "image/jpeg";
+        else if (fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
+        else if (fileNameLower.endsWith(".webp")) contentType = "image/webp";
+        else if (fileNameLower.endsWith(".heic") || fileNameLower.endsWith(".heif")) contentType = "image/heic";
         else return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(contentType));

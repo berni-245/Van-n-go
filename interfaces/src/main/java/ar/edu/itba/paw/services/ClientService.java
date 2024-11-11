@@ -21,7 +21,7 @@ public interface ClientService extends UserService<Client>, UserBookingService<C
             String jobDescription
     );
 
-    void setBookingRatingAndReview(int bookingId, int rating, String review);
+    void setBookingRatingAndReview(Client user, int bookingId, int rating, String review);
 
     void editProfile(Client client, String username, String mail, Integer zoneId, String language);
 }

@@ -19,49 +19,45 @@ import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
+    private final int MAX_MSG_LENGTH = 255;
 
     private final MessageDao messageDao;
     private final DriverDao driverDao;
     private final ClientDao clientDao;
-    private final MailService mailService;
     private final BookingDao bookingDao;
+    private final MailService mailService;
 
     @Autowired
-    public MessageServiceImpl(MessageDao messageDao, DriverDao driverDao, ClientDao clientDao, MailService mailService, BookingDao bookingDao) {
+    public MessageServiceImpl(
+            MessageDao messageDao, DriverDao driverDao, ClientDao clientDao,
+            BookingDao bookingDao, MailService mailService) {
         this.messageDao = messageDao;
         this.driverDao = driverDao;
         this.clientDao = clientDao;
-        this.mailService = mailService;
         this.bookingDao = bookingDao;
+        this.mailService = mailService;
     }
 
     @Transactional
     @Override
     public void sendClientMessage(Integer bookingId, Client sender, Integer recipientId, String message) {
-        sendMessage(bookingId, sender, driverDao.findById(recipientId).orElseThrow(), message, true);
+        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
+        Driver driver = driverDao.findById(recipientId);
+        Booking booking = bookingDao.getClientBookingById(sender, bookingId);
+        if (!booking.getDriver().equals(driver)) throw new ForbiddenConversationException();
+        messageDao.sendMessage(sender, driver, message, false);
+        mailService.sendReceivedMessage(driver, sender, booking, message, LocalDateTime.now(), driver.getLanguage().getLocale());
     }
 
     @Transactional
     @Override
     public void sendDriverMessage(Integer bookingId, Driver sender, Integer recipientId, String message) {
-        sendMessage(bookingId, clientDao.findById(recipientId).orElseThrow(), sender, message, false);
-    }
-
-    private void sendMessage(Integer bookingId, Client client, Driver driver, String message, boolean isClientSender) {
-        if (message.length() > 255) {
-            throw new InvalidMessageException();
-        }
-
-        Booking booking = bookingDao.getBookingById(bookingId).orElseThrow();
-        checkValidConversation(booking, client, driver);
-
-        if (isClientSender) {
-            messageDao.sendMessage(client, driver, message, false);
-            mailService.sendReceivedMessage(driver, client, bookingId, message, LocalDateTime.now(), driver.getLanguage().getLocale());
-        } else {
-            messageDao.sendMessage(client, driver, message, true);
-            mailService.sendReceivedMessage(client, driver, bookingId, message, LocalDateTime.now(), client.getLanguage().getLocale());
-        }
+        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
+        Client client = clientDao.findById(recipientId);
+        Booking booking = bookingDao.getDriverBookingById(sender, bookingId);
+        if (!booking.getClient().equals(client)) throw new ForbiddenConversationException();
+        messageDao.sendMessage(client, sender, message, true);
+        mailService.sendReceivedMessage(client, sender, booking, message, LocalDateTime.now(), client.getLanguage().getLocale());
     }
 
     @Override
@@ -71,7 +67,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void checkValidConversation(Booking booking, Client client, Driver driver) {
-        if(!booking.getClient().equals(client) || !booking.getDriver().equals(driver))
+        if (!booking.getClient().equals(client) || !booking.getDriver().equals(driver))
             throw new ForbiddenConversationException();
     }
 }

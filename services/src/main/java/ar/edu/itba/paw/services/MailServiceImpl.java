@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.ShiftPeriod;
 import ar.edu.itba.paw.models.User;
 import org.slf4j.Logger;
@@ -23,7 +24,10 @@ import javax.mail.internet.MimeMultipart;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -190,7 +194,7 @@ public class MailServiceImpl implements MailService {
     public void sendRequestedDriverService(String driverUsername, String driverMail, String clientUsername,
                                            String clientMail, LocalDate date, String jobDescription,
                                            String originZone, String destinationZone, ShiftPeriod period, Locale driverLocale, Locale clientLocale) {
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("driverName", driverUsername);
         params.put("driverMail", driverMail);
         params.put("dateRequested", date);
@@ -201,7 +205,7 @@ public class MailServiceImpl implements MailService {
         params.put("shiftPeriod", period.toString());
         params.put("jobDescription", jobDescription);
         sendClientRequestedServiceMail(clientMail, params, clientLocale);
-        sendDriverRequestedMail(driverMail, params ,driverLocale);
+        sendDriverRequestedMail(driverMail, params, driverLocale);
     }
 
     @Async
@@ -243,8 +247,8 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    private void sendClientRequestedServiceMail(String clientMail, Map<String,Object> contextParams, Locale locale) {
-        Context context = new Context(locale,contextParams);
+    private void sendClientRequestedServiceMail(String clientMail, Map<String, Object> contextParams, Locale locale) {
+        Context context = new Context(locale, contextParams);
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
@@ -258,8 +262,8 @@ public class MailServiceImpl implements MailService {
         LOGGER.info("Sent client requested booking service mail to {}", clientMail);
     }
 
-    private void sendDriverRequestedMail(String driverMail, Map<String,Object> contextParams, Locale locale) {
-        Context context = new Context(locale,contextParams);
+    private void sendDriverRequestedMail(String driverMail, Map<String, Object> contextParams, Locale locale) {
+        Context context = new Context(locale, contextParams);
         Message message = getMessage();
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
@@ -275,7 +279,7 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendReceivedMessage(User recipient, User sender, int bookingId, String receivedMessage, LocalDateTime timeReceived, Locale locale) {
+    public void sendReceivedMessage(User recipient, User sender, Booking booking, String receivedMessage, LocalDateTime timeReceived, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);
         context.setVariable("recipientUserName", recipient.getUsername());
@@ -285,7 +289,7 @@ public class MailServiceImpl implements MailService {
         context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         context.setVariable("timeReceived", timeReceived.format(timeFormatter));
-        String chatPath = "/chat?bookingId=%d&recipientId=%d".formatted(bookingId, sender.getId());
+        String chatPath = "/chat?bookingId=%d&recipientId=%d".formatted(booking.getId(), sender.getId());
         String userPath = recipient.isDriver() ? "driver" : "client";
         context.setVariable("seeChatUrl", baseUrl + userPath + chatPath);
         String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);

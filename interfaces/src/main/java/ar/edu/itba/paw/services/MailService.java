@@ -28,5 +28,5 @@ public interface MailService {
     void sendClientCanceledBooking(LocalDate date, String username, String mail, Locale locale);
 
 
-    void sendReceivedMessage(User recipient, User sender, int bookingId, String receivedMessage, LocalDateTime timeReceived, Locale locale);
+    void sendReceivedMessage(User recipient, User sender, Booking booking, String receivedMessage, LocalDateTime timeReceived, Locale locale);
 }

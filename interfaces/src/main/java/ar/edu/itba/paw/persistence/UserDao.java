@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserDao<T extends User> {
     boolean mailExists(String mail);
 
-    Optional<T> findById(int id);
+    T findById(int id);
 
     Optional<T> findByUsername(String username);
 

@@ -55,6 +55,11 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
         return clientDao.findByUsername(username);
     }
 
+    @Override
+    public Booking getBookingById(Client user, int id) {
+        return bookingDao.getClientBookingById(user, id);
+    }
+
     @Transactional
     @Override
     public Booking appointBooking(
@@ -98,8 +103,8 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public void setBookingRatingAndReview(int bookingId, int rating, String review) {
-        bookingDao.setRatingAndReview(bookingDao.getBookingById(bookingId).orElseThrow(), rating, review);
+    public void setBookingRatingAndReview(Client user, int bookingId, int rating, String review) {
+        bookingDao.setRatingAndReview(getBookingById(user, bookingId), rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
     }
 
@@ -113,8 +118,8 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public Booking cancelBooking(int bookingId, Client client) {
-        Booking booking = super.cancelBooking(bookingId, client);
+    public Booking cancelBooking(Client client, int bookingId) {
+        Booking booking = super.cancelBooking(client, bookingId);
         mailService.sendClientCanceledBooking(
                 booking.getDate(),
                 booking.getDriver().getUsername(),
