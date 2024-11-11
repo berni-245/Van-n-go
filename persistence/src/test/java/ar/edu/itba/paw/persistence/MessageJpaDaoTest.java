@@ -91,7 +91,7 @@ public class MessageJpaDaoTest {
         Message thirdMsg = iterator.next();
         assertEquals(client, thirdMsg.getClient());
         assertEquals(driver, thirdMsg.getDriver());
-        // You get the oldest msg first
+        // You get the earliest msg first, since you usually see a chat in a most recent order
         assertEquals(THIRD_MSG, thirdMsg.getContent());
         assertEquals(SECOND_MSG, iterator.next().getContent());
         assertEquals(FIRST_MSG, iterator.next().getContent());
