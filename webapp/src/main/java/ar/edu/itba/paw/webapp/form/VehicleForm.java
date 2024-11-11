@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class VehicleForm {
     @Max(Rates.MAXIMUM)
     private double rate;
 
+    @NotEmpty
     private List<Integer> zoneIds;
 
     @Nullable
