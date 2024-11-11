@@ -19,7 +19,7 @@
     <c:if test="${empty bookings}">
         <comp:CallToAction code="${callToActionCode}"/>
     </c:if>
-    <div class="row row-cols-3 g-4">
+    <div class="row row-cols-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
         <c:choose>
             <c:when test="${loggedUser.isDriver}">
                 <c:forEach var="booking" items="${bookings}">

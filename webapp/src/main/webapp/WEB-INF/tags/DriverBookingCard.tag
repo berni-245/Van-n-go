@@ -27,7 +27,7 @@
         </c:choose>
         <div class="card-body d-flex flex-column justify-content-between h-100">
             <div>
-                <h5 class="card-title"><spring:message arguments="${booking.date}"
+                <h5 class="card-title w-75"><spring:message arguments="${booking.date}"
                                                        code="components.bookingCard.dateTime"/> <spring:message
                         code="generic.word.${booking.shiftPeriod.lowerCaseText}"/></h5>
                 <p class="card-text"><c:out value="${booking.client.username}"/></p>

@@ -28,7 +28,7 @@
         </c:choose>
         <div class="card-body d-flex flex-column justify-content-between h-100">
             <div>
-                <h5 class="card-title"><c:out value="${booking.date}"/></h5>
+                <h5 class="card-title w-75"><c:out value="${booking.date}"/></h5>
                 <p class="card-text"><c:out value="${booking.driver.username}"/></p>
                 <p class="card-text"><c:out value="${booking.driver.mail}"/></p>
                 <c:if test="${booking.state eq BookingState.ACCEPTED}">
