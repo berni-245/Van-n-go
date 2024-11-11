@@ -85,7 +85,7 @@
                                             <c:url value='/images/defaultVehicle.png' var="imgUrl"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:url value='/vehicle/image?imgId=${v.imgId}' var="imgUrl"/>
+                                            <c:url value='/images/query?imgId=${v.imgId}' var="imgUrl"/>
                                         </c:otherwise>
                                     </c:choose>
                                     <img id="vehicleImagePreview" src="${imgUrl}"

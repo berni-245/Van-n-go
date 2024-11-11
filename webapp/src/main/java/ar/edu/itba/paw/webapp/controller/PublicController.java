@@ -124,35 +124,7 @@ public class PublicController implements Redirect, Toasts {
     public ResponseEntity<byte[]> searchImage(
             @RequestParam("imgId") int imgId
     ) {
-        return getValidatedImage(is.getImage(imgId));
-    }
-
-
-    @RequestMapping(value = "/user/pfp", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getUserPicture(
-            @RequestParam("userPfp") int userPfp
-    ) {
-        return getValidatedImage(is.getImage(userPfp));
-    }
-
-    @RequestMapping(value = "/booking/pop", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getProofOfPayment(
-            @RequestParam("popId") int popId
-    ) {
-        return getValidatedImage(is.getImage(popId));
-    }
-
-    @RequestMapping(path = "/vehicle/image", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> getVehicleImage(
-            @RequestParam("imgId") int imgId
-    ) {
-        return getValidatedImage(is.getImage(imgId));
-    }
-
-    private ResponseEntity<byte[]> getValidatedImage(Image img) {
+        Image img = is.getImage(imgId);
         if (img == null || img.getData() == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         String fileName = img.getFileName();

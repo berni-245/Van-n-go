@@ -20,7 +20,7 @@
                 />
             </c:when>
             <c:otherwise>
-                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.driver.pfp}"
+                <img src="${pageContext.request.contextPath}/images/query?imgId=${booking.driver.pfp}"
                      alt="DriverPfp" style="width: 60px; height: 60px;"
                      class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
                 />
@@ -53,7 +53,7 @@
                             </form>
                         </c:when>
                         <c:otherwise>
-                            <a href="<c:url value='/booking/pop?popId=${booking.pop}' />"
+                            <a href="<c:url value='/images/query?imgId=${booking.pop}' />"
                                target="_blank">
                                 <spring:message code="client.bookings.popProvided"/>
                             </a>

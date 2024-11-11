@@ -25,7 +25,7 @@
                     <label for="profilePicInput" style="cursor: pointer;">
                         <c:choose>
                             <c:when test="${loggedUser.pfp ne null}">
-                                <img src="<c:url value='/user/pfp?userPfp=${loggedUser.pfp}'/>" alt="Profile Picture"
+                                <img src="<c:url value='/images/query?imgId=${loggedUser.pfp}'/>" alt="Profile Picture"
                                      class="rounded-circle border object-fit: cover" width="150" height="150">
                             </c:when>
                             <c:otherwise>

@@ -25,7 +25,7 @@
             <div class="me-3">
                 <c:choose>
                     <c:when test="${vehicle.imgId ne null}">
-                        <img id="vehicleImagePreview" src="<c:url value='/vehicle/image?imgId=${vehicle.imgId}' />"
+                        <img id="vehicleImagePreview" src="<c:url value='/images/query?imgId=${vehicle.imgId}' />"
                              alt="" class="img-fluid border rounded" style="max-width: 150px;"/>
                     </c:when>
                     <c:otherwise>

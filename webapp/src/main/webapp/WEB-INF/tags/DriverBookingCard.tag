@@ -19,7 +19,7 @@
                 />
             </c:when>
             <c:otherwise>
-                <img src="${pageContext.request.contextPath}/user/pfp?userPfp=${booking.client.pfp}"
+                <img src="${pageContext.request.contextPath}/images/query?imgId=${booking.client.pfp}"
                      alt="ClientPfp" style="width: 60px; height: 60px;"
                      class="rounded-circle position-absolute top-0 end-0 mt-2 me-2"
                 />
@@ -67,7 +67,7 @@
                             <spring:message code="driver.home.unpaid"/>
                         </c:if>
                         <c:if test="${booking.pop ne null}">
-                            <c:url value='/booking/pop?popId=${booking.pop}' var="popUrl"/>
+                            <c:url value='/images/query?imgId=${booking.pop}' var="popUrl"/>
                             <a href="${popUrl}" target="_blank">
                                 <spring:message code="driver.home.paid"/>
                             </a>
