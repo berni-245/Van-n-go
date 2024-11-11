@@ -140,7 +140,7 @@ public class ClientController implements Bookings {
             @RequestParam(name = "priceMax", required = false) Double priceMax,
             @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
             @RequestParam(name = "rating", required = false) Integer rating,
-            @RequestParam(name = "order", required = false) SearchOrder order,
+            @RequestParam(name = "order", defaultValue = "ALPHABETICAL") SearchOrder order,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form

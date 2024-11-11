@@ -44,7 +44,8 @@
 
         <div class="row g-3">
             <div class="col-sm-2">
-                <input type="number" step="1" min="100" max="100000" name="priceMax" placeholder="Max Price"
+                <spring:message var="MaxPrice" code="client.search.MaxPrice"/>
+                <input type="number" step="1" min="100" max="100000" name="priceMax" placeholder="${MaxPrice}"
                        class="form-control" value="${priceMax}"/>
             </div>
 
@@ -52,13 +53,20 @@
                 <spring:message code="client.search.selectWeekday" var="weekdayLabel"/>
                 <form:select path="weekday" id="select-weekday" cssClass="form-select">
                     <form:option value="" label="${weekdayLabel}"/>
-                    <form:option value="MONDAY" label="Monday"/>
-                    <form:option value="TUESDAY" label="Tuesday"/>
-                    <form:option value="WEDNESDAY" label="Wednesday"/>
+                    <spring:message var="Monday" code="day.monday"/>
+                    <form:option value="MONDAY" label="${Monday}"/>
+                    <spring:message var="Tuesday" code="day.tuesday"/>
+                    <form:option value="TUESDAY" label="${Tuesday}"/>
+                    <spring:message var="Wednesday" code="day.wednesday"/>
+                    <form:option value="WEDNESDAY" label="${Wednesday}"/>
+                    <spring:message var="Thursday" code="day.thursday"/>
                     <form:option value="THURSDAY" label="Thursday"/>
-                    <form:option value="FRIDAY" label="Friday"/>
-                    <form:option value="SATURDAY" label="Saturday"/>
-                    <form:option value="SUNDAY" label="Sunday"/>
+                    <spring:message var="Friday" code="day.friday"/>
+                    <form:option value="FRIDAY" label="${Friday}"/>
+                    <spring:message var="Saturday" code="day.saturday"/>
+                    <form:option value="SATURDAY" label="${Saturday}}"/>
+                    <spring:message var="Sunday" code="day.sunday"/>
+                    <form:option value="SUNDAY" label="${Sunday}"/>
                 </form:select>
             </div>
 
@@ -74,10 +82,14 @@
 
             <div class="col-sm-3">
                 <form:select path="order" id="select-weekday" cssClass="form-select">
-                    <form:option value="ALPHABETICAL" label="Alphetical"/>
-                    <form:option value="RECENT" label="Most Recent"/>
-                    <form:option value="PRICE" label="Lowest Price"/>
-                    <form:option value="RATING" label="Highest Rating"/>
+                    <spring:message var="alph" code="order.alphabetical"/>
+                    <form:option value="ALPHABETICAL" label="${alph}"/>
+                    <spring:message var="rec" code="order.recent"/>
+                    <form:option value="RECENT" label="${rec}"/>
+                    <spring:message var="pric" code="order.price"/>
+                    <form:option value="PRICE" label="${pric}"/>
+                    <spring:message var="rat" code="order.rating"/>
+                    <form:option value="RATING" label="${rat}"/>
                 </form:select>
             </div>
 

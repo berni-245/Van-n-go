@@ -18,7 +18,7 @@
     <c:url var="postUrl" value="/client/availability"/>
     <form:form action="${postUrl}" method="get" modelAttribute="availabilitySearchForm">
       <div class="mb-4">
-        <spring:message code="driver.add_availability.selectZones" var="selectZones"/>
+        <spring:message code="client.search.selectZone" var="selectZones"/>
         <spring:bind path="zoneId">
           <label for="select-zones" class="form-label h4">${selectZones}</label>
           <form:select path="zoneId" id="select-zones" multiple="false"
@@ -37,7 +37,8 @@
         <form:select path="size" id="select-size" multiple="false"
                      cssClass="form-select form-select-lg"
                      autocomplete="off">
-          <form:option value="" label="Any"/>
+          <spring:message code="generic.word.any" var="Any"/>
+          <form:option value="" label="${Any}"/>
           <spring:message var="small" code="generic.word.small"/>
           <form:option value="SMALL" label="${small}"/>
           <spring:message var="medium" code="generic.word.medium"/>
@@ -52,14 +53,22 @@
           <spring:message code="generic.word.weekday"/>
         </label>
         <form:select path="weekday" id="select-day" cssClass="form-select form-select-lg" autocomplete="off">
-          <form:option value="" label="Any"/>
-          <form:option value="MONDAY" label="Monday"/>
-          <form:option value="TUESDAY" label="Tuesday"/>
-          <form:option value="WEDNESDAY" label="Wednesday"/>
+          <spring:message code="generic.word.any" var="Any"/>
+          <form:option value="" label="${Any}"/>
+          <spring:message var="Monday" code="day.monday"/>
+          <form:option value="MONDAY" label="${Monday}"/>
+          <spring:message var="Tuesday" code="day.tuesday"/>
+          <form:option value="TUESDAY" label="${Tuesday}"/>
+          <spring:message var="Wednesday" code="day.wednesday"/>
+          <form:option value="WEDNESDAY" label="${Wednesday}"/>
+          <spring:message var="Thursday" code="day.thursday"/>
           <form:option value="THURSDAY" label="Thursday"/>
-          <form:option value="FRIDAY" label="Friday"/>
-          <form:option value="SATURDAY" label="Saturday"/>
-          <form:option value="SUNDAY" label="Sunday"/>
+          <spring:message var="Friday" code="day.friday"/>
+          <form:option value="FRIDAY" label="${Friday}"/>
+          <spring:message var="Saturday" code="day.saturday"/>
+          <form:option value="SATURDAY" label="${Saturday}}"/>
+          <spring:message var="Sunday" code="day.sunday"/>
+          <form:option value="SUNDAY" label="${Sunday}"/>
         </form:select>
       </div>
 
