@@ -122,9 +122,10 @@
                                                                       element="div"
                                                                       required="true"
                                                     />
+                                                    <spring:message var="spStr" code="generic.word.${sp}"/>
                                                     <label class="btn btn-primary"
                                                            for="sp-${sp}-${v.plateNumber}">
-                                                        <c:out value="${sp}"/>
+                                                        <c:out value="${spStr}"/>
                                                     </label>
                                                 </div>
                                             </c:forEach>
@@ -284,16 +285,26 @@
             shiftPeriods.forEach(sp => {
                 const spButton = document.getElementById('sp-' + sp + '-' + vehicle.plateNumber);
                 spButton.checked = false;
-                spButton.disabled = !vehicle.availabilityDays.some(av =>
-                    av.weekDay === weekDay.toString() && av.shiftPeriod === sp
-                );
+                spButton.disabled = true;
             })
-            vehicle.acceptedBookings.forEach(b => {
-                if (b.bookingDay === selectedDateString) {
-                    const spButton = document.getElementById('sp-' + b.bookingShiftPeriod + '-' + vehicle.plateNumber);
-                    spButton.disabled = true;
-                }
-            })
+            <c:url value="/client/booking/requested" var="url"/>
+            fetch('${url}?date=' + selectedDateString + '&plateNumber=' + vehicle.plateNumber)
+                .then(res => res.json())
+                .then(alreadyRequestedSps => {
+                    shiftPeriods.forEach(sp => {
+                        const spButton = document.getElementById('sp-' + sp + '-' + vehicle.plateNumber);
+                        spButton.checked = false;
+                        spButton.disabled = !vehicle.availabilityDays.some(
+                            av => av.weekDay === weekDay.toString() && av.shiftPeriod === sp
+                        ) || alreadyRequestedSps.includes(sp);
+                    })
+                    vehicle.acceptedBookings.forEach(b => {
+                        if (b.bookingDay === selectedDateString) {
+                            const spButton = document.getElementById('sp-' + b.bookingShiftPeriod + '-' + vehicle.plateNumber);
+                            spButton.disabled = true;
+                        }
+                    })
+                })
         }
 
         document.querySelectorAll('.accordion-button').forEach(btn => {

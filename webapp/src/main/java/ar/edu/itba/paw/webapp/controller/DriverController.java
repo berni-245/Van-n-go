@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.interfaces.Bookings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -358,6 +359,4 @@ public class DriverController implements Bookings {
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
         return new ModelAndView("redirect:/profile");
     }
-
-
 }

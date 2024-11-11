@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -46,6 +47,16 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
+    public Optional<Vehicle> findByPlateNumber(String plateNumber) {
+        TypedQuery<Vehicle> query = em.createQuery(
+                "from Vehicle where plateNumber = :plateNumber",
+                Vehicle.class
+        );
+        query.setParameter("plateNumber", plateNumber);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
     public Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber) {
         TypedQuery<Vehicle> query = em.createQuery(
                 "from Vehicle v where v.driver = :driver and v.plateNumber = :plateNumber",
@@ -59,28 +70,28 @@ public class VehicleJpaDao implements VehicleDao {
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday) {
         StringBuilder queryString = new StringBuilder("""
-                        SELECT DISTINCT v FROM Vehicle v
-                        JOIN v.zones z
-                        LEFT JOIN v.availability a
-                        WHERE v.driver = :driver AND z = :zone
-                        """);
-        if(size != null)
+                SELECT DISTINCT v FROM Vehicle v
+                JOIN v.zones z
+                LEFT JOIN v.availability a
+                WHERE v.driver = :driver AND z = :zone
+                """);
+        if (size != null)
             queryString.append(" AND v.volume BETWEEN :minVol AND :maxVol");
-        if(priceMax != null)
+        if (priceMax != null)
             queryString.append(" AND v.hourlyRate <= :priceMax");
-        if(weekday != null)
+        if (weekday != null)
             queryString.append(" AND a.weekDay = :weekday");
         TypedQuery<Vehicle> query = em.createQuery(queryString.toString(), Vehicle.class);
         query.setParameter("driver", driver);
         query.setParameter("zone", zone);
-        if(size != null){
+        if (size != null) {
             query.setParameter("minVol", (double) size.getMinVolume());
             query.setParameter("maxVol", (double) size.getMaxVolume());
         }
-        if(priceMax != null){
+        if (priceMax != null) {
             query.setParameter("priceMax", priceMax);
         }
-        if(weekday != null){
+        if (weekday != null) {
             query.setParameter("weekday", weekday);
         }
         return query.getResultList();
@@ -109,11 +120,11 @@ public class VehicleJpaDao implements VehicleDao {
     @Override
     public List<Vehicle> getDriverVehicles(Driver driver, int offset) {
         var nativeQueryList = em.createNativeQuery("""
-            select v.id
-            from vehicle v
-            where v.driver_id = :driverId
-            order by v.plate_number
-            """)
+                        select v.id
+                        from vehicle v
+                        where v.driver_id = :driverId
+                        order by v.plate_number
+                        """)
                 .setParameter("driverId", driver.getId())
                 .setFirstResult(offset)
                 .setMaxResults(Pagination.VEHICLES_PAGE_SIZE)
@@ -130,9 +141,9 @@ public class VehicleJpaDao implements VehicleDao {
     @Override
     public int getVehicleCount(Driver driver) {
         return em.createQuery("""
-                    select count(*) from Vehicle v
-                    where v.driver = :driver
-                    """, Long.class)
+                        select count(*) from Vehicle v
+                        where v.driver = :driver
+                        """, Long.class)
                 .setParameter("driver", driver)
                 .getSingleResult().intValue();
     }

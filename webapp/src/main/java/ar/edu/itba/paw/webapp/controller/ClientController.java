@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.*;
 import ar.edu.itba.paw.webapp.interfaces.Bookings;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +45,8 @@ public class ClientController implements Bookings {
     private MessageService ms;
     @Autowired
     private LocaleResolver localeResolver;
+
+    private static final Gson gson = new Gson();
 
     @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(
@@ -347,5 +352,17 @@ public class ClientController implements Bookings {
         return redirect("/client/profile");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/client/booking/requested", method = RequestMethod.GET)
+    public String checkAvailability(
+            @ModelAttribute("loggedUser") Client user,
+            @RequestParam(name = "date") String dateStr,
+            @RequestParam(name = "plateNumber") String plateNumber
+    ) {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateStr);
+        List<ShiftPeriod> sps = cs.requestedShiftPeriodsForDate(user, date, plateNumber);
 
+        return gson.toJson(sps);
+    }
 }

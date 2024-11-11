@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.Zone;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface ClientDao extends UserDao<Client> {

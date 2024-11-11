@@ -23,6 +23,8 @@ public interface VehicleDao {
 
     Optional<Vehicle> findOwnedById(Driver driver, int id);
 
+    Optional<Vehicle> findByPlateNumber(String plateNumber);
+
     Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
     List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double maxPrice, DayOfWeek weekday);
