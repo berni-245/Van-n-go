@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Availability;
-import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.ShiftPeriod;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.persistence.config.TestConfig;
@@ -21,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.time.DayOfWeek;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;

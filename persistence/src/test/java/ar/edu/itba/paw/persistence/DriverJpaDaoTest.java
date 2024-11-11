@@ -32,11 +32,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql(scripts = "classpath:add_driver_data.sql")
-// There will be a vehicle with id 1, who works in the zone with id 1
-// This driver works:
-//  evening on wednesday
-//  afternoon and evening on thursday
-//  morning, afternoon and evening on friday
+// There will be two vehicles with ids 1, 2, who works in the zone with id 1
+// Both work on wednesday evening
 public class DriverJpaDaoTest {
     private final static Language ENGLISH = Language.ENGLISH;
     private final static Language SPANISH = Language.SPANISH;

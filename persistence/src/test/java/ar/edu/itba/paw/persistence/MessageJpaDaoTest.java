@@ -30,6 +30,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql(scripts = "classpath:add_message_data.sql")
+// There is a conversation of 3 messages between CLIENT_ID and DRIVER_ID
 public class MessageJpaDaoTest {
 
     private static final Integer CLIENT_ID = 1;
