@@ -2,7 +2,6 @@
     text-decoration: none;
     box-shadow: var(--bs-box-shadow);
     max-height: 500px;
-    overflow: hidden;
 }
 
 .anchor-card:hover {

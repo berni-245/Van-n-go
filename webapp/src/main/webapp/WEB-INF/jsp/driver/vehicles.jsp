@@ -4,7 +4,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.vehicles">
+<comp:Head titleCode="components.header.vehicles" tooltips="true">
     <c:url value="/css/driver/vehicles.css" var="css"/>
     <link rel="stylesheet" href="${css}">
     <c:url value="/js/PaginationTag.js" var="js"/>
@@ -56,6 +56,14 @@
                                     </p>
                                     <span class="stretched-link"></span>
                                 </div>
+
+                                <c:if test="${empty v.availability}">
+                                    <spring:message code="vehicle.no.availability" var="noAv"/>
+                                    <div class="position-absolute top-0 start-100 translate-middle
+                                badge border border-light rounded-circle bg-danger p-3 z-3"
+                                         data-bs-toggle="tooltip" data-bs-title="${noAv}">
+                                    </div>
+                                </c:if>
                             </div>
                         </a>
                     </div>
