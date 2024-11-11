@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidVehicleException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public List<Booking> getBookings(Client client, BookingState state, int page) {
-        if(state.equals(BookingState.PENDING)||state.equals(BookingState.REJECTED))
+        if (state.equals(BookingState.PENDING) || state.equals(BookingState.REJECTED))
             bookingDao.checkPending();
         return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
     }
@@ -127,5 +128,12 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
                 booking.getDriver().getLanguage().getLocale()
         );
         return booking;
+    }
+
+    @Override
+    public List<ShiftPeriod> requestedShiftPeriodsForDate(Client client, LocalDate date, String plateNumber) {
+        Vehicle v = vehicleDao.findByPlateNumber(plateNumber).orElseThrow(InvalidVehicleException::new);
+        List<Booking> bookings = bookingDao.requestedBookingsForDate(client, date, v);
+        return bookings.stream().map(Booking::getShiftPeriod).toList();
     }
 }

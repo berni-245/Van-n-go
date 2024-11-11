@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookingDao {
     Booking appointBooking(
@@ -40,4 +39,6 @@ public interface BookingDao {
     void cancelBooking(Booking booking);
 
     void checkPending();
+
+    List<Booking> requestedBookingsForDate(Client client, LocalDate date, Vehicle vehicle);
 }
