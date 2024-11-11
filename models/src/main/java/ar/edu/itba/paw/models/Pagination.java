@@ -7,6 +7,7 @@ public class Pagination {
     public static final int MAX_MESSAGE_RETRIEVAL = 100;
 
     public static int validatePage(int page, int totalPages) {
+        if (totalPages == 0) return 1;
         return Math.clamp(page, 1, totalPages);
     }
 }
