@@ -1,3 +1,11 @@
 img {
     object-fit: contain;
 }
+
+.pagination {
+    cursor: pointer;
+}
+
+.ts-dropdown, .ts-control {
+    color: var(--bs-body-color);
+}
