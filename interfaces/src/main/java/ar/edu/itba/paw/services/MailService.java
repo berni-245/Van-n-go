@@ -29,4 +29,7 @@ public interface MailService {
 
 
     void sendReceivedMessage(User recipient, User sender, Booking booking, String receivedMessage, LocalDateTime timeReceived, Locale locale);
+
+
+    void sendReceivedPop(String clientName, String driverMail, LocalDate date, Locale locale);
 }

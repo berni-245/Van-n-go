@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Image;
 import ar.edu.itba.paw.models.User;
@@ -19,17 +20,19 @@ public class ImageServiceImpl implements ImageService {
     private final ClientDao clientDao;
     private final VehicleDao vehicleDao;
     private final BookingDao bookingDao;
+    private final MailService mailService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     @Autowired
     public ImageServiceImpl(final ImageDao imgDao, final DriverDao driverDao, final ClientDao clientDao,
-                            final VehicleDao vehicleDao, final BookingDao bookingDao) {
+                            final VehicleDao vehicleDao, final BookingDao bookingDao, final MailService mailService) {
         this.imgDao = imgDao;
         this.driverDao = driverDao;
         this.clientDao = clientDao;
         this.vehicleDao = vehicleDao;
         this.bookingDao = bookingDao;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -51,7 +54,9 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public int uploadPop(Client client, byte[] bin, String fileName, int bookingId) {
         validateImage(fileName, bin);
-        int toReturn = imgDao.uploadPop(bin, fileName, bookingDao.getClientBookingById(client, bookingId));
+        Booking booking = bookingDao.getClientBookingById(client, bookingId);
+        int toReturn = imgDao.uploadPop(bin, fileName, booking );
+        mailService.sendReceivedPop(client.getUsername(), booking.getDriver().getMail(), booking.getDate(), booking.getDriver().getLanguage().getLocale());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
         return toReturn;
     }

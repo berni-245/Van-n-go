@@ -239,7 +239,7 @@ public class MailServiceImpl implements MailService {
         String mailBodyProcessed = templateEngine.process("clientCanceledBookingMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
-            message.setSubject(messageSource.getMessage("subject.driverCanceledBooking", null, locale));
+            message.setSubject(messageSource.getMessage("subject.clientCanceledBooking", null, locale));
             setMailContent(message, mailBodyProcessed);
         } catch (Exception e) {
             LOGGER.error("Error sending client canceled booking message to {}", driverMail);
@@ -308,5 +308,27 @@ public class MailServiceImpl implements MailService {
         }
         sendMail(message);
         LOGGER.info("Sent new message mail to {}", recipient.getUsername());
+    }
+
+    @Async
+    @Override
+    public void sendReceivedPop(String clientName, String driverMail, LocalDate date, Locale locale){
+        Message message = getMessage();
+        Context context = new Context(locale);
+        context.setVariable("clientName", clientName);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        context.setVariable("date", date.format(dateFormatter.withLocale(locale)));
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "driver/bookings");
+        String mailBodyProcessed = templateEngine.process("clientUploadedPop", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
+            message.setSubject(messageSource.getMessage("subject.uploadedPop", null, locale));
+            setMailContent(message, mailBodyProcessed);
+        } catch (Exception e) {
+            LOGGER.error("Error sending uploaded pop message to {}", driverMail);
+        }
+        sendMail(message);
+        LOGGER.info("Sent uploaded pop mail to {}", driverMail);
+
     }
 }
