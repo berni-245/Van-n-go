@@ -7,9 +7,6 @@
 <footer class="mt-auto">
     <div class="container">
         <comp:ToastManager toasts="${toasts}"/>
-        <p class="float-end mb-1">
-            <a href="#"><spring:message code="public.home.backToTop"/></a>
-        </p>
         <p class="mb-1">&copy; PAW 2024B G1</p>
     </div>
 </footer>
