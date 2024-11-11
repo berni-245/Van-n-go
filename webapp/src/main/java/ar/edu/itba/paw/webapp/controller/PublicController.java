@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -49,17 +48,13 @@ public class PublicController implements Redirect, Toasts {
             @ModelAttribute(value = "toasts", binding = false) ArrayList<Toast> toasts,
             RedirectAttributes redirectAttributes
     ) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         redirectAttributes.addFlashAttribute("toasts", toasts);
         if (loggedUser == null || (!loggedUser.isClient()) && !loggedUser.isDriver()) {
             return new ModelAndView("public/home");
         }
 
-        if (loggedUser.isClient())
-            return redirect("/client/search");
-        else {
-            return redirect("/driver/bookings");
-        }
+        if (loggedUser.isClient()) return redirect("/client/search");
+        else return redirect("/driver/bookings");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
@@ -92,8 +87,8 @@ public class PublicController implements Redirect, Toasts {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), userForm.getPassword());
         SecurityContextHolder.getContext().setAuthentication(token);
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.create.success"));
-        if (user.isDriver()) return new ModelAndView("redirect:/driver/vehicles");
-        else return new ModelAndView("redirect:/client/search");
+        if (user.isDriver()) return redirect("/driver/vehicles");
+        else return redirect("/client/search");
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
