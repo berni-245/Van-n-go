@@ -1,6 +1,6 @@
-insert into app_user (id, username, mail, password, language) values
-    (500, 'THEDriver', 'driver@mail.com', '123321', 'SPANISH'),
-    (501, 'YetAnotherDriver', 'YAdriver@mail.com', '123321', 'SPANISH');
+insert into app_user (id, username, mail, password, language, creation_time) values
+    (500, 'THEDriver', 'driver@mail.com', '123321', 'SPANISH', '2024-11-7 12:00:00'),
+    (501, 'YetAnotherDriver', 'YAdriver@mail.com', '123321', 'SPANISH', '2024-11-7 12:00:00');
 
 insert into driver (id, description, cbu, rating) values
     (500, 'Im the driver', '0720072007200720072044', 4.3),
