@@ -59,8 +59,7 @@
 
                 <li class="list-group-item"><comp:ZoneFromTo booking="${booking}"/></li>
                 <li class="list-group-item">
-                    <spring:message code="generic.phrase.job.description"/>:
-                    <c:out value="${booking.jobDescription}"/>
+                    <spring:message code="generic.phrase.job.description.withDescription" arguments="${booking.jobDescription}"/>
                 </li>
                 <li class="list-group-item">
                     <spring:message arguments="${booking.vehicle.plateNumber}"
