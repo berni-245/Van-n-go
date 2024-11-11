@@ -12,35 +12,40 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title me-2" id="bookingModalLabel"><spring:message arguments="${booking.date}"
-                                                                                    code="components.bookingCard.dateTime"/>
-                    <spring:message
-                            code="generic.word.${booking.shiftPeriod.lowerCaseText}"/></h5>
+                <h5 class="modal-title me-2" id="bookingModalLabel">
+                    <spring:message arguments="${booking.date}" code="components.bookingCard.dateTime"/>
+                    <spring:message code="generic.word.${booking.shiftPeriod.lowerCaseText}"/>
+                </h5>
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
-                        <span class="badge bg-primary"><spring:message code="generic.word.pending.bookings"/></span>
+                        <span class="badge bg-primary">
+                            <spring:message code="generic.word.pending.booking"/>
+                        </span>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.ACCEPTED}">
-                        <span class="badge bg-success"><spring:message code="generic.word.accepted.bookings"/></span>
+                        <span class="badge bg-success">
+                            <spring:message code="generic.word.accepted.booking"/>
+                        </span>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.REJECTED}">
-                        <span class="badge bg-warning text-dark"><spring:message
-                                code="generic.word.rejected.bookings"/></span>
+                        <span class="badge bg-warning text-dark">
+                            <spring:message code="generic.word.rejected.booking"/>
+                        </span>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.FINISHED}">
-                        <span class="badge bg-light text-dark"><spring:message
-                                code="generic.word.finished.bookings"/></span>
+                        <span class="badge bg-light text-dark">
+                            <spring:message code="generic.word.finished.booking"/>
+                        </span>
                     </c:when>
                     <c:when test="${booking.state eq BookingState.CANCELED}">
-                        <span class="badge bg-danger"><spring:message
-                                code="generic.word.canceled.bookings"/></span>
+                        <span class="badge bg-danger">
+                            <spring:message code="generic.word.canceled.booking"/>
+                        </span>
                     </c:when>
                 </c:choose>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <ul class="modal-body list-group list-group-flush">
-
-
                 <c:choose>
                     <c:when test="${loggedUser.isDriver}">
                         <li class="list-group-item"><c:out value="${booking.client.username}"/></li>
@@ -53,12 +58,18 @@
                 </c:choose>
 
                 <li class="list-group-item"><comp:ZoneFromTo booking="${booking}"/></li>
-                <li class="list-group-item"><spring:message code="generic.word.description"/>:
-                    <c:out value="${booking.jobDescription}"/></li>
-                <li class="list-group-item"><spring:message
-                        arguments="${booking.vehicle.plateNumber}"
-                        code="components.bookingModal.vehicle"/></li>
-                <li class="list-group-item"><spring:message arguments="${booking.vehicle.hourlyRate}" code="components.bookingModal.hourlyRate" /></li>
+                <li class="list-group-item">
+                    <spring:message code="generic.phrase.job.description"/>:
+                    <c:out value="${booking.jobDescription}"/>
+                </li>
+                <li class="list-group-item">
+                    <spring:message arguments="${booking.vehicle.plateNumber}"
+                                    code="components.bookingModal.vehicle"/>
+                </li>
+                <li class="list-group-item">
+                    <spring:message arguments="${booking.vehicle.hourlyRate}"
+                                    code="components.bookingModal.hourlyRate"/>
+                </li>
 
                 <c:choose>
                     <c:when test="${booking.state eq BookingState.PENDING}">
@@ -88,8 +99,7 @@
                                         <c:url value="/driver/booking/${booking.id}/finish" var="bookingFinishUrl"/>
                                         <form action="${bookingFinishUrl}" method="POST" class="mb-1">
                                             <button type="submit" class="btn btn-success">
-                                                <spring:message
-                                                        code="driver.home.booking.finish"/>
+                                                <spring:message code="driver.home.booking.finish"/>
                                             </button>
                                         </form>
                                     </div>
@@ -99,8 +109,9 @@
                         <c:choose>
                             <c:when test="${currentDate.isBefore(booking.date.minusDays(2))}">
                                 <button class="btn btn-danger" data-bs-target="#cancelBooking${booking.id}"
-                                        data-bs-toggle="modal" data-bs-dismiss="modal"><spring:message
-                                        code="components.bookingModal.cancelBooking"/></button>
+                                        data-bs-toggle="modal" data-bs-dismiss="modal">
+                                    <spring:message code="components.bookingModal.cancelBooking"/>
+                                </button>
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${!booking.date.isBefore(currentDate)}">
@@ -133,14 +144,14 @@
                                             </c:forEach>
                                         </div>
                                     </div>
-                                    <p style="word-break: break-word"><c:out value="${booking.review}"/></p>
+                                    <p><c:out value="${booking.review}"/></p>
                                 </li>
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${loggedUser.isDriver}">
                                     <p><spring:message code="driver.history.noRating"/></p>
                                 </c:if>
-                                <c:if  test="${!loggedUser.isDriver}">
+                                <c:if test="${!loggedUser.isDriver}">
                                     <p><spring:message code="client.history.noRating"/></p>
                                     <c:url var="ratingUrl"
                                            value="/client/booking/${booking.id}/review"/>
