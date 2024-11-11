@@ -35,7 +35,8 @@
     </c:url>
     <comp:GoBackButton path="${searchParams}"/>
     <h1 class="text-center mb-0 flex-grow-1">
-        <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}"/>
+        <spring:message code="generic.phrase.userAvailability" arguments="${driver.username},${originZone}" var="availability"/>
+        <c:out value="${availability}"/>
     </h1>
     <div style="width: 50px;"></div>
 </div>

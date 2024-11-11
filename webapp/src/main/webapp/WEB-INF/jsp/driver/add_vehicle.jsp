@@ -15,7 +15,8 @@
         <div class="col-md-7 offset-md-2">
             <div class="d-flex align-items-center mb-4">
                 <h2 class="mb-0 mt-2 ms-3 text-center">
-                    <spring:message code="driver.add_vehicle.title" arguments="${loggedUser.username}"/>
+                    <spring:message code="driver.add_vehicle.title" arguments="${loggedUser.username}" var="username"/>
+                    <c:out value="${username}"/>
                 </h2>
             </div>
             <div class="card p-4">

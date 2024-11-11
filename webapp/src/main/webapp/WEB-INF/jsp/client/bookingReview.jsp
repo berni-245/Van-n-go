@@ -18,7 +18,10 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center">
-            <h1><spring:message code="client.rating.header" arguments="${driver.username}"/></h1>
+            <h1>
+                <spring:message code="client.rating.header" arguments="${driver.username}" var="usernameHeader"/>
+                <c:out value="${usernameHeader}"/>
+            </h1>
         </div>
         <div class="card-body">
             <div class=" text-center">
@@ -26,7 +29,8 @@
                 <form:form modelAttribute="bookingReviewForm" method="post" action="${postUrl}">
                     <div class="mb-3">
                         <form:label path="rating" cssClass="form-label">
-                            <spring:message code="client.rating.select" arguments="${driver.username}"/>
+                            <spring:message code="client.rating.select" arguments="${driver.username}" var="usernameSelect"/>
+                            <c:out value="${usernameSelect}"/>
                         </form:label>
                         <div id="star-rating" class="d-flex justify-content-evenly">
                             <span class="star" data-value="1">&#9733;</span>
@@ -42,7 +46,8 @@
 
                     <div class="mb-3">
                         <p>
-                            <spring:message code="client.make.review" arguments="${driver.username}"/>
+                            <spring:message code="client.make.review" arguments="${driver.username}" var="usernameReview"/>
+                            <c:out value="${usernameReview}"/>
                         </p>
                         <form:textarea path="review" rows="4" cols="50" maxlength="255"
                                        htmlEscape="true" required="true"/>
