@@ -160,4 +160,23 @@ public class WebConfig implements WebMvcConfigurer {
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }
+
+
+    @Bean(name = "mailProperties")
+    public Properties mailProperties() {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        properties.setProperty("mail.smtp.port", "587");
+        properties.setProperty("mail.smtp.user", "van.n.go.paw@gmail.com");
+        properties.setProperty("mail.password","lrbe ukez jvkk fleu");
+        properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("base.prod.url", """
+                http://pawserver.it.itba.edu.ar/paw-2024b-01/""");
+        return properties;
+    }
+
+
 }

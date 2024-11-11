@@ -3,7 +3,6 @@
 <head>
     <title th:remove="all">Driver service requested </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="http://pawserver.it.itba.edu.ar/paw-2024b-01/css/bootstrap.min.css">
     <style>
         .button-primary {
             display: inline-block;
@@ -63,7 +62,7 @@
 
     <div class="text-center">
         <button class="button-primary">
-            <a href="http://pawserver.it.itba.edu.ar/paw-2024b-01/login" style="color: white"
+            <a th:href="${actionUrl}" style="color: white"
                th:text="#{mail.acceptedBooking.seeReservations}">See reservations</a>
         </button>
     </div>
