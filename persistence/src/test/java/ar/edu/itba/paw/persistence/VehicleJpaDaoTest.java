@@ -31,9 +31,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 @Sql(scripts = "classpath:add_vehicle_data.sql")
 public class VehicleJpaDaoTest {
-    private final static Language ENGLISH = Language.ENGLISH;
-    private final static Language SPANISH = Language.SPANISH;
-
     private final static Integer PREEXISTING_USER_ID = 500;
     private final static Integer PREEXISTING_USER_ID_TWO = 502;
 
@@ -44,16 +41,11 @@ public class VehicleJpaDaoTest {
     private final static Integer ZONE_ID = 1;
     private final static double HOURLY_RATE = 100;
 
-    private final static Integer PREEXISTING_USER_ID_THREE = 501;
-
     private final static Integer PREEXISTING_VEHICLE = 500;
     private final static String PREEXISTING_PLATE_NUMBER = "AAA999";
     private final static Size PREEXISTING_VEHICLE_SIZE = Size.LARGE;
     private final static double MAX_PRICE = 200;
-    private final static DayOfWeek DAY_OF_WEEK = DayOfWeek.WEDNESDAY;
-    private final static Integer MIN_RATING = 3;
     private final static Integer PREEXISTING_VEHICLE_TWO = 501;
-    private final static Integer PREEXISTING_VEHICLE_THREE = 502;
     private final static Integer PREEXISTING_VEHICLE_FOUR = 503;
 
 
@@ -64,7 +56,6 @@ public class VehicleJpaDaoTest {
     private final static int VEHICLE_COUNT = 2;
 
     private static Vehicle preexistingVehicleTwo;
-    private static Vehicle preexistingVehicleThree;
     private static Vehicle preexistingVehicleFour;
     private static Driver preexistingDriver;
     private static Driver preexistingDriverNoVehicle;
@@ -85,7 +76,6 @@ public class VehicleJpaDaoTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         preexistingVehicleTwo = em.find(Vehicle.class, PREEXISTING_VEHICLE_TWO);
-        preexistingVehicleThree = em.find(Vehicle.class, PREEXISTING_VEHICLE_THREE);
         preexistingVehicleFour = em.find(Vehicle.class, PREEXISTING_VEHICLE_FOUR);
         preexistingDriver = em.find(Driver.class, PREEXISTING_USER_ID);
         preexistingDriverNoVehicle = em.find(Driver.class, PREEXISTING_USER_NO_VEHICLE);
