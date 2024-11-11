@@ -30,7 +30,9 @@
             <form:form action="${postUrl}" method="post" modelAttribute="availabilityForm">
                 <c:forEach var="day" items="${days}">
                     <div class="d-flex flex-column mb-3">
-                        <label class="form-label text-capitalize">${day}</label>
+                        <label class="form-label text-capitalize">
+                                <spring:message code="driver.add_availability.${day}"/>
+                        </label>
                         <div class="d-flex justify-content-start" aria-label="${day} Availability">
                             <c:forEach var="period" items="${shiftPeriods}">
                                 <div class="me-2">
@@ -40,8 +42,9 @@
                                             name="${day}" value="${period}"
                                             id="${day}-${period}"
                                     />
-                                    <label class="btn btn-outline-primary toggle-label"
-                                           for="${day}-${period}">${period}</label>
+                                    <label class="btn btn-outline-primary toggle-label" for="${day}-${period}">
+                                            <spring:message code="generic.word.${period}"/>
+                                    </label>
                                 </div>
                             </c:forEach>
                         </div>

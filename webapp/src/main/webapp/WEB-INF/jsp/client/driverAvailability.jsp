@@ -202,6 +202,7 @@
                 right: ''
             },
             hiddenDays,
+            locale: '${loggedUser.language.locale}',
 
             datesSet: function (dateInfo) {
                 const prevButton = document.querySelector('.fc-prev-button');
