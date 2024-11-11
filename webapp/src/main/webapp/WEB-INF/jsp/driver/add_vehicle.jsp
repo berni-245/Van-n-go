@@ -8,12 +8,20 @@
 
 <body>
 <comp:Header/>
-<div class="d-flex justify-content-between align-items-start mb-5">
+<div class="d-flex align-items-start mb-5">
+    <div class="me-3">
 <comp:GoBackButton path="/driver/vehicles"/>
-<div class="container mt-3">
-    <h2><spring:message code="driver.add_vehicle.title" arguments="${loggedUser.username}"/></h2>
-    <comp:VehicleForm action="/driver/vehicle/add" modelAttribute="vehicleForm"/>
-</div>
+    </div>
+        <div class="col-md-7 offset-md-2">
+            <div class="d-flex align-items-center mb-4">
+                <h2 class="mb-0 mt-2 ms-3 text-center">
+                    <spring:message code="driver.add_vehicle.title" arguments="${loggedUser.username}"/>
+                </h2>
+            </div>
+            <div class="card p-4">
+                <comp:VehicleForm action="/driver/vehicle/add" modelAttribute="vehicleForm"/>
+            </div>
+        </div>
 </div>
 </body>
 
