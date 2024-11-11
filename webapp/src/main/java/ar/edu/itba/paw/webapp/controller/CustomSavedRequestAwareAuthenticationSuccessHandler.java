@@ -17,8 +17,13 @@ import java.io.IOException;
 @Component
 public class CustomSavedRequestAwareAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+
+    private final LocaleResolver localeResolver;
+
     @Autowired
-    private LocaleResolver localeResolver;
+    public CustomSavedRequestAwareAuthenticationSuccessHandler(LocaleResolver localeResolver) {
+        this.localeResolver = localeResolver;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {

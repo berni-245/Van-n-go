@@ -30,18 +30,24 @@ import java.util.Optional;
 @Controller
 public class DriverController implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverController.class);
-    @Autowired
-    private DriverService ds;
-    @Autowired
-    private ClientService cs;
-    @Autowired
-    private ZoneService zs;
-    @Autowired
-    private ImageService is;
-    @Autowired
-    private MessageService ms;
-    @Autowired
-    private LocaleResolver localeResolver;
+
+    private final DriverService ds;
+
+    private final ClientService cs;
+
+    private final ZoneService zs;
+
+    private final MessageService ms;
+
+    private final LocaleResolver localeResolver;
+
+    public DriverController(DriverService ds, ClientService cs, ZoneService zs, MessageService ms, LocaleResolver localeResolver) {
+        this.ds = ds;
+        this.cs = cs;
+        this.zs = zs;
+        this.ms = ms;
+        this.localeResolver = localeResolver;
+    }
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
     public ModelAndView addVehiclePost(

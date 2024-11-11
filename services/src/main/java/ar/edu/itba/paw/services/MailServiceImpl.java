@@ -36,9 +36,9 @@ public class MailServiceImpl implements MailService {
     private final TemplateEngine templateEngine;
     private final ResourceBundleMessageSource messageSource;
     private final Authenticator auth;
-    @Autowired
     private final Properties mailProperties;
 
+    @Autowired
     public MailServiceImpl(Properties mailProperties) {
         this.mailProperties = mailProperties;
 

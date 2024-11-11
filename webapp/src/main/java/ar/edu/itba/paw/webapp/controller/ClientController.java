@@ -33,20 +33,24 @@ import java.util.Set;
 @Controller
 public class ClientController implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
-    @Autowired
-    private DriverService ds;
-    @Autowired
-    private ZoneService zs;
-    @Autowired
-    private ClientService cs;
-    @Autowired
-    private ImageService is;
-    @Autowired
-    private MessageService ms;
-    @Autowired
-    private LocaleResolver localeResolver;
+    private final DriverService ds;
+    private final ZoneService zs;
+    private final ClientService cs;
+    private final ImageService is;
+    private final MessageService ms;
+    private final LocaleResolver localeResolver;
 
     private static final Gson gson = new Gson();
+
+    @Autowired
+    public ClientController(DriverService ds, ZoneService zs, ClientService cs, ImageService is, MessageService ms, LocaleResolver localeResolver) {
+        this.ds = ds;
+        this.zs = zs;
+        this.cs = cs;
+        this.is = is;
+        this.ms = ms;
+        this.localeResolver = localeResolver;
+    }
 
     @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
     public ModelAndView bookings(

@@ -29,13 +29,12 @@ import java.util.ArrayList;
 @Controller
 public class PublicController implements Redirect, Toasts {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
-    @Autowired
-    private ClientService cs;
-    @Autowired
-    private DriverService ds;
-    @Autowired
-    private ImageService is;
 
+    private final ClientService cs;
+    private final DriverService ds;
+    private final ImageService is;
+
+    @Autowired
     public PublicController(ClientService cs, DriverService ds, ImageService is) {
         this.cs = cs;
         this.ds = ds;
