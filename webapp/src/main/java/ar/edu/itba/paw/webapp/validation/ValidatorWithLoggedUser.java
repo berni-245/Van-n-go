@@ -10,9 +10,7 @@ public class ValidatorWithLoggedUser {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof PawUserDetails pud) {
             return pud.getUser();
-        } else {
-            // TODO: Make custom exception.
-            throw new RuntimeException("Idk unauthorized?");
         }
+        return null;
     }
 }

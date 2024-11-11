@@ -30,8 +30,7 @@ public abstract class User {
    @Enumerated(EnumType.STRING)
    private Language language;
 
-   //TODO: añadir nullable=false luego de añadirle creationTimes a los usuarios de pampero
-   @Column(name = "creation_time")
+   @Column(name = "creation_time", nullable = false)
    private LocalDateTime creationTime;
 
     @PrePersist

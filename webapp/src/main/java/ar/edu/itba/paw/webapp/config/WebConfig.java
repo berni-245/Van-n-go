@@ -74,7 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setCacheSeconds(5); //TODO? Not performant, only for development.
+        ms.setCacheSeconds(-1);
         ms.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         ms.addBasenames("classpath:i18n/messages");
 
