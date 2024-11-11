@@ -83,7 +83,7 @@ public class DriverController implements Bookings {
 
     @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
     public ModelAndView addVehicleGet(@ModelAttribute("vehicleForm") VehicleForm vehicleForm) {
-        ModelAndView mav = new ModelAndView("driver/add_vehicle");
+        ModelAndView mav = new ModelAndView("driver/addVehicle");
         mav.addObject("zones", zs.getAllZones());
         return mav;
     }
@@ -212,7 +212,7 @@ public class DriverController implements Bookings {
         if (vehicle.isPresent()) {
             if (errors != null && !errors.hasErrors()) form.setAll(vehicle.get());
             avForm.setAll(vehicle.get());
-            var mav = new ModelAndView("driver/edit_vehicle");
+            var mav = new ModelAndView("driver/editVehicle");
             mav.addObject("vehicle", vehicle.get());
             String[] days = new String[]{
                     "monday", "tuesday", "wednesday", "thursday",
