@@ -5,7 +5,7 @@
 <%@ taglib prefix="comp" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
-<comp:Head titleCode="components.header.register"/>
+<comp:Head titleCode="components.header.register" passInput="true"/>
 <body class="d-flex flex-column min-vh-100">
 <comp:Header/>
 <div class="container mt-5">
@@ -33,18 +33,10 @@
                         <form:errors path="mail" element="p" cssClass="text-danger"/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">
-                            <spring:message code="generic.word.password"/>
-                        </label>
-                        <form:input type="password" path="password" class="form-control"/>
-                        <form:errors path="password" element="p" cssClass="text-danger"/>
+                        <comp:ShowHidePassInput isFormInput="true" labelCode="generic.word.password" path="password"/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">
-                            <spring:message code="public.register.confirmPassword"/>
-                        </label>
-                        <form:input type="password" path="confirmPassword" class="form-control"/>
-                        <form:errors path="confirmPassword" element="p" cssClass="text-danger"/>
+                        <comp:ShowHidePassInput isFormInput="true" labelCode="public.register.confirmPassword" path="confirmPassword"/>
                         <form:errors element="div" cssClass="alert alert-danger"/>
                     </div>
                     <div class="mb-3">
