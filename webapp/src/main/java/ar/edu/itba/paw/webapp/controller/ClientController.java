@@ -131,7 +131,7 @@ public class ClientController implements Bookings {
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
     ) {
         ModelAndView mav = new ModelAndView("client/search");
-        if (loggedUser != null && loggedUser.getZone() != null)
+        if (loggedUser.getZone() != null)
             form.setZoneId(loggedUser.getZone().getId());
         List<Zone> zones = zs.getAllZones();
         mav.addObject("zones", zones);
@@ -150,13 +150,8 @@ public class ClientController implements Bookings {
             @ModelAttribute("loggedUser") Client loggedUser,
             @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
     ) {
-        if(loggedUser != null) {
-            form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
-            zoneId = form.getZoneId();
-        }else if(zoneId == null) {
-            zoneId = 1;
-        }
-
+        form.setZoneId(Objects.requireNonNullElseGet(zoneId, () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1));
+        zoneId = form.getZoneId();
         final ModelAndView mav = new ModelAndView("client/availability");
         int totalPages = ds.getSearchResultPages(zoneId, size, priceMax, weekday, rating);
         page = Pagination.validatePage(page, totalPages);
