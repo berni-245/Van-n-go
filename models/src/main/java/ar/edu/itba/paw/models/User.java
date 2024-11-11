@@ -12,7 +12,7 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
     @SequenceGenerator(sequenceName = "app_user_id_seq", name = "app_user_id_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -50,7 +50,7 @@ public abstract class User {
         this.language = language;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

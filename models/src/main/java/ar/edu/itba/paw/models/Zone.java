@@ -11,22 +11,22 @@ public class Zone {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "zone_id_seq")
     @SequenceGenerator(sequenceName = "zone_id_seq", name = "zone_id_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Country country;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Province province;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Neighborhood neighborhood;
 
     Zone() {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -67,9 +67,7 @@ public class Zone {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Zone zone &&
-                getCountryId() == zone.getCountryId() &&
-                getProvinceId() == zone.getProvinceId() &&
-                getNeighborhoodId() == zone.getNeighborhoodId();
+                zone.getId().equals(id);
     }
 
     @Override

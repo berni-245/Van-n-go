@@ -72,7 +72,7 @@ public class Vehicle {
         this(null, driver, plateNumber, volume, description, imgId, hourlyRate);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

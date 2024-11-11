@@ -76,7 +76,7 @@ public class Booking {
         this.jobDescription = jobDescription;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

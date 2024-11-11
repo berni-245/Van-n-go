@@ -18,7 +18,7 @@ public class Availability {
             name = "vehicle_availability_id_seq",
             allocationSize = 1
     )
-    private int id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Vehicle vehicle;
@@ -40,7 +40,7 @@ public class Availability {
         this.shiftPeriod = shiftPeriod;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
