@@ -2,6 +2,10 @@ img {
     object-fit: contain;
 }
 
+p {
+    word-break: break-word;
+}
+
 .pagination {
     cursor: pointer;
 }
