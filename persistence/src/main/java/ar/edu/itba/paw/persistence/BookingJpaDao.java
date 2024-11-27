@@ -165,6 +165,7 @@ public class BookingJpaDao implements BookingDao {
         }
         double newRating = ((oldRating * finishedBookingsWithRating) + rating) / (finishedBookingsWithRating + 1);
         driver.setRating(newRating);
+        em.merge(driver);
     }
 
     private int getFinishedBookingsWithRatingCountByDriver(Driver driver) {
