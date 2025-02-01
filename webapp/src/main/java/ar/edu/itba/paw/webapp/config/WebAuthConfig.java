@@ -45,11 +45,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .invalidSessionUrl("/home")
                 .and().authorizeRequests()
+                .antMatchers("/api/**").permitAll()  // 🚀 Permite el acceso a la API sin autenticación
                 .antMatchers("/login", "/register").anonymous()
                 .antMatchers("/client/search", "/client/availability").not().hasRole(UserRole.DRIVER.name())
                 .antMatchers("/driver/**").hasRole(UserRole.DRIVER.name())
                 .antMatchers("/client/**").hasRole(UserRole.CLIENT.name())
-                .antMatchers("/","/home","/error/**").permitAll()
+                .antMatchers("/", "/home", "/error/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .and().formLogin()
                 .successHandler(customSavedRequestAwareAuthenticationSuccessHandler)

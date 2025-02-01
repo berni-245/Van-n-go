@@ -12,10 +12,9 @@ import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// curl -H'Content-type:application/json' http://localhost:8080/users -v
-// No sé porque no funca sigo mañana, me tira 302 moved a login así que sospecho que me faltó quitar algo
+// curl -H'Content-type:application/json' http://localhost:8080/api/users -v
 
-@Path("/users")
+@Path("/api/users") // TODO agregar un utils con los base url /api o algo
 @Component
 public class UserController {
 
