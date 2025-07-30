@@ -1,0 +1,230 @@
+openapi: 3.0.3
+info:
+  title: Transport Booking API
+  version: 1.0.0
+  description: API for booking vehicles owned by drivers, used by clients.
+
+servers:
+  - url: localhost:3030
+
+paths:
+  /clients:
+    post:
+      summary: Create a new client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+  /drivers:
+    get:
+      summary: List all drivers
+      responses:
+        '200':
+          description: A list of drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Driver'
+    post:
+      summary: Register a new driver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Driver'
+      responses:
+        '201':
+          description: Driver created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+  /drivers/{id}/vehicles:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      summary: List all vehicles
+      responses:
+        '200':
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+    post:
+      summary: Register a new vehicle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '201':
+          description: Vehicle created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+  /drivers/{driver_id}/vehicles/{vehicle_id}:
+    parameters:
+      - name: driver_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+      - name: vehicle_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      summary: Get a vehicle by id
+      responses:
+        '200':
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+  /bookings:
+    get:
+      summary: List all bookings
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          description: Filter vehicles by model name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+  /users/{user_id}/bookings:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      summary: List all bookings
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      summary: Create a booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+	
+components:
+  schemas:
+    Client:
+      type: object
+      required: [id, name, email]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    Driver:
+      type: object
+      required: [id, username, email, profile_pic, description, rating, cbu]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        profile_pic:
+          type: idk
+        description:
+          type: string
+        rating:
+          type: float
+        cbu:
+          type: string
+
+    Vehicle:
+      type: object
+      required: [id, driverId, model, licensePlate]
+      properties:
+        id:
+          type: integer
+        driverId:
+          type: integer
+          description: ID of the driver who owns this vehicle
+        model:
+          type: string
+        licensePlate:
+          type: string
+
+    Booking:
+      type: object
+      required: [id, clientId, vehicleId, startTime, endTime]
+      properties:
+        id:
+          type: integer
+        clientId:
+          type: integer
+        vehicleId:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
