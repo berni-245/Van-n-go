@@ -5,11 +5,21 @@ info:
   description: API for booking vehicles owned by drivers, used by clients.
 
 servers:
-  - url: localhost:3030
-
+  - url: http://localhost:8080/api
+tags:
+  - name: Clients
+    description: Operations related to clients
+  - name: Drivers
+    description: Operations related to drivers
+  - name: Bookings
+    description: Operations related to bookings
+  - name: Zones
+    description: Operations related to zones
 paths:
   /clients:
     post:
+      tags:
+        - Clients
       summary: Create a new client
       requestBody:
         required: true
@@ -26,6 +36,8 @@ paths:
                 $ref: '#/components/schemas/Client'
   /drivers:
     get:
+      tags:
+        - Drivers
       summary: List all drivers
       responses:
         '200':
@@ -37,6 +49,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Driver'
     post:
+      tags:
+        - Drivers
       summary: Register a new driver
       requestBody:
         required: true
@@ -51,6 +65,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Driver'
+  /drivers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      tags:
+        - Drivers
+      summary: Get a driver by id
+      responses:
+        '200':
+          description: Driver retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
   /drivers/{id}/vehicles:
     parameters:
       - name: id
@@ -60,6 +93,8 @@ paths:
         schema:
           type: integer
     get:
+      tags:
+        - Drivers
       summary: List all vehicles
       responses:
         '200':
@@ -71,6 +106,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Vehicle'
     post:
+      tags:
+        - Drivers
       summary: Register a new vehicle
       requestBody:
         required: true
@@ -100,6 +137,8 @@ paths:
         schema:
           type: integer
     get:
+      tags:
+        - Drivers
       summary: Get a vehicle by id
       responses:
         '200':
@@ -112,12 +151,14 @@ paths:
                   $ref: '#/components/schemas/Vehicle'
   /bookings:
     get:
+      tags:
+        - Bookings
       summary: List all bookings
       parameters:
         - name: user_id
           in: query
           required: true
-          description: Filter vehicles by model name
+          description: The user's id
           schema:
             type: string
       responses:
@@ -129,26 +170,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Booking'
-  /users/{user_id}/bookings:
-    parameters:
-      - name: user_id
-        in: path
-        required: true
-        description: ID of the driver
-        schema:
-          type: integer
-    get:
-      summary: List all bookings
-      responses:
-        '200':
-          description: A list of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
     post:
+      tags:
+        - Bookings
       summary: Create a booking
       requestBody:
         required: true
@@ -163,7 +187,176 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
-	
+  /users/{user_id}/bookings:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      tags:
+        - Bookings
+      summary: List all bookings
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      tags:
+        - Bookings
+      summary: Create a booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+  /zones:
+    get:
+      tags:
+        - Zones
+      summary: List all Zones
+      responses:
+        '200':
+          description: A list of all zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+  /zones/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the zone
+        schema:
+          type: integer
+    get:
+      tags:
+        - Zones
+      summary: Get a zone by id
+      responses:
+        '200':
+          description: Zone retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+  /countries:
+    get:
+      tags:
+        - Zones
+      summary: List all Countries
+      responses:
+        '200':
+          description: A list of all countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+  /countries/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the country
+        schema:
+          type: integer
+    get:
+      tags:
+        - Zones
+      summary: Get a country by id
+      responses:
+        '200':
+          description: Country retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+  /provinces:
+    get:
+      tags:
+        - Zones
+      summary: List all Provinces
+      responses:
+        '200':
+          description: A list of all provinces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Region'
+  /provinces/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the province
+        schema:
+          type: integer
+    get:
+      tags:
+        - Zones
+      summary: Get a province by id
+      responses:
+        '200':
+          description: Province retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+  /neighborhoods:
+    get:
+      tags:
+        - Zones
+      summary: List all Neighborhoods
+      responses:
+        '200':
+          description: A list of all neighborhoods
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Region'
+  /neighborhoods/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the neighborhood
+        schema:
+          type: integer
+    get:
+      tags:
+        - Zones
+      summary: Get a neighborhood by id
+      responses:
+        '200':
+          description: Neighborhood retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
 components:
   schemas:
     Client:
@@ -189,12 +382,12 @@ components:
         email:
           type: string
           format: email
-        profile_pic:
-          type: idk
+        profile_pic_id:
+          type: integer
         description:
           type: string
         rating:
-          type: float
+          type: number
         cbu:
           type: string
 
@@ -214,7 +407,7 @@ components:
 
     Booking:
       type: object
-      required: [id, clientId, vehicleId, startTime, endTime]
+      required: [id, client_id, vehicle_id, shift_period]
       properties:
         id:
           type: integer
@@ -222,9 +415,43 @@ components:
           type: integer
         vehicleId:
           type: integer
-        startTime:
+        shift_period:
           type: string
-          format: date-time
-        endTime:
+          enum:
+            - MORNING
+            - AFTERNOON
+            - EVENING
+
+    Country:
+      type: object
+      required: [id, name, code]
+      properties:
+        id:
+          type: integer
+        name:
           type: string
-          format: date-time
+        code:
+          type: string
+          pattern: '^[A-Z]{2}$'
+
+    Region:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    Zone:
+      type: object
+      required: [id, country_id, province_id, neighborhood_id]
+      properties:
+        id:
+          type: integer
+        country_id:
+          type: integer
+        province_id:
+          type: integer
+        neighborhood_id:
+          type: integer
