@@ -148,116 +148,94 @@ paths:
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/Vehicle'
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/availability:
+    parameters:
+      - name: driver_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+      - name: vehicle_id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+    get:
+      tags:
+        - Drivers
+      summary: Get the regular availability from the vehicle
+      responses:
+        '200':
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Vehicle'
 
+  /bookings:
+    get:
+      tags:
+        - Bookings
+      summary: List bookings
+      description: |
+        Retrieves bookings optionally filtered by client or driver.
+        Only one filter is expected at a time.
+      parameters:
+        - name: fromClient
+          in: query
+          description: Filter bookings created by a specific client
+          required: false
+          schema:
+            type: integer
 
-  # /bookings?fromDriver=xxx
-  # /bookings?fromClient=xxx
-  # /bookings/{booking_id}
+        - name: toDriver
+          in: query
+          description: Filter bookings assigned to a specific driver
+          required: false
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+        '400':
+          description: Invalid query parameters
+        '401':
+          description: Unauthorized
 
   /bookings/{booking_id}:
     get:
-      summary: Get the booking with `booking_id`
-
-  /bookings/{user_id}:
-    get:
       tags:
         - Bookings
-      summary: List all bookings
+      summary: Get booking by ID
       parameters:
-        - name: user_id
-          in: query
+        - name: booking_id
+          in: path
           required: true
-          description: The user's id
           schema:
-            type: string
+            type: integer
       responses:
         '200':
-          description: A list of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-
-  /users/{user_id}/bookings:
-    parameters:
-      - name: user_id
-        in: path
-        required: true
-        description: ID of the driver
-        schema:
-          type: integer
-    get:
-      summary: List all bookings
-      responses:
-        '200':
-          description: A list of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-
-    post:
-      tags:
-        - Bookings
-      summary: Create a booking
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '201':
-          description: Booking created
+          description: Booking found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
-  /users/{user_id}/bookings:
-    parameters:
-      - name: user_id
-        in: path
-        required: true
-        description: ID of the driver
-        schema:
-          type: integer
-    get:
-      tags:
-        - Bookings
-      summary: List all bookings
-      responses:
-        '200':
-          description: A list of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-    post:
-      tags:
-        - Bookings
-      summary: Create a booking
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '201':
-          description: Booking created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
   /zones:
     get:
       tags:
@@ -291,105 +269,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zone'
-  /countries:
-    get:
-      tags:
-        - Zones
-      summary: List all Countries
-      responses:
-        '200':
-          description: A list of all countries
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Country'
-  /countries/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the country
-        schema:
-          type: integer
-    get:
-      tags:
-        - Zones
-      summary: Get a country by id
-      responses:
-        '200':
-          description: Country retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Country'
-  /provinces:
-    get:
-      tags:
-        - Zones
-      summary: List all Provinces
-      responses:
-        '200':
-          description: A list of all provinces
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Region'
-  /provinces/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the province
-        schema:
-          type: integer
-    get:
-      tags:
-        - Zones
-      summary: Get a province by id
-      responses:
-        '200':
-          description: Province retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Region'
-  /neighborhoods:
-    get:
-      tags:
-        - Zones
-      summary: List all Neighborhoods
-      responses:
-        '200':
-          description: A list of all neighborhoods
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Region'
-  /neighborhoods/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the neighborhood
-        schema:
-          type: integer
-    get:
-      tags:
-        - Zones
-      summary: Get a neighborhood by id
-      responses:
-        '200':
-          description: Neighborhood retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Region'
 components:
   schemas:
     Client:
@@ -459,8 +338,6 @@ components:
       type: object
       required: [id, name, code]
       properties:
-        id:
-          type: integer
         name:
           type: string
         code:
@@ -471,8 +348,6 @@ components:
       type: object
       required: [id, name]
       properties:
-        id:
-          type: integer
         name:
           type: string
 
@@ -482,9 +357,14 @@ components:
       properties:
         id:
           type: integer
-        country_id:
-          type: integer
-        province_id:
-          type: integer
-        neighborhood_id:
-          type: integer
+        country:
+          $ref: '#/components/schemas/Country'
+
+        province:
+          $ref: '#/components/schemas/Region'
+
+        neighborhood:
+          $ref: '#/components/schemas/Region'
+
+        self:
+          type: string
