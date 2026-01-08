@@ -1,0 +1,285 @@
+openapi: 3.1.2
+info:
+  title: Transport Booking API
+  version: 1.0.0
+  description: API for booking vehicles owned by drivers, used by clients.
+
+servers:
+  - url: http://localhost:3030
+    description: Development Server
+
+tags:
+  - name: Clients
+    description: |
+      Operations related to clients.
+  - name: Drivers
+    description: |
+      Operations related to drivers.
+  - name: Vehicles
+    description: |
+      Operations related to vehicles.
+
+paths:
+  /clients:
+    post:
+      summary: Create a new client
+      description: Registers a new client account in the system.
+      operationId: createClient
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        description: >
+          Client information required to create a new client account.
+          The email address must be unique.
+        content:
+          # TODO: use custom versioned mimetype?
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+      responses:
+        '201':
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+
+  /drivers:
+    get:
+      summary: List all drivers
+      description: Get paginated list of all drivers in the system.
+      operationId: listDrivers
+      tags:
+        - Drivers
+      responses:
+        '200':
+          description: A list of drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Driver'
+    post:
+      summary: Create a new driver
+      description: Registers a new client account in the system..
+      operationId: createDriver
+      tags:
+        - Drivers
+      requestBody:
+        required: true
+        description: >
+          Client information required to create a new client account.
+          The email address and username must be unique.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverCreate'
+      responses:
+        '201':
+          description: Driver created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+
+  /drivers/{id}/profile-picture:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+    post:
+      summary: Upload driver profile picture
+      description: Uploads or replaces the profile picture for a driver.
+      operationId: uploadDriverProfilePicture
+      tags:
+        - Drivers
+      requestBody:
+        description: asdf
+        required: true
+        content:
+          # TODO: not sure how to add the example in this case.
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: Image file to use as the driver’s profile picture
+      responses:
+        '200':
+          description: Profile picture updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profilePic:
+                    type: string
+                    format: uri
+                    example: https://cdn.example.com/drivers/42.jpg
+
+  /drivers/{id}/vehicles:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+    get:
+      summary: List all vehicles
+      description: Get all vehicles of driver with id `id`.
+      operationId: listDriverVehicles
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+    post:
+      summary: Register a new vehicle
+      description: Registers a new vehicle for a specific driver.
+      operationId: createVehicle
+      tags:
+        - Vehicles
+      requestBody:
+        description: >
+          Vehicle information required to create a new vechicle.
+          The email license plate must be unique.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleCreate'
+      responses:
+        '201':
+          description: Vehicle created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+
+components:
+  parameters:
+      DriverIdPath:
+        name: id
+        in: path
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+  schemas:
+    Client:
+      description: >
+        A registered user of the application who can create reservations with
+        drivers and submit ratings or feedback about completed trips.
+      type: object
+      required: [id, name, email]
+      properties:
+        id:
+          type: integer
+          example: 13
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: johndoe@mail.com
+    ClientCreate:
+      description: Data required to register a new client account.
+      type: object
+      required: [name, email]
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: johndoe@mail.com
+    Driver:
+      description: >
+        A registered user of the application who has vehicles and can get his services requested
+        by a client.
+      type: object
+      required: [id, username, email, profilePicId, description, rating, cbu]
+      properties:
+        id:
+          type: integer
+          example: 13
+        username:
+          type: string
+          example: Berni's Fletes
+        email:
+          type: string
+          format: email
+          example: berniflete@gmail.com
+        # WARNING: not sure if this should be an id or url or what.
+        profilePicId:
+          type: integer
+          example: 123
+        description:
+          type: string
+          example: Best fletes in Adrogué.
+        rating:
+          type: number
+          example: 10
+        # TODO: proper CBU example.
+        cbu:
+          type: string
+          example: idk
+    DriverCreate:
+      description: Data required to register a new driver account.
+      type: object
+      required: [username, email]
+      properties:
+        username:
+          type: string
+          example: Berni's Fletes
+        email:
+          type: string
+          format: email
+          example: berniflete@gmail.com
+        description:
+          type: string
+          example: Best fletes in Adrogué.
+        # TODO: proper CBU example.
+        cbu:
+          type: string
+          example: idk
+    Vehicle:
+      description: A vehicle registered to a specific driver
+      type: object
+      required: [id, driverId, model, licensePlate]
+      properties:
+        id:
+          type: integer
+          example: 1
+        driverId:
+          type: integer
+          description: ID of the driver who owns this vehicle
+          example: 13
+        model:
+          type: string
+          example: Lamborgotti Fasterosa
+        licensePlate:
+          type: string
+          example: AA1234BB
+    VehicleCreate:
+      description: Data required to register a new vehicle.
+      type: object
+      required: [driverId, model, licensePlate]
+      properties:
+        driverId:
+          type: integer
+          description: ID of the driver registering this vehicle
+          example: 13
+        model:
+          type: string
+          example: Lamborgotti Fasterosa
+        licensePlate:
+          type: string
+          example: AA1234BB
