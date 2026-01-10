@@ -5,7 +5,7 @@ info:
   description: API for booking vehicles owned by drivers, used by clients.
 
 servers:
-  - url: http://localhost:3030
+  - url: http://localhost:8080/api
     description: Development Server
 
 tags:
@@ -18,6 +18,12 @@ tags:
   - name: Vehicles
     description: |
       Operations related to vehicles.
+  - name: Bookings
+    description: |
+      Operations related to bookings
+  - name: Zones
+    description: |
+      Operations related to zones
 
 paths:
   /clients:
@@ -83,6 +89,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Driver'
+
+  /drivers/{id}:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+    get:
+      summary: Get information of a Driver
+      description: Given a driver ID, obtain the information of a Driver.
+      operationId: getDriverById
+      tags:
+        - Drivers
+      responses:
+        '200':
+          description: Information of a driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '404':
+          description: Not found
 
   /drivers/{id}/profile-picture:
     parameters:
@@ -161,6 +186,156 @@ paths:
               schema:
                 $ref: '#/components/schemas/Vehicle'
 
+  /drivers/{id}/vehicles/{vechicle_id}:
+    parameters:
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get information of a vehicle
+      description: Given a driver I and a vehicle ID, obtain the information of a Vehicle.
+      operationId: getVehicleById
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Information of a vehicle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Not found
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/availability:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get availability from the vehicle
+      description: Get the regular availability from the vehicle, this does not consider booked times.
+      operationId: listAvailability
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: A list of times
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/bookedTimes:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get booked times for the vehicle
+      description: Get the times the vehicle was booked for.
+      operationId: listBookedTimes
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: A list of times
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+
+  /bookings:
+    parameters:
+      - name: fromClient
+        in: query
+        description: Filter bookings created by a specific client
+        required: false
+        schema:
+          type: integer
+
+      - name: toDriver
+        in: query
+        description: Filter bookings assigned to a specific driver
+        required: false
+        schema:
+          type: integer
+    get:
+      summary: List bookings
+      description: |
+        Retrieves bookings optionally filtered by client or driver.
+        Only one filter is expected at a time.
+      operationId: listBookings
+      tags:
+        - Bookings
+
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+        '400':
+          description: Invalid query parameters
+        '401':
+          description: Unauthorized
+
+  /bookings/{booking_id}:
+    parameters:
+      - $ref: '#/components/parameters/BookingIdPath'
+    get:
+      summary: Get booking by ID
+      description: Get booking information given a booking ID.
+      operationId: getBookingById
+      tags:
+        - Bookings
+      responses:
+        '200':
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+
+  /zones:
+    get:
+      tags:
+        - Zones
+      summary: List all Zones
+      operationId: listZones
+      responses:
+        '200':
+          description: A list of all zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+
+  /zones/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ZoneIdPath'
+    get:
+      tags:
+        - Zones
+      summary: Get a zone by id
+      description: Get a zone given their zone ID.
+      operationId: getZoneById
+      responses:
+        '200':
+          description: Zone retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+
 components:
   parameters:
       DriverIdPath:
@@ -168,6 +343,27 @@ components:
         in: path
         required: true
         description: ID of the driver
+        schema:
+          type: integer
+      VehicleIdPath:
+        name: id
+        in: path
+        required: true
+        description: ID of the vehicle
+        schema:
+          type: integer
+      BookingIdPath:
+        name: id
+        in: path
+        required: true
+        description: ID of the booking
+        schema:
+          type: integer
+      ZoneIdPath:
+        name: id
+        in: path
+        required: true
+        description: ID of the zone
         schema:
           type: integer
   schemas:
@@ -283,3 +479,54 @@ components:
         licensePlate:
           type: string
           example: AA1234BB
+    Booking:
+      type: object
+      required: [id, client_id, vehicle_id, shift_period]
+      properties:
+        id:
+          type: integer
+        clientId:
+          type: integer
+        vehicleId:
+          type: integer
+        shift_period:
+          type: string
+          enum:
+            - MORNING
+            - AFTERNOON
+            - EVENING
+
+    Country:
+      type: object
+      required: [id, name, code]
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+          pattern: '^[A-Z]{2}$'
+
+    Region:
+      type: object
+      required: [id, name]
+      properties:
+        name:
+          type: string
+
+    Zone:
+      type: object
+      required: [id, country_id, province_id, neighborhood_id]
+      properties:
+        id:
+          type: integer
+        country:
+          $ref: '#/components/schemas/Country'
+
+        province:
+          $ref: '#/components/schemas/Region'
+
+        neighborhood:
+          $ref: '#/components/schemas/Region'
+
+        self:
+          type: string
