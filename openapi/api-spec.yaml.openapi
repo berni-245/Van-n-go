@@ -185,6 +185,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vehicle'
+  /messages:
+    get:
+      tags:
+        - Messages
+      summary: Get messages between a client and a driver
+      parameters:
+        -  $ref: '#/components/parameters/DriverIdQuery'
+        -  $ref: '#/components/parameters/ClientIdQuery'
+      responses:
+        '200':
+          description: List of messages between client and driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+              example:
+                clientId: 22
+                driverId: 13
+                messages:
+                  - id: 1
+                    content: "Hola"
+                    timestamp: "2026-01-10T18:30:00Z"
+                  - id: 2
+                    content: "Ya llego"
+                    timestamp: "2026-01-10T18:32:00Z"
+
+
+        '204':
+          description: No messages between selected client and driver
+        '403':
+          description: Not Authorized
+        '401':
+          description: Auth Required
 
   /drivers/{id}/vehicles/{vechicle_id}:
     parameters:
@@ -366,6 +399,21 @@ components:
         description: ID of the zone
         schema:
           type: integer
+      DriverIdQuery:
+        name: id
+        in: query ?
+        required: true
+        description: ID of the driver
+        schema:
+          type: integer
+      ClientIdQuery:
+        name: id
+        in: query ?
+        required: true
+        description: ID of the client
+        schema:
+          type: integer
+
   schemas:
     Client:
       description: >
@@ -464,6 +512,38 @@ components:
         licensePlate:
           type: string
           example: AA1234BB
+    Messages:
+      description: A list of time ordered messages between two users
+      type: object
+      required: [clientId, driverId, messages]
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          example: 1
+        driverId:
+          type: integer
+          description: ID of the driver
+          example: 13
+        clientId:
+          type: integer
+          description: ID of the client
+          example: 22
+    Message:
+      type: object
+      required: [ id, content, timestamp ]
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: "Hola, ¿llegás en 5?"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-01-10T18:30:00Z"
     VehicleCreate:
       description: Data required to register a new vehicle.
       type: object
