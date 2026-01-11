@@ -208,8 +208,10 @@ paths:
                 messages:
                   - id: 1
                     content: "Hola"
+                    sentByDriver: true
                     timestamp: "2026-01-10T18:30:00Z"
                   - id: 2
+                    sentByDriver: false
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
         '401':
@@ -605,7 +607,7 @@ components:
           example: 22
     Message:
       type: object
-      required: [ id, content, timestamp ]
+      required: [ id, content, sentByDriver, timestamp ]
       properties:
         id:
           type: integer
@@ -613,6 +615,8 @@ components:
         content:
           type: string
           example: "Hola, ¿llegás en 5?"
+        sentByDriver:
+          type: boolean
         timestamp:
           type: string
           format: date-time
