@@ -595,15 +595,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Message'
-          example: 1
         driverId:
           type: integer
           description: ID of the driver
-          example: 13
         clientId:
           type: integer
           description: ID of the client
-          example: 22
+      example:
+        clientId: 22
+        driverId: 13
+        messages:
+          - id: 1
+            content: "Hola, ¿llegás en 5?"
+            sentByDriver: false
+            timestamp: "2026-01-10T18:30:00Z"
+            self: "http://localhost:8080/messages/1"
+          - id: 2
+            content: "Sí, estoy estacionando."
+            sentByDriver: true
+            timestamp: "2026-01-10T18:32:00Z"
+            self: "http://localhost:8080/messages/2"
+
     Message:
       type: object
       required: [ id, content, sentByDriver, timestamp ]
