@@ -186,7 +186,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Vehicle'
   /messages:
-    get:
+    get: #TODO: preguntar si el endpoint dbeeria devolver los message embebidos junto a su URN (ademas de paginacion) o si
+        # deberiamos devolver solo los "links" a cada mensaje, teniendo en cuenta que esto seria un problema para la performance de la pagina
       tags:
         - Messages
       summary: Get messages between a client and a driver
@@ -616,6 +617,11 @@ components:
           type: string
           format: date-time
           example: "2026-01-10T18:30:00Z"
+        self:
+          type: string
+          format: uri
+          description: The canonical location of this message resource
+          example: "http://localhost:8080/messages/1"
     VehicleCreate:
       description: Data required to register a new vehicle.
       type: object
