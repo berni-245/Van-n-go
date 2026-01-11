@@ -475,14 +475,14 @@ components:
         schema:
           type: integer
       DriverIdQuery:
-        name: Driver id
+        name: driverId
         in: query
         required: true
         description: ID of the driver
         schema:
           type: integer
       ClientIdQuery:
-        name: Client id
+        name: clientId
         in: query
         required: true
         description: ID of the client
