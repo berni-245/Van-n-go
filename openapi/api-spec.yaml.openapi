@@ -190,6 +190,7 @@ paths:
       tags:
         - Messages
       summary: Get messages between a client and a driver
+      operationId: listMessages
       parameters:
         -  $ref: '#/components/parameters/DriverIdQuery'
         -  $ref: '#/components/parameters/ClientIdQuery'
@@ -210,14 +211,85 @@ paths:
                   - id: 2
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
-
-
-        '204':
-          description: No messages between selected client and driver
-        '403':
-          description: Not Authorized
         '401':
-          description: Auth Required
+          description: Auth required
+        '403':
+          description: Not Authorized (User is not part of the conversation)
+        '404':
+          description: Driver or Client not found
+
+    post:
+      tags:
+        - Messages
+      summary: Send a new message
+      description: Creates a new message between a client and a driver.
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ clientId, driverId, content ]
+              properties:
+                clientId:
+                  type: integer
+                driverId:
+                  type: integer
+                content:
+                  type: string
+                  example: "Hola, llego en 5 minutos."
+      responses:
+        '201':
+          description: Message created
+          headers:
+            Location:
+              description: URI of the created message
+              schema:
+                type: string
+                example: "/messages/42"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid Input
+        '401':
+          description: Auth required
+        '403':
+          description: Not Authorized (User is not part of the conversation)
+        '404':
+          description: Driver or Client not found
+
+  /messages/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the message to retrieve
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Messages
+      summary: Get a single message
+      description: Given a message ID, obtain the message details.
+      operationId: getMessageById
+      responses:
+        '200':
+          description: Message details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Auth required
+        '403':
+          description: Not Authorized (User is not part of the conversation)
+        '404':
+          description: Message not found
+
 
   /drivers/{id}/vehicles/{vechicle_id}:
     parameters:
