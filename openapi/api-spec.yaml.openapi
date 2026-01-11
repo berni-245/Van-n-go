@@ -643,7 +643,7 @@ components:
           example: AA1234BB
     Booking:
       type: object
-      required: [id, client_id, vehicle_id, shift_period]
+      required: [id, clientId, vehicleId, shiftPeriod]
       properties:
         id:
           type: integer
@@ -651,7 +651,7 @@ components:
           type: integer
         vehicleId:
           type: integer
-        shift_period:
+        shiftPeriod:
           type: string
           enum:
             - MORNING
