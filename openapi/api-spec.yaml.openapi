@@ -724,18 +724,21 @@ components:
         A registered user of the application who can create reservations with
         drivers and submit ratings or feedback about completed trips.
       type: object
-      required: [id, name, email, links]
+      required: [id, username, email, preferedLanguage, links]
       properties:
         id:
           type: integer
           example: 13
-        name:
+        username:
           type: string
           example: John Doe
         email:
           type: string
           format: email
           example: johndoe@mail.com
+        preferedLanguage:
+          type: string
+          example: english
         links:
           type: object
           required: [self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings]
