@@ -54,7 +54,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Client'
 
-  /clients/{id}:
+  /clients/{clientId}:
     parameters:
       - $ref: '#/components/parameters/ClientIdPath'
     get:
@@ -73,7 +73,7 @@ paths:
         '404':
           description: Not found
 
-  /clients/{id}/profile-picture:
+  /clients/{clientId}/profile-picture:
     parameters:
       - $ref: '#/components/parameters/ClientIdPath'
     get:
@@ -170,7 +170,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Driver'
 
-  /drivers/{id}:
+  /drivers/{driverId}:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
     get:
@@ -189,7 +189,7 @@ paths:
         '404':
           description: Not found
 
-  /drivers/{id}/profile-picture:
+  /drivers/{driverId}/profile-picture:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
     get:
@@ -247,7 +247,7 @@ paths:
         '415':
           description: Unsupported Media Type
 
-  /drivers/{id}/vehicles:
+  /drivers/{driverId}/vehicles:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
     get:
@@ -288,8 +288,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Vehicle'
 
-  /drivers/{id}/vehicles/{vechicle_id}:
+  /drivers/{driverId}/vehicles/{vehicleId}:
     parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
       - $ref: '#/components/parameters/VehicleIdPath'
     get:
       summary: Get information of a vehicle
@@ -307,7 +308,7 @@ paths:
         '404':
           description: Not found
 
-  /drivers/{driver_id}/vehicles/{vehicle_id}/availability:
+  /drivers/{driverId}/vehicles/{vehicleId}/availability:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
       - $ref: '#/components/parameters/VehicleIdPath'
@@ -327,7 +328,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
 
-  /drivers/{driver_id}/vehicles/{vehicle_id}/bookedTimes:
+  /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
       - $ref: '#/components/parameters/VehicleIdPath'
@@ -345,11 +346,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+                  # TODO: usar un tipo para Time
+                  $ref: '#/components/schemas/Vehicle'
 
 
-  /drivers/{driver_id}/vehicles/{vehicle_id}/picture:
+  /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
       - $ref: '#/components/parameters/VehicleIdPath'
     get:
       summary: Get the vehicle picture.
@@ -414,13 +417,24 @@ paths:
         required: false
         schema:
           type: integer
-
       - name: toDriver
         in: query
         description: Filter bookings assigned to a specific driver
         required: false
         schema:
           type: integer
+      - name: status
+        in: query
+        description: Filter bookings based on status
+        required: true
+        schema:
+          type: string
+          enum:
+            - PENDING
+            - ACCEPTED
+            - COMPLETED
+            - REJECTED
+            - CANCELED
     get:
       summary: List bookings
       description: |
@@ -445,7 +459,7 @@ paths:
         '401':
           description: Unauthorized
 
-  /bookings/{booking_id}:
+  /bookings/{bookingId}:
     parameters:
       - $ref: '#/components/parameters/BookingIdPath'
     get:
@@ -464,7 +478,7 @@ paths:
         '404':
           description: Booking not found
 
-  /bookings/{booking_id}/proof-of-payment:
+  /bookings/{bookingId}/proof-of-payment:
     parameters:
       - $ref: '#/components/parameters/BookingIdPath'
     get:
@@ -641,7 +655,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Zone'
 
-  /zones/{id}:
+  /zones/{zoneId}:
     parameters:
       - $ref: '#/components/parameters/ZoneIdPath'
     get:
@@ -661,38 +675,17 @@ paths:
 components:
   parameters:
       ClientIdPath:
-        name: id
+        name: clientId
         in: path
         required: true
         description: ID of the client
         schema:
           type: integer
       DriverIdPath:
-        name: id
+        name: driverId
         in: path
         required: true
         description: ID of the driver
-        schema:
-          type: integer
-      VehicleIdPath:
-        name: id
-        in: path
-        required: true
-        description: ID of the vehicle
-        schema:
-          type: integer
-      BookingIdPath:
-        name: id
-        in: path
-        required: true
-        description: ID of the booking
-        schema:
-          type: integer
-      ZoneIdPath:
-        name: id
-        in: path
-        required: true
-        description: ID of the zone
         schema:
           type: integer
       DriverIdQuery:
@@ -700,6 +693,27 @@ components:
         in: query
         required: true
         description: ID of the driver
+        schema:
+          type: integer
+      VehicleIdPath:
+        name: vehicleId
+        in: path
+        required: true
+        description: ID of the vehicle
+        schema:
+          type: integer
+      BookingIdPath:
+        name: bookingId
+        in: path
+        required: true
+        description: ID of the booking
+        schema:
+          type: integer
+      ZoneIdPath:
+        name: zoneId
+        in: path
+        required: true
+        description: ID of the zone
         schema:
           type: integer
       ClientIdQuery:
@@ -716,7 +730,7 @@ components:
         A registered user of the application who can create reservations with
         drivers and submit ratings or feedback about completed trips.
       type: object
-      required: [id, name, email]
+      required: [id, name, email, links]
       properties:
         id:
           type: integer
@@ -728,6 +742,31 @@ components:
           type: string
           format: email
           example: johndoe@mail.com
+        links:
+          type: object
+          required: [self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings]
+          properties:
+            self:
+              type: string
+              example: /api/clients/13
+            profilePic:
+              type: string
+              example: /api/clients/13/profile-picture
+            pendingBookings:
+              type: string
+              example: /api/bookings?fromClient=13&status=pending
+            accptedBookings:
+              type: string
+              example: /api/bookings?fromClient=13&status=accepted
+            completedBooknigs:
+              type: string
+              example: /api/bookings?fromClient=13&status=completed
+            rejectedBookings:
+              type: string
+              example: /api/bookings?fromClient=13&status=rejected
+            canceledBookings:
+              type: string
+              example: /api/bookings?fromClient=13&status=canceled
     ClientCreate:
       description: Data required to register a new client account.
       type: object
@@ -745,7 +784,7 @@ components:
         A registered user of the application who has vehicles and can get his services requested
         by a client.
       type: object
-      required: [id, username, email, profilePicId, description, rating, cbu]
+      required: [id, username, email, profilePicId, description, rating, cbu, links]
       properties:
         id:
           type: integer
@@ -771,6 +810,34 @@ components:
         cbu:
           type: string
           example: idk
+        links:
+          type: object
+          required: [self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings, vehicles]
+          properties:
+            self:
+              type: string
+              example: /api/drivers/13
+            profilePic:
+              type: string
+              example: /api/drivers/13/profile-picture
+            pendingBookings:
+              type: string
+              example: /api/bookings?toDriver=13&status=pending
+            accptedBookings:
+              type: string
+              example: /api/bookings?toDriver=13&status=accepted
+            completedBooknigs:
+              type: string
+              example: /api/bookings?toDriver=13&status=completed
+            rejectedBookings:
+              type: string
+              example: /api/bookings?toDriver=13&status=rejected
+            canceledBookings:
+              type: string
+              example: /api/bookings?toDriver=13&status=canceled
+            vehicles:
+              type: string
+              example: /api/driver/13/vehicles
     DriverCreate:
       description: Data required to register a new driver account.
       type: object
@@ -793,7 +860,7 @@ components:
     Vehicle:
       description: A vehicle registered to a specific driver
       type: object
-      required: [id, driverId, model, licensePlate]
+      required: [id, driverId, model, licensePlate, links]
       properties:
         id:
           type: integer
@@ -801,6 +868,40 @@ components:
         driverId:
           type: integer
           description: ID of the driver who owns this vehicle
+          example: 13
+        model:
+          type: string
+          example: Lamborgotti Fasterosa
+        licensePlate:
+          type: string
+          example: AA1234BB
+        links:
+          type: object
+          required: [self, picture, driver, availability, bookedTimes]
+          properties:
+            self:
+              type: string
+              example: /api/drivers/13/vehicles/1
+            picture:
+              type: string
+              example: /api/drivers/13/vehicles/1/picture
+            driver:
+              type: string
+              example: /api/drivers/13
+            availability:
+              type: string
+              example: /api/drivers/13/vehicles/1/availability
+            bookedTimes:
+              type: string
+              example: /api/drivers/13/vehicles/1/booked-times
+    VehicleCreate:
+      description: Data required to register a new vehicle.
+      type: object
+      required: [driverId, model, licensePlate]
+      properties:
+        driverId:
+          type: integer
+          description: ID of the driver registering this vehicle
           example: 13
         model:
           type: string
@@ -859,21 +960,6 @@ components:
           format: uri
           description: The canonical location of this message resource
           example: "http://localhost:8080/messages/1"
-    VehicleCreate:
-      description: Data required to register a new vehicle.
-      type: object
-      required: [driverId, model, licensePlate]
-      properties:
-        driverId:
-          type: integer
-          description: ID of the driver registering this vehicle
-          example: 13
-        model:
-          type: string
-          example: Lamborgotti Fasterosa
-        licensePlate:
-          type: string
-          example: AA1234BB
     Booking:
       type: object
       required: [id, clientId, vehicleId, shiftPeriod]
@@ -895,33 +981,31 @@ components:
       type: object
       required: [id, name, code]
       properties:
+        id:
+          type: integer
         name:
           type: string
         code:
           type: string
           pattern: '^[A-Z]{2}$'
-
     Region:
       type: object
       required: [id, name]
       properties:
+        id:
+          type: integer
         name:
           type: string
 
     Zone:
       type: object
-      required: [id, country_id, province_id, neighborhood_id]
+      required: [id, country, province, neighborhood]
       properties:
         id:
           type: integer
         country:
           $ref: '#/components/schemas/Country'
-
         province:
           $ref: '#/components/schemas/Region'
-
         neighborhood:
           $ref: '#/components/schemas/Region'
-
-        self:
-          type: string
