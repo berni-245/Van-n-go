@@ -21,6 +21,9 @@ tags:
   - name: Bookings
     description: |
       Operations related to bookings
+  - name: Messages
+    description: |
+      Operations related to messages
   - name: Zones
     description: |
       Operations related to zones
@@ -50,6 +53,83 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Client'
+
+  /clients/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ClientIdPath'
+    get:
+      summary: Get information of a Client
+      description: Given a client ID, obtain the information of a Client.
+      operationId: getClientById
+      tags:
+        - Clients
+      responses:
+        '200':
+          description: Information of a client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Not found
+
+  /clients/{id}/profile-picture:
+    parameters:
+      - $ref: '#/components/parameters/ClientIdPath'
+    get:
+      summary: Get the profile picture.
+      description: Get the profile picture of the client id.
+      operationId: getClientProfilePicture
+      tags:
+        - Clients
+      responses:
+        '200':
+          description: Image retrieved successfully
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+    post:
+      tags:
+        - Clients
+      summary: Upload client profile picture
+      description: Uploads or replaces the profile picture for a client (format PNG or JPG).
+      operationId: uploadClientProfilePicture
+      requestBody:
+        description: Image
+        required: true
+        content:
+          # TODO: not sure how to add the example in this case.
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: Image file to use as the client’s profile picture
+      responses:
+        '201':
+          description: Profile picture uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profilePic:
+                    type: string
+                    format: uri
+                    example: https://cdn.example.com/clients/42.jpg
+        '415':
+          description: Unsupported Media Type
 
   /drivers:
     get:
@@ -112,12 +192,32 @@ paths:
   /drivers/{id}/profile-picture:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
-    post:
-      summary: Upload driver profile picture
-      description: Uploads or replaces the profile picture for a driver.
-      operationId: uploadDriverProfilePicture
+    get:
+      summary: Get the profile picture.
+      description: Get the profile picture of the driver id.
+      operationId: getDriverProfilePicture
       tags:
         - Drivers
+      responses:
+        '200':
+          description: Image retrieved successfully
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+    post:
+      tags:
+        - Drivers
+      summary: Upload driver profile picture
+      description: Uploads or replaces the profile picture for a driver (format PNG or JPG).
+      operationId: uploadDriverProfilePicture
       requestBody:
         description: asdf
         required: true
@@ -133,8 +233,8 @@ paths:
                   type: string
                   description: Image file to use as the driver’s profile picture
       responses:
-        '200':
-          description: Profile picture updated
+        '201':
+          description: Profile picture uploaded
           content:
             application/json:
               schema:
@@ -144,6 +244,8 @@ paths:
                     type: string
                     format: uri
                     example: https://cdn.example.com/drivers/42.jpg
+        '415':
+          description: Unsupported Media Type
 
   /drivers/{id}/vehicles:
     parameters:
@@ -185,6 +287,237 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vehicle'
+
+  /drivers/{id}/vehicles/{vechicle_id}:
+    parameters:
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get information of a vehicle
+      description: Given a driver I and a vehicle ID, obtain the information of a Vehicle.
+      operationId: getVehicleById
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Information of a vehicle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Not found
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/availability:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get availability from the vehicle
+      description: Get the regular availability from the vehicle, this does not consider booked times.
+      operationId: listAvailability
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: A list of times
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/bookedTimes:
+    parameters:
+      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get booked times for the vehicle
+      description: Get the times the vehicle was booked for.
+      operationId: listBookedTimes
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: A list of times
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+
+
+  /drivers/{driver_id}/vehicles/{vehicle_id}/picture:
+    parameters:
+      - $ref: '#/components/parameters/VehicleIdPath'
+    get:
+      summary: Get the vehicle picture.
+      description: Get the vehicle picture of the driver id and vehicle id.
+      operationId: getVehiclePicture
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Image retrieved successfully
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+    post:
+      tags:
+        - Vehicles
+      summary: Upload vehicle picture
+      description: Uploads or replaces the picture for a vehicle (format PNG or JPG).
+      operationId: uploadVehiclePicture
+      requestBody:
+        description: Image
+        required: true
+        content:
+          # TODO: not sure how to add the example in this case.
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: Image file to use as the vehicle’s profile picture
+      responses:
+        '201':
+          description: Profile picture uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profilePic:
+                    type: string
+                    format: uri
+                    example: https://cdn.example.com/vehicles/42.jpg
+        '415':
+          description: Unsupported Media Type
+
+  /bookings:
+    parameters:
+      - name: fromClient
+        in: query
+        description: Filter bookings created by a specific client
+        required: false
+        schema:
+          type: integer
+
+      - name: toDriver
+        in: query
+        description: Filter bookings assigned to a specific driver
+        required: false
+        schema:
+          type: integer
+    get:
+      summary: List bookings
+      description: |
+        Retrieves bookings optionally filtered by client or driver.
+        Only one filter is expected at a time.
+      operationId: listBookings
+      tags:
+        - Bookings
+
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+        '400':
+          description: Invalid query parameters
+        '401':
+          description: Unauthorized
+
+  /bookings/{booking_id}:
+    parameters:
+      - $ref: '#/components/parameters/BookingIdPath'
+    get:
+      summary: Get booking by ID
+      description: Get booking information given a booking ID.
+      operationId: getBookingById
+      tags:
+        - Bookings
+      responses:
+        '200':
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+
+  /bookings/{booking_id}/proof-of-payment:
+    parameters:
+      - $ref: '#/components/parameters/BookingIdPath'
+    get:
+      summary: Get the proof of payment
+      description: Get the proof of payment for a booking given their booking ID.
+      operationId: getBookingProofOfPayment
+      tags:
+        - Bookings
+      responses:
+        '200':
+          description: Pdf retrieved successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+    post:
+      tags:
+        - Bookings
+      summary: Upload the proof of payment
+      description: Uploads or replaces the proof of payment for a booking (format PDF).
+      operationId: uploadBookingProofOfPayment
+      requestBody:
+        description: Pdf
+        required: true
+        content:
+          # TODO: not sure how to add the example in this case.
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: Pdf file to use as the booking’s proof of payment.
+      responses:
+        '201':
+          description: Proof of payment uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profilePic:
+                    type: string
+                    format: uri
+                    example: https://cdn.example.com/bookings/42.pdf
+        '415':
+          description: Unsupported Media Type
+
   /messages:
     get:
       tags:
@@ -192,8 +525,8 @@ paths:
       summary: Get messages between a client and a driver
       operationId: listMessages
       parameters:
-        -  $ref: '#/components/parameters/DriverIdQuery'
-        -  $ref: '#/components/parameters/ClientIdQuery'
+        - $ref: '#/components/parameters/DriverIdQuery'
+        - $ref: '#/components/parameters/ClientIdQuery'
       responses:
         '200':
           description: List of messages between client and driver
@@ -292,124 +625,6 @@ paths:
         '404':
           description: Message not found
 
-
-  /drivers/{id}/vehicles/{vechicle_id}:
-    parameters:
-      - $ref: '#/components/parameters/VehicleIdPath'
-    get:
-      summary: Get information of a vehicle
-      description: Given a driver I and a vehicle ID, obtain the information of a Vehicle.
-      operationId: getVehicleById
-      tags:
-        - Vehicles
-      responses:
-        '200':
-          description: Information of a vehicle
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Vehicle'
-        '404':
-          description: Not found
-
-  /drivers/{driver_id}/vehicles/{vehicle_id}/availability:
-    parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
-    get:
-      summary: Get availability from the vehicle
-      description: Get the regular availability from the vehicle, this does not consider booked times.
-      operationId: listAvailability
-      tags:
-        - Vehicles
-      responses:
-        '200':
-          description: A list of times
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
-
-  /drivers/{driver_id}/vehicles/{vehicle_id}/bookedTimes:
-    parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
-    get:
-      summary: Get booked times for the vehicle
-      description: Get the times the vehicle was booked for.
-      operationId: listBookedTimes
-      tags:
-        - Vehicles
-      responses:
-        '200':
-          description: A list of times
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
-
-  /bookings:
-    parameters:
-      - name: fromClient
-        in: query
-        description: Filter bookings created by a specific client
-        required: false
-        schema:
-          type: integer
-
-      - name: toDriver
-        in: query
-        description: Filter bookings assigned to a specific driver
-        required: false
-        schema:
-          type: integer
-    get:
-      summary: List bookings
-      description: |
-        Retrieves bookings optionally filtered by client or driver.
-        Only one filter is expected at a time.
-      operationId: listBookings
-      tags:
-        - Bookings
-
-      responses:
-        '200':
-          description: List of bookings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-
-        '400':
-          description: Invalid query parameters
-        '401':
-          description: Unauthorized
-
-  /bookings/{booking_id}:
-    parameters:
-      - $ref: '#/components/parameters/BookingIdPath'
-    get:
-      summary: Get booking by ID
-      description: Get booking information given a booking ID.
-      operationId: getBookingById
-      tags:
-        - Bookings
-      responses:
-        '200':
-          description: Booking found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '404':
-          description: Booking not found
-
   /zones:
     get:
       tags:
@@ -445,6 +660,13 @@ paths:
 
 components:
   parameters:
+      ClientIdPath:
+        name: id
+        in: path
+        required: true
+        description: ID of the client
+        schema:
+          type: integer
       DriverIdPath:
         name: id
         in: path
