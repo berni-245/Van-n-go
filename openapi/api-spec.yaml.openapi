@@ -365,7 +365,6 @@ paths:
                   # TODO: usar un tipo para Time
                   $ref: '#/components/schemas/Vehicle'
 
-
   /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
@@ -474,6 +473,37 @@ paths:
           description: Invalid query parameters
         '401':
           description: Unauthorized
+
+    post:
+      summary: Create a new booking
+      description: As a client, create a new booking
+      operationId: createBooking
+      tags:
+        - Bookings
+      requestBody:
+        required: true
+        description: >
+          Booking information required to create a new booking.
+          The vehicle must not be booked already at that time.
+        content:
+          # TODO: use custom versioned mimetype?
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: "Bad Request: Bad format of the body provided"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
 
   /bookings/{bookingId}:
     parameters:
@@ -1009,7 +1039,25 @@ components:
             - MORNING
             - AFTERNOON
             - EVENING
-
+    BookingCreate:
+      description: Data required to create a new Booking.
+      type: object
+      required: [vehicleId, destinationZoneId, date, shiftPeriod]
+      properties:
+        vehicleId:
+          type: integer
+        destinationZoneId:
+          type: integer
+        date:
+          type: string
+          format: date
+          example: "2026-01-10"
+        shiftPeriod:
+          type: string
+          enum:
+            - MORNING
+            - AFTERNOON
+            - EVENING
     Country:
       type: object
       required: [id, name, code]
