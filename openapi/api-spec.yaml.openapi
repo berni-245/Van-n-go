@@ -10,23 +10,17 @@ servers:
 
 tags:
   - name: Clients
-    description: |
-      Operations related to clients.
+    description: Operations related to clients.
   - name: Drivers
-    description: |
-      Operations related to drivers.
+    description: Operations related to drivers.
   - name: Vehicles
-    description: |
-      Operations related to vehicles.
+    description: Operations related to vehicles.
   - name: Bookings
-    description: |
-      Operations related to bookings
+    description: Operations related to bookings
   - name: Messages
-    description: |
-      Operations related to messages
+    description: Operations related to messages
   - name: Zones
-    description: |
-      Operations related to zones
+    description: Operations related to zones
 
 paths:
   /clients:
@@ -437,7 +431,7 @@ paths:
             - CANCELED
     get:
       summary: List bookings
-      description: |
+      description: >
         Retrieves bookings optionally filtered by client or driver.
         Only one filter is expected at a time.
       operationId: listBookings
