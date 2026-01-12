@@ -66,6 +66,28 @@ paths:
                 $ref: '#/components/schemas/Client'
         '404':
           description: Not found
+    patch:
+      summary: Update client information
+      description: Given a client ID, update the specified information of a Client.
+      operationId: updateClientById
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        description: Client information that you want to update.
+        content:
+          # TODO: use custom versioned mimetype?
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpdate'
+      responses:
+        '201':
+          description: Client updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+      
 
   /clients/{clientId}/profile-picture:
     parameters:
@@ -776,6 +798,20 @@ components:
           type: string
           format: email
           example: johndoe@mail.com
+    ClientUpdate:
+      description: Client data to be updated.
+      type: object
+      properties:
+        username:
+          type: string
+          example: New username
+        email:
+          type: string
+          format: email
+          example: new-mail@mail.com
+        preferedLanguage:
+          type: string
+          example: spanish
     Driver:
       description: >
         A registered user of the application who has vehicles and can get his services requested
