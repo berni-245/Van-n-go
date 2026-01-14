@@ -915,7 +915,9 @@ components:
           example: Best fletes in Adrogué.
         rating:
           type: number
-          example: 10
+          minimum: 0
+          maximum: 5
+          example: 4
         # TODO: proper CBU example.
         cbu:
           type: string
