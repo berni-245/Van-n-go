@@ -162,7 +162,7 @@ paths:
   /drivers:
     get:
       summary: List all drivers
-      description: Get paginated list of all drivers in the system.
+      description: Get list of all drivers in the system.
       operationId: listDrivers
       tags:
         - Drivers
