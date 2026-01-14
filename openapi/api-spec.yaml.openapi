@@ -703,9 +703,9 @@ paths:
         '404':
           description: Driver or Client not found
 
-  /messages/{id}:
+  /messages/{messageId}:
     parameters:
-      - name: id
+      - name: messageId
         in: path
         required: true
         description: The ID of the message to retrieve
