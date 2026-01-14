@@ -164,6 +164,8 @@ paths:
   /drivers:
     get:
       summary: List all drivers
+      parameters:
+        - $ref: '#/components/parameters/PaginationPath'
       description: Get list of all drivers in the system.
       operationId: listDrivers
       tags:
@@ -171,6 +173,13 @@ paths:
       responses:
         '200':
           description: A list of drivers
+          headers:
+            Link:
+              description: >
+                Links to navigation (next, prev, first, last) according to RFC 5988.
+                Example: </drivers?page=2>; rel="next"
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -298,11 +307,20 @@ paths:
       summary: List all vehicles
       description: Get all vehicles of driver with id `id`.
       operationId: listDriverVehicles
+      parameters:
+        - $ref: '#/components/parameters/PaginationPath'
       tags:
         - Vehicles
       responses:
         '200':
           description: A list of vehicles
+          headers:
+            Link:
+              description: >
+                Links to navigation (next, prev, first, last) according to RFC 5988.
+                Example: </drivers?page=2>; rel="next"
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -492,6 +510,8 @@ paths:
             - CANCELED
     get:
       summary: List bookings
+      parameters:
+        - $ref: '#/components/parameters/PaginationPath'
       description: >
         Retrieves bookings optionally filtered by client or driver.
         Only one filter is expected at a time.
@@ -502,6 +522,13 @@ paths:
       responses:
         '200':
           description: List of bookings
+          headers:
+            Link:
+              description: >
+                Links to navigation (next, prev, first, last) according to RFC 5988.
+                Example: </bookings?page=2>; rel="next"
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -640,9 +667,19 @@ paths:
       parameters:
         - $ref: '#/components/parameters/DriverIdQuery'
         - $ref: '#/components/parameters/ClientIdQuery'
+        - $ref: '#/components/parameters/PaginationPath'
+
+
       responses:
         '200':
           description: List of messages between client and driver
+          headers:
+            Link:
+              description: >
+                Links to navigation (next, prev, first, last) according to RFC 5988.
+                Example: </drivers?page=2>; rel="next"
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -820,6 +857,13 @@ components:
       description: ID of the client
       schema:
         type: integer
+    PaginationPath:
+       name: page
+       in: query
+       description: Page number
+       schema:
+         type: integer
+         default: 1
 
   schemas:
     Client:
