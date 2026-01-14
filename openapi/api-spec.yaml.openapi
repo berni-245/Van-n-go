@@ -82,19 +82,26 @@ paths:
         - Clients
       requestBody:
         required: true
-        description: Client information that you want to update.
         content:
-          # TODO: use custom versioned mimetype?
           application/json:
             schema:
               $ref: '#/components/schemas/ClientUpdate'
       responses:
-        '201':
-          description: Client updated
+        '200':
+          description: Client updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Client'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Client not found
+
 
 
   /clients/{clientId}/profile-picture:
@@ -235,7 +242,33 @@ paths:
                 $ref: '#/components/schemas/Driver'
         '404':
           description: Not found
-
+    patch:
+      summary: Update driver information
+      description: Updates specific fields of a driver's profile (Partial Update).
+      operationId: updateDriver
+      tags:
+        - Drivers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverUpdate'
+      responses:
+        '200':
+          description: Driver updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (Only the driver themselves can update their profile)
+        '404':
+          description: Driver not found
   /drivers/{driverId}/profile-picture:
     parameters:
       - $ref: '#/components/parameters/DriverIdPath'
@@ -375,6 +408,33 @@ paths:
                 $ref: '#/components/schemas/Vehicle'
         '404':
           description: Not found
+    patch:
+      summary: Update vehicle information
+      description: Updates specific fields of a vehicle (Partial Update).
+      operationId: updateVehicle
+      tags:
+        - Vehicles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleUpdate'
+      responses:
+        '200':
+          description: Vehicle updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (Only the owner can update the vehicle)
+        '404':
+          description: Vehicle or Driver not found
 
   /drivers/{driverId}/vehicles/{vehicleId}/availability:
     parameters:
@@ -934,9 +994,9 @@ components:
           type: string
           format: email
           example: new-mail@mail.com
-        preferedLanguage:
+        preferredLanguage:
           type: string
-          example: spanish
+          example: Spanish
     Driver:
       description: >
         A registered user of the application who has vehicles and can get his services requested
@@ -1008,10 +1068,32 @@ components:
         description:
           type: string
           example: Best fletes in Adrogué.
-        # TODO: proper CBU example.
         cbu:
           type: string
-          example: idk
+          example: "0000003100000000000000"
+    DriverUpdate:
+      description: Driver data to be updated. Any field is optional.
+      type: object
+      properties:
+        username:
+          type: string
+          description: The new public display name
+          example: "Berni's Fletes 2.0"
+        description:
+          type: string
+          description: Updated bio or service description
+          example: "Now covering longer distances."
+        cbu:
+          type: string
+          description: Updated banking information
+          example: "0000003100000000000000"
+        email:
+          type: string
+          format: email
+          example: new-mail@mail.com
+        preferredLanguage:
+          type: string
+          example: Spanish
     Vehicle:
       description: A vehicle registered to a specific driver
       type: object
@@ -1064,6 +1146,17 @@ components:
         licensePlate:
           type: string
           example: AA1234BB
+    VehicleUpdate:
+      description: Vehicle data to be updated. Any field is optional.
+      type: object
+      properties:
+        model:
+          type: string
+          example: "Lamborgotti Fasterosa GT"
+        licensePlate:
+          type: string
+          description: Useful for typo corrections
+          example: "AA999BB"
     Messages:
       description: A list of time ordered messages between two users
       type: object
