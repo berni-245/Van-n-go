@@ -894,7 +894,7 @@ components:
         A registered user of the application who has vehicles and can get his services requested
         by a client.
       type: object
-      required: [ id, username, email, profilePicId, description, rating, cbu, links ]
+      required: [ id, username, email, description, rating, cbu, links ]
       properties:
         id:
           type: integer
@@ -906,10 +906,6 @@ components:
           type: string
           format: email
           example: berniflete@gmail.com
-        # WARNING: not sure if this should be an id or url or what.
-        profilePicId:
-          type: integer
-          example: 123
         description:
           type: string
           example: Best fletes in Adrogué.
@@ -918,10 +914,9 @@ components:
           minimum: 0
           maximum: 5
           example: 4
-        # TODO: proper CBU example.
         cbu:
           type: string
-          example: idk
+          example: 1234567891234567891234
         links:
           type: object
           required: [ self, profilePic, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings, vehicles ]
@@ -1088,6 +1083,25 @@ components:
             - MORNING
             - AFTERNOON
             - EVENING
+        links:
+          type: object
+          required: [ self, client, driver, vehicle, proofOfPayment ]
+          properties:
+            self:
+              type: string
+              example: /api/bookings/42
+            client:
+              type: string
+              example: /api/clients/13
+            driver:
+              type: string
+              example: /api/drivers/10
+            vehicle:
+              type: string
+              example: /api/drivers/10/vehicles/5
+            proofOfPayment:
+              type: string
+              example: /api/bookings/42/proof-of-payment
     BookingCreate:
       description: Data required to create a new Booking.
       type: object
