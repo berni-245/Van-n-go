@@ -823,7 +823,7 @@ components:
         A registered user of the application who can create reservations with
         drivers and submit ratings or feedback about completed trips.
       type: object
-      required: [ id, username, email, preferedLanguage, links ]
+      required: [ id, username, email, preferredLanguage, links ]
       properties:
         id:
           type: integer
@@ -835,12 +835,12 @@ components:
           type: string
           format: email
           example: johndoe@mail.com
-        preferedLanguage:
+        preferredLanguage:
           type: string
           example: english
         links:
           type: object
-          required: [ self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings ]
+          required: [ self, profilePic, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings ]
           properties:
             self:
               type: string
@@ -851,10 +851,10 @@ components:
             pendingBookings:
               type: string
               example: /api/bookings?fromClient=13&status=pending
-            accptedBookings:
+            acceptedBookings:
               type: string
               example: /api/bookings?fromClient=13&status=accepted
-            completedBooknigs:
+            completedBookings:
               type: string
               example: /api/bookings?fromClient=13&status=completed
             rejectedBookings:
@@ -924,7 +924,7 @@ components:
           example: idk
         links:
           type: object
-          required: [ self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings, vehicles ]
+          required: [ self, profilePic, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings, vehicles ]
           properties:
             self:
               type: string
@@ -935,10 +935,10 @@ components:
             pendingBookings:
               type: string
               example: /api/bookings?toDriver=13&status=pending
-            accptedBookings:
+            acceptedBookings:
               type: string
               example: /api/bookings?toDriver=13&status=accepted
-            completedBooknigs:
+            completedBookings:
               type: string
               example: /api/bookings?toDriver=13&status=completed
             rejectedBookings:
