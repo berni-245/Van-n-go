@@ -53,6 +53,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Client'
+        '400':
+          description: Bad Request
 
   /clients/{clientId}:
     parameters:
@@ -203,6 +205,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Driver'
+        '400':
+          description: Bad Request (Validation error or Duplicate email)
 
   /drivers/{driverId}:
     parameters:
