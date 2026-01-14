@@ -43,6 +43,12 @@ paths:
       responses:
         '201':
           description: Client created
+          headers:
+            Location:
+              description: URI of the created client
+              schema:
+                type: string
+                example: "/clients/42"
           content:
             application/json:
               schema:
@@ -87,7 +93,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Client'
-      
+
 
   /clients/{clientId}/profile-picture:
     parameters:
@@ -135,6 +141,12 @@ paths:
       responses:
         '201':
           description: Profile picture uploaded
+          headers:
+            Location:
+              description: URI of the uploaded image
+              schema:
+                type: string
+                example: "/client/42/profile-picture"
           content:
             application/json:
               schema:
@@ -181,6 +193,12 @@ paths:
       responses:
         '201':
           description: Driver created
+          headers:
+            Location:
+              description: URI of the created driver
+              schema:
+                type: string
+                example: "/drivers/13"
           content:
             application/json:
               schema:
@@ -251,6 +269,12 @@ paths:
       responses:
         '201':
           description: Profile picture uploaded
+          headers:
+            Location:
+              description: URI of the uploaded image
+              schema:
+                type: string
+                example: "/drivers/13/profile-picture"
           content:
             application/json:
               schema:
@@ -299,6 +323,12 @@ paths:
       responses:
         '201':
           description: Vehicle created
+          headers:
+            Location:
+              description: URI of the created vehicle
+              schema:
+                type: string
+                example: "/drivers/10/vehicles/42"
           content:
             application/json:
               schema:
@@ -412,6 +442,12 @@ paths:
       responses:
         '201':
           description: Profile picture uploaded
+          headers:
+            Location:
+              description: URI of the uploaded image
+              schema:
+                type: string
+                example: "/drivers/13/vehicles/42/picture"
           content:
             application/json:
               schema:
@@ -493,6 +529,12 @@ paths:
       responses:
         '201':
           description: Booking created
+          headers:
+            Location:
+              description: URI of the created booking
+              schema:
+                type: string
+                example: "/bookings/42"
           content:
             application/json:
               schema:
@@ -566,6 +608,13 @@ paths:
       responses:
         '201':
           description: Proof of payment uploaded
+          headers:
+            Location:
+              description: URI of the uploaded proof of payment
+              schema:
+                type: string
+                example: "/bookings/42/proof-of-payment"
+
           content:
             application/json:
               schema:
@@ -595,8 +644,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Messages'
               example:
-                clientId: 22
-                driverId: 13
                 messages:
                   - id: 1
                     content: "Hola"
@@ -720,55 +767,55 @@ paths:
 
 components:
   parameters:
-      ClientIdPath:
-        name: clientId
-        in: path
-        required: true
-        description: ID of the client
-        schema:
-          type: integer
-      DriverIdPath:
-        name: driverId
-        in: path
-        required: true
-        description: ID of the driver
-        schema:
-          type: integer
-      DriverIdQuery:
-        name: driverId
-        in: query
-        required: true
-        description: ID of the driver
-        schema:
-          type: integer
-      VehicleIdPath:
-        name: vehicleId
-        in: path
-        required: true
-        description: ID of the vehicle
-        schema:
-          type: integer
-      BookingIdPath:
-        name: bookingId
-        in: path
-        required: true
-        description: ID of the booking
-        schema:
-          type: integer
-      ZoneIdPath:
-        name: zoneId
-        in: path
-        required: true
-        description: ID of the zone
-        schema:
-          type: integer
-      ClientIdQuery:
-        name: clientId
-        in: query
-        required: true
-        description: ID of the client
-        schema:
-          type: integer
+    ClientIdPath:
+      name: clientId
+      in: path
+      required: true
+      description: ID of the client
+      schema:
+        type: integer
+    DriverIdPath:
+      name: driverId
+      in: path
+      required: true
+      description: ID of the driver
+      schema:
+        type: integer
+    DriverIdQuery:
+      name: driverId
+      in: query
+      required: true
+      description: ID of the driver
+      schema:
+        type: integer
+    VehicleIdPath:
+      name: vehicleId
+      in: path
+      required: true
+      description: ID of the vehicle
+      schema:
+        type: integer
+    BookingIdPath:
+      name: bookingId
+      in: path
+      required: true
+      description: ID of the booking
+      schema:
+        type: integer
+    ZoneIdPath:
+      name: zoneId
+      in: path
+      required: true
+      description: ID of the zone
+      schema:
+        type: integer
+    ClientIdQuery:
+      name: clientId
+      in: query
+      required: true
+      description: ID of the client
+      schema:
+        type: integer
 
   schemas:
     Client:
@@ -776,7 +823,7 @@ components:
         A registered user of the application who can create reservations with
         drivers and submit ratings or feedback about completed trips.
       type: object
-      required: [id, username, email, preferedLanguage, links]
+      required: [ id, username, email, preferedLanguage, links ]
       properties:
         id:
           type: integer
@@ -793,7 +840,7 @@ components:
           example: english
         links:
           type: object
-          required: [self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings]
+          required: [ self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings ]
           properties:
             self:
               type: string
@@ -819,7 +866,7 @@ components:
     ClientCreate:
       description: Data required to register a new client account.
       type: object
-      required: [name, email]
+      required: [ name, email ]
       properties:
         name:
           type: string
@@ -847,7 +894,7 @@ components:
         A registered user of the application who has vehicles and can get his services requested
         by a client.
       type: object
-      required: [id, username, email, profilePicId, description, rating, cbu, links]
+      required: [ id, username, email, profilePicId, description, rating, cbu, links ]
       properties:
         id:
           type: integer
@@ -875,7 +922,7 @@ components:
           example: idk
         links:
           type: object
-          required: [self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings, vehicles]
+          required: [ self, profilePic, pendingBookings, accptedBookings, completedBooknigs, rejectedBookings, canceledBookings, vehicles ]
           properties:
             self:
               type: string
@@ -904,7 +951,7 @@ components:
     DriverCreate:
       description: Data required to register a new driver account.
       type: object
-      required: [username, email]
+      required: [ username, email ]
       properties:
         username:
           type: string
@@ -923,7 +970,7 @@ components:
     Vehicle:
       description: A vehicle registered to a specific driver
       type: object
-      required: [id, driverId, model, licensePlate, links]
+      required: [ id, driverId, model, licensePlate, links ]
       properties:
         id:
           type: integer
@@ -940,7 +987,7 @@ components:
           example: AA1234BB
         links:
           type: object
-          required: [self, picture, driver, availability, bookedTimes]
+          required: [ self, picture, driver, availability, bookedTimes ]
           properties:
             self:
               type: string
@@ -960,7 +1007,7 @@ components:
     VehicleCreate:
       description: Data required to register a new vehicle.
       type: object
-      required: [driverId, model, licensePlate]
+      required: [ driverId, model, licensePlate ]
       properties:
         driverId:
           type: integer
@@ -975,7 +1022,7 @@ components:
     Messages:
       description: A list of time ordered messages between two users
       type: object
-      required: [clientId, driverId, messages]
+      required: [ clientId, driverId, messages ]
       properties:
         messages:
           type: array
@@ -1025,7 +1072,7 @@ components:
           example: "http://localhost:8080/messages/1"
     Booking:
       type: object
-      required: [id, clientId, vehicleId, shiftPeriod]
+      required: [ id, clientId, vehicleId, shiftPeriod ]
       properties:
         id:
           type: integer
@@ -1042,7 +1089,7 @@ components:
     BookingCreate:
       description: Data required to create a new Booking.
       type: object
-      required: [vehicleId, destinationZoneId, date, shiftPeriod]
+      required: [ vehicleId, destinationZoneId, date, shiftPeriod ]
       properties:
         vehicleId:
           type: integer
@@ -1060,7 +1107,7 @@ components:
             - EVENING
     Country:
       type: object
-      required: [id, name, code]
+      required: [ id, name, code ]
       properties:
         id:
           type: integer
@@ -1071,7 +1118,7 @@ components:
           pattern: '^[A-Z]{2}$'
     Region:
       type: object
-      required: [id, name]
+      required: [ id, name ]
       properties:
         id:
           type: integer
@@ -1080,7 +1127,7 @@ components:
 
     Zone:
       type: object
-      required: [id, country, province, neighborhood]
+      required: [ id, country, province, neighborhood ]
       properties:
         id:
           type: integer
