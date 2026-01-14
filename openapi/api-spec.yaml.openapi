@@ -172,7 +172,7 @@ paths:
     get:
       summary: List all drivers
       parameters:
-        - $ref: '#/components/parameters/PaginationPath'
+        - $ref: '#/components/parameters/PaginationQuery'
       description: Get list of all drivers in the system.
       operationId: listDrivers
       tags:
@@ -341,7 +341,7 @@ paths:
       description: Get all vehicles of driver with id `id`.
       operationId: listDriverVehicles
       parameters:
-        - $ref: '#/components/parameters/PaginationPath'
+        - $ref: '#/components/parameters/PaginationQuery'
       tags:
         - Vehicles
       responses:
@@ -395,7 +395,7 @@ paths:
       - $ref: '#/components/parameters/VehicleIdPath'
     get:
       summary: Get information of a vehicle
-      description: Given a driver I and a vehicle ID, obtain the information of a Vehicle.
+      description: Given a driver ID and a vehicle ID, obtain the information of a Vehicle.
       operationId: getVehicleById
       tags:
         - Vehicles
@@ -454,7 +454,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vehicle' # TODO, usar un tipo para Time
+                  $ref: '#/components/schemas/TimeSlot'
 
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
@@ -571,7 +571,7 @@ paths:
     get:
       summary: List bookings
       parameters:
-        - $ref: '#/components/parameters/PaginationPath'
+        - $ref: '#/components/parameters/PaginationQuery'
       description: >
         Retrieves bookings optionally filtered by client or driver.
         Only one filter is expected at a time.
@@ -711,10 +711,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  profilePic:
+                  proofOfPaymentURI:
                     type: string
                     format: uri
-                    example: https://cdn.example.com/bookings/42.pdf
+                    example: "https://cdn.example.com/bookings/42/proof-of-payment"
         '415':
           description: Unsupported Media Type
 
@@ -727,7 +727,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/DriverIdQuery'
         - $ref: '#/components/parameters/ClientIdQuery'
-        - $ref: '#/components/parameters/PaginationPath'
+        - $ref: '#/components/parameters/PaginationQuery'
 
 
       responses:
@@ -917,7 +917,7 @@ components:
       description: ID of the client
       schema:
         type: integer
-    PaginationPath:
+    PaginationQuery:
        name: page
        in: query
        description: Page number
@@ -1294,3 +1294,13 @@ components:
           $ref: '#/components/schemas/Region'
         neighborhood:
           $ref: '#/components/schemas/Region'
+    TimeSlot:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-01-20"
+        shift:
+          type: string
+          enum: [ MORNING, AFTERNOON, EVENING ]
