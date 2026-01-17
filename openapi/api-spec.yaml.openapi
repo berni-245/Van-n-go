@@ -150,6 +150,7 @@ paths:
               properties:
                 file:
                   type: string
+                  format: binary
                   description: Image file to use as the client’s profile picture
       responses:
         '201':
@@ -180,6 +181,42 @@ paths:
     get:
       summary: List all drivers
       parameters:
+        - name: originZoneId
+          in: query
+          description: Filter drivers by an specific starting zone
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: Filter drivers that have a vehicle of an specific size
+          required: false
+          schema:
+            type: string
+            enum: [ MANDADO, FLETE, "CARGA_PESADA" ]
+        - name: maxPrice
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+        - name: weekDay
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY ]
+        - name: minRating
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            default: ALPHABETICAL
+            enum: [ ALPHABETICAL, "LEAST_PRICE", "BEST_RATING" ]
         - $ref: '#/components/parameters/PaginationQuery'
       description: Get list of all drivers in the system.
       operationId: listDrivers
@@ -307,7 +344,7 @@ paths:
       description: Uploads or replaces the profile picture for a driver (format PNG or JPG).
       operationId: uploadDriverProfilePicture
       requestBody:
-        description: asdf
+        description: Image
         required: true
         content:
           # TODO: not sure how to add the example in this case.
@@ -319,6 +356,7 @@ paths:
               properties:
                 file:
                   type: string
+                  format: binary
                   description: Image file to use as the driver’s profile picture
       responses:
         '201':
@@ -564,6 +602,7 @@ paths:
               properties:
                 file:
                   type: string
+                  format: binary
                   description: Image file to use as the vehicle’s profile picture
       responses:
         '201':
@@ -752,6 +791,7 @@ paths:
               properties:
                 file:
                   type: string
+                  format: binary
                   description: Pdf file to use as the booking’s proof of payment.
       responses:
         '201':
@@ -1189,10 +1229,12 @@ components:
           type: string
           example: AA123BB
         volumeM3:
-          type: float
+          type: number
+          format: float
           example: 150.3
         hourlyRate:
-          type: float
+          type: number
+          format: float
           example: 150.4
         description:
           type: string
@@ -1225,10 +1267,12 @@ components:
           type: string
           example: AA124BB
         volumeM3:
-          type: float
+          type: number
+          format: float
           example: 150.3
         hourlyRate:
-          type: float
+          type: number
+          format: float
           example: 150.4
         description:
           type: string
@@ -1242,10 +1286,12 @@ components:
           description: Useful for typo corrections
           example: "AA999BB"
         volumeM3:
-          type: float
+          type: number
+          format: float
           example: 150.3
         hourlyRate:
-          type: float
+          type: number
+          format: float
           example: 150.4
         description:
           type: string
