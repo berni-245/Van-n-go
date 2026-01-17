@@ -984,9 +984,12 @@ components:
         preferredLanguage:
           type: string
           example: english
+        zoneId:
+          type: integer
+          example: 1
         links:
           type: object
-          required: [ self, profilePic, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings ]
+          required: [ self, profilePic, zone, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings ]
           properties:
             self:
               type: string
@@ -994,6 +997,9 @@ components:
             profilePic:
               type: string
               example: /api/clients/13/profile-picture
+            zone:
+              type: string
+              example: /api/zones/1
             pendingBookings:
               type: string
               example: /api/bookings?fromClient=13&status=pending
@@ -1012,7 +1018,7 @@ components:
     ClientCreate:
       description: Data required to register a new client account.
       type: object
-      required: [ name, email ]
+      required: [ name, email, zoneId ]
       properties:
         name:
           type: string
@@ -1021,6 +1027,10 @@ components:
           type: string
           format: email
           example: johndoe@mail.com
+        zoneId:
+          type: integer
+          example: 1
+
     ClientUpdate:
       description: Client data to be updated.
       type: object
@@ -1035,6 +1045,9 @@ components:
         preferredLanguage:
           type: string
           example: Spanish
+        zoneId:
+          type: integer
+          example: 2
     Driver:
       description: >
         A registered user of the application who has vehicles and can get his services requested
@@ -1052,6 +1065,9 @@ components:
           type: string
           format: email
           example: berniflete@gmail.com
+        preferredLanguage:
+          type: string
+          example: english
         description:
           type: string
           example: Best fletes in Adrogué.
@@ -1117,6 +1133,10 @@ components:
           type: string
           description: The new public display name
           example: "Berni's Fletes 2.0"
+        email:
+          type: string
+          format: email
+          example: new-mail@mail.com
         description:
           type: string
           description: Updated bio or service description
@@ -1125,10 +1145,6 @@ components:
           type: string
           description: Updated banking information
           example: "0000003100000000000000"
-        email:
-          type: string
-          format: email
-          example: new-mail@mail.com
         preferredLanguage:
           type: string
           example: Spanish
