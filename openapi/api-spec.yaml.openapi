@@ -473,6 +473,31 @@ paths:
                 $ref: '#/components/schemas/Availability'
         '404':
           description: Not Found
+    patch:
+      summary: Update Availability for the vehicle
+      description: Update the regular availability for the vehicle in the zonesIds given (Partial Update)
+      operationId: updateAvailability
+      tags:
+        - Vehicles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Availability'
+      responses:
+        '200':
+          description: Availability updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Availability'
+        '400':
+          description: Invalid zone ids or timeSlots
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
@@ -495,6 +520,31 @@ paths:
                   $ref: '#/components/schemas/DatedTimeSlot'
         '404':
           description: Not Found
+    post:
+      summary: Book time for the vehicle
+      description: Book a vehicle for the given time
+      operationId: bookTime
+      tags:
+        - Vehicles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointBooking'
+      responses:
+        '200':
+          description: Booking successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointBooking'
+        '400':
+          description: Time already booked, not available for vehicle or time already passed
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
   /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
@@ -1398,3 +1448,20 @@ components:
         shift:
           type: string
           enum: [ MORNING, AFTERNOON, EVENING ]
+
+    AppointBooking:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-01-20"
+        shift:
+          type: string
+          enum: [ MORNING, AFTERNOON, EVENING ]
+        destinationZoneId:
+          type: integer
+          example: 3
+        description:
+          type: string
+          example: "Hola, necesito un flete"
