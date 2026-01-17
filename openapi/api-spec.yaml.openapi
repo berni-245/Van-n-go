@@ -470,9 +470,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimeSlot'
+                $ref: '#/components/schemas/Availability'
+        '404':
+          description: Not Found
 
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
@@ -492,8 +492,9 @@ paths:
               schema:
                 type: array
                 items:
-                  # TODO: usar un tipo para Time
-                  $ref: '#/components/schemas/Vehicle'
+                  $ref: '#/components/schemas/DatedTimeSlot'
+        '404':
+          description: Not Found
 
   /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
@@ -1151,7 +1152,8 @@ components:
     Vehicle:
       description: A vehicle registered to a specific driver
       type: object
-      required: [ id, driverId, model, licensePlate, links ]
+      # TODO missing zones the vehicle works for pickups
+      required: [ id, driverId, licensePlate, volumeM3, hourlyRate, links ]
       properties:
         id:
           type: integer
@@ -1160,12 +1162,18 @@ components:
           type: integer
           description: ID of the driver who owns this vehicle
           example: 13
-        model:
-          type: string
-          example: Lamborgotti Fasterosa
         licensePlate:
           type: string
-          example: AA1234BB
+          example: AA123BB
+        volumeM3:
+          type: float
+          example: 150.3
+        hourlyRate:
+          type: float
+          example: 150.4
+        description:
+          type: string
+          example: This is a vehicle
         links:
           type: object
           required: [ self, picture, driver, availability, bookedTimes ]
@@ -1188,29 +1196,37 @@ components:
     VehicleCreate:
       description: Data required to register a new vehicle.
       type: object
-      required: [ driverId, model, licensePlate ]
+      required: [ volumeM3, hourlyRate, licensePlate ]
       properties:
-        driverId:
-          type: integer
-          description: ID of the driver registering this vehicle
-          example: 13
-        model:
-          type: string
-          example: Lamborgotti Fasterosa
         licensePlate:
           type: string
-          example: AA1234BB
+          example: AA124BB
+        volumeM3:
+          type: float
+          example: 150.3
+        hourlyRate:
+          type: float
+          example: 150.4
+        description:
+          type: string
+          example: This is a vehicle
     VehicleUpdate:
       description: Vehicle data to be updated. Any field is optional.
       type: object
       properties:
-        model:
-          type: string
-          example: "Lamborgotti Fasterosa GT"
         licensePlate:
           type: string
           description: Useful for typo corrections
           example: "AA999BB"
+        volumeM3:
+          type: float
+          example: 150.3
+        hourlyRate:
+          type: float
+          example: 150.4
+        description:
+          type: string
+          example: This is a vehicle
     Messages:
       description: A list of time ordered messages between two users
       type: object
@@ -1348,7 +1364,31 @@ components:
           $ref: '#/components/schemas/Region'
         neighborhood:
           $ref: '#/components/schemas/Region'
-    TimeSlot:
+
+    Availability:
+      type: object
+      properties:
+        zonesIds:
+          type: array
+          items:
+            type: integer
+          example: [1, 4, 6]
+        timeSlots:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeekTimeSlot'
+
+    WeekTimeSlot:
+      type: object
+      properties:
+        date:
+          type: string
+          enum: [ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY ]
+        shift:
+          type: string
+          enum: [ MORNING, AFTERNOON, EVENING ]
+
+    DatedTimeSlot:
       type: object
       properties:
         date:
