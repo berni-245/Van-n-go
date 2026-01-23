@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.controller;
+package ar.edu.itba.paw.webapp.controller.old;
 
 import ar.edu.itba.paw.webapp.interfaces.Redirect;
 import org.springframework.stereotype.Controller;

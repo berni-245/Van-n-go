@@ -1,7 +1,6 @@
-package ar.edu.itba.paw.webapp.controllers;
+package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -19,7 +18,7 @@ public class UserController {
     @Context
     private UriInfo uriInfo;
 
-    @Autowired
+    // @Autowired
     public UserController() {
         // add services needed here
     }
