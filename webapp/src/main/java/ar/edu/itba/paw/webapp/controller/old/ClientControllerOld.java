@@ -30,8 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-public class ClientController implements Bookings {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
+public class ClientControllerOld implements Bookings {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientControllerOld.class);
     private final DriverService ds;
     private final ZoneService zs;
     private final ClientService cs;
@@ -42,7 +42,7 @@ public class ClientController implements Bookings {
     private static final Gson gson = new Gson();
 
     @Autowired
-    public ClientController(DriverService ds, ZoneService zs, ClientService cs, ImageService is, MessageService ms, LocaleResolver localeResolver) {
+    public ClientControllerOld(DriverService ds, ZoneService zs, ClientService cs, ImageService is, MessageService ms, LocaleResolver localeResolver) {
         this.ds = ds;
         this.zs = zs;
         this.cs = cs;
