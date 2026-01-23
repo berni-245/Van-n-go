@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.controller.old;
+package ar.edu.itba.paw.webapp.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
