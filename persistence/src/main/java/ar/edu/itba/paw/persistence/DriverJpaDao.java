@@ -61,9 +61,8 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         idQuery.append(" GROUP BY v.driver_id");
         if (order != null) {
             switch (order) {
-                case PRICE -> idQuery.append(", m.min ORDER BY m.min");
-                case RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
-                case RECENT -> idQuery.append(", au.creation_time ORDER BY au.creation_time DESC");
+                case LEAST_PRICE -> idQuery.append(", m.min ORDER BY m.min");
+                case BEST_RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
                 case ALPHABETICAL -> idQuery.append(", au.username ORDER BY au.username");
             }
         }
@@ -101,9 +100,8 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d JOIN MinimalPrice mp ON mp.driverId = d.id WHERE d.id IN :driverIds");
         if (order != null) {
             switch (order) {
-                case PRICE -> driverQuery.append(" ORDER BY mp.min");
-                case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
-                case RECENT -> driverQuery.append(" ORDER BY d.creationTime DESC");
+                case LEAST_PRICE -> driverQuery.append(" ORDER BY mp.min");
+                case BEST_RATING -> driverQuery.append(" ORDER BY d.rating DESC");
                 case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
             }
         }

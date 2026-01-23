@@ -22,4 +22,8 @@ public enum Size {
     public int getMaxVolume() {
         return maxVolume;
     }
+
+    public Size fromString(String string) {
+        return valueOf(string.toUpperCase());
+    }
 }
