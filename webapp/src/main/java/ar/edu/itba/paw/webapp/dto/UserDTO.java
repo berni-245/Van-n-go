@@ -12,6 +12,7 @@ public abstract class UserDTO {
 
     private int id;
     private String username;
+    private String password;
     private String mail;
     private Language language;
     private URI self;
@@ -126,5 +127,13 @@ public abstract class UserDTO {
 
     public void setCanceledBookings(URI canceledBookings) {
         this.canceledBookings = canceledBookings;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
