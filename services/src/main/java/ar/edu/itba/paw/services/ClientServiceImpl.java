@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidVehicleException;
+import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public Client create(String username, String mail, String password, int zoneId, Locale locale) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         Client client = clientDao.create(username, mail, passwordEncoder.encode(password), zone, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
