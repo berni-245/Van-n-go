@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class DriverController implements Bookings {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DriverController.class);
+public class DriverControllerOld implements Bookings {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriverControllerOld.class);
 
     private final DriverService ds;
 
@@ -39,7 +39,7 @@ public class DriverController implements Bookings {
 
     private final LocaleResolver localeResolver;
 
-    public DriverController(DriverService ds, ClientService cs, ZoneService zs, MessageService ms, LocaleResolver localeResolver) {
+    public DriverControllerOld(DriverService ds, ClientService cs, ZoneService zs, MessageService ms, LocaleResolver localeResolver) {
         this.ds = ds;
         this.cs = cs;
         this.zs = zs;
