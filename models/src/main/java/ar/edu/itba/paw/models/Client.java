@@ -11,8 +11,9 @@ public class Client extends User {
         //This is used by hibernate. Do not remove.
     }
 
-    public Client(String username, String mail, String password, Language language) {
+    public Client(String username, String mail, String password, Zone zone, Language language) {
         super(username, mail, password, language);
+        this.zone = zone;
     }
 
     @Override

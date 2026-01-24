@@ -73,7 +73,7 @@ public class ClientJpaDaoTest {
 
     @Test
     public void testCreateClient() {
-        Client client = clientDao.create(USERNAME_NOT_CREATED, MAIL_NOT_CREATED, PASSWORD_NOT_CREATED, ENGLISH);
+        Client client = clientDao.create(USERNAME_NOT_CREATED, MAIL_NOT_CREATED, PASSWORD_NOT_CREATED, changedZone, ENGLISH);
         assertNotNull(client);
         em.flush();
 

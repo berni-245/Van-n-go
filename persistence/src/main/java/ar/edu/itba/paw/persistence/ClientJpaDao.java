@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.Zone;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +14,8 @@ import java.util.Optional;
 public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
 
     @Override
-    public Client create(String username, String mail, String password, Language language) {
-        Client client = new Client(username, mail, password, language);
+    public Client create(String username, String mail, String password, Zone zone, Language language) {
+        Client client = new Client(username, mail, password, zone, language);
         em.persist(client);
         return client;
     }
@@ -42,7 +41,7 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
 
     @Override
     public void editProfile(Client client, String username, String mail, Zone zone, Language language) {
-        super.editProfile(client, username, mail,language);
+        super.editProfile(client, username, mail, language);
         client.setZone(zone);
         em.merge(client);
     }

@@ -27,15 +27,15 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 @Controller
-public class PublicController implements Redirect, Toasts {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
+public class PublicControllerOld implements Redirect, Toasts {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublicControllerOld.class);
 
     private final ClientService cs;
     private final DriverService ds;
     private final ImageService is;
 
     @Autowired
-    public PublicController(ClientService cs, DriverService ds, ImageService is) {
+    public PublicControllerOld(ClientService cs, DriverService ds, ImageService is) {
         this.cs = cs;
         this.ds = ds;
         this.is = is;
