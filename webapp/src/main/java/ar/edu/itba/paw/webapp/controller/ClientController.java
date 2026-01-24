@@ -37,6 +37,7 @@ public class ClientController {
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getClientById(@PathParam("id") final int id) {
+        //TODO: add 401 and 404 responses
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
