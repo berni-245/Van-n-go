@@ -3,8 +3,10 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.CreateClientDTO;
+import ar.edu.itba.paw.webapp.dto.ImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,9 @@ public class ClientController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private ImageService imageService;
 
     @Context
     private UriInfo uriInfo;
@@ -41,4 +46,45 @@ public class ClientController {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
+
+
+    @PATCH
+    @Path("/{id}")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response updateClient(@PathParam("id") final int id, final CreateClientDTO clientDTO) {
+        //TODO: add 401 , 403 and 404 responses
+        Client client = clientService.findById(id);
+        clientService.editProfile(client, clientDTO.getUsername(), clientDTO.getMail(), clientDTO.getZoneId(), clientDTO.getLanguage());
+        return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
+    }
+
+    @GET
+    @Path("/{clientId}/profile-picture")
+    @Produces("image/*")
+    public Response getProfilePicture(@PathParam("clientId") final int id) {
+        //TODO: add 401 response
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        Client client = clientService.findById(id);
+        Integer imageId = client.getPfp();
+        if(imageId != null){
+            byte[] pictureData = imageService.getImage(imageId).getData();
+            if (pictureData != null) {
+                return Response.ok(pictureData).build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("/{id}/profile-picture")
+    @Consumes({"image/*", MediaType.APPLICATION_JSON})
+    public Response uploadProfilePicture(@PathParam("id") final int id, final ImageDTO imageDTO) {
+        //TODO: add 401 and 403 responses
+        Client client = clientService.findById(id);
+        int imageId = imageService.uploadPfp(client, imageDTO.getImageData(), imageDTO.getFileName());
+        return Response.created(uriInfo.getAbsolutePathBuilder().path("profile-picture").build()).entity(imageId).build();
+    }
+
+
 }

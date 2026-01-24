@@ -5,6 +5,7 @@ public class CreateClientDTO {
     private String mail;
     private String password;
     private Integer zoneId;
+    private String language;
 
     public String getUsername() {
         return username;
@@ -36,5 +37,13 @@ public class CreateClientDTO {
 
     public void setZoneId(Integer zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
