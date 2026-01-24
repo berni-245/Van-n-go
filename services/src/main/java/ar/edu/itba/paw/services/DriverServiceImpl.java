@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
 import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
+import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     ) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         return driverDao.getSearchResults(
                 zone, size, priceMax, weekday, rating, order,
                 (page - 1) * Pagination.SEARCH_PAGE_SIZE
