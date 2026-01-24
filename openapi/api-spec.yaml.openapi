@@ -654,7 +654,7 @@ paths:
             enum:
               - PENDING
               - ACCEPTED
-              - COMPLETED
+              - FINISHED
               - REJECTED
               - CANCELED
         - $ref: '#/components/parameters/PaginationQuery'
@@ -1054,7 +1054,7 @@ components:
           example: 1
         links:
           type: object
-          required: [ self, profilePic, zone, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings ]
+          required: [ self, profilePic, zone, pendingBookings, acceptedBookings, finishedBookings, rejectedBookings, canceledBookings ]
           properties:
             self:
               type: string
@@ -1067,19 +1067,19 @@ components:
               example: /api/zones/1
             pendingBookings:
               type: string
-              example: /api/bookings?fromClient=13&status=pending
+              example: /api/bookings?fromClient=13&status=PENDING
             acceptedBookings:
               type: string
-              example: /api/bookings?fromClient=13&status=accepted
-            completedBookings:
+              example: /api/bookings?fromClient=13&status=ACCEPTED
+            finishedBookings:
               type: string
-              example: /api/bookings?fromClient=13&status=completed
+              example: /api/bookings?fromClient=13&status=FINISHED
             rejectedBookings:
               type: string
-              example: /api/bookings?fromClient=13&status=rejected
+              example: /api/bookings?fromClient=13&status=REJECTED
             canceledBookings:
               type: string
-              example: /api/bookings?fromClient=13&status=canceled
+              example: /api/bookings?fromClient=13&status=CANCELED
     ClientCreate:
       description: Data required to register a new client account.
       type: object
@@ -1146,7 +1146,7 @@ components:
           example: 1234567891234567891234
         links:
           type: object
-          required: [ self, profilePic, pendingBookings, acceptedBookings, completedBookings, rejectedBookings, canceledBookings, vehicles ]
+          required: [ self, profilePic, pendingBookings, acceptedBookings, finishedBookings, rejectedBookings, canceledBookings, vehicles ]
           properties:
             self:
               type: string
@@ -1156,19 +1156,19 @@ components:
               example: /api/drivers/13/profile-picture
             pendingBookings:
               type: string
-              example: /api/bookings?toDriver=13&status=pending
+              example: /api/bookings?toDriver=13&status=PENDING
             acceptedBookings:
               type: string
-              example: /api/bookings?toDriver=13&status=accepted
-            completedBookings:
+              example: /api/bookings?toDriver=13&status=ACCEPTED
+            finishedBookings:
               type: string
-              example: /api/bookings?toDriver=13&status=completed
+              example: /api/bookings?toDriver=13&status=FINISHED
             rejectedBookings:
               type: string
-              example: /api/bookings?toDriver=13&status=rejected
+              example: /api/bookings?toDriver=13&status=REJECTED
             canceledBookings:
               type: string
-              example: /api/bookings?toDriver=13&status=canceled
+              example: /api/bookings?toDriver=13&status=CANCELED
             vehicles:
               type: string
               example: /api/driver/13/vehicles
