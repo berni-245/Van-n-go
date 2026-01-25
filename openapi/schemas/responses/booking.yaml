@@ -4,20 +4,10 @@ required:
 properties:
   id:
     type: integer
-  clientId:
-    type: integer
-  vehicleId:
-    type: integer
+    example: 42
   shiftPeriod:
     type: string
-    enum:
-      - MORNING
-      - AFTERNOON
-      - EVENING
-  originZoneId:
-    type: integer
-  destinationZoneId:
-    type: integer
+    enum: [ MORNING, AFTERNOON, EVENING ]
   jobDescription:
     type: string
     example: "Hola, necesito un flete"

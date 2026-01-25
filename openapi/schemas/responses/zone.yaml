@@ -6,6 +6,6 @@ properties:
   country:
     $ref: "country.yaml"
   province:
-    $ref: "region.yaml"
+    $ref: "province.yaml"
   neighborhood:
-    $ref: "region.yaml"
+    $ref: "neighborhood.yaml"

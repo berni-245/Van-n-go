@@ -5,10 +5,6 @@ properties:
   id:
     type: integer
     example: 1
-  driverId:
-    type: integer
-    description: ID of the driver who owns this vehicle
-    example: 13
   licensePlate:
     type: string
     example: AA123BB

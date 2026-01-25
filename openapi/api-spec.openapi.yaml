@@ -60,7 +60,7 @@ paths:
               description: URI of the created client
               schema:
                 type: string
-                example: "/clients/42"
+                example: "api/clients/13"
           content:
             application/json:
               schema:
@@ -156,7 +156,7 @@ paths:
               description: URI of the uploaded image
               schema:
                 type: string
-                example: "/client/42/profile-picture"
+                example: "api/client/42/profile-picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -244,15 +244,12 @@ paths:
               description: URI of the created driver
               schema:
                 type: string
-                example: "/drivers/13"
+                example: "api/drivers/13"
           content:
             application/json:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
-          # TODO: if we want api users to know what the error represents internally it should be
-          # returned as part of the response content, not the http error code message.
-          # description: Bad Request (Validation error or Duplicate email)
           $ref: "schemas/errors/bad-request.yaml"
 
   /drivers/{driverId}:
@@ -339,7 +336,7 @@ paths:
               description: URI of the uploaded image
               schema:
                 type: string
-                example: "/drivers/13/profile-picture"
+                example: "api/drivers/13/profile-picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -395,16 +392,14 @@ paths:
               description: URI of the created vehicle
               schema:
                 type: string
-                example: "/drivers/10/vehicles/42"
+                example: "api/drivers/10/vehicles/42"
           content:
             application/json:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
-          # TODO: if we want api users to know what the error represents internally it should be
-          # returned as part of the response content, not the http error code message.
-          # description: Bad Request (Validation error or Vehicle with that plate number exists)
-          $ref: "schemas/errors/bad-request.yaml"
+          # TODO: specify what "Validation error" means
+          description: Bad Request - Validation error or specified plate number already registered
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -457,9 +452,7 @@ paths:
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          # TODO: explanation in content
-          # description: Forbidden (Only the owner can update the vehicle)
-          $ref: "schemas/errors/forbidden.yaml"
+          description: Forbidden - Only the owner can update the vehicle
         "404":
           $ref: "schemas/errors/not-found.yaml"
 
@@ -487,7 +480,8 @@ paths:
         - $ref: "#/components/parameters/DriverIdPath"
         - $ref: "#/components/parameters/VehicleIdPath"
       summary: Update Availability for the vehicle
-      description: Update the regular availability for the vehicle in the zonesIds given (Partial Update)
+      # TODO: What does this mean? Can a vehicle have different time slots for different zones?
+      description: Update the vehicle's availability in the specified zones (Partial Update)
       operationId: updateAvailability
       tags:
         - Vehicles
@@ -546,15 +540,7 @@ paths:
       responses:
         "200":
           description: Image retrieved successfully
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            image/jpeg:
-              schema:
-                type: string
-                format: binary
+          $ref: "schemas/image.yaml"
         "404":
           $ref: "schemas/errors/image-not-found.yaml"
     post:
@@ -577,7 +563,7 @@ paths:
               description: URI of the uploaded image
               schema:
                 type: string
-                example: "/drivers/13/vehicles/42/picture"
+                example: "api/drivers/13/vehicles/42/picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -588,6 +574,8 @@ paths:
   /bookings:
     get:
       summary: List bookings
+      description: >
+        Retrieves a user's bookings. Exactly one of `fromClient` or `toDriver` must be specified.
       parameters:
         - name: fromClient
           in: query
@@ -607,16 +595,8 @@ paths:
           required: true
           schema:
             type: string
-            enum:
-              - PENDING
-              - ACCEPTED
-              - FINISHED
-              - REJECTED
-              - CANCELED
+            enum: [ PENDING, ACCEPTED, FINISHED, REJECTED, CANCELED ]
         - $ref: "#/components/parameters/PaginationQuery"
-      description: >
-        Retrieves bookings optionally filtered by client or driver.
-        Only one filter is expected at a time.
       operationId: listBookings
       tags:
         - Bookings
@@ -665,7 +645,7 @@ paths:
               description: URI of the created booking
               schema:
                 type: string
-                example: "/bookings/42"
+                example: "api/bookings/42"
           content:
             application/json:
               schema:
@@ -748,16 +728,7 @@ paths:
               description: URI of the uploaded proof of payment
               schema:
                 type: string
-                example: "/bookings/42/proof-of-payment"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  proofOfPaymentURI:
-                    type: string
-                    format: uri
-                    example: "https://cdn.example.com/bookings/42/proof-of-payment"
+                example: "api/bookings/42/proof-of-payment"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -767,14 +738,14 @@ paths:
 
   /messages:
     get:
-      tags:
-        - Messages
-      summary: Get messages between a client and a driver
-      operationId: listMessages
       parameters:
         - $ref: "#/components/parameters/DriverIdQuery"
         - $ref: "#/components/parameters/ClientIdQuery"
         - $ref: "#/components/parameters/PaginationQuery"
+      tags:
+        - Messages
+      summary: Get messages between a client and a driver
+      operationId: listMessages
       responses:
         "200":
           description: List of messages between client and driver
@@ -820,8 +791,10 @@ paths:
               properties:
                 clientId:
                   type: integer
+                  example: 1
                 driverId:
                   type: integer
+                  example: 2
                 content:
                   type: string
                   example: "Hola, llego en 5 minutos."
@@ -833,7 +806,7 @@ paths:
               description: URI of the created message
               schema:
                 type: string
-                example: "/messages/42"
+                example: "api/messages/42"
           content:
             application/json:
               schema:

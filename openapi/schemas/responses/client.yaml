@@ -17,9 +17,6 @@ properties:
   preferredLanguage:
     type: string
     example: english
-  zoneId:
-    type: integer
-    example: 1
   links:
     type: object
     required:
