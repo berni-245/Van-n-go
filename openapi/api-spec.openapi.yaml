@@ -296,9 +296,7 @@ paths:
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          # TODO: explanation should go in content
-          # description: Forbidden (Only the driver themselves can update their profile)
-          $ref: "schemas/errors/forbidden.yaml"
+          description: Forbidden - Current user is not profile owner
         "404":
           $ref: "schemas/errors/not-found.yaml"
 
@@ -770,9 +768,7 @@ paths:
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          # TODO: explanation in content
-          # description: Forbidden (User is not part of the conversation)
-          $ref: "schemas/errors/forbidden.yaml"
+          description: Forbidden - User is not part of the conversation
         "404":
           $ref: "schemas/errors/not-found.yaml"
     post:
