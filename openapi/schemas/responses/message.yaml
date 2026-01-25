@@ -1,0 +1,20 @@
+type: object
+required: [id, content, sentByDriver, timestamp]
+properties:
+  id:
+    type: integer
+    example: 1
+  content:
+    type: string
+    example: "Hola, ¿llegás en 5?"
+  sentByDriver:
+    type: boolean
+  timestamp:
+    type: string
+    format: date-time
+    example: "2026-01-10T18:30:00Z"
+  self:
+    type: string
+    format: uri
+    description: The canonical location of this message resource
+    example: "http://localhost:8080/messages/1"

@@ -1,0 +1,21 @@
+description: Data required to create a new Booking.
+type: object
+required: [vehicleId, destinationZoneId, date, shiftPeriod]
+properties:
+  vehicleId:
+    type: integer
+  destinationZoneId:
+    type: integer
+  date:
+    type: string
+    format: date
+    example: "2026-01-10"
+  shiftPeriod:
+    type: string
+    enum:
+      - MORNING
+      - AFTERNOON
+      - EVENING
+  description:
+    type: string
+    example: "Hola, necesito un flete"

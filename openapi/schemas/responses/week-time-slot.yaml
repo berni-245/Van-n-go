@@ -1,0 +1,8 @@
+type: object
+properties:
+  date:
+    type: string
+    enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+  shift:
+    type: string
+    enum: [MORNING, AFTERNOON, EVENING]

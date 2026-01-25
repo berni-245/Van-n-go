@@ -1,0 +1,54 @@
+type: object
+required:
+  [id, clientId, vehicleId, shiftPeriod, originZoneId, destinationZoneId]
+properties:
+  id:
+    type: integer
+  clientId:
+    type: integer
+  vehicleId:
+    type: integer
+  shiftPeriod:
+    type: string
+    enum:
+      - MORNING
+      - AFTERNOON
+      - EVENING
+  originZoneId:
+    type: integer
+  destinationZoneId:
+    type: integer
+  jobDescription:
+    type: string
+    example: "Hola, necesito un flete"
+  review:
+    type: string
+    example: "Me encantó"
+  rating:
+    type: integer
+    example: 4
+  links:
+    type: object
+    required: [self, client, driver, vehicle, proofOfPayment]
+    properties:
+      self:
+        type: string
+        example: /api/bookings/42
+      client:
+        type: string
+        example: /api/clients/13
+      driver:
+        type: string
+        example: /api/drivers/10
+      vehicle:
+        type: string
+        example: /api/drivers/10/vehicles/5
+      proofOfPayment:
+        type: string
+        example: /api/bookings/42/proof-of-payment
+      originZone:
+        type: string
+        example: /api/zones/12
+      destinationZone:
+        type: string
+        example: /api/zones/14

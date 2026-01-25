@@ -1,0 +1,16 @@
+description: Client data to be updated.
+type: object
+properties:
+  username:
+    type: string
+    example: New username
+  email:
+    type: string
+    format: email
+    example: new-mail@mail.com
+  preferredLanguage:
+    type: string
+    example: Spanish
+  zoneId:
+    type: integer
+    example: 2

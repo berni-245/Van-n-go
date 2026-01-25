@@ -1,0 +1,18 @@
+description: Data required to register a new vehicle.
+type: object
+required: [volumeM3, hourlyRate, licensePlate]
+properties:
+  licensePlate:
+    type: string
+    example: AA124BB
+  volumeM3:
+    type: number
+    format: float
+    example: 150.3
+  hourlyRate:
+    type: number
+    format: float
+    example: 150.4
+  description:
+    type: string
+    example: This is a vehicle

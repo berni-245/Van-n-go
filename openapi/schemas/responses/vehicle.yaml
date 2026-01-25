@@ -1,0 +1,44 @@
+description: A vehicle registered to a specific driver
+type: object
+required: [id, driverId, licensePlate, volumeM3, hourlyRate, links]
+properties:
+  id:
+    type: integer
+    example: 1
+  driverId:
+    type: integer
+    description: ID of the driver who owns this vehicle
+    example: 13
+  licensePlate:
+    type: string
+    example: AA123BB
+  volumeM3:
+    type: number
+    format: float
+    example: 150.3
+  hourlyRate:
+    type: number
+    format: float
+    example: 150.4
+  description:
+    type: string
+    example: This is a vehicle
+  links:
+    type: object
+    required: [self, picture, driver, availability, bookedTimes]
+    properties:
+      self:
+        type: string
+        example: /api/drivers/13/vehicles/1
+      picture:
+        type: string
+        example: /api/drivers/13/vehicles/1/picture
+      driver:
+        type: string
+        example: /api/drivers/13
+      availability:
+        type: string
+        example: /api/drivers/13/vehicles/1/availability
+      bookedTimes:
+        type: string
+        example: /api/drivers/13/vehicles/1/booked-times

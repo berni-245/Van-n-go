@@ -39,9 +39,9 @@ paths:
           # TODO: use custom versioned mimetype?
           application/json:
             schema:
-              $ref: '#/components/schemas/ClientCreate'
+              $ref: "schemas/requests/client-create.yaml"
       responses:
-        '201':
+        "201":
           description: Client created
           headers:
             Location:
@@ -52,13 +52,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
-        '400':
+                $ref: "schemas/responses/client.yaml"
+        "400":
           description: Bad Request
 
   /clients/{clientId}:
     parameters:
-      - $ref: '#/components/parameters/ClientIdPath'
+      - $ref: "#/components/parameters/ClientIdPath"
     get:
       summary: Get information of a Client
       description: Given a client ID, obtain the information of a Client.
@@ -66,15 +66,15 @@ paths:
       tags:
         - Clients
       responses:
-        '200':
+        "200":
           description: Information of a client
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
-        '401':
+                $ref: "schemas/responses/client.yaml"
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Not found
     patch:
       summary: Update client information
@@ -87,28 +87,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClientUpdate'
+              $ref: "schemas/requests/client-update.yaml"
       responses:
-        '200':
+        "200":
           description: Client updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
-        '400':
+                $ref: "schemas/responses/client.yaml"
+        "400":
           description: Bad Request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Client not found
-
-
 
   /clients/{clientId}/profile-picture:
     parameters:
-      - $ref: '#/components/parameters/ClientIdPath'
+      - $ref: "#/components/parameters/ClientIdPath"
     get:
       summary: Get the profile picture.
       description: Get the profile picture of the client id.
@@ -116,7 +114,7 @@ paths:
       tags:
         - Clients
       responses:
-        '200':
+        "200":
           description: Image retrieved successfully
           content:
             image/png:
@@ -127,9 +125,9 @@ paths:
               schema:
                 type: string
                 format: binary
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Image not found
     post:
       tags:
@@ -153,7 +151,7 @@ paths:
                   format: binary
                   description: Image file to use as the client’s profile picture
       responses:
-        '201':
+        "201":
           description: Profile picture uploaded
           headers:
             Location:
@@ -170,11 +168,11 @@ paths:
                     type: string
                     format: uri
                     example: https://cdn.example.com/clients/42.jpg
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '415':
+        "415":
           description: Unsupported Media Type
 
   /drivers:
@@ -193,7 +191,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ MANDADO, FLETE, "CARGA_PESADA" ]
+            enum: [MANDADO, FLETE, "CARGA_PESADA"]
         - name: maxPrice
           in: query
           required: false
@@ -205,7 +203,8 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY ]
+            enum:
+              [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
         - name: minRating
           in: query
           required: false
@@ -216,14 +215,14 @@ paths:
           schema:
             type: string
             default: ALPHABETICAL
-            enum: [ ALPHABETICAL, "LEAST_PRICE", "BEST_RATING" ]
-        - $ref: '#/components/parameters/PaginationQuery'
+            enum: [ALPHABETICAL, "LEAST_PRICE", "BEST_RATING"]
+        - $ref: "#/components/parameters/PaginationQuery"
       description: Get list of all drivers in the system.
       operationId: listDrivers
       tags:
         - Drivers
       responses:
-        '200':
+        "200":
           description: A list of drivers
           headers:
             Link:
@@ -237,7 +236,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Driver'
+                  $ref: "schemas/responses/driver.yaml"
     post:
       summary: Create a new driver
       description: Registers a new client account in the system..
@@ -252,9 +251,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DriverCreate'
+              $ref: "schemas/requests/driver-create.yaml"
       responses:
-        '201':
+        "201":
           description: Driver created
           headers:
             Location:
@@ -265,13 +264,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Driver'
-        '400':
+                $ref: "schemas/responses/driver.yaml"
+        "400":
           description: Bad Request (Validation error or Duplicate email)
 
   /drivers/{driverId}:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
     get:
       summary: Get information of a Driver
       description: Given a driver ID, obtain the information of a Driver.
@@ -279,13 +278,13 @@ paths:
       tags:
         - Drivers
       responses:
-        '200':
+        "200":
           description: Information of a driver
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Driver'
-        '404':
+                $ref: "schemas/responses/driver.yaml"
+        "404":
           description: Not found
     patch:
       summary: Update driver information
@@ -298,25 +297,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DriverUpdate'
+              $ref: "schemas/requests/driver-update.yaml"
       responses:
-        '200':
+        "200":
           description: Driver updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Driver'
-        '400':
+                $ref: "schemas/responses/driver.yaml"
+        "400":
           description: Bad Request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden (Only the driver themselves can update their profile)
-        '404':
+        "404":
           description: Driver not found
   /drivers/{driverId}/profile-picture:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
     get:
       summary: Get the profile picture.
       description: Get the profile picture of the driver id.
@@ -324,7 +323,7 @@ paths:
       tags:
         - Drivers
       responses:
-        '200':
+        "200":
           description: Image retrieved successfully
           content:
             image/png:
@@ -335,7 +334,7 @@ paths:
               schema:
                 type: string
                 format: binary
-        '404':
+        "404":
           description: Image not found
     post:
       tags:
@@ -359,7 +358,7 @@ paths:
                   format: binary
                   description: Image file to use as the driver’s profile picture
       responses:
-        '201':
+        "201":
           description: Profile picture uploaded
           headers:
             Location:
@@ -376,26 +375,26 @@ paths:
                     type: string
                     format: uri
                     example: https://cdn.example.com/drivers/42.jpg
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '415':
+        "415":
           description: Unsupported Media Type
 
   /drivers/{driverId}/vehicles:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
     get:
       summary: List all vehicles
       description: Get all vehicles of driver with id `id`.
       operationId: listDriverVehicles
       parameters:
-        - $ref: '#/components/parameters/PaginationQuery'
+        - $ref: "#/components/parameters/PaginationQuery"
       tags:
         - Vehicles
       responses:
-        '200':
+        "200":
           description: A list of vehicles
           headers:
             Link:
@@ -409,7 +408,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vehicle'
+                  $ref: "schemas/responses/vehicle.yaml"
     post:
       summary: Register a new vehicle
       description: Registers a new vehicle for a specific driver.
@@ -424,9 +423,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VehicleCreate'
+              $ref: "schemas/requests/vehicle-create.yaml"
       responses:
-        '201':
+        "201":
           description: Vehicle created
           headers:
             Location:
@@ -437,18 +436,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vehicle'
-        '400':
+                $ref: "schemas/responses/vehicle.yaml"
+        "400":
           description: Bad Request (Validation error or Vehicle with that plate number exists)
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
 
   /drivers/{driverId}/vehicles/{vehicleId}:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
+      - $ref: "#/components/parameters/VehicleIdPath"
     get:
       summary: Get information of a vehicle
       description: Given a driver ID and a vehicle ID, obtain the information of a Vehicle.
@@ -456,13 +455,13 @@ paths:
       tags:
         - Vehicles
       responses:
-        '200':
+        "200":
           description: Information of a vehicle
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vehicle'
-        '404':
+                $ref: "schemas/responses/vehicle.yaml"
+        "404":
           description: Not found
     patch:
       summary: Update vehicle information
@@ -475,27 +474,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VehicleUpdate'
+              $ref: "schemas/requests/vehicle-update.yaml"
       responses:
-        '200':
+        "200":
           description: Vehicle updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vehicle'
-        '400':
+                $ref: "schemas/responses/vehicle.yaml"
+        "400":
           description: Bad Request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden (Only the owner can update the vehicle)
-        '404':
+        "404":
           description: Vehicle or Driver not found
 
   /drivers/{driverId}/vehicles/{vehicleId}/availability:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
+      - $ref: "#/components/parameters/VehicleIdPath"
     get:
       summary: Get availability from the vehicle
       description: Get the regular availability from the vehicle, this does not consider booked times.
@@ -503,13 +502,13 @@ paths:
       tags:
         - Vehicles
       responses:
-        '200':
+        "200":
           description: A list of times
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Availability'
-        '404':
+                $ref: "schemas/responses/availability.yaml"
+        "404":
           description: Not Found
     patch:
       summary: Update Availability for the vehicle
@@ -522,25 +521,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Availability'
+              $ref: "schemas/responses/availability.yaml"
       responses:
-        '200':
+        "200":
           description: Availability updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Availability'
-        '400':
+                $ref: "schemas/responses/availability.yaml"
+        "400":
           description: Invalid zone ids or timeSlots
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
 
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
+      - $ref: "#/components/parameters/VehicleIdPath"
     get:
       summary: Get booked times for the vehicle
       description: Get the times the vehicle was booked for.
@@ -548,21 +547,21 @@ paths:
       tags:
         - Vehicles
       responses:
-        '200':
+        "200":
           description: A list of times
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DatedTimeSlot'
-        '404':
+                  $ref: "schemas/responses/dated-time-slot.yaml"
+        "404":
           description: Not Found
 
   /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
-      - $ref: '#/components/parameters/DriverIdPath'
-      - $ref: '#/components/parameters/VehicleIdPath'
+      - $ref: "#/components/parameters/DriverIdPath"
+      - $ref: "#/components/parameters/VehicleIdPath"
     get:
       summary: Get the vehicle picture.
       description: Get the vehicle picture of the driver id and vehicle id.
@@ -570,7 +569,7 @@ paths:
       tags:
         - Vehicles
       responses:
-        '200':
+        "200":
           description: Image retrieved successfully
           content:
             image/png:
@@ -581,7 +580,7 @@ paths:
               schema:
                 type: string
                 format: binary
-        '404':
+        "404":
           description: Image not found
     post:
       tags:
@@ -605,7 +604,7 @@ paths:
                   format: binary
                   description: Image file to use as the vehicle’s profile picture
       responses:
-        '201':
+        "201":
           description: Profile picture uploaded
           headers:
             Location:
@@ -622,11 +621,11 @@ paths:
                     type: string
                     format: uri
                     example: https://cdn.example.com/vehicles/42.jpg
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '415':
+        "415":
           description: Unsupported Media Type
 
   /bookings:
@@ -657,16 +656,15 @@ paths:
               - FINISHED
               - REJECTED
               - CANCELED
-        - $ref: '#/components/parameters/PaginationQuery'
+        - $ref: "#/components/parameters/PaginationQuery"
       description: >
         Retrieves bookings optionally filtered by client or driver.
         Only one filter is expected at a time.
       operationId: listBookings
       tags:
         - Bookings
-
       responses:
-        '200':
+        "200":
           description: List of bookings
           headers:
             Link:
@@ -680,13 +678,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: "schemas/responses/booking.yaml"
 
-        '400':
+        "400":
           description: Invalid query parameters
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
 
     post:
@@ -704,9 +702,9 @@ paths:
           # TODO: use custom versioned mimetype?
           application/json:
             schema:
-              $ref: '#/components/schemas/BookingCreate'
+              $ref: "schemas/requests/booking-create.yaml"
       responses:
-        '201':
+        "201":
           description: Booking created
           headers:
             Location:
@@ -717,18 +715,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Booking'
-        '400':
+                $ref: "schemas/responses/booking.yaml"
+        "400":
           description: "Bad Request: Bad format of the body provided"
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-
 
   /bookings/{bookingId}:
     parameters:
-      - $ref: '#/components/parameters/BookingIdPath'
+      - $ref: "#/components/parameters/BookingIdPath"
     get:
       summary: Get booking by ID
       description: Get booking information given a booking ID.
@@ -736,22 +733,22 @@ paths:
       tags:
         - Bookings
       responses:
-        '200':
+        "200":
           description: Booking found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Booking'
-        '401':
+                $ref: "schemas/responses/booking.yaml"
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Booking not found
 
   /bookings/{bookingId}/proof-of-payment:
     parameters:
-      - $ref: '#/components/parameters/BookingIdPath'
+      - $ref: "#/components/parameters/BookingIdPath"
     get:
       summary: Get the proof of payment
       description: Get the proof of payment for a booking given their booking ID.
@@ -759,18 +756,18 @@ paths:
       tags:
         - Bookings
       responses:
-        '200':
+        "200":
           description: Pdf retrieved successfully
           content:
             application/pdf:
               schema:
                 type: string
                 format: binary
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Image not found
     post:
       tags:
@@ -794,7 +791,7 @@ paths:
                   format: binary
                   description: Pdf file to use as the booking’s proof of payment.
       responses:
-        '201':
+        "201":
           description: Proof of payment uploaded
           headers:
             Location:
@@ -812,11 +809,11 @@ paths:
                     type: string
                     format: uri
                     example: "https://cdn.example.com/bookings/42/proof-of-payment"
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '415':
+        "415":
           description: Unsupported Media Type
 
   /messages:
@@ -826,13 +823,12 @@ paths:
       summary: Get messages between a client and a driver
       operationId: listMessages
       parameters:
-        - $ref: '#/components/parameters/DriverIdQuery'
-        - $ref: '#/components/parameters/ClientIdQuery'
-        - $ref: '#/components/parameters/PaginationQuery'
-
+        - $ref: "#/components/parameters/DriverIdQuery"
+        - $ref: "#/components/parameters/ClientIdQuery"
+        - $ref: "#/components/parameters/PaginationQuery"
 
       responses:
-        '200':
+        "200":
           description: List of messages between client and driver
           headers:
             Link:
@@ -844,7 +840,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Messages'
+                $ref: "schemas/responses/messages.yaml"
               example:
                 messages:
                   - id: 1
@@ -855,11 +851,11 @@ paths:
                     sentByDriver: false
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
-        '401':
+        "401":
           description: Auth required
-        '403':
+        "403":
           description: Forbidden (User is not part of the conversation)
-        '404':
+        "404":
           description: Driver or Client not found
 
     post:
@@ -874,7 +870,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [ clientId, driverId, content ]
+              required: [clientId, driverId, content]
               properties:
                 clientId:
                   type: integer
@@ -884,7 +880,7 @@ paths:
                   type: string
                   example: "Hola, llego en 5 minutos."
       responses:
-        '201':
+        "201":
           description: Message created
           headers:
             Location:
@@ -895,14 +891,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Message'
-        '400':
+                $ref: "schemas/responses/message.yaml"
+        "400":
           description: Invalid Input
-        '401':
+        "401":
           description: Auth required
-        '403':
+        "403":
           description: Forbidden (User is not part of the conversation)
-        '404':
+        "404":
           description: Driver or Client not found
 
   /messages/{messageId}:
@@ -921,17 +917,17 @@ paths:
       description: Given a message ID, obtain the message details.
       operationId: getMessageById
       responses:
-        '200':
+        "200":
           description: Message details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Message'
-        '401':
+                $ref: "schemas/responses/message.yaml"
+        "401":
           description: Auth required
-        '403':
+        "403":
           description: Not Authorized (User is not part of the conversation)
-        '404':
+        "404":
           description: Message not found
 
   /zones:
@@ -941,18 +937,18 @@ paths:
       summary: List all Zones
       operationId: listZones
       responses:
-        '200':
+        "200":
           description: A list of all zones
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Zone'
+                  $ref: "schemas/responses/zone.yaml"
 
   /zones/{zoneId}:
     parameters:
-      - $ref: '#/components/parameters/ZoneIdPath'
+      - $ref: "#/components/parameters/ZoneIdPath"
     get:
       tags:
         - Zones
@@ -960,13 +956,13 @@ paths:
       description: Get a zone given their zone ID.
       operationId: getZoneById
       responses:
-        '200':
+        "200":
           description: Zone retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Zone'
-        '404':
+                $ref: "schemas/responses/zone.yaml"
+        "404":
           description: Not Found
 
 components:
@@ -1021,472 +1017,9 @@ components:
       schema:
         type: integer
     PaginationQuery:
-       name: page
-       in: query
-       description: Page number
-       schema:
-         type: integer
-         default: 1
-
-  schemas:
-    Client:
-      description: >
-        A registered user of the application who can create reservations with
-        drivers and submit ratings or feedback about completed trips.
-      type: object
-      required: [ id, username, email, preferredLanguage, links ]
-      properties:
-        id:
-          type: integer
-          example: 13
-        username:
-          type: string
-          example: John Doe
-        email:
-          type: string
-          format: email
-          example: johndoe@mail.com
-        preferredLanguage:
-          type: string
-          example: english
-        zoneId:
-          type: integer
-          example: 1
-        links:
-          type: object
-          required: [ self, profilePic, zone, pendingBookings, acceptedBookings, finishedBookings, rejectedBookings, canceledBookings ]
-          properties:
-            self:
-              type: string
-              example: /api/clients/13
-            profilePic:
-              type: string
-              example: /api/clients/13/profile-picture
-            zone:
-              type: string
-              example: /api/zones/1
-            pendingBookings:
-              type: string
-              example: /api/bookings?fromClient=13&status=PENDING
-            acceptedBookings:
-              type: string
-              example: /api/bookings?fromClient=13&status=ACCEPTED
-            finishedBookings:
-              type: string
-              example: /api/bookings?fromClient=13&status=FINISHED
-            rejectedBookings:
-              type: string
-              example: /api/bookings?fromClient=13&status=REJECTED
-            canceledBookings:
-              type: string
-              example: /api/bookings?fromClient=13&status=CANCELED
-    ClientCreate:
-      description: Data required to register a new client account.
-      type: object
-      required: [ name, email, zoneId ]
-      properties:
-        name:
-          type: string
-          example: John Doe
-        email:
-          type: string
-          format: email
-          example: johndoe@mail.com
-        zoneId:
-          type: integer
-          example: 1
-
-    ClientUpdate:
-      description: Client data to be updated.
-      type: object
-      properties:
-        username:
-          type: string
-          example: New username
-        email:
-          type: string
-          format: email
-          example: new-mail@mail.com
-        preferredLanguage:
-          type: string
-          example: Spanish
-        zoneId:
-          type: integer
-          example: 2
-    Driver:
-      description: >
-        A registered user of the application who has vehicles and can get his services requested
-        by a client.
-      type: object
-      required: [ id, username, email, description, rating, cbu, links ]
-      properties:
-        id:
-          type: integer
-          example: 13
-        username:
-          type: string
-          example: Berni's Fletes
-        email:
-          type: string
-          format: email
-          example: berniflete@gmail.com
-        preferredLanguage:
-          type: string
-          example: english
-        description:
-          type: string
-          example: Best fletes in Adrogué.
-        rating:
-          type: number
-          minimum: 0
-          maximum: 5
-          example: 4
-        cbu:
-          type: string
-          example: 1234567891234567891234
-        links:
-          type: object
-          required: [ self, profilePic, pendingBookings, acceptedBookings, finishedBookings, rejectedBookings, canceledBookings, vehicles ]
-          properties:
-            self:
-              type: string
-              example: /api/drivers/13
-            profilePic:
-              type: string
-              example: /api/drivers/13/profile-picture
-            pendingBookings:
-              type: string
-              example: /api/bookings?toDriver=13&status=PENDING
-            acceptedBookings:
-              type: string
-              example: /api/bookings?toDriver=13&status=ACCEPTED
-            finishedBookings:
-              type: string
-              example: /api/bookings?toDriver=13&status=FINISHED
-            rejectedBookings:
-              type: string
-              example: /api/bookings?toDriver=13&status=REJECTED
-            canceledBookings:
-              type: string
-              example: /api/bookings?toDriver=13&status=CANCELED
-            vehicles:
-              type: string
-              example: /api/driver/13/vehicles
-    DriverCreate:
-      description: Data required to register a new driver account.
-      type: object
-      required: [ username, email ]
-      properties:
-        username:
-          type: string
-          example: Berni's Fletes
-        email:
-          type: string
-          format: email
-          example: berniflete@gmail.com
-        description:
-          type: string
-          example: Best fletes in Adrogué.
-        cbu:
-          type: string
-          example: "0000003100000000000000"
-    DriverUpdate:
-      description: Driver data to be updated. Any field is optional.
-      type: object
-      properties:
-        username:
-          type: string
-          description: The new public display name
-          example: "Berni's Fletes 2.0"
-        email:
-          type: string
-          format: email
-          example: new-mail@mail.com
-        description:
-          type: string
-          description: Updated bio or service description
-          example: "Now covering longer distances."
-        cbu:
-          type: string
-          description: Updated banking information
-          example: "0000003100000000000000"
-        preferredLanguage:
-          type: string
-          example: Spanish
-    Vehicle:
-      description: A vehicle registered to a specific driver
-      type: object
-      required: [ id, driverId, licensePlate, volumeM3, hourlyRate, links ]
-      properties:
-        id:
-          type: integer
-          example: 1
-        driverId:
-          type: integer
-          description: ID of the driver who owns this vehicle
-          example: 13
-        licensePlate:
-          type: string
-          example: AA123BB
-        volumeM3:
-          type: number
-          format: float
-          example: 150.3
-        hourlyRate:
-          type: number
-          format: float
-          example: 150.4
-        description:
-          type: string
-          example: This is a vehicle
-        links:
-          type: object
-          required: [ self, picture, driver, availability, bookedTimes ]
-          properties:
-            self:
-              type: string
-              example: /api/drivers/13/vehicles/1
-            picture:
-              type: string
-              example: /api/drivers/13/vehicles/1/picture
-            driver:
-              type: string
-              example: /api/drivers/13
-            availability:
-              type: string
-              example: /api/drivers/13/vehicles/1/availability
-            bookedTimes:
-              type: string
-              example: /api/drivers/13/vehicles/1/booked-times
-    VehicleCreate:
-      description: Data required to register a new vehicle.
-      type: object
-      required: [ volumeM3, hourlyRate, licensePlate ]
-      properties:
-        licensePlate:
-          type: string
-          example: AA124BB
-        volumeM3:
-          type: number
-          format: float
-          example: 150.3
-        hourlyRate:
-          type: number
-          format: float
-          example: 150.4
-        description:
-          type: string
-          example: This is a vehicle
-    VehicleUpdate:
-      description: Vehicle data to be updated. Any field is optional.
-      type: object
-      properties:
-        licensePlate:
-          type: string
-          description: Useful for typo corrections
-          example: "AA999BB"
-        volumeM3:
-          type: number
-          format: float
-          example: 150.3
-        hourlyRate:
-          type: number
-          format: float
-          example: 150.4
-        description:
-          type: string
-          example: This is a vehicle
-    Messages:
-      description: A list of time ordered messages between two users
-      type: object
-      required: [ clientId, driverId, messages ]
-      properties:
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Message'
-        driverId:
-          type: integer
-          description: ID of the driver
-        clientId:
-          type: integer
-          description: ID of the client
-      example:
-        clientId: 22
-        driverId: 13
-        messages:
-          - id: 1
-            content: "Hola, ¿llegás en 5?"
-            sentByDriver: false
-            timestamp: "2026-01-10T18:30:00Z"
-            self: "http://localhost:8080/messages/1"
-          - id: 2
-            content: "Sí, estoy estacionando."
-            sentByDriver: true
-            timestamp: "2026-01-10T18:32:00Z"
-            self: "http://localhost:8080/messages/2"
-
-    Message:
-      type: object
-      required: [ id, content, sentByDriver, timestamp ]
-      properties:
-        id:
-          type: integer
-          example: 1
-        content:
-          type: string
-          example: "Hola, ¿llegás en 5?"
-        sentByDriver:
-          type: boolean
-        timestamp:
-          type: string
-          format: date-time
-          example: "2026-01-10T18:30:00Z"
-        self:
-          type: string
-          format: uri
-          description: The canonical location of this message resource
-          example: "http://localhost:8080/messages/1"
-    Booking:
-      type: object
-      required: [ id, clientId, vehicleId, shiftPeriod, originZoneId, destinationZoneId ]
-      properties:
-        id:
-          type: integer
-        clientId:
-          type: integer
-        vehicleId:
-          type: integer
-        shiftPeriod:
-          type: string
-          enum:
-            - MORNING
-            - AFTERNOON
-            - EVENING
-        originZoneId:
-          type: integer
-        destinationZoneId:
-          type: integer
-        jobDescription:
-          type: string
-          example: "Hola, necesito un flete"
-        review:
-          type: string
-          example: "Me encantó"
-        rating:
-          type: integer
-          example: 4
-
-        links:
-          type: object
-          required: [ self, client, driver, vehicle, proofOfPayment ]
-          properties:
-            self:
-              type: string
-              example: /api/bookings/42
-            client:
-              type: string
-              example: /api/clients/13
-            driver:
-              type: string
-              example: /api/drivers/10
-            vehicle:
-              type: string
-              example: /api/drivers/10/vehicles/5
-            proofOfPayment:
-              type: string
-              example: /api/bookings/42/proof-of-payment
-            originZone:
-              type: string
-              example: /api/zones/12
-            destinationZone:
-              type: string
-              example: /api/zones/14
-    BookingCreate:
-      description: Data required to create a new Booking.
-      type: object
-      required: [ vehicleId, destinationZoneId, date, shiftPeriod ]
-      properties:
-        vehicleId:
-          type: integer
-        destinationZoneId:
-          type: integer
-        date:
-          type: string
-          format: date
-          example: "2026-01-10"
-        shiftPeriod:
-          type: string
-          enum:
-            - MORNING
-            - AFTERNOON
-            - EVENING
-        description:
-          type: string
-          example: "Hola, necesito un flete"
-    Country:
-      type: object
-      required: [ id, name, code ]
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        code:
-          type: string
-          pattern: '^[A-Z]{2}$'
-    Region:
-      type: object
-      required: [ id, name ]
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-
-    Zone:
-      type: object
-      required: [ id, country, province, neighborhood ]
-      properties:
-        id:
-          type: integer
-        country:
-          $ref: '#/components/schemas/Country'
-        province:
-          $ref: '#/components/schemas/Region'
-        neighborhood:
-          $ref: '#/components/schemas/Region'
-
-    Availability:
-      type: object
-      properties:
-        zonesIds:
-          type: array
-          items:
-            type: integer
-          example: [1, 4, 6]
-        timeSlots:
-          type: array
-          items:
-            $ref: '#/components/schemas/WeekTimeSlot'
-
-    WeekTimeSlot:
-      type: object
-      properties:
-        date:
-          type: string
-          enum: [ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY ]
-        shift:
-          type: string
-          enum: [ MORNING, AFTERNOON, EVENING ]
-
-    DatedTimeSlot:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-          example: "2026-01-20"
-        shift:
-          type: string
-          enum: [ MORNING, AFTERNOON, EVENING ]
+      name: page
+      in: query
+      description: Page number
+      schema:
+        type: integer
+        default: 1

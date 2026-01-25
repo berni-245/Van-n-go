@@ -1,0 +1,13 @@
+type: object
+required: [id, name, code]
+properties:
+  id:
+    type: integer
+    example: 3
+  name:
+    type: string
+    example: "Argentina"
+  code:
+    type: string
+    pattern: "^[A-Z]{2}$"
+    example: "AR"

@@ -1,0 +1,22 @@
+description: Driver data to be updated. Any field is optional.
+type: object
+properties:
+  username:
+    type: string
+    description: The new public display name
+    example: "Berni's Fletes 2.0"
+  email:
+    type: string
+    format: email
+    example: new-mail@mail.com
+  description:
+    type: string
+    description: Updated bio or service description
+    example: "Now covering longer distances."
+  cbu:
+    type: string
+    description: Updated banking information
+    example: "0000003100000000000000"
+  preferredLanguage:
+    type: string
+    example: Spanish

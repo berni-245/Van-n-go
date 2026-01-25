@@ -1,0 +1,14 @@
+description: Data required to register a new client account.
+type: object
+required: [name, email, zoneId]
+properties:
+  name:
+    type: string
+    example: John Doe
+  email:
+    type: string
+    format: email
+    example: johndoe@mail.com
+  zoneId:
+    type: integer
+    example: 1

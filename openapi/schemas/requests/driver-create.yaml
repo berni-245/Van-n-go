@@ -1,0 +1,17 @@
+description: Data required to register a new driver account.
+type: object
+required: [username, email]
+properties:
+  username:
+    type: string
+    example: Berni's Fletes
+  email:
+    type: string
+    format: email
+    example: berniflete@gmail.com
+  description:
+    type: string
+    example: Best fletes in Adrogué.
+  cbu:
+    type: string
+    example: "0000003100000000000000"

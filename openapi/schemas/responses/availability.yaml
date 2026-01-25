@@ -1,0 +1,11 @@
+type: object
+properties:
+  zonesIds:
+    type: array
+    items:
+      type: integer
+    example: [1, 4, 6]
+  timeSlots:
+    type: array
+    items:
+      $ref: "week-time-slot.yaml"

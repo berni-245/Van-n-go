@@ -1,0 +1,11 @@
+type: object
+required: [id, country, province, neighborhood]
+properties:
+  id:
+    type: integer
+  country:
+    $ref: "country.yaml"
+  province:
+    $ref: "region.yaml"
+  neighborhood:
+    $ref: "region.yaml"
