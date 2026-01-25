@@ -1,0 +1,4 @@
+description: >
+  Links to navigation (next, prev, first, last) according to [RFC 5988](https://datatracker.ietf.org/doc/html/rfc5988).
+schema:
+  type: string

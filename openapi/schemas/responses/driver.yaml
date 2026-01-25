@@ -24,10 +24,10 @@ properties:
     type: number
     minimum: 0
     maximum: 5
-    example: 4
+    example: 4.3
   cbu:
     type: string
-    example: 1234567891234567891234
+    example: "1234567891234567891234"
   links:
     type: object
     required:

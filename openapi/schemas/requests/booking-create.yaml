@@ -4,18 +4,16 @@ required: [vehicleId, destinationZoneId, date, shiftPeriod]
 properties:
   vehicleId:
     type: integer
+    example: 0
   destinationZoneId:
     type: integer
+    example: 0
   date:
     type: string
     format: date
     example: "2026-01-10"
   shiftPeriod:
-    type: string
-    enum:
-      - MORNING
-      - AFTERNOON
-      - EVENING
+    $ref: "../enums/shift-period.yaml"
   description:
     type: string
     example: "Hola, necesito un flete"

@@ -9,6 +9,7 @@ properties:
     example: "Hola, ¿llegás en 5?"
   sentByDriver:
     type: boolean
+    example: false
   timestamp:
     type: string
     format: date-time

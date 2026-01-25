@@ -1,8 +1,6 @@
 type: object
 properties:
-  date:
-    type: string
-    enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+  day:
+    $ref: "../enums/day.yaml"
   shift:
-    type: string
-    enum: [MORNING, AFTERNOON, EVENING]
+    $ref: "../enums/shift-period.yaml"

@@ -1,10 +1,14 @@
+description: >
+  - `zones`: array of zone URIs where a vehicle works
+
+  - `timeSlots`: array of time slots, representing a day and time on which a vehicle works
 type: object
 properties:
-  zonesIds:
+  zones:
     type: array
     items:
-      type: integer
-    example: [1, 4, 6]
+      type: string
+    example: ["api/zones/1", "api/zones/2", "api/zones/3"]
   timeSlots:
     type: array
     items:

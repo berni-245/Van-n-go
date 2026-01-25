@@ -66,7 +66,7 @@ paths:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
-          description: Bad Request
+          $ref: "schemas/errors/bad-request.yaml"
 
   /clients/{clientId}:
     parameters:
@@ -85,9 +85,9 @@ paths:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "404":
-          description: Not found
+          $ref: "schemas/errors/not-found.yaml"
     patch:
       summary: Update client information
       description: Given a client ID, update the specified information of a Client.
@@ -96,6 +96,7 @@ paths:
         - Clients
       requestBody:
         required: true
+        description: Fields that may be updated for an existing client.
         content:
           application/json:
             schema:
@@ -108,13 +109,13 @@ paths:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
-          description: Bad Request
+          $ref: "schemas/errors/bad-request.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Client not found
+          $ref: "schemas/errors/not-found.yaml"
 
   /clients/{clientId}/profile-picture:
     parameters:
@@ -127,20 +128,12 @@ paths:
         - Clients
       responses:
         "200":
-          description: Image retrieved successfully
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            image/jpeg:
-              schema:
-                type: string
-                format: binary
+          description: Client's profile picture
+          $ref: "schemas/image.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "404":
-          description: Image not found
+          $ref: "schemas/errors/image-not-found.yaml"
     post:
       tags:
         - Clients
@@ -148,20 +141,9 @@ paths:
       description: Uploads or replaces the profile picture for a client (format PNG or JPG).
       operationId: uploadClientProfilePicture
       requestBody:
-        description: Image
         required: true
-        content:
-          # TODO: not sure how to add the example in this case.
-          multipart/form-data:
-            schema:
-              type: object
-              required:
-                - file
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to use as the client’s profile picture
+        description: Image file to use as the client’s profile picture
+        $ref: "schemas/image.yaml"
       responses:
         "201":
           description: Profile picture uploaded
@@ -171,65 +153,54 @@ paths:
               schema:
                 type: string
                 example: "/client/42/profile-picture"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  profilePic:
-                    type: string
-                    format: uri
-                    example: https://cdn.example.com/clients/42.jpg
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "415":
-          description: Unsupported Media Type
+          $ref: "schemas/errors/unsupported-media-type.yaml"
 
   /drivers:
     get:
-      summary: List all drivers
+      summary: Get list of all drivers in the system.
       parameters:
         - name: originZoneId
+          description: Get only drivers on a specific starting zone
           in: query
-          description: Filter drivers by an specific starting zone
           required: true
           schema:
             type: integer
         - name: size
+          description: Get only drivers that have a vehicle of an specific size
           in: query
-          description: Filter drivers that have a vehicle of an specific size
-          required: false
           schema:
-            type: string
-            enum: [MANDADO, FLETE, "CARGA_PESADA"]
+            $ref: "schemas/enums/vehicle-size.yaml"
         - name: maxPrice
+          # TODO: era precio por hora o distancia o qué?
+          description: Get only drivers whose rate is lower that specified value
           in: query
-          required: false
           schema:
             type: number
             format: float
         - name: weekDay
+          # TODO: esto se fija en availability o solo en si trabaja en ese día particular?
+          description: Get only drivers who have availability on the specified day
           in: query
-          required: false
           schema:
-            type: string
-            enum:
-              [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+            $ref: "schemas/enums/day.yaml"
         - name: minRating
+          description: Get only drivers whose rating is above the specified value
           in: query
-          required: false
           schema:
             type: integer
         - name: sortOrder
+          description: Sort drivers by the specified criteria
           in: query
           schema:
             type: string
             default: ALPHABETICAL
             enum: [ALPHABETICAL, "LEAST_PRICE", "BEST_RATING"]
         - $ref: "#/components/parameters/PaginationQuery"
-      description: Get list of all drivers in the system.
       operationId: listDrivers
       tags:
         - Drivers
@@ -238,11 +209,8 @@ paths:
           description: A list of drivers
           headers:
             Link:
-              description: >
-                Links to navigation (next, prev, first, last) according to RFC 5988.
-                Example: </drivers?page=2>; rel="next"
-              schema:
-                type: string
+              $ref: "schemas/headers/link.yaml"
+              example: </drivers?page=2>; rel="next"
           content:
             application/json:
               schema:
@@ -278,7 +246,10 @@ paths:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
-          description: Bad Request (Validation error or Duplicate email)
+          # TODO: if we want api users to know what the error represents internally it should be
+          # returned as part of the response content, not the http error code message.
+          # description: Bad Request (Validation error or Duplicate email)
+          $ref: "schemas/errors/bad-request.yaml"
 
   /drivers/{driverId}:
     parameters:
@@ -297,7 +268,7 @@ paths:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "404":
-          description: Not found
+          $ref: "schemas/errors/not-found.yaml"
     patch:
       summary: Update driver information
       description: Updates specific fields of a driver's profile (Partial Update).
@@ -318,36 +289,30 @@ paths:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
-          description: Bad Request
+          $ref: "schemas/errors/bad-request.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden (Only the driver themselves can update their profile)
+          # TODO: explanation should go in content
+          # description: Forbidden (Only the driver themselves can update their profile)
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Driver not found
+          $ref: "schemas/errors/not-found.yaml"
+
   /drivers/{driverId}/profile-picture:
     parameters:
       - $ref: "#/components/parameters/DriverIdPath"
     get:
-      summary: Get the profile picture.
       description: Get the profile picture of the driver id.
       operationId: getDriverProfilePicture
       tags:
         - Drivers
       responses:
         "200":
-          description: Image retrieved successfully
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            image/jpeg:
-              schema:
-                type: string
-                format: binary
+          description: Driver's profile picture
+          $ref: "schemas/image.yaml"
         "404":
-          description: Image not found
+          $ref: "schemas/errors/image-not-found.yaml"
     post:
       tags:
         - Drivers
@@ -355,20 +320,9 @@ paths:
       description: Uploads or replaces the profile picture for a driver (format PNG or JPG).
       operationId: uploadDriverProfilePicture
       requestBody:
-        description: Image
         required: true
-        content:
-          # TODO: not sure how to add the example in this case.
-          multipart/form-data:
-            schema:
-              type: object
-              required:
-                - file
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to use as the driver’s profile picture
+        description: Image file to use as the driver’s profile picture
+        $ref: "schemas/image.yaml"
       responses:
         "201":
           description: Profile picture uploaded
@@ -378,21 +332,12 @@ paths:
               schema:
                 type: string
                 example: "/drivers/13/profile-picture"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  profilePic:
-                    type: string
-                    format: uri
-                    example: https://cdn.example.com/drivers/42.jpg
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "415":
-          description: Unsupported Media Type
+          $ref: "schemas/errors/unsupported-media-type.yaml"
 
   /drivers/{driverId}/vehicles:
     parameters:
@@ -410,11 +355,8 @@ paths:
           description: A list of vehicles
           headers:
             Link:
-              description: >
-                Links to navigation (next, prev, first, last) according to RFC 5988.
-                Example: </drivers?page=2>; rel="next"
-              schema:
-                type: string
+              $ref: "schemas/headers/link.yaml"
+              example: </drivers?page=2>; rel="next"
           content:
             application/json:
               schema:
@@ -450,11 +392,14 @@ paths:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
-          description: Bad Request (Validation error or Vehicle with that plate number exists)
+          # TODO: if we want api users to know what the error represents internally it should be
+          # returned as part of the response content, not the http error code message.
+          # description: Bad Request (Validation error or Vehicle with that plate number exists)
+          $ref: "schemas/errors/bad-request.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
 
   /drivers/{driverId}/vehicles/{vehicleId}:
     parameters:
@@ -474,7 +419,7 @@ paths:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "404":
-          description: Not found
+          $ref: "schemas/errors/not-found.yaml"
     patch:
       summary: Update vehicle information
       description: Updates specific fields of a vehicle (Partial Update).
@@ -482,6 +427,7 @@ paths:
       tags:
         - Vehicles
       requestBody:
+        description: Fields that may be updated for an existing vehicle.
         required: true
         content:
           application/json:
@@ -495,33 +441,35 @@ paths:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
-          description: Bad Request
+          $ref: "schemas/errors/bad-request.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden (Only the owner can update the vehicle)
+          # TODO: explanation in content
+          # description: Forbidden (Only the owner can update the vehicle)
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Vehicle or Driver not found
+          $ref: "schemas/errors/not-found.yaml"
 
   /drivers/{driverId}/vehicles/{vehicleId}/availability:
     parameters:
       - $ref: "#/components/parameters/DriverIdPath"
       - $ref: "#/components/parameters/VehicleIdPath"
     get:
-      summary: Get availability from the vehicle
-      description: Get the regular availability from the vehicle, this does not consider booked times.
+      summary: Get vehicle's availability
+      description: Get the vehicle's regular availability, this does not consider booked times
       operationId: listAvailability
       tags:
         - Vehicles
       responses:
         "200":
-          description: A list of times
+          description: A list of zones where the vehicle operates and the days and times during which it operates
           content:
             application/json:
               schema:
                 $ref: "schemas/responses/availability.yaml"
         "404":
-          description: Not Found
+          $ref: "schemas/errors/not-found.yaml"
     patch:
       summary: Update Availability for the vehicle
       description: Update the regular availability for the vehicle in the zonesIds given (Partial Update)
@@ -544,9 +492,9 @@ paths:
         "400":
           description: Invalid zone ids or timeSlots
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
 
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     parameters:
@@ -568,7 +516,7 @@ paths:
                 items:
                   $ref: "schemas/responses/dated-time-slot.yaml"
         "404":
-          description: Not Found
+          $ref: "schemas/errors/not-found.yaml"
 
   /drivers/{driverId}/vehicles/{vehicleId}/picture:
     parameters:
@@ -593,7 +541,7 @@ paths:
                 type: string
                 format: binary
         "404":
-          description: Image not found
+          $ref: "schemas/errors/image-not-found.yaml"
     post:
       tags:
         - Vehicles
@@ -601,44 +549,23 @@ paths:
       description: Uploads or replaces the picture for a vehicle (format PNG or JPG).
       operationId: uploadVehiclePicture
       requestBody:
-        description: Image
         required: true
-        content:
-          # TODO: not sure how to add the example in this case.
-          multipart/form-data:
-            schema:
-              type: object
-              required:
-                - file
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to use as the vehicle’s profile picture
+        $ref: "schemas/image.yaml"
       responses:
         "201":
-          description: Profile picture uploaded
+          description: Vehicle picture uploaded
           headers:
             Location:
               description: URI of the uploaded image
               schema:
                 type: string
                 example: "/drivers/13/vehicles/42/picture"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  profilePic:
-                    type: string
-                    format: uri
-                    example: https://cdn.example.com/vehicles/42.jpg
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "415":
-          description: Unsupported Media Type
+          $ref: "schemas/errors/unsupported-media-type.yaml"
 
   /bookings:
     get:
@@ -680,25 +607,20 @@ paths:
           description: List of bookings
           headers:
             Link:
-              description: >
-                Links to navigation (next, prev, first, last) according to RFC 5988.
-                Example: </bookings?page=2>; rel="next"
-              schema:
-                type: string
+              $ref: "schemas/headers/link.yaml"
+              example: </bookings?page=2>; rel="next"
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "schemas/responses/booking.yaml"
-
         "400":
           description: Invalid query parameters
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
-
+          $ref: "schemas/errors/forbidden.yaml"
     post:
       summary: Create a new booking
       description: As a client, create a new booking
@@ -707,9 +629,11 @@ paths:
         - Bookings
       requestBody:
         required: true
+        # TODO: which is the error code if the vehicle is already booked?
         description: >
-          Booking information required to create a new booking.
-          The vehicle must not be booked already at that time.
+          Information required to create a new booking.\
+
+          This operation will fail if the vehicle is already booked at the specified time.
         content:
           # TODO: use custom versioned mimetype?
           application/json:
@@ -729,11 +653,11 @@ paths:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "400":
-          description: "Bad Request: Bad format of the body provided"
+          $ref: "schemas/errors/bad-request.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
 
   /bookings/{bookingId}:
     parameters:
@@ -752,11 +676,11 @@ paths:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Booking not found
+          $ref: "schemas/errors/not-found.yaml"
 
   /bookings/{bookingId}/proof-of-payment:
     parameters:
@@ -776,11 +700,11 @@ paths:
                 type: string
                 format: binary
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Image not found
+          $ref: "schemas/errors/image-not-found.yaml"
     post:
       tags:
         - Bookings
@@ -791,17 +715,11 @@ paths:
         description: Pdf
         required: true
         content:
-          # TODO: not sure how to add the example in this case.
-          multipart/form-data:
+          application/pdf:
             schema:
-              type: object
-              required:
-                - file
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Pdf file to use as the booking’s proof of payment.
+              type: string
+              format: binary
+              description: Pdf file to use as the booking’s proof of payment.
       responses:
         "201":
           description: Proof of payment uploaded
@@ -811,7 +729,6 @@ paths:
               schema:
                 type: string
                 example: "/bookings/42/proof-of-payment"
-
           content:
             application/json:
               schema:
@@ -822,11 +739,11 @@ paths:
                     format: uri
                     example: "https://cdn.example.com/bookings/42/proof-of-payment"
         "401":
-          description: Unauthorized
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden
+          $ref: "schemas/errors/forbidden.yaml"
         "415":
-          description: Unsupported Media Type
+          $ref: "schemas/errors/unsupported-media-type.yaml"
 
   /messages:
     get:
@@ -838,17 +755,13 @@ paths:
         - $ref: "#/components/parameters/DriverIdQuery"
         - $ref: "#/components/parameters/ClientIdQuery"
         - $ref: "#/components/parameters/PaginationQuery"
-
       responses:
         "200":
           description: List of messages between client and driver
           headers:
             Link:
-              description: >
-                Links to navigation (next, prev, first, last) according to RFC 5988.
-                Example: </drivers?page=2>; rel="next"
-              schema:
-                type: string
+              $ref: "schemas/headers/link.yaml"
+              example: </drivers?page=2>; rel="next"
           content:
             application/json:
               schema:
@@ -864,12 +777,13 @@ paths:
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
         "401":
-          description: Auth required
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden (User is not part of the conversation)
+          # TODO: explanation in content
+          # description: Forbidden (User is not part of the conversation)
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
-          description: Driver or Client not found
-
+          $ref: "schemas/errors/not-found.yaml"
     post:
       tags:
         - Messages
@@ -907,11 +821,11 @@ paths:
         "400":
           description: Invalid Input
         "401":
-          description: Auth required
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden (User is not part of the conversation)
+          description: Forbidden - User is not part of the conversation
         "404":
-          description: Driver or Client not found
+          $ref: "schemas/errors/not-found.yaml"
 
   /messages/{messageId}:
     parameters:
@@ -921,7 +835,6 @@ paths:
         description: The ID of the message to retrieve
         schema:
           type: integer
-
     get:
       tags:
         - Messages
@@ -936,11 +849,11 @@ paths:
               schema:
                 $ref: "schemas/responses/message.yaml"
         "401":
-          description: Auth required
+          $ref: "schemas/errors/unauthorized.yaml"
         "403":
           description: Not Authorized (User is not part of the conversation)
         "404":
-          description: Message not found
+          $ref: "schemas/errors/not-found.yaml"
 
   /zones:
     get:
@@ -975,7 +888,7 @@ paths:
               schema:
                 $ref: "schemas/responses/zone.yaml"
         "404":
-          description: Not Found
+          $ref: "schemas/errors/not-found.yaml"
 
 components:
   parameters:
@@ -987,8 +900,8 @@ components:
       schema:
         type: integer
     DriverIdPath:
-      name: driverId
       in: path
+      name: driverId
       required: true
       description: ID of the driver
       schema:
