@@ -9,3 +9,13 @@ properties:
     $ref: "province.yaml"
   neighborhood:
     $ref: "neighborhood.yaml"
+  links:
+    type: object
+    required:
+      [
+        self
+      ]
+    properties:
+      self:
+        type: string
+        example: /api/zones/13

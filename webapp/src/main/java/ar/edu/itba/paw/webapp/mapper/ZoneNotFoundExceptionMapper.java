@@ -10,6 +10,6 @@ import javax.ws.rs.ext.Provider;
 public class ZoneNotFoundExceptionMapper implements ExceptionMapper<ZoneNotFoundException> {
     @Override
     public Response toResponse(ZoneNotFoundException e) {
-        return Response.status(Response.Status.BAD_REQUEST).header("msg", "Invalid Zone Id").build();
+        return Response.status(Response.Status.NOT_FOUND).header("msg", "No existing zone for send id").build();
     }
 }
