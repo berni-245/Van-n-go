@@ -2,7 +2,19 @@ openapi: 3.1.2
 info:
   title: Transport Booking API
   version: 1.0.0
-  description: API for booking vehicles owned by drivers, used by clients.
+  description: >
+    ## Overview
+
+    API for booking vehicles owned by drivers, used by clients.
+
+    ## Authentication
+
+    Methods requiring authentication should send the header `Authentication: Bearer <token>`.
+    The <token> is a jwt and may be obtained by making a request to any endpoint with the header
+    `Authentication: Basic <credentials>`, where `<credentials>` is the Base64 encoding of
+    `<username>:<password>`. If the credentials are correct then the server will reply with the
+    normal endpoint's response and a jwt in the header `vango-auth-token: <token>` and
+    `vango-refresh-token: <refresh-token>`.
 
 servers:
   - url: http://localhost:8080/api
