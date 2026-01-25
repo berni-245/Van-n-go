@@ -6,7 +6,6 @@ import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.CreateClientDTO;
-import ar.edu.itba.paw.webapp.dto.ImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -81,7 +80,7 @@ public class ClientController {
     public Response uploadProfilePicture(@PathParam("id") final int id, byte[] imageData) {
         //TODO: add 401 and 403 responses
         Client client = clientService.findById(id);
-        int imageId = imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp");
+        imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp");
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 

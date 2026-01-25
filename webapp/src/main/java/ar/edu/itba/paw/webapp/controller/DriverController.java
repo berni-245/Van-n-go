@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.SearchOrder;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -24,9 +25,12 @@ public class DriverController {
 
     private final DriverService ds;
 
+    private final ImageService imageService;
+
     @Autowired
-    public DriverController(DriverService ds) {
+    public DriverController(DriverService ds, ImageService imageService) {
         this.ds = ds;
+        this.imageService = imageService;
     }
 
     @GET
@@ -75,6 +79,30 @@ public class DriverController {
                 dto.getCbu(), dto.getLanguage() != null ? dto.getLanguage().name() : driver.getLanguage().name() // TODO cambiar esta nastyeada luego
         );
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
+    }
+
+    @GET
+    @Path("/{id}/profile-picture")
+    @Produces({"image/jpeg", "image/png"})
+    public Response getProfilePicture(@PathParam("id") final int id) {
+        Driver driver = ds.findById(id);
+        Integer imageId = driver.getPfp();
+        if(imageId != null){
+            byte[] pictureData = imageService.getImage(imageId).getData();
+            if (pictureData != null) {
+                return Response.ok(pictureData).build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("/{id}/profile-picture")
+    @Consumes({"image/jpeg", "image/png"})
+    public Response uploadProfilePicture(@PathParam("id") final int id, byte[] imageData) {
+        Driver driver = ds.findById(id);
+        imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp");
+        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 
 }
