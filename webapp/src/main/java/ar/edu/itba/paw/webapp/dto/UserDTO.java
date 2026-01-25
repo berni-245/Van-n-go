@@ -28,9 +28,10 @@ public abstract class UserDTO {
         this.username = user.getUsername();
         this.mail = user.getMail();
         this.language = user.getLanguage();
-        this.self = uriInfo.getBaseUriBuilder().path(user.getType() + "s").path(String.valueOf(user.getId())).build();
+        UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
+        this.self = userIdEndpointTemplate.clone().build();
         if (user.getPfp() != null) {
-            this.pfp = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path("profile-picture").path(String.valueOf(user.getPfp())).build();
+            this.pfp = userIdEndpointTemplate.clone().path("profile-picture").build();
         } else {
             this.pfp = null;
         }
