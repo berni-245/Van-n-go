@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -38,17 +39,19 @@ public class DriverController {
             @QueryParam("minRating") Integer minRating,
             @QueryParam("sortOrder") @DefaultValue("ALPHABETICAL") SearchOrder order,
             @QueryParam("page") @DefaultValue("1") int page
-        ) {
+    ) {
         List<DriverDTO> drivers = ds
                 .getSearchResults(zoneId, size, maxPrice, weekDay, minRating, order, page)
                 .stream().map(DriverDTO.mapper(uriInfo)).toList();
-        return Response.ok(new GenericEntity<>(drivers) {}).build();
+        return Response.ok(new GenericEntity<>(drivers) {
+        }).build();
     }
 
     @POST
+    @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createDriver(DriverDTO dto) {
-        Driver created = ds.create(dto.getUsername(), dto.getMail(), dto.getPassword(), dto.getDescription(), dto.getLanguage().getLocale());
+        Driver created = ds.create(dto.getUsername(), dto.getMail(), dto.getPassword(), dto.getDescription(), LocaleContextHolder.getLocale());
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
     }
@@ -56,8 +59,21 @@ public class DriverController {
     @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getDriverById(@PathParam("id") int id){
+    public Response getDriverById(@PathParam("id") int id) {
         Driver driver = ds.findById(id);
+        return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response updateClientById(@PathParam("id") int id, DriverDTO dto) {
+        Driver driver = ds.findById(id);
+        ds.editProfile(
+                driver, dto.getUsername(), dto.getMail(), dto.getDescription(),
+                dto.getCbu(), dto.getLanguage() != null ? dto.getLanguage().name() : driver.getLanguage().name() // TODO cambiar esta nastyeada luego
+        );
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
     }
 
