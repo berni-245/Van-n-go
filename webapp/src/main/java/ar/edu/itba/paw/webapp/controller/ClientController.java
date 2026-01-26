@@ -34,7 +34,6 @@ public class ClientController {
     public Response createClient(final CreateClientDTO clientDTO) {
         Client client = clientService.create(clientDTO.getUsername(), clientDTO.getMail(), clientDTO.getPassword(),clientDTO.getZoneId() , LocaleContextHolder.getLocale());
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
-
     }
 
     @GET
