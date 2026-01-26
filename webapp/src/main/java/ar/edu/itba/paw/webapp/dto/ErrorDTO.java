@@ -1,54 +1,32 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import java.net.URI;
-
-// This ErrorDTO follows problem details format for HTTP APIs in the proposed standard RFC 9457
-// https://datatracker.ietf.org/doc/html/rfc9457
 public class ErrorDTO {
 
-    private URI type;
-    private String title;
-    private Integer status;
-    private String detail;
-    private URI instance;
+    private String type;
+    private String msg;
 
-    public URI getType() {
+    public ErrorDTO() {
+
+    }
+
+    public ErrorDTO(ErrorType type, String msg) {
+        this.type = type.name();
+        this.msg = msg;
+    }
+
+    public String getType() {
         return type;
     }
 
-    public void setType(URI type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public String getTitle() {
-        return title;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public URI getInstance() {
-        return instance;
-    }
-
-    public void setInstance(URI instance) {
-        this.instance = instance;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }
