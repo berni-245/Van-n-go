@@ -1,11 +1,14 @@
 description: Data required to register a new client account.
 type: object
-required: [name, email, zoneId]
+required: [username, password, mail, zoneId]
 properties:
-  name:
+  username:
     type: string
     example: John Doe
-  email:
+  password:
+    type: string
+    example: strongpassword123
+  mail:
     type: string
     format: email
     example: johndoe@mail.com
