@@ -55,7 +55,7 @@ public class DriverController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createDriver(DriverDTO dto) {
-        Driver created = ds.create(dto.getUsername(), dto.getMail(), dto.getPassword(), dto.getDescription(), LocaleContextHolder.getLocale());
+        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), LocaleContextHolder.getLocale());
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
     }
@@ -75,8 +75,8 @@ public class DriverController {
     public Response updateClientById(@PathParam("id") int id, DriverDTO dto) {
         Driver driver = ds.findById(id);
         ds.editProfile(
-                driver, dto.getUsername(), dto.getMail(), dto.getDescription(),
-                dto.getCbu(), dto.getLanguage() != null ? dto.getLanguage().name() : driver.getLanguage().name() // TODO cambiar esta nastyeada luego
+                driver, dto.getUsername(), dto.getEmail(), dto.getDescription(),
+                dto.getCbu(), dto.getPreferredLanguage() != null ? dto.getPreferredLanguage().name() : driver.getLanguage().name() // TODO cambiar esta nastyeada luego
         );
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
     }

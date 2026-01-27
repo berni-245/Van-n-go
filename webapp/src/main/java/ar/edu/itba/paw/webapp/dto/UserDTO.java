@@ -13,10 +13,10 @@ public abstract class UserDTO {
     private int id;
     private String username;
     private String password;
-    private String mail;
-    private Language language;
+    private String email;
+    private Language preferredLanguage;
     private URI self;
-    private URI pfp;
+    private URI proflePic;
     private URI pendingBookings;
     private URI acceptedBookings;
     private URI finishedBookings;
@@ -26,14 +26,14 @@ public abstract class UserDTO {
     protected void setFromUser(UriInfo uriInfo, User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.mail = user.getMail();
-        this.language = user.getLanguage();
+        this.email = user.getMail();
+        this.preferredLanguage = user.getLanguage();
         UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
         this.self = userIdEndpointTemplate.clone().build();
         if (user.getPfp() != null) {
-            this.pfp = userIdEndpointTemplate.clone().path("profile-picture").build();
+            this.proflePic = userIdEndpointTemplate.clone().path("profile-picture").build();
         } else {
-            this.pfp = null;
+            this.proflePic = null;
         }
         String userTypeQueryParam = user.getType().equals("driver") ? "toDriver" : "fromClient";
         UriBuilder bookingTemplate = uriInfo
@@ -58,20 +58,20 @@ public abstract class UserDTO {
         this.username = username;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public Language getLanguage() {
-        return language;
+    public Language getPreferredLanguage() {
+        return preferredLanguage;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setPreferredLanguage(Language preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
     }
 
     public URI getSelf() {
@@ -82,12 +82,12 @@ public abstract class UserDTO {
         this.self = self;
     }
 
-    public URI getPfp() {
-        return pfp;
+    public URI getProflePic() {
+        return proflePic;
     }
 
-    public void setPfp(URI pfp) {
-        this.pfp = pfp;
+    public void setProflePic(URI proflePic) {
+        this.proflePic = proflePic;
     }
 
     public URI getPendingBookings() {
