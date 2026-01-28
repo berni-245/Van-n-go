@@ -172,42 +172,12 @@ paths:
     get:
       summary: Get list of all drivers in the system.
       parameters:
-        - name: originZoneId
-          description: Get only drivers on a specific starting zone
-          in: query
-          required: true
-          schema:
-            type: integer
-        - name: size
-          description: Get only drivers that have a vehicle of an specific size
-          in: query
-          schema:
-            $ref: "schemas/enums/vehicle-size.yaml"
-        - name: maxPrice
-          # TODO: era precio por hora o distancia o qué?
-          description: Get only drivers whose rate is lower that specified value
-          in: query
-          schema:
-            type: number
-            format: float
-        - name: weekDay
-          # TODO: esto se fija en availability o solo en si trabaja en ese día particular?
-          description: Get only drivers who have availability on the specified day
-          in: query
-          schema:
-            $ref: "schemas/enums/day.yaml"
-        - name: minRating
-          description: Get only drivers whose rating is above the specified value
-          in: query
-          schema:
-            type: integer
-        - name: sortOrder
-          description: Sort drivers by the specified criteria
-          in: query
-          schema:
-            type: string
-            default: ALPHABETICAL
-            enum: [ALPHABETICAL, "LEAST_PRICE", "BEST_RATING"]
+        - $ref: "#/components/parameters/ZoneIdPath"
+        - $ref: "#/components/parameters/SizeQuery"
+        - $ref: "#/components/parameters/MaxPriceQuery"
+        - $ref: "#/components/parameters/WeekDayQuery"
+        - $ref: "#/components/parameters/MinRatingQuery"
+        - $ref: "#/components/parameters/SortOrderQuery"
         - $ref: "#/components/parameters/PaginationQuery"
       operationId: listDrivers
       tags:
@@ -350,10 +320,16 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
+        - $ref: "#/components/parameters/OptionalZoneQuery"
+        - $ref: "#/components/parameters/SizeQuery"
+        - $ref: "#/components/parameters/MaxPriceQuery"
+        - $ref: "#/components/parameters/WeekDayQuery"
         - $ref: "#/components/parameters/PaginationQuery"
-      summary: List all vehicles
-      description: Get all vehicles of driver with id `id`.
-      operationId: listDriverVehicles
+      summary: List vehicles
+      description: >
+        Get all vehicles of driver with id `id`. If zoneId is not included, it will list all the vehicles of the driver (with pagination), otherwise it'll list the ones that match the filter query params (without pagination).
+      # TODO It probably should have pagination the second option
+      operationId: listVehicles
       tags:
         - Vehicles
       responses:
@@ -941,3 +917,48 @@ components:
       schema:
         type: integer
         default: 1
+    OptionalZoneQuery:
+      name: zoneId
+      in: path
+      required: false
+      description: ID of the zone
+      schema:
+        type: integer
+    SizeQuery:
+      name: size
+      description: Vehicles of an specific size
+      in: query
+      required: false
+      schema:
+        $ref: "schemas/enums/vehicle-size.yaml"
+    MaxPriceQuery:
+      name: maxPrice
+      description: Vehicles whose hourly rate is lower that specified value
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    WeekDayQuery:
+      name: weekDay
+      description: Vehicles who have availability on the specified day
+      in: query
+      required: false
+      schema:
+        $ref: "schemas/enums/day.yaml"
+    MinRatingQuery:
+      name: minRating
+      description: Drivers whose rating is above the specified value
+      in: query
+      required: false
+      schema:
+        type: integer
+    SortOrderQuery:
+      name: sortOrder
+      description: Sort drivers by the specified criteria
+      in: query
+      required: false
+      schema:
+        type: string
+        default: ALPHABETICAL
+        enum: [ ALPHABETICAL, "LEAST_PRICE", "BEST_RATING" ]
