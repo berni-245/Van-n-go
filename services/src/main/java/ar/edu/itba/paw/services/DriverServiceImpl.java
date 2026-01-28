@@ -100,7 +100,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMax, weekday);
         vehicleList.removeIf(v -> v.getAvailability().isEmpty());
         return vehicleList;
