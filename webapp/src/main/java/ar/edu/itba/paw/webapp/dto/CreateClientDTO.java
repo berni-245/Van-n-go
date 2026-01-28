@@ -2,10 +2,10 @@ package ar.edu.itba.paw.webapp.dto;
 
 public class CreateClientDTO {
     private String username;
-    private String mail;
+    private String email;
     private String password;
     private Integer zoneId;
-    private String language;
+    private String preferedLanguage;
 
     public String getUsername() {
         return username;
@@ -15,12 +15,12 @@ public class CreateClientDTO {
         this.username = username;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -39,11 +39,11 @@ public class CreateClientDTO {
         this.zoneId = zoneId;
     }
 
-    public String getLanguage() {
-        return language;
+    public String getPreferedLanguage() {
+        return preferedLanguage;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setPreferedLanguage(String preferedLanguage) {
+        this.preferedLanguage = preferedLanguage;
     }
 }

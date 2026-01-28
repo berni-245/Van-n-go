@@ -32,7 +32,7 @@ public class ClientController {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response createClient(final CreateClientDTO clientDTO) {
-        Client client = clientService.create(clientDTO.getUsername(), clientDTO.getMail(), clientDTO.getPassword(),clientDTO.getZoneId() , LocaleContextHolder.getLocale());
+        Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), LocaleContextHolder.getLocale());
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
     }
 
@@ -51,9 +51,9 @@ public class ClientController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateClient(@PathParam("id") final int id, final CreateClientDTO clientDTO) {
-        //TODO: add 401 , 403 and 404 responses
+        //TODO: add 401 , 403 responses
         Client client = clientService.findById(id);
-        clientService.editProfile(client, clientDTO.getUsername(), clientDTO.getMail(), clientDTO.getZoneId(), clientDTO.getLanguage());
+        clientService.editProfile(client, clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getZoneId(), clientDTO.getPreferedLanguage());
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
 

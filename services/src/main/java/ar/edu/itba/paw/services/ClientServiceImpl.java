@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidVehicleException;
+import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
+import ar.edu.itba.paw.exceptions.UserAlreadyExistsException;
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
@@ -116,6 +118,18 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Override
     public void editProfile(Client client, String username, String mail, Integer zoneId, String language) {
         Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        if (username == null)
+            username = client.getUsername();
+        else if (usernameExists(username)) {
+            throw new UserAlreadyExistsException();
+        }
+        if (mail == null)
+            mail = client.getMail();
+        else if (mailExists(mail)) {
+            throw new MailAlreadyExistsException();
+        }
+        if (language == null)
+            language = client.getLanguage().name();
         clientDao.editProfile(client, username, mail, zone, Language.valueOf(language));
         LOGGER.info("{} edited their profile", username);
     }

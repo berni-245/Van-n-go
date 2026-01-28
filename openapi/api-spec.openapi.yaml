@@ -120,6 +120,8 @@ paths:
           $ref: "schemas/errors/forbidden.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
 
   /clients/{clientId}/profile-picture:
     get:
