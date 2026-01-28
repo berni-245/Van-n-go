@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
+import ar.edu.itba.paw.exceptions.UserAlreadyExistsException;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
 
@@ -18,4 +19,13 @@ public interface UserService<T extends User> extends UserBookingService<T> {
     void editProfile(User user, String username, String mail, Language language);
 
     void updatePassword(User user, String password);
+
+    default void checkRepeatedUser(String username, String mail) {
+        if (usernameExists(username)) {
+            throw new UserAlreadyExistsException();
+        }
+        if (mailExists(mail)) {
+            throw new MailAlreadyExistsException();
+        }
+    }
 }

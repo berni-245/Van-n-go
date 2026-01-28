@@ -49,7 +49,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Transactional
     @Override
     public boolean usernameExists(String username) {
-        return userDao.findByUsername(username).isPresent();
+        return userDao.usernameExists(username);
     }
 
     @Transactional

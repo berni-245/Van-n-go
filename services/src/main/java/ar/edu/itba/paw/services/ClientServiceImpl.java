@@ -45,6 +45,7 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public Client create(String username, String mail, String password, int zoneId, Locale locale) {
+        checkRepeatedUser(username, mail);
         Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         Client client = clientDao.create(username, mail, passwordEncoder.encode(password), zone, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} client", username);

@@ -17,6 +17,7 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
     public Client create(String username, String mail, String password, Zone zone, Language language) {
         Client client = new Client(username, mail, password, zone, language);
         em.persist(client);
+        em.flush();
         return client;
     }
 
@@ -44,15 +45,5 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
         super.editProfile(client, username, mail, language);
         client.setZone(zone);
         em.merge(client);
-    }
-
-    @Override
-    public boolean mailExists(String mail) {
-        final TypedQuery<Client> query = em.createQuery(
-                "from Client as c where c.mail = :mail",
-                Client.class
-        );
-        query.setParameter("mail", mail);
-        return !query.getResultList().isEmpty();
     }
 }
