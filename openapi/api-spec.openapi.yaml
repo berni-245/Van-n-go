@@ -67,6 +67,8 @@ paths:
                 $ref: "schemas/responses/client.yaml"
         "400":
           $ref: "schemas/errors/bad-request.yaml"
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
 
   /clients/{clientId}:
     get:
