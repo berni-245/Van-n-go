@@ -172,7 +172,7 @@ paths:
     get:
       summary: Get list of all drivers in the system.
       parameters:
-        - $ref: "#/components/parameters/ZoneIdPath"
+        - $ref: "#/components/parameters/ZoneQuery"
         - $ref: "#/components/parameters/SizeQuery"
         - $ref: "#/components/parameters/MaxPriceQuery"
         - $ref: "#/components/parameters/WeekDayQuery"
@@ -745,6 +745,8 @@ paths:
                     sentByDriver: false
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
+                clientId: 3
+                driverId: 2
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -917,9 +919,16 @@ components:
       schema:
         type: integer
         default: 1
+    ZoneQuery:
+      name: zoneId
+      in: query
+      required: true
+      description: ID of the zone
+      schema:
+        type: integer
     OptionalZoneQuery:
       name: zoneId
-      in: path
+      in: query
       required: false
       description: ID of the zone
       schema:
