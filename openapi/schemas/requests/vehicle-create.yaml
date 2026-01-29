@@ -16,3 +16,4 @@ properties:
   description:
     type: string
     example: This is a vehicle
+  # Todo: need to decide if adding image and zoneIds

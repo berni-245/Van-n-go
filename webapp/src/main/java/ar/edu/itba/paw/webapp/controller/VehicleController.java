@@ -1,8 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.exceptions.VehicleNotFoundException;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.VehicleDTO;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/api/drivers/{driverId}/vehicles")
@@ -22,7 +22,6 @@ public class VehicleController {
     private UriInfo uriInfo;
 
     private final DriverService ds;
-
     private final ImageService imageService;
 
     @Autowired
@@ -50,5 +49,98 @@ public class VehicleController {
         List<VehicleDTO> vehicles = vehiclesFromModel.stream().map(VehicleDTO.mapper(uriInfo)).toList();
         return Response.ok(new GenericEntity<>(vehicles) {
         }).build();
+    }
+
+    @POST
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response createVehicle(@PathParam("driverId") int driverId, VehicleDTO dto) {
+        Driver driver = ds.findById(driverId);
+        Vehicle v = ds.addVehicle(
+                driver, dto.getPlateNumber(), dto.getVolumeM3(),
+                dto.getDescription(), new ArrayList<>(), dto.getHourlyRate(),
+                null, null);
+        // TODO decide what to do with zones, can it be ids if it's on the request body?
+        // TODO add images (idk if this will be two bodys? The register data and the image)
+        VehicleDTO vehicleDTO = VehicleDTO.fromVehicle(uriInfo, v);
+        return Response.created(vehicleDTO.getSelf()).entity(vehicleDTO).build();
+    }
+
+    @GET
+    @Path("{vehicleId}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getVehicleById(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
+    }
+
+    @PATCH
+    @Path("{vehicleId}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response updateVehicle(
+            @PathParam("driverId") int driverId,
+            @PathParam("vehicleId") int vehicleId,
+            VehicleDTO dto
+    ) {
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        ds.updateVehicle(
+                driver, vehicleId, dto.getPlateNumber(),
+                dto.getVolumeM3(), dto.getDescription(), new ArrayList<>(),
+                dto.getHourlyRate(), vehicle.getImgId(), null, null
+        );
+
+        // TODO Agregar zone ids y el método de updateVehicle está medio shady en el back y hay que sacarle imágenes
+        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
+    }
+
+    @GET
+    @Path("{vehicleId}/picture")
+    @Produces({"image/jpeg", "image/png"})
+    public Response getVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        Integer imageId = vehicle.getImgId();
+        if (imageId != null) {
+            byte[] pictureData = imageService.getImage(imageId).getData();
+            if (pictureData != null) {
+                return Response.ok(pictureData).build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("{vehicleId}/picture")
+    @Consumes({"image/jpeg", "image/png"})
+    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, byte[] imageData) {
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        imageService.uploadPfp(driver, imageData, "vehicle_" + vehicle.getId() + "_picture");
+        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
+    }
+
+    @GET
+    @Path("{vehicleId}/availability")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response listAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        List<Availability> availabilitiesTimes = vehicle.getAvailability();
+        List<Zone> zones = vehicle.getZones();
+        throw new UnsupportedOperationException();
+    }
+
+    @PATCH
+    @Path("{vehicleId}/availability")
+    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @GET
+    @Path("{vehicleId}/booked-times")
+    public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+        throw new UnsupportedOperationException();
     }
 }
