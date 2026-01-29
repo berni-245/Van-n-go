@@ -1,1 +1,7 @@
 description: Bad Request
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref: "error-base-format.yaml"

@@ -1,0 +1,13 @@
+type: object
+required:
+  - type
+  - description
+properties:
+  type:
+    type: string
+    description: Constant that identifies the specific error type within the global HTTP status
+    example: VEHICLE_NOT_AVAILABLE
+  description:
+    type: string
+    description: Human-readable description of the specific error
+    example: The vehicle doesn't work at the specified time

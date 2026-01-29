@@ -1,1 +1,5 @@
 description: Unauthorized
+content:
+  application/json:
+    schema:
+      $ref: "error-base-format.yaml"
