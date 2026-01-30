@@ -1,11 +1,24 @@
 description: A list of time ordered messages between two users
-type: object
+type: array
+items:
+  type: object
+  properties:
+    content:
+      type: string
+    sentByDriver:
+      type: boolean
+    timestamp:
+      type: string
+      format: date-time
+    self:
+      type: string
+      format: uri
 example:
   - content: "Hola, ¿llegás en 5?"
-      sentByDriver: false
-      timestamp: "2026-01-10T18:30:00Z"
-      self: "http://localhost:8080/messages/1"
+    sentByDriver: false
+    timestamp: "2026-01-10T18:30:00Z"
+    self: "http://localhost:8080/messages/1"
   - content: "Sí, estoy estacionando."
-      sentByDriver: true
-      timestamp: "2026-01-10T18:32:00Z"
-      self: "http://localhost:8080/messages/2"
+    sentByDriver: true
+    timestamp: "2026-01-10T18:32:00Z"
+    self: "http://localhost:8080/messages/2"
