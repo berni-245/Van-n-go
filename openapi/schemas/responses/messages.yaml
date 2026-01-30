@@ -1,28 +1,11 @@
 description: A list of time ordered messages between two users
 type: object
-required: [clientId, driverId, messages]
-properties:
-  messages:
-    type: array
-    items:
-      $ref: "message.yaml"
-  driverId:
-    type: integer
-    description: ID of the driver
-  clientId:
-    type: integer
-    description: ID of the client
 example:
-  clientId: 22
-  driverId: 13
-  messages:
-    - id: 1
-      content: "Hola, ¿llegás en 5?"
+  - content: "Hola, ¿llegás en 5?"
       sentByDriver: false
       timestamp: "2026-01-10T18:30:00Z"
       self: "http://localhost:8080/messages/1"
-    - id: 2
-      content: "Sí, estoy estacionando."
+  - content: "Sí, estoy estacionando."
       sentByDriver: true
       timestamp: "2026-01-10T18:32:00Z"
       self: "http://localhost:8080/messages/2"

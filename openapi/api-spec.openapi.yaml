@@ -736,7 +736,7 @@ paths:
               schema:
                 $ref: "schemas/responses/messages.yaml"
               example:
-                messages:
+
                   - id: 1
                     content: "Hola"
                     sentByDriver: true
@@ -745,8 +745,8 @@ paths:
                     sentByDriver: false
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
-                clientId: 3
-                driverId: 2
+
+
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -882,6 +882,13 @@ components:
       in: query
       required: true
       description: ID of the driver
+      schema:
+        type: integer
+    BookingIdQuery:
+      name: bookingId
+      in: query
+      required: true
+      description: ID of the booking
       schema:
         type: integer
     VehicleIdPath:

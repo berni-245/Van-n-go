@@ -1,9 +1,6 @@
 type: object
-required: [id, content, sentByDriver, timestamp]
+required: [ id, content, sentByDriver, timestamp, self, client, driver ]
 properties:
-  id:
-    type: integer
-    example: 1
   content:
     type: string
     example: "Hola, ¿llegás en 5?"
@@ -18,4 +15,14 @@ properties:
     type: string
     format: uri
     description: The canonical location of this message resource
-    example: "http://localhost:8080/messages/1"
+    example: "http://localhost:8080/api/messages/1"
+  client:
+    type: string
+    format: uri
+    description: The canonical location of the client related to this message resource
+    example: "http://localhost:8080/api/clients/1"
+  driver:
+    type: string
+    format: uri
+    description: The canonical location of the driver related to this message resource
+    example: "http://localhost:8080/api/client/1"
