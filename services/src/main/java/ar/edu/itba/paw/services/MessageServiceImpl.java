@@ -66,6 +66,19 @@ public class MessageServiceImpl implements MessageService {
         return messageDao.getConversation(client, driver);
     }
 
+    @Override
+    public List<Message> getConversationWithoutBooking(Client client, Driver driver) { //TODO: cambiar los Tests para que usen este metodo
+        if (!messageDao.isValidConversation(client, driver)) {
+            throw new ForbiddenConversationException();
+        }
+        return messageDao.getConversation(client, driver);
+    }
+
+    @Override
+    public Message getMessageById(Integer messageId) {
+        return messageDao.getMessageById(messageId);
+    }
+
     private void checkValidConversation(Booking booking, Client client, Driver driver) {
         if (!booking.getClient().equals(client) || !booking.getDriver().equals(driver))
             throw new ForbiddenConversationException();

@@ -5,10 +5,9 @@ import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
 import ar.edu.itba.paw.models.Pagination;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -32,6 +31,23 @@ public class MessageJpaDao implements MessageDao {
         return em.createQuery("SELECT m FROM Message m WHERE m.id IN (:msgIds) order by m.timeSent desc", Message.class)
                 .setParameter("msgIds", messageIds)
                 .getResultList();
+    }
+
+    @Override
+    public boolean isValidConversation(Client client, Driver driver) {
+        Long count = em.createQuery("""
+                            SELECT COUNT(m) FROM Message m
+                            WHERE m.client = :client AND m.driver = :driver
+                        """, Long.class)
+                .setParameter("client", client)
+                .setParameter("driver", driver)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public Message getMessageById(Integer messageId) {
+        return em.find(Message.class, messageId);
     }
 
     @Override

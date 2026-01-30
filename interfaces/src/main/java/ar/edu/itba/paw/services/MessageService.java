@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
+
 import java.util.List;
 
 public interface MessageService {
@@ -12,4 +13,8 @@ public interface MessageService {
     void sendDriverMessage(Integer bookingId, Driver sender, Integer recipient, String message);
 
     List<Message> getConversation(Booking booking, Client client, Driver driver);
+
+    List<Message> getConversationWithoutBooking(Client client, Driver driver);
+
+    Message getMessageById(Integer messageId);
 }
