@@ -23,12 +23,22 @@ public class UpdateAvailabilityDTO {
         this.zones = zones;
     }
 
+    public void setZonesIfNull(List<Integer> zones) {
+        if (this.zones == null)
+            this.zones = zones;
+    }
+
     public List<WeekTimeSlotDTO> getTimeSlots() {
         return timeSlots;
     }
 
     public void setTimeSlots(List<WeekTimeSlotDTO> timeSlots) {
         this.timeSlots = timeSlots;
+    }
+
+    public void setTimeSlotsIfNull(List<WeekTimeSlotDTO> timeSlots) {
+        if (this.timeSlots == null)
+            this.timeSlots = timeSlots;
     }
 
     public ShiftPeriod[] getDayTimeSlots(DayOfWeek dayOfWeek) {

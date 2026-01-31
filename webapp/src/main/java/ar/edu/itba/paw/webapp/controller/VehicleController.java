@@ -4,10 +4,7 @@ import ar.edu.itba.paw.exceptions.VehicleNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.webapp.dto.AvailabilityDTO;
-import ar.edu.itba.paw.webapp.dto.DatedTimeSlotDTO;
-import ar.edu.itba.paw.webapp.dto.UpdateAvailabilityDTO;
-import ar.edu.itba.paw.webapp.dto.VehicleDTO;
+import ar.edu.itba.paw.webapp.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +62,6 @@ public class VehicleController {
                 driver, dto.getPlateNumber(), dto.getVolumeM3(),
                 dto.getDescription(), new ArrayList<>(), dto.getHourlyRate(),
                 null, null);
-        // TODO decide what to do with zones, can it be ids if it's on the request body?
         VehicleDTO vehicleDTO = VehicleDTO.fromVehicle(uriInfo, v);
         return Response.created(vehicleDTO.getSelf()).entity(vehicleDTO).build();
     }
@@ -86,16 +82,16 @@ public class VehicleController {
     public Response updateVehicle(
             @PathParam("driverId") int driverId,
             @PathParam("vehicleId") int vehicleId,
-            VehicleDTO dto
+            UpdateVehicleDTO dto
     ) {
         Driver driver = ds.findById(driverId);
-        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.updateVehicle(
-                driver, vehicleId, dto.getPlateNumber(), dto.getVolumeM3(),
-                dto.getDescription(), vehicle.getZones().stream().map(Zone::getId).toList(),
-                dto.getHourlyRate(), vehicle.getImgId(), null, null
+                driver, vehicleId, dto.getPlateNumberOr(v.getPlateNumber()), dto.getVolumeM3Or(v.getVolume()),
+                dto.getDescriptionOr(v.getDescription()), v.getZones().stream().map(Zone::getId).toList(),
+                dto.getHourlyRateOr(v.getHourlyRate()), v.getImgId(), null, null
         );
-        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
+        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, v)).build();
     }
 
     @GET
@@ -156,6 +152,13 @@ public class VehicleController {
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        // TODO might change these with the refactor
+        dto.setZonesIfNull(v.getZones().stream().map(Zone::getId).toList());
+        dto.setTimeSlotsIfNull(
+                v.getAvailability().stream()
+                        .map(a -> new WeekTimeSlotDTO(a.getWeekDay().name(), a.getShiftPeriod().name()))
+                        .toList()
+        );
         ds.updateAvailability(
                 v,
                 dto.getDayTimeSlots(DayOfWeek.MONDAY),

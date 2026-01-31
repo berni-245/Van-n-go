@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
+import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -72,13 +73,14 @@ public class DriverController {
     @Path("/{id}")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response updateClientById(@PathParam("id") int id, DriverDTO dto) {
-        Driver driver = ds.findById(id);
+    public Response updateClientById(@PathParam("id") int id, UpdateDriverDTO dto) {
+        Driver d = ds.findById(id);
         ds.editProfile(
-                driver, dto.getUsername(), dto.getEmail(), dto.getDescription(),
-                dto.getCbu(), dto.getPreferredLanguage() != null ? dto.getPreferredLanguage().name() : driver.getLanguage().name() // TODO cambiar esta nastyeada luego
+                d, dto.getUsernameOr(d.getUsername()), dto.getEmailOr(d.getMail()),
+                dto.getDescriptionOr(d.getDescription()), dto.getCbuOr(d.getCbu()),
+                dto.getPreferredLanguageOr(d.getLanguage().name())
         );
-        return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
+        return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
 
     @GET
