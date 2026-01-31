@@ -765,7 +765,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [clientId, driverId, content]
+              required: [ clientId, driverId, message ]
               properties:
                 clientId:
                   type: integer
@@ -773,7 +773,7 @@ paths:
                 driverId:
                   type: integer
                   example: 2
-                content:
+                message:
                   type: string
                   example: "Hola, llego en 5 minutos."
       responses:
