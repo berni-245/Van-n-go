@@ -34,6 +34,7 @@ public class ZoneDTO {
         neighborhoodDTO.setName(zone.getNeighborhoodName());
         dto.setNeighborhood(neighborhoodDTO);
         dto.setSelf(uriInfo.getBaseUriBuilder()
+                .path("api")
                 .path("zones")
                 .path(String.valueOf(zone.getId()))
                 .build());
