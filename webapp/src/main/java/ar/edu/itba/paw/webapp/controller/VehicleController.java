@@ -14,9 +14,11 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO must improve the updateVehicle and updateAvailability the in the back
 @Path("/api/drivers/{driverId}/vehicles")
 @Component
 public class VehicleController {
@@ -64,7 +66,6 @@ public class VehicleController {
                 dto.getDescription(), new ArrayList<>(), dto.getHourlyRate(),
                 null, null);
         // TODO decide what to do with zones, can it be ids if it's on the request body?
-        // TODO add images (idk if this will be two bodys? The register data and the image)
         VehicleDTO vehicleDTO = VehicleDTO.fromVehicle(uriInfo, v);
         return Response.created(vehicleDTO.getSelf()).entity(vehicleDTO).build();
     }
@@ -81,6 +82,7 @@ public class VehicleController {
     @PATCH
     @Path("{vehicleId}")
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateVehicle(
             @PathParam("driverId") int driverId,
             @PathParam("vehicleId") int vehicleId,
@@ -93,8 +95,6 @@ public class VehicleController {
                 dto.getDescription(), vehicle.getZones().stream().map(Zone::getId).toList(),
                 dto.getHourlyRate(), vehicle.getImgId(), null, null
         );
-
-        // TODO Agregar zone ids y el método de updateVehicle está medio shady en el back y hay que sacarle imágenes
         return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
     }
 
@@ -116,6 +116,7 @@ public class VehicleController {
 
     @POST
     @Path("{vehicleId}/picture")
+    @Produces({"image/jpeg", "image/png"})
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, byte[] imageData) {
         Driver driver = ds.findById(driverId);
@@ -136,23 +137,22 @@ public class VehicleController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    private AvailabilityDTO getAvailabilityDTO(int driverId, int vehicleId) {
-        Driver driver = ds.findById(driverId);
-        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        List<Availability> availabilitiesTimes = vehicle.getAvailability();
-        List<Zone> zones = vehicle.getZones();
-        return AvailabilityDTO.fromAvailabilities(uriInfo, availabilitiesTimes, zones);
-    }
-
     @GET
     @Path("{vehicleId}/availability")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response listAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
-        return Response.ok(getAvailabilityDTO(driverId, vehicleId)).build();
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        List<Availability> availabilitiesTimes = vehicle.getAvailability();
+        List<Zone> zones = vehicle.getZones();
+        AvailabilityDTO dto = AvailabilityDTO.fromAvailabilities(uriInfo, availabilitiesTimes, zones);
+        return Response.ok(dto).build();
     }
 
-    @PUT
+    @PATCH
     @Path("{vehicleId}/availability")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -171,16 +171,28 @@ public class VehicleController {
                 v.getDescription(), dto.getZones(),
                 v.getHourlyRate(), v.getImgId(), null, null
         );
-        return Response.ok(getAvailabilityDTO(driverId, vehicleId)).build();
+        AvailabilityDTO availabilityDTO = new AvailabilityDTO();
+        availabilityDTO.setZones(
+                dto.getZones().stream().map(id -> uriInfo
+                        .getBaseUriBuilder().path("api").path("zones")
+                        .path(String.valueOf(id)).build()).toList()
+        );
+        availabilityDTO.setTimeSlots(dto.getTimeSlots());
+        return Response.ok(availabilityDTO).build();
     }
 
     @GET
     @Path("{vehicleId}/booked-times")
+    @Produces(value = {MediaType.APPLICATION_JSON})
     public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         List<Booking> bookings = vehicle.getBookings();
-        List<DatedTimeSlotDTO> bookedTimes = bookings.stream().map(DatedTimeSlotDTO::fromBooking).toList();
+        List<DatedTimeSlotDTO> bookedTimes = bookings.stream()
+                .filter(b -> LocalDate.now().isBefore(b.getDate()))
+                .filter(b -> b.getState().equals(BookingState.ACCEPTED))
+                .map(DatedTimeSlotDTO::fromBooking)
+                .toList();
         return Response.ok(new GenericEntity<>(bookedTimes) {
         }).build();
     }
