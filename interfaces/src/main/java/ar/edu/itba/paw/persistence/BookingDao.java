@@ -40,5 +40,7 @@ public interface BookingDao {
 
     void checkPending();
 
+    boolean existsBookingBetween(Client client, Driver driver);
+
     List<Booking> requestedBookingsForDate(Client client, LocalDate date, Vehicle vehicle);
 }

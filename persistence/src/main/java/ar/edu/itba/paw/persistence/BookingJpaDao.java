@@ -245,4 +245,16 @@ public class BookingJpaDao implements BookingDao {
                 .setParameter("date", date);
         return bookingQuery.getResultList();
     }
+
+    @Override
+    public boolean existsBookingBetween(Client client, Driver driver) {
+        Long count = em.createQuery("""
+                        Select COUNT(b) from Booking b join b.vehicle v
+                        where v.driver = :driver and b.client = :client
+                        """, Long.class)
+                .setParameter("client", client)
+                .setParameter("driver", driver)
+                .getSingleResult();
+        return count > 0;
+    }
 }

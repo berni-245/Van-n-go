@@ -567,7 +567,7 @@ paths:
           required: false
           schema:
             type: integer
-        - name: status
+        - name: state
           in: query
           description: Filter bookings based on status
           required: true
