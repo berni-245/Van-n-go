@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -28,10 +29,13 @@ public class DriverController {
 
     private final ImageService imageService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public DriverController(DriverService ds, ImageService imageService) {
+    public DriverController(DriverService ds, ImageService imageService, PasswordEncoder passwordEncoder) {
         this.ds = ds;
         this.imageService = imageService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GET
@@ -56,6 +60,7 @@ public class DriverController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createDriver(DriverDTO dto) {
+        // TODO add cbu here
         Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), LocaleContextHolder.getLocale());
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
@@ -73,13 +78,19 @@ public class DriverController {
     @Path("/{id}")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response updateClientById(@PathParam("id") int id, UpdateDriverDTO dto) {
+    public Response updateDriverById(@PathParam("id") int id, UpdateDriverDTO dto) {
         Driver d = ds.findById(id);
         ds.editProfile(
                 d, dto.getUsernameOr(d.getUsername()), dto.getEmailOr(d.getMail()),
                 dto.getDescriptionOr(d.getDescription()), dto.getCbuOr(d.getCbu()),
                 dto.getPreferredLanguageOr(d.getLanguage().name())
         );
+        // TODO move this bellow to validator
+        String newPass = dto.getPassword();
+        String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$";
+        boolean oldPassCheck = passwordEncoder.matches(dto.getOldPassword(), d.getPassword());
+        if (newPass != null && newPass.matches(regex) && oldPassCheck)
+            ds.updatePassword(d, newPass);
         return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
 

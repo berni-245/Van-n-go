@@ -4,6 +4,8 @@ public class UpdateUserDTO {
     private String username;
     private String email;
     private String preferredLanguage;
+    private String oldPassword;
+    private String password;
 
     public UpdateUserDTO() {
 
@@ -49,5 +51,21 @@ public class UpdateUserDTO {
 
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
