@@ -4,6 +4,9 @@ import ar.edu.itba.paw.exceptions.VehicleNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.AvailabilityDTO;
+import ar.edu.itba.paw.webapp.dto.DatedTimeSlotDTO;
+import ar.edu.itba.paw.webapp.dto.UpdateAvailabilityDTO;
 import ar.edu.itba.paw.webapp.dto.VehicleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -86,8 +89,8 @@ public class VehicleController {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.updateVehicle(
-                driver, vehicleId, dto.getPlateNumber(),
-                dto.getVolumeM3(), dto.getDescription(), new ArrayList<>(),
+                driver, vehicleId, dto.getPlateNumber(), dto.getVolumeM3(),
+                dto.getDescription(), vehicle.getZones().stream().map(Zone::getId).toList(),
                 dto.getHourlyRate(), vehicle.getImgId(), null, null
         );
 
@@ -116,31 +119,69 @@ public class VehicleController {
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, byte[] imageData) {
         Driver driver = ds.findById(driverId);
+        Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        ds.updateVehicle(
+                driver, vehicleId, v.getPlateNumber(), v.getVolume(),
+                v.getDescription(), v.getZones().stream().map(Zone::getId).toList(),
+                v.getHourlyRate(), v.getImgId(),
+                "vehicle_" + v.getId() + "_picture", imageData
+        );
+        Integer imageId = v.getImgId();
+        if (imageId != null) {
+            byte[] pictureData = imageService.getImage(imageId).getData();
+            if (pictureData != null) {
+                return Response.ok(pictureData).build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    private AvailabilityDTO getAvailabilityDTO(int driverId, int vehicleId) {
+        Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        imageService.uploadPfp(driver, imageData, "vehicle_" + vehicle.getId() + "_picture");
-        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
+        List<Availability> availabilitiesTimes = vehicle.getAvailability();
+        List<Zone> zones = vehicle.getZones();
+        return AvailabilityDTO.fromAvailabilities(uriInfo, availabilitiesTimes, zones);
     }
 
     @GET
     @Path("{vehicleId}/availability")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response listAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
-        Driver driver = ds.findById(driverId);
-        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        List<Availability> availabilitiesTimes = vehicle.getAvailability();
-        List<Zone> zones = vehicle.getZones();
-        throw new UnsupportedOperationException();
+        return Response.ok(getAvailabilityDTO(driverId, vehicleId)).build();
     }
 
-    @PATCH
+    @PUT
     @Path("{vehicleId}/availability")
-    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
-        throw new UnsupportedOperationException();
+    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {
+        Driver driver = ds.findById(driverId);
+        Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        ds.updateAvailability(
+                v,
+                dto.getDayTimeSlots(DayOfWeek.MONDAY),
+                dto.getDayTimeSlots(DayOfWeek.TUESDAY),
+                dto.getDayTimeSlots(DayOfWeek.WEDNESDAY),
+                dto.getDayTimeSlots(DayOfWeek.THURSDAY),
+                dto.getDayTimeSlots(DayOfWeek.FRIDAY),
+                dto.getDayTimeSlots(DayOfWeek.SATURDAY),
+                dto.getDayTimeSlots(DayOfWeek.SUNDAY)
+        );
+        ds.updateVehicle(
+                driver, vehicleId, v.getPlateNumber(), v.getVolume(),
+                v.getDescription(), dto.getZones(),
+                v.getHourlyRate(), v.getImgId(), null, null
+        );
+        return Response.ok(getAvailabilityDTO(driverId, vehicleId)).build();
     }
 
     @GET
     @Path("{vehicleId}/booked-times")
     public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
-        throw new UnsupportedOperationException();
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        List<Booking> bookings = vehicle.getBookings();
+        List<DatedTimeSlotDTO> bookedTimes = bookings.stream().map(DatedTimeSlotDTO::fromBooking).toList();
+        return Response.ok(new GenericEntity<>(bookedTimes) {
+        }).build();
     }
 }

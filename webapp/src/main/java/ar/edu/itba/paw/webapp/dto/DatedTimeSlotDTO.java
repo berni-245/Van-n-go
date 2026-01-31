@@ -1,11 +1,20 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.models.Booking;
+
 public class DatedTimeSlotDTO {
     private String date;
     private String shift;
 
     public DatedTimeSlotDTO() {
 
+    }
+
+    public static DatedTimeSlotDTO fromBooking(Booking booking) {
+        DatedTimeSlotDTO dto = new DatedTimeSlotDTO();
+        dto.date = booking.getDate().toString();
+        dto.shift = booking.getShiftPeriod().name();
+        return dto;
     }
 
     public String getDate() {
