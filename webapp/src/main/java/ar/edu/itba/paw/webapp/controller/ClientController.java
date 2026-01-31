@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.CreateClientDTO;
+import ar.edu.itba.paw.webapp.dto.UpdateClientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -50,11 +51,13 @@ public class ClientController {
     @Path("/{id}")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response updateClient(@PathParam("id") final int id, final CreateClientDTO clientDTO) {
+    public Response updateClient(@PathParam("id") final int id, final UpdateClientDTO dto) {
         //TODO: add 401 , 403 responses
-        Client client = clientService.findById(id);
-        clientService.editProfile(client, clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getZoneId(), clientDTO.getPreferedLanguage());
-        return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
+        Client c = clientService.findById(id);
+        clientService.editProfile(
+                c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
+                dto.getZoneIdOr(c.getZone().getId()), dto.getPreferredLanguageOr(c.getLanguage().name()));
+        return Response.ok(ClientDTO.fromClient(uriInfo, c)).build();
     }
 
     @GET
