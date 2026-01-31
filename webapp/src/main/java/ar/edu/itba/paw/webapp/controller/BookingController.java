@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.webapp.dto.BookingDTO;
+import ar.edu.itba.paw.webapp.dto.CreateBookingDTO;
 import ar.edu.itba.paw.webapp.dto.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.List;
 
 @Path("/api/bookings")
@@ -59,5 +62,21 @@ public class BookingController {
         return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO()).build();
     }
 
+    @POST
+    @Consumes(value = {"application/json"})
+    @Produces(value = {"application/json"})
+    public Response createBooking(final CreateBookingDTO createBookingDTO) {
+        //TODO: cuando tengamos el jwt deberiamos sacar el clientId del token
+        Client client = clientService.findById(createBookingDTO.getClientId());
+        Booking booking = clientService.appointBooking(createBookingDTO.getVehicleId(),
+                client,
+                createBookingDTO.getOriginZoneId(),
+                createBookingDTO.getDestinationZoneId(),
+                createBookingDTO.getDate(),
+                createBookingDTO.getShiftPeriod(),
+                createBookingDTO.getJobDescription());
+        URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(booking.getId())).build();
+        return Response.created(location).entity(BookingDTO.fromBooking(uriInfo, booking)).build();
+    }
 
 }

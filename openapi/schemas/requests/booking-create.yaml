@@ -8,6 +8,9 @@ properties:
   destinationZoneId:
     type: integer
     example: 0
+  originZoneId:
+    type: integer
+    example: 0
   date:
     type: string
     format: date
