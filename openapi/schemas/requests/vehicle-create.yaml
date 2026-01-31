@@ -2,7 +2,7 @@ description: Data required to register a new vehicle.
 type: object
 required: [volumeM3, hourlyRate, licensePlate]
 properties:
-  licensePlate:
+  plateNumber:
     type: string
     example: AA124BB
   volumeM3:
@@ -16,4 +16,3 @@ properties:
   description:
     type: string
     example: This is a vehicle
-  # Todo: need to decide if adding image and zoneIds

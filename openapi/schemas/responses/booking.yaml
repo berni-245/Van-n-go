@@ -17,28 +17,24 @@ properties:
   rating:
     type: integer
     example: 4
-  links:
-    type: object
-    required: [self, client, driver, vehicle, proofOfPayment]
-    properties:
-      self:
-        type: string
-        example: /api/bookings/42
-      client:
-        type: string
-        example: /api/clients/13
-      driver:
-        type: string
-        example: /api/drivers/10
-      vehicle:
-        type: string
-        example: /api/drivers/10/vehicles/5
-      proofOfPayment:
-        type: string
-        example: /api/bookings/42/proof-of-payment
-      originZone:
-        type: string
-        example: /api/zones/12
-      destinationZone:
-        type: string
-        example: /api/zones/14
+  self:
+    type: string
+    example: /api/bookings/42
+  client:
+    type: string
+    example: /api/clients/13
+  driver:
+    type: string
+    example: /api/drivers/10
+  vehicle:
+    type: string
+    example: /api/drivers/10/vehicles/5
+  proofOfPayment:
+    type: string
+    example: /api/bookings/42/proof-of-payment
+  originZone:
+    type: string
+    example: /api/zones/12
+  destinationZone:
+    type: string
+    example: /api/zones/14

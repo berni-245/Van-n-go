@@ -1,9 +1,17 @@
-description: Client information that may be updated.
+description: Client information that may be updated. To update password, you also need to include oldPassword
 type: object
 properties:
   username:
     type: string
     example: New username
+  oldPassword:
+    type: string
+    description: "Must be included if you are editing password"
+    example: Secure1!
+  password:
+    type: string
+    description: "Requires oldPassword as validation"
+    example: Secure2!
   email:
     type: string
     format: email

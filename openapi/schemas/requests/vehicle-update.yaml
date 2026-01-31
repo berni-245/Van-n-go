@@ -1,7 +1,7 @@
 description: Vehicle data to be updated. Any field is optional.
 type: object
 properties:
-  licensePlate:
+  plateNumber:
     type: string
     description: Useful for typo corrections
     example: "AA999BB"

@@ -2,7 +2,7 @@ description: >
   A registered user of the application who has vehicles and can get his services requested
   by a client.
 type: object
-required: [id, username, email, description, rating, cbu, links]
+required: [ id, username, email, description, rating, cbu ]
 properties:
   id:
     type: integer
@@ -28,41 +28,27 @@ properties:
   cbu:
     type: string
     example: "1234567891234567891234"
-  links:
-    type: object
-    required:
-      [
-        self,
-        profilePic,
-        pendingBookings,
-        acceptedBookings,
-        finishedBookings,
-        rejectedBookings,
-        canceledBookings,
-        vehicles,
-      ]
-    properties:
-      self:
-        type: string
-        example: /api/drivers/13
-      profilePic:
-        type: string
-        example: /api/drivers/13/profile-picture
-      pendingBookings:
-        type: string
-        example: /api/bookings?toDriver=13&status=pending
-      acceptedBookings:
-        type: string
-        example: /api/bookings?toDriver=13&status=accepted
-      finishedBookings:
-        type: string
-        example: /api/bookings?toDriver=13&status=finished
-      rejectedBookings:
-        type: string
-        example: /api/bookings?toDriver=13&status=rejected
-      canceledBookings:
-        type: string
-        example: /api/bookings?toDriver=13&status=canceled
-      vehicles:
-        type: string
-        example: /api/driver/13/vehicles
+  self:
+    type: string
+    example: /api/drivers/13
+  profilePic:
+    type: string
+    example: /api/drivers/13/profile-picture
+  pendingBookings:
+    type: string
+    example: /api/bookings?toDriver=13&status=pending
+  acceptedBookings:
+    type: string
+    example: /api/bookings?toDriver=13&status=accepted
+  finishedBookings:
+    type: string
+    example: /api/bookings?toDriver=13&status=finished
+  rejectedBookings:
+    type: string
+    example: /api/bookings?toDriver=13&status=rejected
+  canceledBookings:
+    type: string
+    example: /api/bookings?toDriver=13&status=canceled
+  vehicles:
+    type: string
+    example: /api/driver/13/vehicles
