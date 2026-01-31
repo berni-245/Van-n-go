@@ -33,17 +33,6 @@ public class MessageJpaDao implements MessageDao {
                 .getResultList();
     }
 
-    @Override
-    public boolean isValidConversation(Client client, Driver driver) {
-        Long count = em.createQuery("""
-                            SELECT COUNT(m) FROM Message m
-                            WHERE m.client = :client AND m.driver = :driver
-                        """, Long.class)
-                .setParameter("client", client)
-                .setParameter("driver", driver)
-                .getSingleResult();
-        return count > 0;
-    }
 
     @Override
     public Message getMessageById(Integer messageId) {

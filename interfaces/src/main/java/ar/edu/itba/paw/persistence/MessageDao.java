@@ -11,7 +11,5 @@ public interface MessageDao {
 
     Message sendMessage(Client client, Driver driver, String content, boolean sentByDriver);
 
-    boolean isValidConversation(Client client, Driver driver);
-
     Message getMessageById(Integer messageId);
 }

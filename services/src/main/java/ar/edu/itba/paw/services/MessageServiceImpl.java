@@ -51,6 +51,20 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
+    public Message sendClientMessageWithoutBooking(Client sender, Integer recipient, String message) {
+        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
+        Driver driver = driverDao.findById(recipient);
+        if (!bookingDao.existsBookingBetween(sender, driver)) {
+            throw new ForbiddenConversationException();
+        }
+        Message createdMessage = messageDao.sendMessage(sender, driver, message, false);
+        mailService.sendReceivedMessage(driver, sender, null, message, LocalDateTime.now(), driver.getLanguage().getLocale());
+        //TODO: cambiear el mailService para que no necesite un booking
+        return createdMessage;
+    }
+
+    @Transactional
+    @Override
     public void sendDriverMessage(Integer bookingId, Driver sender, Integer recipientId, String message) {
         if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
         Client client = clientDao.findById(recipientId);
@@ -58,6 +72,20 @@ public class MessageServiceImpl implements MessageService {
         if (!booking.getClient().equals(client)) throw new ForbiddenConversationException();
         messageDao.sendMessage(client, sender, message, true);
         mailService.sendReceivedMessage(client, sender, booking, message, LocalDateTime.now(), client.getLanguage().getLocale());
+    }
+
+    @Transactional
+    @Override
+    public Message sendDriverMessageWithoutBooking(Driver sender, Integer recipient, String message) {
+        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
+        Client client = clientDao.findById(recipient);
+        if (!bookingDao.existsBookingBetween(client, sender)) {
+            throw new ForbiddenConversationException();
+        }
+        Message createdMessage = messageDao.sendMessage(client, sender, message, true);
+        mailService.sendReceivedMessage(client, sender, null, message, LocalDateTime.now(), client.getLanguage().getLocale());
+        //TODO: cambiear el mailService para que no necesite un booking
+        return createdMessage;
     }
 
     @Override
@@ -68,7 +96,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getConversationWithoutBooking(Client client, Driver driver) { //TODO: cambiar los Tests para que usen este metodo
-        if (!messageDao.isValidConversation(client, driver)) {
+        if (!bookingDao.existsBookingBetween(client, driver)) {
             throw new ForbiddenConversationException();
         }
         return messageDao.getConversation(client, driver);
