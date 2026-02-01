@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.models.UserRole;
+import ar.edu.itba.paw.webapp.auth.CustomAuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.auth.CustomSavedRequestAwareAuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.controller.CustomAuthenticationFailureHandler;
-import ar.edu.itba.paw.webapp.controller.CustomSavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
