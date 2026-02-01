@@ -8,7 +8,6 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +16,7 @@ import javax.ws.rs.core.*;
 import java.net.URI;
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Locale;
 
 @Path("/api/drivers")
 @Component
@@ -59,9 +59,9 @@ public class DriverController {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response createDriver(DriverDTO dto) {
+    public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, DriverDTO dto) {
         // TODO add cbu here
-        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), LocaleContextHolder.getLocale());
+        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), Locale.forLanguageTag(lang));
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
     }

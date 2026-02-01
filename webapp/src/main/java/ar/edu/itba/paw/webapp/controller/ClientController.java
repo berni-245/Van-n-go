@@ -8,7 +8,6 @@ import ar.edu.itba.paw.webapp.dto.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateClientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Locale;
 
 @Path("/api/clients")
 @Component
@@ -36,8 +36,8 @@ public class ClientController {
 
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
-    public Response createClient(final CreateClientDTO clientDTO) {
-        Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), LocaleContextHolder.getLocale());
+    public Response createClient(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, final CreateClientDTO clientDTO) {
+        Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), Locale.forLanguageTag(lang));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
     }
 
