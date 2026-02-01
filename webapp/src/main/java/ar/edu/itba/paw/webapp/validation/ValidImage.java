@@ -1,3 +1,4 @@
+/*
 package ar.edu.itba.paw.webapp.validation;
 
 import javax.validation.Constraint;
@@ -13,3 +14,4 @@ public @interface ValidImage {
     Class<? extends Payload>[] payload() default {};
     String message() default "Image must be under 10MBs";
 }
+*/

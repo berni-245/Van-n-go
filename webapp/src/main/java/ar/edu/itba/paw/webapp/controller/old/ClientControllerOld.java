@@ -1,34 +1,4 @@
-package ar.edu.itba.paw.webapp.controller.old;
-
-import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.form.*;
-import ar.edu.itba.paw.webapp.interfaces.Bookings;
-import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
+/*
 @Controller
 public class ClientControllerOld implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientControllerOld.class);
@@ -368,4 +338,4 @@ public class ClientControllerOld implements Bookings {
 
         return gson.toJson(sps);
     }
-}
+}*/

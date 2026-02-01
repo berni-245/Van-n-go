@@ -1,9 +1,5 @@
+/*
 package ar.edu.itba.paw.webapp.controller.old;
-
-import ar.edu.itba.paw.webapp.interfaces.Redirect;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ErrorController implements Redirect {
@@ -48,4 +44,4 @@ public class ErrorController implements Redirect {
     public ModelAndView internalServerError() {
         return new ModelAndView("error/500");
     }
-}
+}*/

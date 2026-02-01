@@ -1,30 +1,4 @@
-package ar.edu.itba.paw.webapp.controller.old;
-
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.ClientService;
-import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.services.ImageService;
-import ar.edu.itba.paw.webapp.form.UserForm;
-import ar.edu.itba.paw.webapp.interfaces.Redirect;
-import ar.edu.itba.paw.webapp.interfaces.Toasts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.*;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.ArrayList;
+/*
 
 @Controller
 public class PublicControllerOld implements Redirect, Toasts {
@@ -143,4 +117,4 @@ public class PublicControllerOld implements Redirect, Toasts {
         headers.setCacheControl(CacheControl.maxAge(Duration.ofDays(3)));
         return new ResponseEntity<>(img.getData(), headers, HttpStatus.OK);
     }
-}
+}*/

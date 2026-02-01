@@ -1,21 +1,4 @@
-package ar.edu.itba.paw.webapp.controller.old;
-
-import ar.edu.itba.paw.exceptions.*;
-import ar.edu.itba.paw.models.Toast;
-import ar.edu.itba.paw.models.ToastType;
-import ar.edu.itba.paw.webapp.interfaces.Redirect;
-import ar.edu.itba.paw.webapp.interfaces.Toasts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.NoSuchElementException;
-
+/*
 @ControllerAdvice
 public class GlobalExceptionHandler implements Redirect, Toasts {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -136,3 +119,4 @@ public class GlobalExceptionHandler implements Redirect, Toasts {
         return redirect("/error/internalError");
     }
 }
+*/

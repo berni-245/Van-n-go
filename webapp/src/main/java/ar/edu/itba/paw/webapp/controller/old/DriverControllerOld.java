@@ -1,30 +1,4 @@
-package ar.edu.itba.paw.webapp.controller.old;
-
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
-import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
-import ar.edu.itba.paw.webapp.form.VehicleForm;
-import ar.edu.itba.paw.webapp.interfaces.Bookings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
+/*
 @Controller
 public class DriverControllerOld implements Bookings {
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverControllerOld.class);
@@ -363,4 +337,4 @@ public class DriverControllerOld implements Bookings {
         setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
         return new ModelAndView("redirect:/profile");
     }
-}
+}*/
