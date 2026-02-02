@@ -64,8 +64,7 @@ public class ClientController {
         // TODO move this bellow to validator
         String newPass = dto.getPassword();
         String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$";
-        boolean oldPassCheck = passwordEncoder.matches(dto.getOldPassword(), c.getPassword());
-        if (newPass != null && newPass.matches(regex) && oldPassCheck)
+        if (newPass != null && newPass.matches(regex) && passwordEncoder.matches(dto.getOldPassword(), c.getPassword()))
             clientService.updatePassword(c, newPass);
         return Response.ok(ClientDTO.fromClient(uriInfo, c)).build();
     }

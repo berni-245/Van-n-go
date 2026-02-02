@@ -88,8 +88,7 @@ public class DriverController {
         // TODO move this bellow to validator
         String newPass = dto.getPassword();
         String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$";
-        boolean oldPassCheck = passwordEncoder.matches(dto.getOldPassword(), d.getPassword());
-        if (newPass != null && newPass.matches(regex) && oldPassCheck)
+        if (newPass != null && newPass.matches(regex) && passwordEncoder.matches(dto.getOldPassword(), d.getPassword()))
             ds.updatePassword(d, newPass);
         return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
