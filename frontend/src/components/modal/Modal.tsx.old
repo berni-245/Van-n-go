@@ -1,0 +1,133 @@
+import { Component, createSignal, JSX, onCleanup, ParentComponent, Show } from "solid-js";
+import { Portal } from "solid-js/web";
+import { Transition } from "solid-transition-group";
+import createFocusTrap from "solid-focus-trap";
+import { ColorCategories } from "@components/uiTypes";
+import { HtmlIdFamily } from "@components/htmlIds";
+import Button from "@components/Button";
+import { ModalContext, ModalState, useModalContext } from "./Context";
+
+const ModalRoot: ParentComponent<{ checkbox?: boolean }> = (props) => {
+  const state: ModalState = { open: createSignal(false) };
+
+  return (
+    <ModalContext.Provider value={state}>
+      <div>{props.children}</div>
+    </ModalContext.Provider>
+  );
+};
+
+const OpenElement: ParentComponent = (props) => {
+  const tableState = useModalContext();
+  const [_, setIsOpen] = tableState.open;
+  return <div onClick={() => setIsOpen(true)}>{props.children}</div>;
+};
+
+// export const Table = Object.assign(TableRoot, {
+//   Headers: TableHeaders,
+//   Content: TableContent,
+//   Row: TableRow,
+// });
+
+type ModalProps = {
+  openButtonText: string;
+  openButtonIcon: JSX.Element;
+  title: JSX.Element;
+  body: JSX.Element;
+  type: ColorCategories;
+};
+
+const Modal: Component<ModalProps> = (props) => {
+  const [isOpen, setIsOpen] = createSignal(false);
+  const [contentRef, setContentRef] = createSignal<HTMLElement | null>(null);
+  const modalId = new HtmlIdFamily("modal");
+
+  createFocusTrap({
+    element: contentRef,
+    enabled: () => isOpen(),
+  });
+
+  const handleEscape = (e: KeyboardEvent) => {
+    if (e.key === "Escape") setIsOpen(false);
+  };
+  window.addEventListener("keydown", handleEscape);
+  onCleanup(() => window.removeEventListener("keydown", handleEscape));
+
+  const closeIfClickOutside = (e: MouseEvent) => {
+    if (e.target === contentRef()) setIsOpen(false);
+  };
+
+  return (
+    <div>
+      <Button
+        onClick={() => setIsOpen(true)}
+        type={props.type}
+        icon={props.openButtonIcon}
+        text={props.openButtonText}
+      />
+      <Portal>
+        <Transition name="ease-out">
+          <Show when={isOpen()}>
+            <div
+              ref={setContentRef}
+              onClick={closeIfClickOutside}
+              class="fixed inset-0 z-30 flex items-end justify-center bg-black/20 p-4 pb-8 backdrop-blur-md sm:items-center lg:p-8"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={modalId.id("title")}
+            >
+              {/* <!-- Modal Dialog --> */}
+              <div class="flex max-w-lg flex-col gap-4 overflow-hidden rounded-radius border border-outline bg-surface text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
+                {/* <!-- Dialog Header --> */}
+                <div class="flex items-center justify-between border-b border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20">
+                  <h3
+                    id={modalId.id("title")}
+                    class="font-semibold tracking-wide text-on-surface-strong dark:text-on-surface-dark-strong"
+                  >
+                    {props.title}
+                  </h3>
+                  <button onClick={() => setIsOpen(false)} aria-label="close modal">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-width="1.4"
+                      class="w-5 h-5"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                {/* <!-- Dialog Body --> */}
+                <div class="px-4 py-8">
+                  <p>{props.body}</p>
+                </div>
+                {/* <!-- Dialog Footer --> */}
+                <div class="flex flex-col-reverse justify-between gap-2 border-t border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20 sm:flex-row sm:items-center md:justify-end">
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    type="button"
+                    class="whitespace-nowrap rounded-radius px-4 py-2 text-center text-sm font-medium tracking-wide text-on-surface transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:text-on-surface-dark dark:focus-visible:outline-primary-dark"
+                  >
+                    Remind me later
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    type="button"
+                    class="whitespace-nowrap rounded-radius bg-primary border border-primary dark:border-primary-dark px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark"
+                  >
+                    Upgrade Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Show>
+        </Transition>
+      </Portal>
+    </div>
+  );
+};
+
+export default Modal;
