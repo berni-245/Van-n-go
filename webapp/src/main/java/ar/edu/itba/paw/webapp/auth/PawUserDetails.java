@@ -1,5 +1,6 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

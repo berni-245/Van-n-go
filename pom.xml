@@ -30,7 +30,6 @@
         <junit.version>4.13.2</junit.version>
         <mockito.version>2.25.1</mockito.version>
         <hsqldb.version>2.7.3</hsqldb.version>
-        <gson.version>2.10.1</gson.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <jpa.version>1.0.0.Final</jpa.version>
         <jpa.bind.version>2.3.0</jpa.bind.version>
@@ -146,11 +145,6 @@
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
