@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato/Lato-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato/Lato-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Fonts */
+  --font-lato: "Lato", sans-serif;
+
+  /* Light Themes */
+  --color-surface: var(--color-white);
+  --color-surface-alt: var(--color-neutral-50);
+  --color-on-surface: var(--color-neutral-600);
+  --color-on-surface-strong: var(--color-neutral-900);
+  /* --color-primary: var(--color-black); */
+  --color-primary: var(--color-orange-500);
+  --color-on-primary: var(--color-neutral-100);
+  --color-secondary: var(--color-neutral-800);
+  --color-on-secondary: var(--color-white);
+  --color-outline: var(--color-neutral-300);
+  --color-outline-strong: var(--color-neutral-800);
+
+  /* Dark Theme */
+  --color-surface-dark: var(--color-neutral-950);
+  --color-surface-dark-alt: var(--color-neutral-900);
+  --color-on-surface-dark: var(--color-neutral-300);
+  --color-on-surface-dark-strong: var(--color-white);
+  /* --color-primary-dark: var(--color-white); */
+  --color-primary-dark: var(--color-orange-500);
+  --color-on-primary-dark: var(--color-black);
+  --color-secondary-dark: var(--color-neutral-300);
+  --color-on-secondary-dark: var(--color-black);
+  --color-outline-dark: var(--color-neutral-700);
+  --color-outline-dark-strong: var(--color-neutral-300);
+
+  /* Shared Colors */
+  --color-info: var(--color-sky-500);
+  --color-on-info: var(--color-white);
+  --color-success: var(--color-green-500);
+  --color-on-success: var(--color-white);
+  --color-warning: var(--color-amber-500);
+  --color-on-warning: var(--color-white);
+  --color-danger: var(--color-red-500);
+  --color-on-danger: var(--color-white);
+
+  /* Border Radius */
+  --radius-radius: var(--radius-sm);
+}
+
+@layer base {
+  :root {
+    /* NOTE: This option allows using `auto` keyword for transitions but it's experimental and */
+    /* not implemented for webview apparently. */
+    /*   interpolate-size: allow-keywords; */
+  }
+
+  body {
+    font-family: var(--font-lato);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+  }
+}
+
+@layer transitions {
+  .fade-enter-active,
+  .fade-exit-active {
+    transition: opacity 0.3s;
+  }
+  .fade-enter,
+  .fade-exit-to {
+    opacity: 0;
+  }
+  .fade-enter {
+  }
+
+  .slide-fade-enter-active,
+  .slide-fade-exit-active {
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+  }
+  .slide-fade-enter,
+  .slide-fade-exit-to {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  .slide-fade-enter {
+    transform: translateX(-10px);
+  }
+
+  .ease-out-enter-active,
+  .ease-out-exit-active {
+    transition: all 0.3s ease-out;
+  }
+
+  .ease-out-enter,
+  .ease-out-exit-to {
+    opacity: 0;
+  }
+
+  .ease-out-enter {
+    transform: scale(0.98); /* optional micro motion */
+  }
+}
