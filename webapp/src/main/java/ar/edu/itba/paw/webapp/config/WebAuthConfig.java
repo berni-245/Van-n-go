@@ -1,26 +1,25 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.models.UserRole;
-import ar.edu.itba.paw.webapp.auth.CustomAuthenticationFailureHandler;
-import ar.edu.itba.paw.webapp.auth.CustomSavedRequestAwareAuthenticationSuccessHandler;
+// More info on how to configure things here: https://www.toptal.com/developers/spring/spring-security-tutorial
+
+import ar.edu.itba.paw.webapp.auth.JwtTokenFilter;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -29,55 +28,36 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PawUserDetailsService userDetailsService;
     @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    @Autowired
-    private CustomSavedRequestAwareAuthenticationSuccessHandler customSavedRequestAwareAuthenticationSuccessHandler;
+    private JwtTokenFilter jwtTokenFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    private final ClassPathResource keyRes = new ClassPathResource("secKey.txt");
-
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .invalidSessionUrl("/home")
+        http.csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers("/api/**").permitAll()  // 🚀 Permite el acceso a la API sin autenticación
-                .antMatchers("/login", "/register").anonymous()
-                .antMatchers("/client/search", "/client/availability").not().hasRole(UserRole.DRIVER.name())
-                .antMatchers("/driver/**").hasRole(UserRole.DRIVER.name())
-                .antMatchers("/client/**").hasRole(UserRole.CLIENT.name())
-                .antMatchers("/", "/home", "/error/**").permitAll()
+//                .antMatchers("/api/**").permitAll()
+
+                .antMatchers(HttpMethod.GET, UriUtils.ZONES_URL + "/**").permitAll()
+                .antMatchers(HttpMethod.GET, UriUtils.DRIVERS_URL + "/**").permitAll()
+                .antMatchers(HttpMethod.POST, UriUtils.CLIENTS_URL, UriUtils.DRIVERS_URL).anonymous()
                 .antMatchers("/**").authenticated()
-                .and().formLogin()
-                .successHandler(customSavedRequestAwareAuthenticationSuccessHandler)
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
-                .loginPage("/login")
-                .failureHandler(customAuthenticationFailureHandler)
-                .and().rememberMe()
-                .rememberMeParameter("j_rememberme")
-                .userDetailsService(userDetailsService)
-                .key(FileCopyUtils.copyToString(new InputStreamReader(keyRes.getInputStream(), StandardCharsets.UTF_8)))
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-                .and().logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/home")
+
                 .and().exceptionHandling()
-                .accessDeniedPage("/error/403")
-                .and().csrf().disable();
+                .authenticationEntryPoint(
+                        (request, response, ex) -> response.sendError(
+                                HttpServletResponse.SC_UNAUTHORIZED,
+                                ex.getMessage()
+                        )
+                )
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-    @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.ignoring()
-                .antMatchers("/css/**", "/js/**", "/images/**", "/icons/**", "/favicon.ico", "/error/403");
-    }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
