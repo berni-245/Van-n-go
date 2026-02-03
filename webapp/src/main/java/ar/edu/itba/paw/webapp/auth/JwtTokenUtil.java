@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.io.ClassPathResource;
@@ -11,6 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 // TODO Change this class, It's missing a lot of stuff
 @Component
@@ -32,8 +34,15 @@ public class JwtTokenUtil {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
-    public String generateAccessToken(UserDetails userDetails) {
-        return "TODO";
+    public String generateAccessToken(PawUserDetails userDetails) {
+        User user = userDetails.getUser();
+        return Jwts.builder()
+                .claim("type", user.getIsDriver() ? "driver" : "client")
+                .claim("id", user.getId())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .signWith(key)
+                .compact();
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
