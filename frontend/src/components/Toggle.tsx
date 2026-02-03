@@ -37,7 +37,7 @@ const Toggle: Component<ToggleProps> = (props) => {
       />
 
       {props.label && (
-        <span class="tracking-wide text-sm font-medium text-on-surface peer-checked:text-on-surface-strong peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-on-surface-dark dark:peer-checked:text-on-surface-dark-strong">
+        <span class="tracking-wide font-medium text-on-surface peer-checked:text-on-surface-strong peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-on-surface-dark dark:peer-checked:text-on-surface-dark-strong">
           {props.label}
         </span>
       )}

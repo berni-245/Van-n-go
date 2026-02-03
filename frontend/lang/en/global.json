@@ -1,5 +1,22 @@
 {
   "name": "English",
+  "title": "Van N' Go",
   "home": "Home",
-  "settings": "Settings"
+  "settings": "Settings",
+  "find-freight": "Find your freight",
+  "bookings": "Bookings",
+  "vehicles": "Vehicles",
+  "login": "Log in",
+  "register": "Register",
+  "sr": {
+    "skipToMainContent": "Skip to main content",
+    "closeSidebar": "Close sidebar",
+    "openSidebar": "Open sidebar"
+  },
+  "page": {
+    "home": {
+      "callToAction": "Let's start!",
+      "greeting": "Are you looking for a Hauler? Or would you prefer to apply as one? You've come to the right place. Find the perfect freight service for you."
+    }
+  }
 }

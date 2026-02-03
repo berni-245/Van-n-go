@@ -1,26 +1,23 @@
-import { createSignal } from "solid-js";
-import { useTranslator } from "../app-context/AppContext";
+import { useTranslator } from "@/app-context/AppContext";
+import Button from "../components/Button";
 
 export default function Home() {
   const t = useTranslator();
-  const [count, setCount] = createSignal(0);
 
   return (
-    <section class="bg-gray-100 text-gray-700 p-8">
-      <h1 class="text-2xl font-bold">{t("global.home")}</h1>
-      <p class="mt-4">This is the home page.</p>
-
-      <div class="flex items-center space-x-2">
-        <button type="button" class="border rounded-lg px-2 border-gray-900" onClick={() => setCount(count() - 1)}>
-          -
-        </button>
-
-        <output class="p-10px">Count: {count()}</output>
-
-        <button type="button" class="border rounded-lg px-2 border-gray-900" onClick={() => setCount(count() + 1)}>
-          +
-        </button>
+    <div class="relative overflow-hidden px-4 py-5 my-5 text-center">
+      <img
+        class="absolute top-0 left-0 w-full h-full object-cover object-center brightness-75 blur-sm"
+        src="/images/welcome_picture.webp"
+        alt="Background"
+      />
+      <div class="relative dark:text-on-surface-dark">
+        <h1 class="mb-3">{t("global.title")}</h1>
+        <div class="mx-auto w-full lg:w-1/2">
+          <p class="text-xl mb-4">{t("global.page.home.greeting")}</p>
+          <Button class="text-xl" type="primary" href="/search" text={t("global.page.home.callToAction")} />
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

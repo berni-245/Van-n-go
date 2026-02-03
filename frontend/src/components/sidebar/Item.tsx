@@ -17,7 +17,7 @@ export const Item: Component<ItemProps> = (props) => {
   return (
     <A
       href={props.href}
-      class="w-full flex items-center rounded-radius gap-2 px-2 py-1.5 text-sm font-medium text-on-surface underline-offset-2 hover:bg-primary/5 hover:text-on-surface-strong focus-visible:underline focus:outline-hidden dark:text-on-surface-dark dark:hover:bg-primary-dark/5 dark:hover:text-on-surface-dark-strong"
+      class="w-full flex items-center rounded-radius gap-2 px-2 py-1.5 font-medium text-on-surface underline-offset-2 hover:bg-primary/5 hover:text-on-surface-strong focus-visible:underline focus:outline-hidden dark:text-on-surface-dark dark:hover:bg-primary-dark/5 dark:hover:text-on-surface-dark-strong"
       classList={{
         "text-on-surface-strong bg-primary/10 dark:text-on-surface-dark-strong dark:bg-primary-dark/10": props.selected,
       }}
@@ -49,7 +49,7 @@ export const CollapsibleItem: ParentComponent<CollapsibleItemProps> = (props) =>
         id={itemId.id("btn")}
         aria-controls={itemId.id("item-list")}
         aria-expanded={expanded() ? "true" : "false"}
-        class="flex items-center justify-between rounded-radius gap-2 px-2 py-1.5 text-sm font-medium underline-offset-2 focus:outline-hidden focus-visible:underline text-on-surface hover:bg-primary/5 hover:text-on-surface-strong dark:text-on-surface-dark dark:hover:text-on-surface-dark-strong dark:hover:bg-primary-dark/5"
+        class="flex items-center justify-between rounded-radius gap-2 px-2 py-1.5 font-medium underline-offset-2 focus:outline-hidden focus-visible:underline text-on-surface hover:bg-primary/5 hover:text-on-surface-strong dark:text-on-surface-dark dark:hover:text-on-surface-dark-strong dark:hover:bg-primary-dark/5"
       >
         {resolvedIcon()}
         <span class="mr-auto text-left">{props.text}</span>
@@ -79,7 +79,7 @@ export const CollapsibleItem: ParentComponent<CollapsibleItemProps> = (props) =>
           <For each={resolvedChildren.toArray()}>
             {(item) => (
               <li class="w-full">
-                <div class="flex ml-4 border-outline text-on-surface dark:border-outline-dark dark:text-on-surface-dark block border-l py-2.5 pl-4 text-sm font-medium capitalize transition duration-200 hover:border-l-2 hover:border-outline-strong hover:text-on-surface-strong dark:hover:border-x-outline-dark-strong dark:hover:text-on-surface-dark-strong">
+                <div class="flex ml-4 border-outline text-on-surface dark:border-outline-dark dark:text-on-surface-dark block border-l py-2.5 pl-4 font-medium capitalize transition duration-200 hover:border-l-2 hover:border-outline-strong hover:text-on-surface-strong dark:hover:border-x-outline-dark-strong dark:hover:text-on-surface-dark-strong">
                   {item}
                 </div>
               </li>

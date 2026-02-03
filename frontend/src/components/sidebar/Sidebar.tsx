@@ -14,7 +14,7 @@ const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
     <>
       {/* <!-- This allows screen readers to skip the sidebar and go directly to the main content. --> */}
       <a class="sr-only" href="#main-content">
-        {t("global.skip_to_main_content")}
+        {t("global.sr.skipToMainContent")}
       </a>
 
       {/* <!-- dark overlay for when the sidebar is open on smaller screens  --> */}
@@ -35,7 +35,7 @@ const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
         aria-label="sidebar navigation"
       >
         {/* <!-- logo  --> */}
-        <a href="#" class="ml-2 mb-12 w-fit text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
+        <a href="/" class="ml-2 mb-12 w-fit text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
           {resolvedLogo()}
           <span class="sr-only">{t("global.home")}</span>
         </a>
@@ -54,12 +54,12 @@ const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
           fallback={
             <>
               <LilSidebarIcon />
-              <span class="sr-only">{t("global.open_sidebar")}</span>
+              <span class="sr-only">{t("global.sr.openSidebar")}</span>
             </>
           }
         >
           <CrossIcon />
-          <span class="sr-only">{t("global.close_sidebar")}</span>
+          <span class="sr-only">{t("global.sr.closeSidebar")}</span>
         </Show>
       </button>
     </>

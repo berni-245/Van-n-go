@@ -1,26 +1,44 @@
-import { Component, JSX } from "solid-js";
-import { ColorCategories } from "./uiTypes";
+import { Component, JSX, Show } from "solid-js";
+import { ColorCategories } from "@/components/uiTypes";
+import { A } from "@solidjs/router";
 
 type ButtonProps = {
   icon?: JSX.Element;
   text?: string;
   onClick?: (event: Event) => void;
+  href?: string;
   type: ColorCategories;
+  class?: string;
 };
 
 const Button: Component<ButtonProps> = (props) => {
   return (
-    <button type="button" onClick={props.onClick} class={`${BASE_CLASSES} ${TYPE_CLASSES[props.type]}`}>
-      {props.icon}
-      {props.text}
-    </button>
+    <>
+      <Show when={props.href}>
+        <A
+          type="button"
+          href={props.href!}
+          onClick={props.onClick}
+          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.type]} ${props.class}`}
+        >
+          {props.icon}
+          {props.text}
+        </A>
+      </Show>
+      <Show when={!props.href}>
+        <button type="button" onClick={props.onClick} class={`${BASE_CLASSES} ${TYPE_CLASSES[props.type]}`}>
+          {props.icon}
+          {props.text}
+        </button>
+      </Show>
+    </>
   );
 };
 
 export default Button;
 
 const BASE_CLASSES =
-  "inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius border px-4 py-2 text-sm font-medium tracking-wide transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed";
+  "inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius border px-4 py-2 font-medium tracking-wide transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed";
 const TYPE_CLASSES: Record<ColorCategories, string> = {
   primary:
     "bg-primary border-primary dark:border-primary-dark text-on-primary focus-visible:outline-primary dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark",

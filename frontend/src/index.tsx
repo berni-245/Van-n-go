@@ -1,6 +1,5 @@
 /* @refresh reload */
 import "solid-devtools";
-import "@/index.css";
 import "@/App.css";
 import { render } from "solid-js/web";
 import App from "@/App";
@@ -37,7 +36,7 @@ enableMocking().then(() => {
         <AppContextProvider>
           <Router root={(props) => <App>{props.children}</App>}>
             <Route path="/" component={Home} />
-            <Route path="/drivers" component={DriverAvailability} />
+            <Route path="/search" component={DriverAvailability} />
             <Route path="/about" component={About} />
             <Route path="/settings" component={Settings} />
             <Route path="**" component={Error404} />
