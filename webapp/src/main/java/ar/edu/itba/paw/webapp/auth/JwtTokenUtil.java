@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
@@ -29,5 +30,13 @@ public class JwtTokenUtil {
 
     public Claims getPayloadFromToken(String token) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+    }
+
+    public String generateAccessToken(UserDetails userDetails) {
+        return "TODO";
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return "TODO";
     }
 }

@@ -49,6 +49,7 @@
                 <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <!-- webmvc it's no longer used, but we'll leave it for other dependencies that includes like spring-beans -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
