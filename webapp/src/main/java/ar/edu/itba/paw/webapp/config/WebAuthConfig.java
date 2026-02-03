@@ -45,12 +45,22 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-//                .antMatchers("/api/**").permitAll()
 
+                // Public endpoints
                 .antMatchers(HttpMethod.GET, UriUtils.ZONES_URL + "/**").permitAll()
                 .antMatchers(HttpMethod.GET, UriUtils.DRIVERS_URL + "/**").permitAll()
+
+                // Anonymous endpoints (Can't be authenticated for these)
                 .antMatchers(HttpMethod.POST, UriUtils.CLIENTS_URL, UriUtils.DRIVERS_URL).anonymous()
-                .antMatchers("/**").authenticated()
+
+                // Authenticated endpoints (Needs Basic auth or JWT)
+                .antMatchers(UriUtils.DRIVERS_URL + "/**").authenticated()
+                .antMatchers(UriUtils.CLIENTS_URL + "/**").authenticated()
+                .antMatchers(UriUtils.MESSAGES_URL + "/**").authenticated()
+                .antMatchers(UriUtils.BOOKINGS_URL + "/**").authenticated()
+
+                // Let Jersey send unknown endpoints to 404
+                .antMatchers("/**").permitAll()
 
                 .and().exceptionHandling()
                 .authenticationEntryPoint(
