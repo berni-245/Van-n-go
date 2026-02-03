@@ -51,7 +51,7 @@ const Card: Component<CardProps> = (props) => {
           >
             {props.title}
           </h3>
-          <p id="tripDescription" class="text-pretty text-sm mb-2">
+          <p id="tripDescription" class="text-pretty mb-2">
             {props.description}
           </p>
           <Button type="primary" text={props.buttonText} onClick={props.onButtonClick}/>

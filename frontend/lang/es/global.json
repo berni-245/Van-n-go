@@ -1,5 +1,22 @@
 {
   "name": "Español",
+  "title": "Van N' Go",
   "home": "Inicio",
-  "settings": "Configuración"
+  "settings": "Configuración",
+  "find-freight": "Encuentra tu flete",
+  "bookings": "Reservas",
+  "vehicles": "Vehículos",
+  "login": "Iniciar sesión",
+  "register": "Registrarse",
+  "sr": {
+    "skipToMainContent": "Saltar al contenido principal",
+    "closeSidebar": "Cerrar barra lateral",
+    "openSidebar": "Abrir barra lateral"
+  },
+  "page": {
+    "home": {
+      "callToAction": "¡Empecemos!",
+      "greeting": "¿Estás buscando un flete? ¿O prefieres postularte como uno? Llegaste al lugar correcto. Encuentra el servicio de fletes perfecto para ti."
+    }
+  }
 }

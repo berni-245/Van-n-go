@@ -13,7 +13,7 @@ const TableRoot: ParentComponent<{ checkbox?: boolean }> = (props) => {
   return (
     <TableContext.Provider value={tableState}>
       <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-        <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">{props.children}</table>
+        <table class="w-full text-left text-on-surface dark:text-on-surface-dark">{props.children}</table>
       </div>
     </TableContext.Provider>
   );
