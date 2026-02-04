@@ -14,12 +14,16 @@ public class AuthorizationService {
     public boolean isAuthenticatedUser(int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null || !auth.isAuthenticated() ||
+                auth.getPrincipal().equals("anonymousUser")) {
             throw new UnauthorizedException();
         }
 
-        PawUserDetails principal = (PawUserDetails) auth.getPrincipal();
-        if (principal.getUser().getId() != id) {
+        if (!(auth.getPrincipal() instanceof PawUserDetails pawUser)) {
+            throw new UnauthorizedException();
+        }
+
+        if (pawUser.getUser().getId() != id) {
             throw new UserIdentityMismatchException();
         }
 
