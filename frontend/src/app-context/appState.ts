@@ -2,7 +2,7 @@ import { debounce } from "@solid-primitives/scheduled";
 import { UserState } from "./userState";
 import { initialLocale, Locale } from "./locale";
 
-type Theme = "dark" | "light";
+export type Theme = "dark" | "light";
 
 export interface AppState {
   session: {

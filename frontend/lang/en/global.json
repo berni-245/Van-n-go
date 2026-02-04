@@ -16,7 +16,31 @@
   "page": {
     "home": {
       "callToAction": "Let's start!",
-      "greeting": "Are you looking for a Hauler? Or would you prefer to apply as one? You've come to the right place. Find the perfect freight service for you."
+      "greeting": "Are you looking for a Hauler? Or would you prefer to apply as one? You've come to the right place. Find the perfect freight service for you.",
+      "aboutUs": {
+        "title": "About Us",
+        "description": "Our mission is to make driver searches easier."
+      },
+      "services": {
+        "title": "Our Services",
+        "s1": "Find drivers in your area",
+        "s2": "Register your transport service",
+        "s3": "View and write reviews"
+      },
+      "clientOpinion": {
+        "title": "What Our Clients Say",
+        "description": "It's fantastic! Exceptional service, highly recommend"
+      }
     }
+  },
+  "laguage": {
+    "label": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark"
   }
 }
