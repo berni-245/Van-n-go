@@ -22,7 +22,7 @@ public class TokenGeneratorFilter extends OncePerRequestFilter {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null &&
                 auth.isAuthenticated() &&
-                request.getHeader("Authorization").startsWith("Basic ") &&
+                (request.getHeader("Authorization").startsWith("Basic ") || (auth.getDetails() != null && auth.getDetails() == "REFRESH")) &&
                 auth.getPrincipal() instanceof PawUserDetails user
         ) {
             String accessToken = jwtTokenUtil.generateAccessToken(user);

@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,30 +42,39 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         String token = header.split(" ")[1];
-        if (!jwtTokenUtil.validate(token)) {
-            chain.doFilter(request, response);
-            return;
+        try {
+            setAuthenticationContextFromToken(token, false);
+        } catch (ExpiredJwtException e) {
+            String refreshToken = request.getHeader("Paw-refresh-token"); //TODO: poner esto en properties
+            if (refreshToken != null)
+                setAuthenticationContextFromToken(refreshToken, true);
         }
+        chain.doFilter(request, response);
+    }
 
+    private void setAuthenticationContextFromToken(String token, boolean mustRefresh) {
         Claims claims = jwtTokenUtil.getPayloadFromToken(token);
         String type = (String) claims.get("type");
         int id = (Integer) claims.get("id");
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        PawUserDetails userDetails;
-        if (type.equals("client")) {
-            Client c = cs.findById(id);
-            authorities.add(new SimpleGrantedAuthority(UserRole.CLIENT.role()));
-            userDetails = new PawUserDetails(c, authorities);
-        } else {
-            Driver d = ds.findById(id);
-            authorities.add(new SimpleGrantedAuthority(UserRole.DRIVER.role()));
-            userDetails = new PawUserDetails(d, authorities);
-        }
+        PawUserDetails userDetails = getUserDetails(type, id, authorities);
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 userDetails, null, authorities
         );
-
+        if (mustRefresh) auth.setDetails("REFRESH");
         SecurityContextHolder.getContext().setAuthentication(auth);
-        chain.doFilter(request, response);
+
+    }
+
+    private PawUserDetails getUserDetails(String type, int id, Collection<SimpleGrantedAuthority> authorities) {
+        if (type.equals("client")) {
+            Client c = cs.findById(id);
+            authorities.add(new SimpleGrantedAuthority(UserRole.CLIENT.role()));
+            return new PawUserDetails(c, authorities);
+        }
+        Driver d = ds.findById(id);
+        authorities.add(new SimpleGrantedAuthority(UserRole.DRIVER.role()));
+        return new PawUserDetails(d, authorities);
+
     }
 }
