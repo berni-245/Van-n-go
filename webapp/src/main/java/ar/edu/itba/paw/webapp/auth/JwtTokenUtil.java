@@ -39,8 +39,8 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .claim("type", user.getIsDriver() ? "driver" : "client")
                 .claim("id", user.getId())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
                 .signWith(key)
                 .compact();
     }
