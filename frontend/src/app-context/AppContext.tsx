@@ -38,8 +38,13 @@ export const AppContextProvider: ParentComponent = (props) => {
       preferences: {
         theme: appState.preferences.theme,
         locale: appState.preferences.locale,
-      }
+      },
     });
+  });
+
+  createEffect(() => {
+    const theme = appState.preferences.theme;
+    document.documentElement.setAttribute("data-theme", theme);
   });
 
   const [dict] = createResource(() => appState.preferences.locale, fetchDictionary, { initialValue: en_flat_dict });
