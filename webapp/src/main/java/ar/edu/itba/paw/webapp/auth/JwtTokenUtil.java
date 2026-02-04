@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
@@ -39,13 +38,22 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .claim("type", user.getIsDriver() ? "driver" : "client")
                 .claim("id", user.getId())
+                .claim("tokenType", JwtTokenType.ACCESS.getType())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
                 .signWith(key)
                 .compact();
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
-        return "TODO";
+    public String generateRefreshToken(PawUserDetails userDetails) {
+        User user = userDetails.getUser();
+        return Jwts.builder()
+                .claim("type", user.getIsDriver() ? "driver" : "client")
+                .claim("id", user.getId())
+                .claim("tokenType", JwtTokenType.REFRESH.getType())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5)) // 5 horas
+                .signWith(key)
+                .compact();
     }
 }
