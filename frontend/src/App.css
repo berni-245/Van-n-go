@@ -68,9 +68,7 @@
   }
 
   body {
-    font-family: var(--font-lato);
-    background-color: var(--color-surface);
-    color: var(--color-on-surface);
+    @apply font-lato bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark
   }
 
   h1 {
@@ -92,6 +90,11 @@
   p {
     @apply text-base;
   }
+
+  select {
+    @apply bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark
+  }
+
 }
 
 @layer transitions {
