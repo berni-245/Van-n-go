@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -54,6 +55,7 @@ public class VehicleController {
     }
 
     @POST
+    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createVehicle(@PathParam("driverId") int driverId, VehicleDTO dto) {
@@ -77,6 +79,7 @@ public class VehicleController {
 
     @PATCH
     @Path("{vehicleId}")
+    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateVehicle(
@@ -112,6 +115,7 @@ public class VehicleController {
 
     @POST
     @Path("{vehicleId}/picture")
+    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Produces({"image/jpeg", "image/png"})
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, byte[] imageData) {
@@ -147,6 +151,7 @@ public class VehicleController {
 
     @PATCH
     @Path("{vehicleId}/availability")
+    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {

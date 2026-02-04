@@ -8,6 +8,7 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -76,6 +77,7 @@ public class DriverController {
 
     @PATCH
     @Path("/{id}")
+    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateDriverById(@PathParam("id") int id, UpdateDriverDTO dto) {
@@ -110,6 +112,7 @@ public class DriverController {
 
     @POST
     @Path("/{id}/profile-picture")
+    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadProfilePicture(@PathParam("id") final int id, byte[] imageData) {
         Driver driver = ds.findById(id);
