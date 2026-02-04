@@ -29,21 +29,21 @@ async function enableMocking() {
   return worker.start();
 }
 
-enableMocking().then(() => {
-  render(
-    () => (
-      <MetaProvider>
-        <AppContextProvider>
-          <Router root={(props) => <App>{props.children}</App>}>
-            <Route path="/" component={Home} />
-            <Route path="/search" component={DriverAvailability} />
-            <Route path="/about" component={About} />
-            <Route path="/settings" component={Settings} />
-            <Route path="**" component={Error404} />
-          </Router>
-        </AppContextProvider>
-      </MetaProvider>
-    ),
-    root
-  );
-});
+await enableMocking();
+
+render(
+  () => (
+    <MetaProvider>
+      <AppContextProvider>
+        <Router root={(props) => <App>{props.children}</App>}>
+          <Route path="/" component={Home} />
+          <Route path="/search" component={DriverAvailability} />
+          <Route path="/about" component={About} />
+          <Route path="/settings" component={Settings} />
+          <Route path="**" component={Error404} />
+        </Router>
+      </AppContextProvider>
+    </MetaProvider>
+  ),
+  root
+);

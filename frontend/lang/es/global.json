@@ -16,7 +16,31 @@
   "page": {
     "home": {
       "callToAction": "¡Empecemos!",
-      "greeting": "¿Estás buscando un flete? ¿O prefieres postularte como uno? Llegaste al lugar correcto. Encuentra el servicio de fletes perfecto para ti."
+      "greeting": "¿Estás buscando un flete? ¿O prefieres postularte como uno? Llegaste al lugar correcto. Encuentra el servicio de fletes perfecto para ti.",
+      "aboutUs": {
+        "title": "Sobre Nosotros",
+        "description": "Somos una empresa dedicada a hacer la búsqueda de fletes más facíl."
+      },
+      "services": {
+        "title": "Nuestros Servicios",
+        "s1": "Encuentra fletes en tu zona",
+        "s2": "Fácil interacción con el fletero",
+        "s3": "Ve y escribe reseñas"
+      },
+      "clientOpinion": {
+        "title": "Lo que dicen nuestros usuarios",
+        "description": "Es fantástico, contratar un flete nunca fue tan facíl como cuando uso Van N' Go"
+      }
     }
+  },
+  "laguage": {
+    "label": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro"
   }
 }

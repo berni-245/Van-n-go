@@ -1,5 +1,4 @@
 import { Suspense, type Component, JSX, Switch, Match } from "solid-js";
-import { A, useLocation } from "@solidjs/router";
 import { useAppState, useTranslator } from "@/app-context/AppContext";
 import { AppLayout, Content } from "@components/AppLayout.tsx";
 import { Sidebar } from "./components/sidebar/Sidebar";
@@ -8,8 +7,7 @@ import { FaSolidBook, FaSolidGear, FaSolidSearch, FaSolidTruck, FaSolidUserPlus 
 import { FiLogIn } from "solid-icons/fi";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
-  const location = useLocation();
-  const [appState, setAppState] = useAppState();
+  const [appState, _] = useAppState();
   const t = useTranslator();
 
   return (
