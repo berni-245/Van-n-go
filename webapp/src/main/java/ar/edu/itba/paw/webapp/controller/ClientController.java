@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -37,7 +38,7 @@ public class ClientController {
 
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
-    public Response createClient(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, final CreateClientDTO clientDTO) {
+    public Response createClient(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateClientDTO clientDTO) {
         Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), Locale.forLanguageTag(lang));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
     }

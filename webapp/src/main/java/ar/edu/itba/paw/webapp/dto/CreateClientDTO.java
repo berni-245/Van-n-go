@@ -1,11 +1,33 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.webapp.validation.ValidMail;
+import ar.edu.itba.paw.webapp.validation.ValidUsername;
+import ar.edu.itba.paw.webapp.validation.ValidZoneId;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class CreateClientDTO {
+
+    @Size(min = 5, max = 20)
+    @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    @ValidUsername
     private String username;
+
+    @Email
+    @ValidMail
+    @NotBlank
     private String email;
+
+    @Size(min = 8, max = 32)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
+    //TODO: change regex to a more simple one (as mentioned on tp2)
     private String password;
+
+    @ValidZoneId
     private Integer zoneId;
-    private String preferedLanguage;
 
     public String getUsername() {
         return username;
@@ -39,11 +61,4 @@ public class CreateClientDTO {
         this.zoneId = zoneId;
     }
 
-    public String getPreferedLanguage() {
-        return preferedLanguage;
-    }
-
-    public void setPreferedLanguage(String preferedLanguage) {
-        this.preferedLanguage = preferedLanguage;
-    }
 }
