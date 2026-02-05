@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -108,6 +109,14 @@ public class WebConfig {
         properties.setProperty("base.prod.url", """
                 http://pawserver.it.itba.edu.ar/paw-2024b-01/""");
         return properties;
+    }
+
+
+    @Bean
+    public LocalValidatorFactoryBean getValidator() {
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        bean.setValidationMessageSource(messageSource());
+        return bean;
     }
 
 
