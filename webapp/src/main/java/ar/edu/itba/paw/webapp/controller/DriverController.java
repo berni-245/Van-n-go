@@ -63,7 +63,6 @@ public class DriverController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateDriverDTO dto) {
-        // TODO add cbu here
         Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), dto.getCbu(), Locale.forLanguageTag(lang));
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
