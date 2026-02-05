@@ -15,8 +15,8 @@ import java.util.Optional;
 public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
 
     @Override
-    public Driver create(String username, String mail, String password, String description, Language language) {
-        Driver driver = new Driver(username, mail, password, description, null, null, language);
+    public Driver create(String username, String mail, String password, String description, String cbu, Language language) {
+        Driver driver = new Driver(username, mail, password, description, null, cbu, language);
         em.persist(driver);
         return driver;
     }

@@ -1,10 +1,13 @@
 description: Data required to register a new driver account.
 type: object
-required: [username, email]
+required: [ username, password, email, description, cbu ]
 properties:
   username:
     type: string
     example: Berni's Fletes
+  password:
+    type: string
+    example: qwerQWER1234
   email:
     type: string
     format: email

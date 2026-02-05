@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.SearchOrder;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.CreateDriverDTO;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
@@ -60,9 +62,9 @@ public class DriverController {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, DriverDTO dto) {
+    public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateDriverDTO dto) {
         // TODO add cbu here
-        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), Locale.forLanguageTag(lang));
+        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), dto.getCbu(), Locale.forLanguageTag(lang));
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
         return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
     }

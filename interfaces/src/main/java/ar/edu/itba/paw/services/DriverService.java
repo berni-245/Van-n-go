@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface DriverService extends UserService<Driver> {
-    Driver create(String username, String mail, String password, String description, Locale locale);
+    Driver create(String username, String mail, String password, String description, String cbu, Locale locale);
 
     Vehicle addVehicle(
             Driver driver,

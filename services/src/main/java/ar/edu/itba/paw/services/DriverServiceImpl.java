@@ -64,9 +64,9 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public Driver create(String username, String mail, String password, String description, Locale locale) {
+    public Driver create(String username, String mail, String password, String description, String cbu, Locale locale) {
         checkRepeatedUser(username, mail);
-        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, Language.fromLocale(locale));
+        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, cbu, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} driver", username);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;

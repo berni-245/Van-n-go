@@ -90,7 +90,7 @@ public class DriverJpaDaoTest {
 
     @Test
     public void testCreateDriver() {
-        Driver driver = driverDao.create(USERNAME_NOT_CREATED, MAIL_NOT_CREATED, PASSWORD_NOT_CREATED, DESCRIPTION, ENGLISH);
+        Driver driver = driverDao.create(USERNAME_NOT_CREATED, MAIL_NOT_CREATED, PASSWORD_NOT_CREATED, DESCRIPTION, "09201929380", ENGLISH);
         assertNotNull(driver);
 
         em.flush();
