@@ -6,7 +6,7 @@ export type Theme = "dark" | "light";
 
 export interface AppState {
   session: {
-    accessToken: string;
+    authToken: string;
     refreshToken: string;
   } | null;
   user: UserState | null;
