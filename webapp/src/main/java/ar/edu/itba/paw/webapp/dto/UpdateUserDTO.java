@@ -1,10 +1,34 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.webapp.validation.ValidChangeLanguage;
+import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
+import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
+import ar.edu.itba.paw.webapp.validation.ValidPasswordChange;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+@ValidPasswordChange
 public class UpdateUserDTO {
+
+    @Size(min = 5, max = 20)
+    @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    @ValidChangeUsername
     private String username;
+
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    @ValidChangeMail
     private String email;
+
+
+    @ValidChangeLanguage
     private String preferredLanguage;
+
+    @Size(min = 8, max = 32)
     private String oldPassword;
+
+    @Size(min = 8, max = 32)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$")
     private String password;
 
     public UpdateUserDTO() {

@@ -58,17 +58,15 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response updateClient(@PathParam("id") final int id, final UpdateClientDTO dto) {
+    public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
         //TODO: add 401 , 403 responses
         Client c = clientService.findById(id);
         clientService.editProfile(
                 c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
                 dto.getZoneIdOr(c.getZone().getId()), dto.getPreferredLanguageOr(c.getLanguage().name()));
-        // TODO move this bellow to validator
-        String newPass = dto.getPassword();
-        String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$";
-        if (newPass != null && newPass.matches(regex) && passwordEncoder.matches(dto.getOldPassword(), c.getPassword()))
-            clientService.updatePassword(c, newPass);
+        if (dto.getPassword() != null && dto.getOldPassword() != null) {
+            clientService.updatePassword(c, dto.getPassword());
+        }
         return Response.ok(ClientDTO.fromClient(uriInfo, c)).build();
     }
 

@@ -1,7 +1,16 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Pattern;
+
 public class UpdateDriverDTO extends UpdateUserDTO {
+
+    @Pattern(regexp = "^[a-zA-Z0-9]*$")
+    @Length(max = 32)
     private String cbu;
+
+    @Length(min = 5, max = 255)
     private String description;
 
     public UpdateDriverDTO() {
