@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
@@ -65,7 +66,7 @@ public class BookingController {
     @POST
     @Consumes(value = {"application/json"})
     @Produces(value = {"application/json"})
-    public Response createBooking(final CreateBookingDTO createBookingDTO) {
+    public Response createBooking(@Valid final CreateBookingDTO createBookingDTO) {
         //TODO: cuando tengamos el jwt deberiamos sacar el clientId del token
         Client client = clientService.findById(createBookingDTO.getClientId());
         Booking booking = clientService.appointBooking(createBookingDTO.getVehicleId(),

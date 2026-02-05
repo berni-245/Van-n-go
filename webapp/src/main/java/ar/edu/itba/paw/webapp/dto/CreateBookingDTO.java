@@ -1,15 +1,35 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.webapp.validation.ValidZoneId;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class CreateBookingDTO {
+
+    @NotNull //TODO posiblemente deberiamos crear una validacion para esto tambien tipo @ValidVehicleId
     private Integer vehicleId;
+
+    @NotNull
+    @ValidZoneId
     private Integer originZoneId;
+
+    @NotNull
+    @ValidZoneId
     private Integer destinationZoneId;
+
+    @NotNull
+    @Length(min = 5, max = 500)
     private String jobDescription;
+
+    @NotNull
+    @Future
     private LocalDate date;
+
+    @NotNull
     private ShiftPeriod shiftPeriod;
 
     //TODO: sacar este atributo cuando tengamos JWT, esto es solo para testear
