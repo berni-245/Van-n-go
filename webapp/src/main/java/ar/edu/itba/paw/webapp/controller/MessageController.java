@@ -11,6 +11,7 @@ import ar.edu.itba.paw.webapp.dto.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -46,7 +47,7 @@ public class MessageController {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response sendMessage(final CreateMessageDTO createMessageDTO) {
+    public Response sendMessage(@Valid final CreateMessageDTO createMessageDTO) {
         boolean loggedUserIsDriver = true; //TODO: ver como podriamos obtener el User usando JWT (este enpoint si o si requiere estar autenticado)
         Message message;
         if (loggedUserIsDriver) {

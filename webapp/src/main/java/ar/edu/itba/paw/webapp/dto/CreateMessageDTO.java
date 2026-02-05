@@ -1,8 +1,17 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+
 public class CreateMessageDTO {
+
     private Integer clientId;
+
     private Integer driverId;
+
+    @NotBlank
+    @Length(max = 255)
     private String message;
 
     public Integer getClientId() {
