@@ -8,9 +8,9 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.CreateDriverDTO;
 import ar.edu.itba.paw.webapp.dto.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateDriverDTO;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -32,13 +32,10 @@ public class DriverController {
 
     private final ImageService imageService;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Autowired
-    public DriverController(DriverService ds, ImageService imageService, PasswordEncoder passwordEncoder) {
+    public DriverController(DriverService ds, ImageService imageService) {
         this.ds = ds;
         this.imageService = imageService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GET
@@ -81,18 +78,16 @@ public class DriverController {
     @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response updateDriverById(@PathParam("id") int id, UpdateDriverDTO dto) {
+    public Response updateDriverById(@PathParam("id") int id, @Valid final UpdateDriverDTO dto) {
         Driver d = ds.findById(id);
         ds.editProfile(
                 d, dto.getUsernameOr(d.getUsername()), dto.getEmailOr(d.getMail()),
                 dto.getDescriptionOr(d.getDescription()), dto.getCbuOr(d.getCbu()),
                 dto.getPreferredLanguageOr(d.getLanguage().name())
         );
-        // TODO move this bellow to validator
-        String newPass = dto.getPassword();
-        String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$";
-        if (newPass != null && newPass.matches(regex) && passwordEncoder.matches(dto.getOldPassword(), d.getPassword()))
-            ds.updatePassword(d, newPass);
+        if (dto.getPassword() != null && dto.getOldPassword() != null) {
+            ds.updatePassword(d, dto.getPassword());
+        }
         return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
 
@@ -102,7 +97,7 @@ public class DriverController {
     public Response getProfilePicture(@PathParam("id") final int id) {
         Driver driver = ds.findById(id);
         Integer imageId = driver.getPfp();
-        if(imageId != null){
+        if (imageId != null) {
             byte[] pictureData = imageService.getImage(imageId).getData();
             if (pictureData != null) {
                 return Response.ok(pictureData).build();
@@ -115,7 +110,7 @@ public class DriverController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadProfilePicture(@PathParam("id") final int id, byte[] imageData) {
+    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
         Driver driver = ds.findById(id);
         imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp");
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();

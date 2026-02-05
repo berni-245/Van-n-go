@@ -7,7 +7,7 @@ import javax.validation.constraints.Pattern;
 public class UpdateDriverDTO extends UpdateUserDTO {
 
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
-    @Length(max = 32)
+    @Length(min = 2, max = 32)
     private String cbu;
 
     @Length(min = 5, max = 255)
