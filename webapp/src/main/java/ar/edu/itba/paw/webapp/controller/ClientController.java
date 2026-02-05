@@ -7,6 +7,7 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.UpdateClientDTO;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -90,7 +91,7 @@ public class ClientController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthenticatedUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadProfilePicture(@PathParam("id") final int id, byte[] imageData) {
+    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
         //TODO: add 401 and 403 responses
         Client client = clientService.findById(id);
         imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp");
