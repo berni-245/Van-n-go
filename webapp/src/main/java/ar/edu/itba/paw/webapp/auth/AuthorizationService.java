@@ -1,7 +1,16 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.exceptions.UserIdentityMismatchException;
+import ar.edu.itba.paw.models.BookingState;
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -11,7 +20,57 @@ import org.springframework.stereotype.Component;
 
 @Component("authService")
 public class AuthorizationService {
-    public boolean isAuthenticatedUser(int id) {
+    @Autowired
+    ClientService clientService;
+
+    @Autowired
+    DriverService driverService;
+
+    @Autowired
+    MessageService messageService;
+
+    public boolean isAuthenticatedUser(int userId) {
+        PawUserDetails pawUser = getCurrentUser();
+
+        if (pawUser.getUser().getId() != userId) {
+            throw new UserIdentityMismatchException();
+        }
+
+        return true;
+    }
+
+    public boolean isAuthUserInConversation(int messageId) {
+        Message m = messageService.getMessageById(messageId);
+        int authUserId = getCurrentUser().getUser().getId();
+        if (authUserId != m.getClient().getId() && authUserId != m.getDriver().getId()) {
+            throw new ForbiddenConversationException();
+        }
+        return true;
+    }
+
+    public boolean isValidConversation(int driverId, int clientId) {
+        PawUserDetails pawUser = getCurrentUser();
+
+        int authId = pawUser.getUser().getId();
+        if (authId != driverId && authId != clientId) {
+            throw new UserIdentityMismatchException();
+        }
+
+        // TODO find booking by driver_id and client_id to do this less ugly
+        long count = 0;
+        Client c = clientService.findById(clientId);
+        Driver d = driverService.findById(driverId);
+        count += clientService.getBookings(c, BookingState.PENDING, 1).stream().filter(b -> b.getDriver().equals(d)).count();
+        count += clientService.getBookings(c, BookingState.ACCEPTED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
+        count += clientService.getBookings(c, BookingState.REJECTED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
+        count += clientService.getBookings(c, BookingState.FINISHED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
+        count += clientService.getBookings(c, BookingState.CANCELED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
+        if (count <= 0)
+            throw new ForbiddenConversationException();
+        return true;
+    }
+
+    private PawUserDetails getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated() ||
@@ -22,11 +81,6 @@ public class AuthorizationService {
         if (!(auth.getPrincipal() instanceof PawUserDetails pawUser)) {
             throw new UnauthorizedException();
         }
-
-        if (pawUser.getUser().getId() != id) {
-            throw new UserIdentityMismatchException();
-        }
-
-        return true;
+        return pawUser;
     }
 }
