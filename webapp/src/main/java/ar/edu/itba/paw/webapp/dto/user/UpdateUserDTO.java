@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @ValidPasswordChange
-public class UpdateUserDTO {
+public abstract class UpdateUserDTO {
 
     @Size(min = 5, max = 20)
     @Pattern(regexp = "^[a-zA-Z]\\w*$")

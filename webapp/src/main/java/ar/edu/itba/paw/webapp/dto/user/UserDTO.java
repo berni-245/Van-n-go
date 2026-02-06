@@ -16,7 +16,7 @@ public abstract class UserDTO {
     private String email;
     private Language preferredLanguage;
     private URI self;
-    private URI proflePic;
+    private URI profilePic;
     private URI pendingBookings;
     private URI acceptedBookings;
     private URI finishedBookings;
@@ -31,9 +31,9 @@ public abstract class UserDTO {
         UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
         this.self = userIdEndpointTemplate.clone().build();
         if (user.getPfp() != null) {
-            this.proflePic = userIdEndpointTemplate.clone().path("profile-picture").build();
+            this.profilePic = userIdEndpointTemplate.clone().path("profile-picture").build();
         } else {
-            this.proflePic = null;
+            this.profilePic = null;
         }
         String userTypeQueryParam = user.getType().equals("driver") ? "toDriver" : "fromClient";
         UriBuilder bookingTemplate = uriInfo
@@ -82,12 +82,12 @@ public abstract class UserDTO {
         this.self = self;
     }
 
-    public URI getProflePic() {
-        return proflePic;
+    public URI getProfilePic() {
+        return profilePic;
     }
 
-    public void setProflePic(URI proflePic) {
-        this.proflePic = proflePic;
+    public void setProfilePic(URI profilePic) {
+        this.profilePic = profilePic;
     }
 
     public URI getPendingBookings() {
