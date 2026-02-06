@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.mapper;
 
 import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
-import ar.edu.itba.paw.webapp.dto.ErrorDTO;
-import ar.edu.itba.paw.webapp.dto.ErrorType;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.general.ErrorType;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

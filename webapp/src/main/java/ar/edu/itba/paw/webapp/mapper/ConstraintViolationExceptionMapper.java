@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.mapper;
 
-import ar.edu.itba.paw.webapp.dto.ErrorDTO;
-import ar.edu.itba.paw.webapp.dto.ErrorType;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.general.ErrorType;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;

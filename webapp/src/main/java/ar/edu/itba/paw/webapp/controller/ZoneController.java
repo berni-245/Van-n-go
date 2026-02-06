@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.services.ZoneService;
-import ar.edu.itba.paw.webapp.dto.ZoneDTO;
+import ar.edu.itba.paw.webapp.dto.general.ZoneDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

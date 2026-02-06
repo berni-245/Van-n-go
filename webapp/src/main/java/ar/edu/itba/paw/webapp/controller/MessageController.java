@@ -6,8 +6,8 @@ import ar.edu.itba.paw.models.Message;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MessageService;
-import ar.edu.itba.paw.webapp.dto.CreateMessageDTO;
-import ar.edu.itba.paw.webapp.dto.MessageDTO;
+import ar.edu.itba.paw.webapp.dto.message.CreateMessageDTO;
+import ar.edu.itba.paw.webapp.dto.message.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

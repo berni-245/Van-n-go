@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.general;
 
 public enum ErrorType {
     ZONE_NOT_FOUND,

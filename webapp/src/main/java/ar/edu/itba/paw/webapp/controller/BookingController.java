@@ -7,9 +7,9 @@ import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
-import ar.edu.itba.paw.webapp.dto.BookingDTO;
-import ar.edu.itba.paw.webapp.dto.CreateBookingDTO;
-import ar.edu.itba.paw.webapp.dto.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.booking.BookingDTO;
+import ar.edu.itba.paw.webapp.dto.booking.CreateBookingDTO;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

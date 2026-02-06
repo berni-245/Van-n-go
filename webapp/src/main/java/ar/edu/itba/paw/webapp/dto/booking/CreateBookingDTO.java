@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.booking;
 
 import ar.edu.itba.paw.models.ShiftPeriod;
 import ar.edu.itba.paw.webapp.validation.ValidZoneId;

@@ -1,7 +1,8 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.vehicle;
 
 import ar.edu.itba.paw.models.Availability;
 import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.webapp.dto.general.ZoneDTO;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
