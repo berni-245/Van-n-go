@@ -129,14 +129,7 @@ public class VehicleController {
                 v.getHourlyRate(), v.getImgId(),
                 "vehicle_" + v.getId() + "_picture", imageData
         );
-        Integer imageId = v.getImgId();
-        if (imageId != null) { //TODO: aca no podemos llamar al getVehiclePicture() para no repetir el codigo? creo que en MVC haciamos algo parecido
-            byte[] pictureData = imageService.getImage(imageId).getData();
-            if (pictureData != null) {
-                return Response.ok(pictureData).build();
-            }
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 
     @GET
