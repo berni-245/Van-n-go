@@ -5,10 +5,12 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.time.DayOfWeek;
@@ -58,7 +60,7 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response createVehicle(@PathParam("driverId") int driverId, VehicleDTO dto) {
+    public Response createVehicle(@PathParam("driverId") int driverId, @Valid final CreateVehicleDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.addVehicle(
                 driver, dto.getPlateNumber(), dto.getVolumeM3(),
@@ -118,7 +120,7 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
     @Produces({"image/jpeg", "image/png"})
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, byte[] imageData) {
+    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.updateVehicle(
@@ -128,7 +130,7 @@ public class VehicleController {
                 "vehicle_" + v.getId() + "_picture", imageData
         );
         Integer imageId = v.getImgId();
-        if (imageId != null) {
+        if (imageId != null) { //TODO: aca no podemos llamar al getVehiclePicture() para no repetir el codigo? creo que en MVC haciamos algo parecido
             byte[] pictureData = imageService.getImage(imageId).getData();
             if (pictureData != null) {
                 return Response.ok(pictureData).build();

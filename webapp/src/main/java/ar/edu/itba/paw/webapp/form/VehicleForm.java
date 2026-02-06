@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.Rates;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.models.Zone;
-import ar.edu.itba.paw.webapp.validation.ValidPlateNumber;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
 
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
-@ValidPlateNumber
+//@ValidPlateNumber
 public class VehicleForm {
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
     private String plateNumber;
