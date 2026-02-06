@@ -7,10 +7,13 @@ import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.BookingDTO;
 import ar.edu.itba.paw.webapp.dto.booking.CreateBookingDTO;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -36,17 +39,18 @@ public class BookingController {
     private DriverService driverService;
 
     @GET
+    @PreAuthorize("@authService.isAuthenticatedUserEither(#fromClientId, #toDriverId)")
     @Produces(value = {"application/json"})
-    public Response getBookings(
+    public Response listBookings(
             @QueryParam("fromClient") Integer fromClientId,
             @QueryParam("toDriver") Integer toDriverId,
             @QueryParam("state") BookingState state,
             @QueryParam("page") @DefaultValue("1") int page
     ) {
-
         if ((fromClientId == null) == (toDriverId == null)) { // Basically a not xor
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO()).build();
         }
+
         List<BookingDTO> bookings;
         if (fromClientId != null) {
             Client client = clientService.findById(fromClientId);
@@ -62,11 +66,12 @@ public class BookingController {
     }
 
     @POST
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {"application/json"})
     @Produces(value = {"application/json"})
     public Response createBooking(@Valid final CreateBookingDTO createBookingDTO) {
-        //TODO: cuando tengamos el jwt deberiamos sacar el clientId del token
-        Client client = clientService.findById(createBookingDTO.getClientId());
+        PawUserDetails pawUserDetails = (PawUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Client client = (Client) pawUserDetails.getUser();
         Booking booking = clientService.appointBooking(createBookingDTO.getVehicleId(),
                 client,
                 createBookingDTO.getOriginZoneId(),
@@ -78,4 +83,15 @@ public class BookingController {
         return Response.created(location).entity(BookingDTO.fromBooking(uriInfo, booking)).build();
     }
 
+    public Response getBookingById() {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
+
+    public Response getBookingProofOfPayment() {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
+
+    public Response uploadBookingProofOfPayment() {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
 }

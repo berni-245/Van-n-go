@@ -29,14 +29,20 @@ public class AuthorizationService {
     @Autowired
     MessageService messageService;
 
-    public boolean isAuthenticatedUser(int userId) {
+    public boolean isAuthenticatedUser(Integer userId) {
+        return isAuthenticatedUserEither(userId, userId);
+    }
+
+    public boolean isAuthenticatedUserEither(Integer userId1, Integer userId2) {
         PawUserDetails pawUser = getCurrentUser();
 
-        if (pawUser.getUser().getId() != userId) {
-            throw new UserIdentityMismatchException();
-        }
+        if (pawUser.getUser().getId().equals(userId1))
+            return true;
 
-        return true;
+        if (pawUser.getUser().getId().equals(userId2))
+            return true;
+
+        throw new UserIdentityMismatchException();
     }
 
     public boolean isAuthUserInConversation(int messageId) {
