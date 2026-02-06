@@ -44,7 +44,7 @@ public class BookingController {
             @QueryParam("page") @DefaultValue("1") int page
     ) {
 
-        if ((fromClientId == null && toDriverId == null) || (fromClientId != null && toDriverId != null)) {
+        if ((fromClientId == null) == (toDriverId == null)) { // Basically a not xor
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO()).build();
         }
         List<BookingDTO> bookings;
@@ -54,13 +54,11 @@ public class BookingController {
             return Response.ok(new GenericEntity<>(bookings) {
             }).build();
         }
-        if (toDriverId != null) {
-            Driver driver = driverService.findById(toDriverId);
-            bookings = driverService.getBookings(driver, state, page).stream().map(BookingDTO.mapper(uriInfo)).toList();
-            return Response.ok(new GenericEntity<>(bookings) {
-            }).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO()).build();
+
+        Driver driver = driverService.findById(toDriverId);
+        bookings = driverService.getBookings(driver, state, page).stream().map(BookingDTO.mapper(uriInfo)).toList();
+        return Response.ok(new GenericEntity<>(bookings) {
+        }).build();
     }
 
     @POST

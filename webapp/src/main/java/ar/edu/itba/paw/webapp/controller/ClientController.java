@@ -10,7 +10,6 @@ import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -30,9 +29,6 @@ public class ClientController {
 
     @Autowired
     private ImageService imageService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Context
     private UriInfo uriInfo;
