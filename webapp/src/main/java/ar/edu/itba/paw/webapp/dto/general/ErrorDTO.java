@@ -4,6 +4,8 @@ public class ErrorDTO {
 
     private String type;
     private String description;
+    private String entity;
+
 
     public ErrorDTO() {
 
@@ -12,6 +14,12 @@ public class ErrorDTO {
     public ErrorDTO(ErrorType type, String description) {
         this.type = type.name();
         this.description = description;
+    }
+
+    public ErrorDTO(ErrorType type, String description, String entity) {
+        this.type = type.name();
+        this.description = description;
+        this.entity = entity;
     }
 
     public String getType() {
@@ -28,5 +36,13 @@ public class ErrorDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 }

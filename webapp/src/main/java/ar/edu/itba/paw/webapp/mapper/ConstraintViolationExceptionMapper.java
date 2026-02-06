@@ -5,6 +5,7 @@ import ar.edu.itba.paw.webapp.dto.general.ErrorType;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -21,15 +22,24 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
         List<ErrorDTO> errors = new ArrayList<>();
 
         for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
-            // violation.getPropertyPath() te da el nombre del campo (ej: "username")
-            // violation.getMessage() te da el mensaje de error
-            errors.add(new ErrorDTO(ErrorType.USER_ALREADY_EXISTS, violation.getMessage()));
+
+            String fieldName = getLastPathNode(violation.getPropertyPath());
+
+            errors.add(new ErrorDTO(ErrorType.INVALID_ARGUMENTS, violation.getMessage(), fieldName));
         }
 
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new GenericEntity<>(errors) {
                 })
                 .build();
+    }
+
+    private String getLastPathNode(Path path) {
+        String lastNode = null;
+        for (Path.Node node : path) {
+            lastNode = node.getName();
+        }
+        return lastNode;
     }
 
 }
