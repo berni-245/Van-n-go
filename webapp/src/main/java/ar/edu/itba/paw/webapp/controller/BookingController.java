@@ -1,12 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.BookingState;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.BookingDTO;
 import ar.edu.itba.paw.webapp.dto.booking.CreateBookingDTO;
@@ -22,6 +20,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -37,6 +37,9 @@ public class BookingController {
 
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GET
     @PreAuthorize("@authService.isAuthUserEither(#fromClientId, #toDriverId)")
@@ -83,15 +86,46 @@ public class BookingController {
         return Response.created(location).entity(BookingDTO.fromBooking(uriInfo, booking)).build();
     }
 
-    public Response getBookingById() {
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    private Booking getBookingIfAuthUserOwnsIt(int id) {
+        PawUserDetails pawUserDetails = (PawUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = pawUserDetails.getUser();
+        // Exceptions are handled in persistence layer
+        if (user.isDriver())
+            return driverService.getBookingById((Driver) user, id);
+        else
+            return clientService.getBookingById((Client) user, id);
     }
 
-    public Response getBookingProofOfPayment() {
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    @GET
+    @Path("/{bookingId}")
+    @Produces(value = {"application/json"})
+    public Response getBookingById(@PathParam("bookingId") int bookingId) {
+        Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
     }
 
-    public Response uploadBookingProofOfPayment() {
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    @GET
+    @Path("/{bookingId}/proof-of-payment")
+    @Produces(value = {"application/pdf"})
+    public Response getBookingProofOfPayment(@PathParam("bookingId") int bookingId) {
+        Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        Integer pdfId = b.getPop();
+        if (pdfId == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        byte[] pdf = imageService.getImage(pdfId).getData();
+        return Response.ok(pdf).build();
+    }
+
+    @POST
+    @Path("/{bookingId}/proof-of-payment")
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @Consumes(value = {"application/pdf"})
+    @Produces(value = {"application/pdf"})
+    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, InputStream inputStream) throws IOException {
+        byte[] pdfData = inputStream.readAllBytes();
+
+        Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        int imgId = imageService.uploadPop(b.getClient(), pdfData, "booking_%d_pop".formatted(bookingId), bookingId);
+        return Response.ok(imageService.getImage(imgId).getData()).build();
     }
 }
