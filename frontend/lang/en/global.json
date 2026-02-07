@@ -1,18 +1,14 @@
 {
-  "name": "English",
-  "title": "Van N' Go",
-  "home": "Home",
-  "settings": "Settings",
-  "find-freight": "Find your freight",
   "bookings": "Bookings",
-  "vehicles": "Vehicles",
-  "login": "Log in",
-  "register": "Register",
-  "sr": {
-    "skipToMainContent": "Skip to main content",
-    "closeSidebar": "Close sidebar",
-    "openSidebar": "Open sidebar"
+  "find-freight": "Find your freight",
+  "home": "Home",
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "spanish": "Spanish"
   },
+  "login": "Log in",
+  "name": "English",
   "page": {
     "home": {
       "callToAction": "Let's start!",
@@ -33,14 +29,20 @@
       }
     }
   },
-  "laguage": {
-    "label": "Language",
-    "english": "English",
-    "spanish": "Spanish"
+  "password": "Password",
+  "register": "Register",
+  "settings": "Settings",
+  "sr": {
+    "skipToMainContent": "Skip to main content",
+    "closeSidebar": "Close sidebar",
+    "openSidebar": "Open sidebar"
   },
   "theme": {
     "label": "Theme",
     "light": "Light",
     "dark": "Dark"
-  }
+  },
+  "title": "Van N' Go",
+  "username": "Username",
+  "vehicles": "Vehicles"
 }

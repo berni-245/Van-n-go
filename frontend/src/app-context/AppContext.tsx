@@ -1,12 +1,14 @@
-import { createContext, createEffect, createResource, ParentComponent, Suspense, useContext } from "solid-js";
-import { Meta, Title } from "@solidjs/meta";
-import { AppState, initialState, saveState } from "./appState";
-import { createStore, SetStoreFunction } from "solid-js/store";
 import * as i18n from "@solid-primitives/i18n";
+import { Meta, Title } from "@solidjs/meta";
+import { createContext, createEffect, createResource, ParentComponent, Suspense, useContext } from "solid-js";
+import { createStore, SetStoreFunction } from "solid-js/store";
+import { AppState, initialState, saveState } from "./appState";
 import { Dictionary, en_flat_dict, fetchDictionary } from "./locale";
+import { Api, initializeApi } from "./api";
 
 const AppStateContext = createContext<[AppState, SetStoreFunction<AppState>]>();
 const I18nContext = createContext<i18n.Translator<Dictionary>>();
+const ApiContext = createContext<Api>();
 
 export const useAppState = () => {
   const ctx = useContext(AppStateContext);
@@ -18,6 +20,12 @@ export function useTranslator() {
   const t = useContext(I18nContext);
   if (!t) throw new Error("I18nContext not found");
   return t;
+}
+
+export function useApi() {
+  const api = useContext(ApiContext);
+  if (!api) throw new Error("ApiContext not found");
+  return api;
 }
 
 export const AppContextProvider: ParentComponent = (props) => {
@@ -40,6 +48,7 @@ export const AppContextProvider: ParentComponent = (props) => {
         locale: appState.preferences.locale,
       },
     });
+    console.log("Saved state");
   });
 
   createEffect(() => {
@@ -50,13 +59,17 @@ export const AppContextProvider: ParentComponent = (props) => {
   const [dict] = createResource(() => appState.preferences.locale, fetchDictionary, { initialValue: en_flat_dict });
   const t = i18n.translator(dict, i18n.resolveTemplate);
 
+  const api = initializeApi(appState, setAppState);
+
   return (
     <Suspense>
       <AppStateContext.Provider value={[appState, setAppState]}>
         <I18nContext.Provider value={t}>
-          <Title>{t("global.title")}</Title>
-          <Meta name="lang" content={appState.preferences.locale} />
-          <div>{props.children}</div>
+          <ApiContext.Provider value={api}>
+            <Title>{t("global.title")}</Title>
+            <Meta name="lang" content={appState.preferences.locale} />
+            <div>{props.children}</div>
+          </ApiContext.Provider>
         </I18nContext.Provider>
       </AppStateContext.Provider>
     </Suspense>

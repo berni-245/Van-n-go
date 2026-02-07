@@ -1,0 +1,38 @@
+import { Driver } from "~/src/api/types";
+
+export const drivers: Driver[] = [
+  {
+    id: 1,
+    username: "driver1",
+    email: "berniflete@gmail.com",
+    preferredLanguage: "english",
+    description: "Best fletes in Adrogué.",
+    rating: 4.3,
+    cbu: "1234567891234567891234",
+    self: "/api/drivers/1",
+    profilePic: "/api/drivers/1/profile-picture",
+    pendingBookings: "/api/bookings?toDriver=1&status=pending",
+    acceptedBookings: "/api/bookings?toDriver=1&status=accepted",
+    finishedBookings: "/api/bookings?toDriver=1&status=finished",
+    rejectedBookings: "/api/bookings?toDriver=1&status=rejected",
+    canceledBookings: "/api/bookings?toDriver=1&status=canceled",
+    vehicles: "/api/driver/1/vehicles",
+  },
+  {
+    id: 2,
+    username: "driver2",
+    email: "tobiflete@gmail.com",
+    preferredLanguage: "spanish",
+    description: "Mejores fletes en Nuñes!",
+    rating: 2.3,
+    cbu: "999999",
+    self: "/api/drivers/2",
+    profilePic: "/api/drivers/2/profile-picture",
+    pendingBookings: "/api/bookings?toDriver=2&status=pending",
+    acceptedBookings: "/api/bookings?toDriver=2&status=accepted",
+    finishedBookings: "/api/bookings?toDriver=2&status=finished",
+    rejectedBookings: "/api/bookings?toDriver=2&status=rejected",
+    canceledBookings: "/api/bookings?toDriver=2&status=canceled",
+    vehicles: "/api/driver/2/vehicles",
+  },
+];

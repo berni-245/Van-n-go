@@ -9,14 +9,14 @@ export default function Settings() {
   return (
     <div class="flex gap-4">
       <Select
-        label={t("global.laguage.label")}
+        label={t("global.language.label")}
         onchange={(event) => setAppState("preferences", { locale: event.currentTarget.value as Locale })}
       >
         <option value="en" selected={appState.preferences.locale === "en"}>
-          {t("global.laguage.english")}
+          {t("global.language.english")}
         </option>
         <option value="es" selected={appState.preferences.locale === "es"}>
-          {t("global.laguage.spanish")}
+          {t("global.language.spanish")}
         </option>
       </Select>
       <Select

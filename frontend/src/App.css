@@ -62,13 +62,10 @@
 
 @layer base {
   :root {
-    /* NOTE: This option allows using `auto` keyword for transitions but it's experimental and */
-    /* not implemented for webview apparently. */
-    /*   interpolate-size: allow-keywords; */
   }
 
   body {
-    @apply font-lato bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark
+    @apply font-lato bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
   }
 
   h1 {
@@ -92,9 +89,8 @@
   }
 
   select {
-    @apply bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark
+    @apply bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
   }
-
 }
 
 @layer transitions {

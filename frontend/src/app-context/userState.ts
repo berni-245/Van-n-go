@@ -1,3 +1,5 @@
+import { Client, Driver } from "@/api/types";
+
 type BaseUser = {
   id: number;
   username: string;
@@ -17,3 +19,27 @@ type DriverUser = BaseUser & {
 };
 
 export type UserState = ClientUser | DriverUser;
+
+export function clientToUserState(user: Client): UserState {
+  return {
+    id: user.id,
+    type: "client",
+    username: user.username,
+    email: user.email,
+    language: user.preferredLanguage,
+    profilePic: user.profilePic,
+  };
+}
+
+export function driverToUserState(user: Driver): UserState {
+  return {
+    id: user.id,
+    type: "driver",
+    username: user.username,
+    email: user.email,
+    description: user.description,
+    language: user.preferredLanguage,
+    profilePic: user.profilePic,
+    rating: user.rating,
+  };
+}
