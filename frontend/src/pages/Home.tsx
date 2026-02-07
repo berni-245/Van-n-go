@@ -17,7 +17,7 @@ export default function Home() {
           <h1 class="mb-3">{t("global.title")}</h1>
           <div class="mx-auto w-full lg:w-1/2">
             <p class="text-xl mb-4">{t("global.page.home.greeting")}</p>
-            <Button class="text-xl" type="primary" href="/search" text={t("global.page.home.callToAction")} />
+            <Button class="text-xl" category="primary" href="/search" text={t("global.page.home.callToAction")} />
           </div>
         </div>
       </div>
