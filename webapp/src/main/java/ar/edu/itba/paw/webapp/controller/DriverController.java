@@ -75,7 +75,7 @@ public class DriverController {
 
     @PATCH
     @Path("/{id}")
-    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateDriverById(@PathParam("id") int id, @Valid final UpdateDriverDTO dto) {
@@ -108,7 +108,7 @@ public class DriverController {
 
     @POST
     @Path("/{id}/profile-picture")
-    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
         Driver driver = ds.findById(id);

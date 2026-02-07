@@ -29,11 +29,11 @@ public class AuthorizationService {
     @Autowired
     MessageService messageService;
 
-    public boolean isAuthenticatedUser(Integer userId) {
-        return isAuthenticatedUserEither(userId, userId);
+    public boolean isAuthUser(Integer userId) {
+        return isAuthUserEither(userId, userId);
     }
 
-    public boolean isAuthenticatedUserEither(Integer userId1, Integer userId2) {
+    public boolean isAuthUserEither(Integer userId1, Integer userId2) {
         PawUserDetails pawUser = getCurrentUser();
 
         if (pawUser.getUser().getId().equals(userId1))
@@ -55,12 +55,7 @@ public class AuthorizationService {
     }
 
     public boolean isValidConversation(int driverId, int clientId) {
-        PawUserDetails pawUser = getCurrentUser();
-
-        int authId = pawUser.getUser().getId();
-        if (authId != driverId && authId != clientId) {
-            throw new UserIdentityMismatchException();
-        }
+        isAuthUserEither(driverId, clientId);
 
         // TODO find booking by driver_id and client_id to do this less ugly
         long count = 0;

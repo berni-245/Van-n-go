@@ -39,7 +39,7 @@ public class BookingController {
     private DriverService driverService;
 
     @GET
-    @PreAuthorize("@authService.isAuthenticatedUserEither(#fromClientId, #toDriverId)")
+    @PreAuthorize("@authService.isAuthUserEither(#fromClientId, #toDriverId)")
     @Produces(value = {"application/json"})
     public Response listBookings(
             @QueryParam("fromClient") Integer fromClientId,

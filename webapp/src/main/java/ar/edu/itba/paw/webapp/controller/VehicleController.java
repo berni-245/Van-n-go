@@ -57,7 +57,7 @@ public class VehicleController {
     }
 
     @POST
-    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
+    @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response createVehicle(@PathParam("driverId") int driverId, @Valid final CreateVehicleDTO dto) {
@@ -81,7 +81,7 @@ public class VehicleController {
 
     @PATCH
     @Path("{vehicleId}")
-    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
+    @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateVehicle(
@@ -117,7 +117,7 @@ public class VehicleController {
 
     @POST
     @Path("{vehicleId}/picture")
-    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
+    @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces({"image/jpeg", "image/png"})
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData) {
@@ -146,7 +146,7 @@ public class VehicleController {
 
     @PATCH
     @Path("{vehicleId}/availability")
-    @PreAuthorize("@authService.isAuthenticatedUser(#driverId)")
+    @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {

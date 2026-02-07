@@ -52,7 +52,7 @@ public class ClientController {
 
     @PATCH
     @Path("/{id}")
-    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
@@ -85,7 +85,7 @@ public class ClientController {
 
     @POST
     @Path("/{id}/profile-picture")
-    @PreAuthorize("@authService.isAuthenticatedUser(#id)")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
         //TODO: add 401 and 403 responses
