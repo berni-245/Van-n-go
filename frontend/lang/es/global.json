@@ -1,18 +1,14 @@
 {
-  "name": "Español",
-  "title": "Van N' Go",
-  "home": "Inicio",
-  "settings": "Configuración",
-  "find-freight": "Encuentra tu flete",
   "bookings": "Reservas",
-  "vehicles": "Vehículos",
-  "login": "Iniciar sesión",
-  "register": "Registrarse",
-  "sr": {
-    "skipToMainContent": "Saltar al contenido principal",
-    "closeSidebar": "Cerrar barra lateral",
-    "openSidebar": "Abrir barra lateral"
+  "find-freight": "Encuentra tu flete",
+  "home": "Inicio",
+  "language": {
+    "label": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
   },
+  "login": "Iniciar sesión",
+  "name": "Español",
   "page": {
     "home": {
       "callToAction": "¡Empecemos!",
@@ -33,14 +29,20 @@
       }
     }
   },
-  "laguage": {
-    "label": "Idioma",
-    "english": "Inglés",
-    "spanish": "Español"
+  "password": "Contraseña",
+  "register": "Registrarse",
+  "settings": "Configuración",
+  "sr": {
+    "skipToMainContent": "Saltar al contenido principal",
+    "closeSidebar": "Cerrar barra lateral",
+    "openSidebar": "Abrir barra lateral"
   },
   "theme": {
     "label": "Tema",
     "light": "Claro",
     "dark": "Oscuro"
-  }
+  },
+  "title": "Van N' Go",
+  "username": "Nombre de Usuario",
+  "vehicles": "Vehículos"
 }

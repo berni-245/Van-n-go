@@ -1,14 +1,18 @@
 import { debounce } from "@solid-primitives/scheduled";
 import { UserState } from "./userState";
 import { initialLocale, Locale } from "./locale";
+import { TokenPayload } from "../api/jwt";
 
 export type Theme = "dark" | "light";
 
+export type AuthSession = {
+  authToken: string;
+  refreshToken: string;
+  payload: TokenPayload;
+};
+
 export interface AppState {
-  session: {
-    authToken: string;
-    refreshToken: string;
-  } | null;
+  session: AuthSession | null;
   user: UserState | null;
   preferences: {
     theme: Theme;

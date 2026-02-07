@@ -1,32 +1,97 @@
-// 1. Import the library.
 import { delay, http, HttpResponse } from "msw";
 import { setupWorker } from "msw/browser";
+import { authorizedResponse, handleAuthorization, publicResponse } from "./auth";
+import { drivers } from "./data/drivers";
+import { getMockUser } from "./users";
 
-// 2. Describe network behavior with request handlers.
 export const worker = setupWorker(
-  http.get("/api/users", () => {
-    return HttpResponse.json(
-      {
-        message: "Mocked response",
-      },
-      {
-        status: 202,
-        statusText: "Mocked status",
-      }
-    );
+  http.all(
+    ({ request }) => {
+      const { pathname } = new URL(request.url);
+      return pathname.startsWith("/api");
+    },
+    ({ request, requestId }) => {
+      console.log(`In globe req ${requestId}:`, request);
+      handleAuthorization(request);
+    }
+  ),
+
+  // TODO: for testing, remove later
+  http.get("/api/auth-required", ({ request }) => {
+    return authorizedResponse({
+      request,
+      response: (_) => ({
+        body: {
+          message: "Mocked response",
+        },
+        status: 200,
+      }),
+    });
   }),
 
-  http.get("/api/drivers", async () => {
-    await delay(1000);
-    return HttpResponse.json(
-      [
-        { id: 1, name: "Jorge" },
-        { id: 2, name: "Pedro" },
-      ],
-      {
+  http.get("/api", ({ request }) => {
+    return publicResponse({
+      request,
+      response: {
+        body: {
+          links: ["/api/drivers", "/api/drivers/{id}/vehicles", "..."],
+        },
         status: 200,
-        statusText: "OK",
-      }
-    );
-  })
+      },
+    });
+  }),
+
+  http.get<{ id: string }>("/api/clients/:id", async ({ request, params }) => {
+    await delay(500);
+    const id = parseInt(params.id);
+    return authorizedResponse({
+      request,
+      response: (payload) => {
+        const user = getMockUser(payload, { type: "client", id });
+        if (!user) {
+          return {
+            body: {
+              type: "unautrhorized",
+              description: "User unautrhorized for this resource",
+            },
+            status: 401,
+          };
+        }
+        return {
+          body: user,
+          status: 200,
+        };
+      },
+    });
+  }),
+
+  http.get<{ id: string }>("/api/drivers/:id", async ({ request, params }) => {
+    await delay(500);
+    const id = parseInt(params.id);
+    return authorizedResponse({
+      request,
+      response: (payload) => {
+        const user = getMockUser(payload, { type: "driver", id });
+        if (!user) {
+          return {
+            body: {
+              type: "unautrhorized",
+              description: "User unautrhorized for this resource",
+            },
+            status: 401,
+          };
+        }
+        return {
+          body: user,
+          status: 200,
+        };
+      },
+    });
+  }),
+
+  // http.get("/api/drivers", async ({ request, requestId }) => {
+  //   console.log(`In drivers req ${requestId}:`, request);
+  //   await delay(1000);
+  //   return HttpResponse.json(drivers);
+  // })
 );

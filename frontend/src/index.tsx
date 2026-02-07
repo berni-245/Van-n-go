@@ -12,6 +12,7 @@ import Error404 from "@/errors/404";
 import { worker } from "@/api-mock/browser";
 import DriverAvailability from "@/pages/DriverAvailability";
 import Settings from "@/pages/Settings";
+import Login from "./pages/Login";
 
 const root = document.getElementById("root");
 
@@ -37,6 +38,7 @@ render(
       <AppContextProvider>
         <Router root={(props) => <App>{props.children}</App>}>
           <Route path="/" component={Home} />
+          <Route path="/login" component={Login} />
           <Route path="/search" component={DriverAvailability} />
           <Route path="/about" component={About} />
           <Route path="/settings" component={Settings} />
