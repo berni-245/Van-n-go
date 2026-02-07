@@ -7,8 +7,10 @@ type ButtonProps = {
   text?: string;
   onClick?: (event: Event) => void;
   href?: string;
-  type: ColorCategories;
+  type?: JSX.ButtonHTMLAttributes<HTMLButtonElement>["type"];
+  category: ColorCategories;
   class?: string;
+  disabled?: boolean;
 };
 
 const Button: Component<ButtonProps> = (props) => {
@@ -19,14 +21,19 @@ const Button: Component<ButtonProps> = (props) => {
           type="button"
           href={props.href!}
           onClick={props.onClick}
-          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.type]} ${props.class}`}
+          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]} ${props.class}`}
         >
           {props.icon}
           {props.text}
         </A>
       </Show>
       <Show when={!props.href}>
-        <button type="button" onClick={props.onClick} class={`${BASE_CLASSES} ${TYPE_CLASSES[props.type]}`}>
+        <button
+          type={props.type || "button"}
+          onClick={props.onClick}
+          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]}`}
+          disabled={props.disabled}
+        >
           {props.icon}
           {props.text}
         </button>
