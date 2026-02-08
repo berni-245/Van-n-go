@@ -433,6 +433,20 @@ paths:
           description: Forbidden - Only the owner can update the vehicle
         "404":
           $ref: "schemas/errors/not-found.yaml"
+    delete:
+      parameters:
+        - $ref: "#/components/parameters/DriverIdPath"
+        - $ref: "#/components/parameters/VehicleIdPath"
+      summary: Delete a vehicle
+      description: Given a driver ID and a vehicle ID, delete logically the vehicle. The driver will lose their relation to the vehicle and the plateNumber will became available for registry of vehicles but the information of the vehicle will remain public.
+      operationId: deleteVehicle
+      tags:
+        - Vehicles
+      responses:
+        "204":
+          description: No content.
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
 
   /drivers/{driverId}/vehicles/{vehicleId}/availability:
     get:
