@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
-import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
-import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
-import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -282,6 +279,11 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
+        Optional<Booking> optional = vehicle.getBookings().stream()
+                .filter(b -> b.getState().equals(BookingState.ACCEPTED))
+                .findFirst();
+        if (optional.isPresent())
+            throw new VehicleHasPendingJobsException();
         vehicleDao.deleteVehicle(vehicle);
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
