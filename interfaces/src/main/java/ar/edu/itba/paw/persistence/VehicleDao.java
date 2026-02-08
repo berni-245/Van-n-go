@@ -15,7 +15,6 @@ public interface VehicleDao {
             String plateNumber,
             double volume,
             String description,
-            List<Zone> zones,
             double rate
     );
 

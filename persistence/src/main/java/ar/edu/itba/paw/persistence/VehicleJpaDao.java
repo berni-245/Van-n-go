@@ -21,11 +21,9 @@ public class VehicleJpaDao implements VehicleDao {
             String plateNumber,
             double volume,
             String description,
-            List<Zone> zones,
             double hourlyRate
     ) {
         Vehicle v = new Vehicle(driver, plateNumber.toUpperCase(), volume, description, null, hourlyRate);
-        v.setZones(zones);
         em.persist(v);
         return v;
     }

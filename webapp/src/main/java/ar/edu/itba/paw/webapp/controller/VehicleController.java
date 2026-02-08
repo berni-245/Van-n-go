@@ -15,8 +15,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 // TODO must improve the updateVehicle and updateAvailability the in the back
 @Path("/api/drivers/{driverId}/vehicles")
@@ -64,8 +65,8 @@ public class VehicleController {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.addVehicle(
                 driver, dto.getPlateNumber(), dto.getVolumeM3(),
-                dto.getDescription(), new ArrayList<>(), dto.getHourlyRate(),
-                null, null);
+                dto.getDescription(), dto.getHourlyRate()
+        );
         VehicleDTO vehicleDTO = VehicleDTO.fromVehicle(uriInfo, v);
         return Response.created(vehicleDTO.getSelf()).entity(vehicleDTO).build();
     }
@@ -76,7 +77,7 @@ public class VehicleController {
     public Response getVehicleById(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
+        return Response.ok(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
     }
 
     @PATCH
@@ -93,10 +94,9 @@ public class VehicleController {
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.updateVehicle(
                 driver, vehicleId, dto.getPlateNumberOr(v.getPlateNumber()), dto.getVolumeM3Or(v.getVolume()),
-                dto.getDescriptionOr(v.getDescription()), v.getZones().stream().map(Zone::getId).toList(),
-                dto.getHourlyRateOr(v.getHourlyRate()), v.getImgId(), null, null
+                dto.getDescriptionOr(v.getDescription()), dto.getHourlyRateOr(v.getHourlyRate())
         );
-        return Response.ok().entity(VehicleDTO.fromVehicle(uriInfo, v)).build();
+        return Response.ok(VehicleDTO.fromVehicle(uriInfo, v)).build();
     }
 
     @GET
@@ -123,12 +123,7 @@ public class VehicleController {
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        ds.updateVehicle(
-                driver, vehicleId, v.getPlateNumber(), v.getVolume(),
-                v.getDescription(), v.getZones().stream().map(Zone::getId).toList(),
-                v.getHourlyRate(), v.getImgId(),
-                "vehicle_" + v.getId() + "_picture", imageData
-        );
+        ds.updatePicture(v, "vehicle_" + v.getId() + "_picture", imageData);
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 
@@ -152,36 +147,27 @@ public class VehicleController {
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        // TODO might change these with the refactor
         dto.setZonesIfNull(v.getZones().stream().map(Zone::getId).toList());
-        dto.setTimeSlotsIfNull(
-                v.getAvailability().stream()
-                        .map(a -> new WeekTimeSlotDTO(a.getWeekDay().name(), a.getShiftPeriod().name()))
-                        .toList()
+        dto.setTimeSlotsIfNull(v.getAvailability().stream()
+                .map(a -> new WeekTimeSlotDTO(a.getWeekDay().name(), a.getShiftPeriod().name()))
+                .toList()
         );
-        ds.updateAvailability(
-                v,
-                dto.getDayTimeSlots(DayOfWeek.MONDAY),
-                dto.getDayTimeSlots(DayOfWeek.TUESDAY),
-                dto.getDayTimeSlots(DayOfWeek.WEDNESDAY),
-                dto.getDayTimeSlots(DayOfWeek.THURSDAY),
-                dto.getDayTimeSlots(DayOfWeek.FRIDAY),
-                dto.getDayTimeSlots(DayOfWeek.SATURDAY),
-                dto.getDayTimeSlots(DayOfWeek.SUNDAY)
-        );
-        ds.updateVehicle(
-                driver, vehicleId, v.getPlateNumber(), v.getVolume(),
-                v.getDescription(), dto.getZones(),
-                v.getHourlyRate(), v.getImgId(), null, null
-        );
+        ds.updateAvailability(v, dto.getZones(), getMapDayTimeSlots(dto));
         AvailabilityDTO availabilityDTO = new AvailabilityDTO();
-        availabilityDTO.setZones(
-                dto.getZones().stream().map(id -> uriInfo
-                        .getBaseUriBuilder().path("api").path("zones")
-                        .path(String.valueOf(id)).build()).toList()
+        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo
+                .getBaseUriBuilder().path("api").path("zones")
+                .path(String.valueOf(id)).build()).toList()
         );
         availabilityDTO.setTimeSlots(dto.getTimeSlots());
         return Response.ok(availabilityDTO).build();
+    }
+
+    private Map<DayOfWeek, ShiftPeriod[]> getMapDayTimeSlots(UpdateAvailabilityDTO dto) {
+        Map<DayOfWeek, ShiftPeriod[]> toReturn = new EnumMap<>(DayOfWeek.class);
+        for (DayOfWeek day : DayOfWeek.values()) {
+            toReturn.put(day, dto.getDayTimeSlots(day));
+        }
+        return toReturn;
     }
 
     @GET

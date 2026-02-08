@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
 import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
+import ar.edu.itba.paw.exceptions.VehicleNotAvailableException;
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
@@ -79,20 +80,14 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String plateNumber,
             double volume,
             String description,
-            List<Integer> zoneIds,
-            double rate,
-            String imgFilename,
-            byte[] imgData
+            double rate
     ) {
         if (vehicleDao.getVehicleCount(driver) >= MAX_VEHICLES_PER_DRIVER) {
             throw new DriverVehicleLimitReachedException(driver);
         }
         Vehicle v = vehicleDao.create(
-                driver, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
+                driver, plateNumber, volume, description, rate
         );
-        if (imgFilename != null && imgData != null && imgData.length > 0) {
-            imageDao.uploadVehicleImage(imgData, imgFilename, v);
-        }
         LOGGER.info("{} added a vehicle with plate {}", driver, plateNumber);
         return v;
     }
@@ -110,22 +105,10 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public void updateAvailability(
             Vehicle vehicle,
-            ShiftPeriod[] mondayPeriods,
-            ShiftPeriod[] tuesdayPeriods,
-            ShiftPeriod[] wednesdayPeriods,
-            ShiftPeriod[] thursdayPeriods,
-            ShiftPeriod[] fridayPeriods,
-            ShiftPeriod[] saturdayPeriods,
-            ShiftPeriod[] sundayPeriods
+            List<Integer> zoneIds,
+            Map<DayOfWeek, ShiftPeriod[]> periods
     ) {
-        Map<DayOfWeek, ShiftPeriod[]> periods = new EnumMap<>(DayOfWeek.class);
-        periods.put(DayOfWeek.MONDAY, mondayPeriods);
-        periods.put(DayOfWeek.TUESDAY, tuesdayPeriods);
-        periods.put(DayOfWeek.WEDNESDAY, wednesdayPeriods);
-        periods.put(DayOfWeek.THURSDAY, thursdayPeriods);
-        periods.put(DayOfWeek.FRIDAY, fridayPeriods);
-        periods.put(DayOfWeek.SATURDAY, saturdayPeriods);
-        periods.put(DayOfWeek.SUNDAY, sundayPeriods);
+        vehicle.setZones(zoneDao.getZonesById(zoneIds));
         availabilityDao.updateVehicleAvailability(vehicle, periods);
         LOGGER.info("Updated weekly availability for plate {}", vehicle.getPlateNumber());
     }
@@ -253,20 +236,28 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String plateNumber,
             double volume,
             String description,
-            List<Integer> zoneIds,
-            double rate,
-            Integer oldImgId,
+            double rate
+    ) {
+        Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, null, rate);
+        v.setImgId(
+                vehicleDao.findById(vehicleId).orElseThrow(VehicleNotAvailableException::new).getImgId()
+        );
+        vehicleDao.updateVehicle(v);
+        LOGGER.info("Driver {} updated vehicle {}", driver.getUsername(), v.getPlateNumber());
+    }
+
+    @Transactional
+    @Override
+    public void updatePicture(
+            Vehicle vehicle,
             String imgFilename,
             byte[] imgData
     ) {
-        Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
-        v.setZones(zoneDao.getZonesById(zoneIds));
+        Vehicle v = vehicleDao.findById(vehicle.getId()).orElseThrow(VehicleNotAvailableException::new);
         if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
             int imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
             v.setImgId(imgId);
         }
-        vehicleDao.updateVehicle(v);
-        LOGGER.info("Driver {} updated vehicle {}", driver.getUsername(), v.getPlateNumber());
     }
 
     @Transactional
