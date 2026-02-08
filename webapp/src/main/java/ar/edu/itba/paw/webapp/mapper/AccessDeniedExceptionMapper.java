@@ -13,6 +13,7 @@ public class AccessDeniedExceptionMapper
     @Override
     public Response toResponse(AccessDeniedException ex) {
         return Response.status(Response.Status.FORBIDDEN)
+                // Can't use this exception message because we need a localized message
                 .build();
     }
 }

@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.general;
 
+import ar.edu.itba.paw.webapp.utils.ExceptionUtils;
+
 public class ErrorDTO {
 
     private String type;
@@ -9,6 +11,11 @@ public class ErrorDTO {
 
     public ErrorDTO() {
 
+    }
+
+    public ErrorDTO(Exception e) {
+        this.type = ExceptionUtils.getExceptionType(e.getClass());
+        this.description = e.getMessage();
     }
 
     public ErrorDTO(ErrorType type, String description) {

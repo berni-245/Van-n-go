@@ -25,6 +25,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 
             String fieldName = getLastPathNode(violation.getPropertyPath());
 
+            // Can't use this exception message because we need a localized message
             errors.add(new ErrorDTO(ErrorType.INVALID_ARGUMENTS, violation.getMessage(), fieldName));
         }
 

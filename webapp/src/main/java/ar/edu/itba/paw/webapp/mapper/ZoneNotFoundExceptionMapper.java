@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.mapper;
 
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
-import ar.edu.itba.paw.webapp.dto.general.ErrorType;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -15,7 +14,7 @@ public class ZoneNotFoundExceptionMapper
     @Override
     public Response toResponse(ZoneNotFoundException e) {
         return Response.status(Response.Status.NOT_FOUND)
-                .entity(new ErrorDTO(ErrorType.ZONE_NOT_FOUND, e.getMessage()))
+                .entity(new ErrorDTO(e))
                 .build();
     }
 }
