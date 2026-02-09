@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.services;
 
 
-import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.ShiftPeriod;
 import ar.edu.itba.paw.models.User;
 import org.slf4j.Logger;
@@ -285,7 +284,7 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendReceivedMessage(User recipient, User sender, Booking booking, String receivedMessage, LocalDateTime timeReceived, Locale locale) {
+    public void sendReceivedMessage(User recipient, User sender, String receivedMessage, LocalDateTime timeReceived, Locale locale) {
         Message message = getMessage();
         Context context = getContext(locale);
         context.setVariable("recipientUserName", recipient.getUsername());
@@ -295,7 +294,7 @@ public class MailServiceImpl implements MailService {
         context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         context.setVariable("timeReceived", timeReceived.format(timeFormatter));
-        String chatPath = "/chat?bookingId=%d&recipientId=%d".formatted(booking.getId(), sender.getId());
+        String chatPath = ""; //TODO: poner el path correcto, una vez que se tenga el front.
         String userPath = recipient.isDriver() ? "driver" : "client";
         context.setVariable("seeChatUrl", mailProperties.getProperty("base.prod.url") + userPath + chatPath);
         String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);

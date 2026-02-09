@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -28,6 +29,7 @@ public class Client extends User {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Zone zone;
 
     public Zone getZone() {

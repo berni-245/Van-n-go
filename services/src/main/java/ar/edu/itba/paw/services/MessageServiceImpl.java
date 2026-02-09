@@ -40,13 +40,13 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public void sendClientMessage(Integer bookingId, Client sender, Integer recipientId, String message) {
+    public void sendClientMessage(Integer bookingId, Client sender, Integer recipientId, String message) { //TODO: delete after tests refactoring
         if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
         Driver driver = driverDao.findById(recipientId);
         Booking booking = bookingDao.getClientBookingById(sender, bookingId);
         if (!booking.getDriver().equals(driver)) throw new ForbiddenConversationException();
         messageDao.sendMessage(sender, driver, message, false);
-        mailService.sendReceivedMessage(driver, sender, booking, message, LocalDateTime.now(), driver.getLanguage().getLocale());
+        mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
     }
 
     @Transactional
@@ -58,8 +58,7 @@ public class MessageServiceImpl implements MessageService {
             throw new ForbiddenConversationException();
         }
         Message createdMessage = messageDao.sendMessage(sender, driver, message, false);
-        mailService.sendReceivedMessage(driver, sender, null, message, LocalDateTime.now(), driver.getLanguage().getLocale());
-        //TODO: cambiear el mailService para que no necesite un booking
+        mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
         return createdMessage;
     }
 
@@ -71,7 +70,7 @@ public class MessageServiceImpl implements MessageService {
         Booking booking = bookingDao.getDriverBookingById(sender, bookingId);
         if (!booking.getClient().equals(client)) throw new ForbiddenConversationException();
         messageDao.sendMessage(client, sender, message, true);
-        mailService.sendReceivedMessage(client, sender, booking, message, LocalDateTime.now(), client.getLanguage().getLocale());
+        mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
     }
 
     @Transactional
@@ -83,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
             throw new ForbiddenConversationException();
         }
         Message createdMessage = messageDao.sendMessage(client, sender, message, true);
-        mailService.sendReceivedMessage(client, sender, null, message, LocalDateTime.now(), client.getLanguage().getLocale());
+        mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
         //TODO: cambiear el mailService para que no necesite un booking
         return createdMessage;
     }
