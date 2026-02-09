@@ -671,6 +671,98 @@ paths:
           $ref: "schemas/errors/forbidden.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+    post:
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      summary: Update booking state with given ID
+      description: Update booking state with given bookingId, the booking must belong to the auth user.
+      operationId: updateBookingState
+      tags:
+        - Bookings
+      requestBody:
+        required: true
+        description: >
+          Auth user must be in booking with bookingId. 
+          You can update booking state from PENDING to REJECTED/ACCEPTED if auth user is driver, 
+          from ACCEPTED to CANCELED if payment was not made for booking (can be either role), 
+          and from ACCEPTED to FINISHED if payment was made and auth user is driver.
+        content:
+          # TODO: use custom versioned mimetype?
+          application/json:
+            schema:
+              $ref: "schemas/requests/booking-update-state.yaml"
+      responses:
+        "200":
+          description: Booking state successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "schemas/responses/booking.yaml"
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
+
+  /bookings/{bookingId}/review:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      summary: Get booking review
+      description: Get booking review given a booking ID.
+      operationId: getReview
+      tags:
+        - Bookings
+      responses:
+        "200":
+          description: Review found
+          content:
+            application/json:
+              schema:
+                $ref: "schemas/responses/booking-review.yaml"
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+    post:
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      summary: Set booking review
+      description: Set booking review given a booking id.
+      operationId: updateBookingReview
+      tags:
+        - Bookings
+      requestBody:
+        required: true
+        description: >
+          Booking review information. This can only be done once by the client that belongs to the booking id.
+        content:
+          # TODO: use custom versioned mimetype?
+          application/json:
+            schema:
+              $ref: "schemas/responses/booking-review.yaml"
+      responses:
+        "201":
+          description: Booking review successfully created
+          Location:
+            description: URI of the uploaded review
+            schema:
+              type: string
+              example: "api/bookings/42/review"
+          content:
+            application/json:
+              schema:
+                $ref: "schemas/responses/booking-review.yaml"
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
+
 
   /bookings/{bookingId}/proof-of-payment:
     get:

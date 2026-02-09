@@ -1,0 +1,6 @@
+description: Data required to update Booking state.
+type: object
+required: [ state ]
+properties:
+  state:
+    $ref: "../enums/updatable-booking-state.yaml"

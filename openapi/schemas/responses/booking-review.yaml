@@ -1,0 +1,16 @@
+description: Review for a Booking
+type: object
+required: [ rating, comments ]
+properties:
+  rating:
+    type: integer
+    minimum: 1
+    maximum: 5
+    example: 5
+  comments:
+    type: string
+    example: "Excellent service."
+  booking:
+    type: string
+    format: uri
+    example: "api/bookings/42"
