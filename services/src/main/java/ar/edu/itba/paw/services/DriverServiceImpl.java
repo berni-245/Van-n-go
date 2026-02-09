@@ -283,7 +283,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
                 .filter(b -> b.getState().equals(BookingState.ACCEPTED))
                 .findFirst();
         if (optional.isPresent())
-            throw new VehicleHasPendingJobsException();
+            throw new VehicleHasAcceptedJobsException();
         vehicleDao.deleteVehicle(vehicle);
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
