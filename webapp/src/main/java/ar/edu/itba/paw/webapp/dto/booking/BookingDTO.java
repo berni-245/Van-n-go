@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.ShiftPeriod;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.function.Function;
@@ -18,8 +19,9 @@ public class BookingDTO {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.self = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId())).build();
         bookingDTO.client = uriInfo.getBaseUriBuilder().path("api").path("clients").path(String.valueOf(booking.getClient().getId())).build();
-        bookingDTO.driver = uriInfo.getBaseUriBuilder().path("api").path("drivers").path(String.valueOf(booking.getDriver().getId())).build();
-        bookingDTO.vehicle = uriInfo.getBaseUriBuilder().path("api").path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
+        UriBuilder driverTemplate = uriInfo.getBaseUriBuilder().path("api").path("drivers").path(String.valueOf(booking.getDriver().getId()));
+        bookingDTO.driver = driverTemplate.clone().build();
+        bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
         bookingDTO.proofOfPayment = booking.getPop() != null ? uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId())).path("proof-of-payment").build() : null;
         bookingDTO.jobDescription = booking.getJobDescription();
