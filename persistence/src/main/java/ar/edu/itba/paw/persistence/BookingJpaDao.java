@@ -184,7 +184,7 @@ public class BookingJpaDao implements BookingDao {
     }
 
     private void checkVehicleAvailability(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
-        if (!vehicle.getZones().contains(zone))
+        if (!vehicle.getZones().contains(zone) || vehicle.isDeleted())
             throw new VehicleNotAvailableException();
 
         TypedQuery<Availability> avQuery = em.createQuery(

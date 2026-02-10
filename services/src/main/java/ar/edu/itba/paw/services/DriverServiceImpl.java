@@ -222,6 +222,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {
+        if (plateNumber == null)
+            return Optional.empty();
         return vehicleDao.findByPlateNumber(driver, plateNumber);
     }
 
@@ -235,10 +237,11 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String description,
             double rate
     ) {
+        Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicleId);
+        if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
+            throw new VehicleNotFoundException();
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, null, rate);
-        v.setImgId(
-                vehicleDao.findById(vehicleId).orElseThrow(VehicleNotAvailableException::new).getImgId()
-        );
+        v.setImgId(oldVehicle.get().getImgId());
         vehicleDao.updateVehicle(v);
         LOGGER.info("Driver {} updated vehicle {}", driver.getUsername(), v.getPlateNumber());
     }
@@ -250,10 +253,12 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String imgFilename,
             byte[] imgData
     ) {
-        Vehicle v = vehicleDao.findById(vehicle.getId()).orElseThrow(VehicleNotAvailableException::new);
+        Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicle.getId());
+        if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
+            throw new VehicleNotFoundException();
+        Vehicle v = oldVehicle.get();
         if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
-            int imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
-            v.setImgId(imgId);
+            imageDao.uploadVehicleImage(imgData, imgFilename, v);
         }
     }
 

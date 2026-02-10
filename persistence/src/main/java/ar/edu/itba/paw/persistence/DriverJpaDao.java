@@ -51,7 +51,7 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                     JOIN vehicle_zone z ON v.id = z.vehicle_id
                     JOIN minimal_price m ON m.driver_id = v.driver_id
                     JOIN Vehicle_availability a ON v.id = a.vehicle_id
-                    WHERE z.zone_id = :zoneId
+                    WHERE z.zone_id = :zoneId and v.plate_number IS NOT NULL
                 """);
 
         if (size != null) idQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");

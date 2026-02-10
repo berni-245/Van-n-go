@@ -1,12 +1,13 @@
-update app_user
-set language = 'SPANISH'
-where language is null;
+-- If you are seeing this after 8 of february, then you NEED to run this
 
 ALTER TABLE vehicle
-    ALTER COLUMN plate_number SET NOT NULL,
-    ALTER COLUMN volume_m3 SET NOT NULL,
-    ALTER COLUMN description SET NOT NULL;
+    ALTER COLUMN plate_number DROP NOT NULL;
 
-create view minimal_price as SELECT driver_id, MIN(hourly_rate) from vehicle group by driver_id;
+ALTER TABLE vehicle
+    ADD COLUMN old_plate_number TEXT;
 
-UPDATE app_user SET creation_time=('2024-08-01 00:00:00'::timestamp);
+ALTER TABLE vehicle
+    ADD CONSTRAINT vehicle_plate_present
+        CHECK (
+            plate_number IS NOT NULL OR old_plate_number IS NOT NULL
+            );

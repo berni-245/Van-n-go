@@ -61,7 +61,7 @@ public class VehicleJpaDao implements VehicleDao {
                 SELECT DISTINCT v FROM Vehicle v
                 JOIN v.zones z
                 LEFT JOIN v.availability a
-                WHERE v.driver = :driver AND z = :zone
+                WHERE v.driver = :driver AND v.plateNumber IS NOT NULL AND z = :zone
                 """);
         if (size != null)
             queryString.append(" AND v.volume BETWEEN :minVol AND :maxVol");
@@ -102,7 +102,8 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public void deleteVehicle(Vehicle vehicle) {
-        em.remove(vehicle);
+        vehicle.invalidatePlateNumber();
+        em.merge(vehicle);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class VehicleJpaDao implements VehicleDao {
         var nativeQueryList = em.createNativeQuery("""
                         select v.id
                         from vehicle v
-                        where v.driver_id = :driverId
+                        where v.driver_id = :driverId and v.plate_number IS NOT NULL
                         order by v.plate_number
                         """)
                 .setParameter("driverId", driver.getId())
@@ -130,7 +131,7 @@ public class VehicleJpaDao implements VehicleDao {
     public int getVehicleCount(Driver driver) {
         return em.createQuery("""
                         select count(*) from Vehicle v
-                        where v.driver = :driver
+                        where v.driver = :driver and v.plateNumber IS NOT NULL
                         """, Long.class)
                 .setParameter("driver", driver)
                 .getSingleResult().intValue();

@@ -103,13 +103,11 @@ public class VehicleController {
     @Path("{vehicleId}")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     public Response deleteVehicle(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
-        throw new UnsupportedOperationException();
-//        TODO I'm not allowing this operation yet because it's not finished, delete should be logical (soft delete) so clients don't lose their bookings history
-//        Driver driver = ds.findById(driverId);
-//        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-//        ds.deleteVehicle(vehicle);
-//
-//        return Response.noContent().build();
+        Driver driver = ds.findById(driverId);
+        Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
+        ds.deleteVehicle(vehicle);
+
+        return Response.noContent().build();
     }
 
     @GET
