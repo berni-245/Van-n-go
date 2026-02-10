@@ -3,8 +3,8 @@ import "solid-devtools";
 import "@/App.css";
 import { render } from "solid-js/web";
 import App from "@/App";
-import { Router, Route } from "@solidjs/router";
-import { MetaProvider } from "@solidjs/meta";
+import { Router, Route, Navigate } from "@solidjs/router";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { AppContextProvider } from "@/app-context/AppContext";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -12,7 +12,10 @@ import Error404 from "@/errors/404";
 import { worker } from "@/api-mock/browser";
 import DriverAvailability from "@/pages/DriverAvailability";
 import Settings from "@/pages/Settings";
-import Login from "./pages/Login";
+import Login from "@/pages/Login";
+import Vehicles from "@/pages/Vehicles";
+import ParentErrorBoundary from "./components/ParentErrorBoundary";
+import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
 
 const root = document.getElementById("root");
 
@@ -30,22 +33,45 @@ async function enableMocking() {
   return worker.start();
 }
 
-await enableMocking();
+// await enableMocking();
+
+// const filters = {
+//   driverId: /^\d+$/,
+//   vehicleId: /^\d+$/,
+// };
 
 render(
   () => (
-    <MetaProvider>
-      <AppContextProvider>
-        <Router root={(props) => <App>{props.children}</App>}>
-          <Route path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/search" component={DriverAvailability} />
-          <Route path="/about" component={About} />
-          <Route path="/settings" component={Settings} />
+    // TODO: this error boundary should probably be changed
+    <ParentErrorBoundary>
+      <MetaProvider>
+        <Meta charset="utf-8" />
+        <Meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Link rel="icon" type="image/svg+xml" href="/Logo.svg" />
+        <Title>Van N' Go</Title>
+        <Router
+          root={(props) => (
+            <AppContextProvider>
+              <App>{props.children}</App>
+            </AppContextProvider>
+          )}
+        >
+          <Route path="/" component={AnonRoute}>
+            <Route path="/" component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/search" component={DriverAvailability} />
+            <Route path="/about" component={About} />
+          </Route>
+          <Route path="/driver" component={DriverRoute}>
+            <Route path="/" component={() => <Navigate href="vehicles" />} />
+            <Route path="/vehicles" component={Vehicles} />
+            <Route path="/bookings" component={Vehicles} />
+            <Route path="/settings" component={Settings} />
+          </Route>
           <Route path="**" component={Error404} />
         </Router>
-      </AppContextProvider>
-    </MetaProvider>
+      </MetaProvider>
+    </ParentErrorBoundary>
   ),
   root
 );

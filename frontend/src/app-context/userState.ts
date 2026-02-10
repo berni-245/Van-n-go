@@ -1,24 +1,31 @@
 import { Client, Driver } from "@/api/types";
+import * as z from "zod";
 
-type BaseUser = {
-  id: number;
-  username: string;
-  email: string;
-  language: string;
-  profilePic: string;
-};
+// type BaseUser = z.infer<typeof BaseUserSchema>;
+type UserState = z.infer<typeof UserStateSchema>;
 
-type ClientUser = BaseUser & {
-  type: "client";
-};
+const BaseUserSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  email: z.email(),
+  language: z.string(),
+  profilePic: z.string(),
+});
 
-type DriverUser = BaseUser & {
-  type: "driver";
-  description: string;
-  rating: number;
-};
+const ClientUserSchema = BaseUserSchema.extend({
+  type: z.literal("client"),
+});
 
-export type UserState = ClientUser | DriverUser;
+const DriverUserSchema = BaseUserSchema.extend({
+  type: z.literal("driver"),
+  // NOTE: Don't really need these for the app state, when accessing the profile it's probably
+  // better to just request the user info again so it's not stale.
+  // cbu: z.string().optional(),
+  // description: z.string().optional(),
+  // rating: z.number().optional(),
+});
+
+export const UserStateSchema = z.discriminatedUnion("type", [ClientUserSchema, DriverUserSchema]);
 
 export function clientToUserState(user: Client): UserState {
   return {
@@ -37,9 +44,10 @@ export function driverToUserState(user: Driver): UserState {
     type: "driver",
     username: user.username,
     email: user.email,
-    description: user.description,
     language: user.preferredLanguage,
     profilePic: user.profilePic,
-    rating: user.rating,
+    // description: user.description,
+    // cbu: user.cbu,
+    // rating: user.rating,
   };
 }

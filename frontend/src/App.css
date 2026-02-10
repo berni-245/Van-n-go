@@ -18,46 +18,57 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Fonts */
-  --font-lato: "Lato", sans-serif;
+  /* --font-lato: "Lato", sans-serif; */
+  /* --font-inter: "Lato", sans-serif; */
 
-  /* Light Themes */
-  --color-surface: var(--color-white);
-  --color-surface-alt: var(--color-slate-100);
-  --color-on-surface: var(--color-slate-700);
-  --color-on-surface-strong: var(--color-black);
-  --color-primary: var(--color-blue-700);
-  --color-on-primary: var(--color-slate-100);
-  --color-secondary: var(--color-indigo-700);
-  --color-on-secondary: var(--color-slate-100);
-  --color-outline: var(--color-slate-300);
-  --color-outline-strong: var(--color-slate-800);
+  --font-body: "Inter", sans-serif;
+  --font-title: "Inter", sans-serif;
 
-  /* Dark Theme */
-  --color-surface-dark: var(--color-slate-900);
-  --color-surface-dark-alt: var(--color-slate-800);
-  --color-on-surface-dark: var(--color-slate-300);
-  --color-on-surface-dark-strong: var(--color-white);
-  --color-primary-dark: var(--color-blue-600);
-  --color-on-primary-dark: var(--color-slate-100);
-  --color-secondary-dark: var(--color-indigo-600);
-  --color-on-secondary-dark: var(--color-slate-100);
-  --color-outline-dark: var(--color-slate-700);
-  --color-outline-dark-strong: var(--color-slate-300);
+  /* light theme */
+  --color-surface: var(--color-gray-50);
+  --color-surface-alt: var(--color-gray-200);
+  --color-on-surface: var(--color-gray-800);
+  --color-on-surface-strong: var(--color-gray-950);
+  --color-primary: var(--color-sky-900);
+  --color-on-primary: var(--color-white);
+  --color-secondary: var(--color-indigo-900);
+  --color-on-secondary: var(--color-white);
+  --color-outline: var(--color-gray-500);
+  --color-outline-strong: var(--color-gray-900);
 
-  /* Shared Colors */
-  --color-info: var(--color-sky-600);
-  --color-on-info: var(--color-white);
-  --color-success: var(--color-green-600);
-  --color-on-success: var(--color-white);
-  --color-warning: var(--color-amber-500);
-  --color-on-warning: var(--color-white);
-  --color-danger: var(--color-red-600);
-  --color-on-danger: var(--color-white);
+  /* dark theme */
+  --color-surface-dark: var(--color-gray-900);
+  --color-surface-dark-alt: var(--color-gray-800);
+  --color-on-surface-dark: var(--color-gray-300);
+  --color-on-surface-dark-strong: var(--color-gray-100);
+  --color-primary-dark: var(--color-sky-400);
+  --color-on-primary-dark: var(--color-black);
+  --color-secondary-dark: var(--color-indigo-400);
+  --color-on-secondary-dark: var(--color-black);
+  --color-outline-dark: var(--color-gray-500);
+  --color-outline-dark-strong: var(--color-gray-300);
 
-  /* Border Radius */
-  --radius-radius: var(--radius-lg);
+  /* shared colors */
+  --color-info: var(--color-sky-500);
+  --color-on-info: var(--color-black);
+  --color-success: var(--color-green-500);
+  --color-on-success: var(--color-black);
+  --color-warning: var(--color-yellow-500);
+  --color-on-warning: var(--color-black);
+  --color-danger: var(--color-red-500);
+  --color-on-danger: var(--color-black);
+
+  /* border radius */
+  --radius-radius: var(--radius-sm);
 }
 
 @layer base {
@@ -65,23 +76,23 @@
   }
 
   body {
-    @apply font-lato bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
+    @apply font-body bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
   }
 
   h1 {
-    @apply text-4xl font-bold;
+    @apply text-4xl font-title font-bold;
   }
 
   h2 {
-    @apply text-3xl font-semibold;
+    @apply text-3xl font-title font-semibold;
   }
 
   h3 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-title font-semibold;
   }
 
   h4 {
-    @apply text-xl font-medium;
+    @apply text-xl font-title font-medium;
   }
 
   p {

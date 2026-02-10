@@ -1,7 +1,7 @@
-import { useAppState, useTranslator } from "../app-context/AppContext";
-import { Theme } from "../app-context/appState";
-import { Locale } from "../app-context/locale";
-import Select from "../components/Select";
+import { useAppState, useTranslator } from "@/app-context/AppContext";
+import { Theme } from "@/app-context/appState";
+import { LocaleSchema } from "@/app-context/locale";
+import Select from "@/components/Select";
 
 export default function Settings() {
   const [appState, setAppState] = useAppState();
@@ -10,7 +10,7 @@ export default function Settings() {
     <div class="flex gap-4">
       <Select
         label={t("global.language.label")}
-        onchange={(event) => setAppState("preferences", { locale: event.currentTarget.value as Locale })}
+        onchange={(event) => setAppState("preferences", { locale: LocaleSchema.parse(event.currentTarget.value) })}
       >
         <option value="en" selected={appState.preferences.locale === "en"}>
           {t("global.language.english")}

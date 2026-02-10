@@ -1,13 +1,13 @@
-interface BasicAuthArgs {
-  request: Request;
-  username: string;
-  password: string;
-}
-
-export function addBasicAuth({ request, username, password }: BasicAuthArgs): void {
-  const credentials = btoa(`${username}:${password}`);
-  request.headers.set("Authorization", `Basic ${credentials}`);
-}
+// interface BasicAuthArgs {
+//   request: Request;
+//   username: string;
+//   password: string;
+// }
+//
+// export function addBasicAuth({ request, username, password }: BasicAuthArgs): void {
+//   const credentials = btoa(`${username}:${password}`);
+//   request.headers.set("Authorization", `Basic ${credentials}`);
+// }
 
 // export async function fetchWithToken(
 //   input: string | URL | Request,

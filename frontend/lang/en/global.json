@@ -27,15 +27,32 @@
         "title": "What Our Clients Say",
         "description": "It's fantastic! Exceptional service, highly recommend"
       }
+    },
+    "vehicles": {
+      "sidebar": {
+        "title": "Vehicles",
+        "allVehicles": "All vehicles",
+        "newVehicle": "New vehicle"
+      },
+      "rate": "Hourly Rate",
+      "title": "My vehicles",
+      "volume": "Size"
     }
   },
   "password": "Password",
   "register": "Register",
   "settings": "Settings",
   "sr": {
-    "skipToMainContent": "Skip to main content",
     "closeSidebar": "Close sidebar",
-    "openSidebar": "Open sidebar"
+    "loading": "Loading",
+    "openSidebar": "Open sidebar",
+    "page": "Page {{ number }}",
+    "pagination": "Pagination",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "skipToMainContent": "Skip to main content",
+    "vehicleDescription": "Vehicle description",
+    "vehiclePicture": "Vehicle picture"
   },
   "theme": {
     "label": "Theme",

@@ -1,30 +1,46 @@
+import { TokenPayloadSchema } from "@/api/jwt";
+import { initialLocale } from "@/app-context/locale";
 import { debounce } from "@solid-primitives/scheduled";
-import { UserState } from "./userState";
-import { initialLocale, Locale } from "./locale";
-import { TokenPayload } from "../api/jwt";
+import * as z from "zod";
+import { LocaleSchema } from "@/app-context/locale";
+import { UserStateSchema } from "@/app-context/userState";
 
-export type Theme = "dark" | "light";
+export type Theme = z.infer<typeof ThemeSchema>;
+export type AppState = z.infer<typeof AppStateSchema>;
 
-export type AuthSession = {
-  authToken: string;
-  refreshToken: string;
-  payload: TokenPayload;
-};
+const ThemeSchema = z.enum(["dark", "light"]);
 
-export interface AppState {
-  session: AuthSession | null;
-  user: UserState | null;
-  preferences: {
-    theme: Theme;
-    locale: Locale;
-  };
-}
+const AuthSessionSchema = z.object({
+  token: z.object({
+    auth: z.string(),
+    refresh: z.string(),
+  }),
+  payload: z.object({
+    auth: TokenPayloadSchema,
+    refresh: TokenPayloadSchema,
+  }),
+});
 
-export function getSavedState() {
+const AppStateSchema = z.object({
+  session: AuthSessionSchema.nullable(),
+  user: UserStateSchema.nullable(),
+  preferences: z.object({
+    theme: ThemeSchema,
+    locale: LocaleSchema,
+  }),
+});
+
+export function getSavedState(): AppState | null {
   const saved = localStorage.getItem("appState");
   if (saved) {
-    return JSON.parse(saved) as AppState;
+    try {
+      const parsed = JSON.parse(saved);
+      const state = AppStateSchema.safeParse(parsed);
+      if (state.success) return state.data;
+    } catch {}
+    console.log("Found malformed state in localStorage. Resetting.");
   }
+  return null;
 }
 
 export const saveState = debounce((state: AppState) => {
