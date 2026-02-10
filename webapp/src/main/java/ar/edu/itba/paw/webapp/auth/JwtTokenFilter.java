@@ -32,6 +32,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private DriverService ds;
 
+    private final String REFRESH_HEADER_NAME = "Paw-refresh-token";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -43,7 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = header.split(" ")[1];
 
         if (!tryAuthenticateFromToken(token, false)) {
-            String refreshToken = request.getHeader("Paw-refresh-token"); //TODO: poner esto en properties
+            String refreshToken = request.getHeader(REFRESH_HEADER_NAME);
             tryAuthenticateFromToken(refreshToken, true);
         }
         chain.doFilter(request, response);
