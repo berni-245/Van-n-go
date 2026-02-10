@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
     private final int MAX_MSG_LENGTH = 255;
+    private final int EMAIL_THROTTLING_MINUTES = 10;
 
     private final MessageDao messageDao;
     private final DriverDao driverDao;
@@ -57,9 +59,17 @@ public class MessageServiceImpl implements MessageService {
         if (!bookingDao.existsBookingBetween(sender, driver)) {
             throw new ForbiddenConversationException();
         }
+        LocalDateTime lastMessageTime = messageDao.getLastMessageSentByUser(sender, driver, false);
         Message createdMessage = messageDao.sendMessage(sender, driver, message, false);
-        mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
+        if (shouldSendEmail(lastMessageTime))
+            mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
         return createdMessage;
+    }
+
+    private boolean shouldSendEmail(LocalDateTime lastMessageTime) {
+        if (lastMessageTime == null) return true;
+        LocalDateTime now = LocalDateTime.now();
+        return Duration.between(lastMessageTime, now).toMinutes() >= EMAIL_THROTTLING_MINUTES;
     }
 
     @Transactional

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -48,5 +50,16 @@ public class MessageJpaDao implements MessageDao {
         message.setSentByDriver(sentByDriver);
         em.persist(message);
         return message;
+    }
+
+    @Override
+    public LocalDateTime getLastMessageSentByUser(Client client, Driver driver, boolean sentByDriver) {
+        final TypedQuery<LocalDateTime> query = em.createQuery("SELECT m.timeSent FROM Message m WHERE m.client = :client AND m.driver = :driver AND m.sentByDriver = :sentByDriver ORDER BY m.timeSent DESC", LocalDateTime.class)
+                .setParameter("client", client)
+                .setParameter("driver", driver)
+                .setParameter("sentByDriver", sentByDriver)
+                .setMaxResults(1);
+        final List<LocalDateTime> resultList = query.getResultList();
+        return resultList.isEmpty() ? null : resultList.getFirst();
     }
 }
