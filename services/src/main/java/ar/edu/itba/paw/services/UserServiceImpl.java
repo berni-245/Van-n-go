@@ -74,7 +74,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Override
     public Booking cancelBooking(T user, int bookingId) {
         Booking booking = getBookingById(user, bookingId);
-        if (!booking.getState().equals(BookingState.ACCEPTED)) {
+        if (!booking.getState().equals(BookingState.ACCEPTED) || booking.getPop() != null) {
             if (user.isDriver()) throw new ForbiddenDriverCancelBookingException();
             else throw new ForbiddenClientCancelBookingException();
         }
