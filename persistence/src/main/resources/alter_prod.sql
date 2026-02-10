@@ -11,3 +11,12 @@ ALTER TABLE vehicle
         CHECK (
             plate_number IS NOT NULL OR old_plate_number IS NOT NULL
             );
+
+-- after 10 of february
+
+UPDATE client
+SET zone_id = 1
+WHERE zone_id IS NULL;
+
+ALTER TABLE client
+    ALTER COLUMN zone_id SET NOT NULL;
