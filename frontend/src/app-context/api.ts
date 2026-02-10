@@ -1,71 +1,169 @@
-import { SetStoreFunction } from "solid-js/store";
-import { AppState } from "./appState";
-import { Client, Driver } from "@/api/types";
-import { UserType } from "../api/jwt";
-import { clientToUserState, driverToUserState, UserState } from "./userState";
+import { TokenPayload } from "@/api/jwt";
+import { Client, Driver, Vehicle, Zone } from "@/api/types";
+import { AppState } from "@/app-context/appState";
 import { jwtDecode } from "jwt-decode";
+import { SetStoreFunction } from "solid-js/store";
+import { clientToUserState, driverToUserState } from "./userState";
+import { createMediaType as createMediaTypes } from "../api/media-types";
+import { useLocation, useNavigate } from "@solidjs/router";
 
-export const BASE_URL = "/api";
+// export const API_ROOT = `${window.location.protocol}//${window.location.host}/webapp/api/`;
+export const API_ROOT = `http://${window.location.hostname}:8080/webapp/api/`;
+export type Api = ReturnType<typeof initializeApi>;
+
+export interface LocationState {
+  from: string;
+}
+
+const MediaTypesV1 = createMediaTypes("v1");
+
+interface VisibilityOpts {
+  visibility?: "public" | "all";
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function initializeApi(appState: AppState, setAppState: SetStoreFunction<AppState>) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   return {
     async authFetch(input: string | URL | Request): Promise<Response> {
       const request = input instanceof Request ? input : new Request(input);
 
       if (appState.session) {
-        request.headers.set("Authorization", `Bearer ${appState.session.authToken}`);
-        request.headers.set("vango-refresh-token", `Bearer ${appState.session.refreshToken}`);
+        if (!jwtExpired(appState.session.payload.auth)) {
+          request.headers.set("Authorization", `Bearer ${appState.session.token.auth}`);
+        } else if (!jwtExpired(appState.session.payload.refresh)) {
+          console.log("Expired auth token. Sending refresh...");
+          request.headers.set("Authorization", `Bearer ${appState.session.token.refresh}`);
+        } else {
+          console.log("Expired tokens. Session reset");
+          this.logout("/login", location.pathname);
+          // TODO: maybe add a toast telling user the session has expired? Not sure if this is the
+          // right place to add it tho...
+        }
       }
 
-      request.headers.set("Content-Type", "Application/json");
-      request.headers.set("Accept", "Application/json");
-
+      // await sleep(1000);
       const res = await fetch(request);
 
       if (res.status === 401) {
-        console.log("Expired tokens (could be an unsuccessful login attempt too). User logged out");
-        setAppState("session", null);
-        setAppState("user", null);
+        // NOTE: we could get here for example if the user altered the jwt to change the expiration time.
+        console.log("Invalid credentials. Session reset");
+        this.logout("/login", location.pathname);
       } else {
         const authToken = res.headers.get("vango-auth-token");
         const refreshToken = res.headers.get("vango-refresh-token");
 
-        if (authToken && refreshToken)
-          setAppState("session", { authToken, refreshToken, payload: jwtDecode(authToken)! });
+        if (authToken && refreshToken) {
+          console.log("Got new tokens from server. Refreshing...");
+          setAppState("session", {
+            token: { auth: authToken, refresh: refreshToken },
+            payload: { auth: jwtDecode(authToken), refresh: jwtDecode(refreshToken) },
+          });
+        }
       }
 
       return res;
     },
 
-    async getClient(id: number): Promise<Client | null> {
-      const userRes = await this.authFetch(`${BASE_URL}/clients/${id}`);
+    async basicAuth(username: string, password: string) {
+      const credentials = btoa(`${username}:${password}`);
+      const req = apiRequest("", {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+        },
+      });
+      await this.authFetch(req);
+    },
+
+    async logout(redirect: string, from?: string) {
+      setAppState("session", null);
+      setAppState("user", null);
+      navigate(redirect, { state: from ? { from } : undefined });
+    },
+
+    async getClient(id: number, opts: VisibilityOpts): Promise<Client | null> {
+      const { visibility = "public" } = opts;
+
+      const req = apiRequest(`clients/${id}`, {
+        headers: {
+          Accept: visibility === "public" ? MediaTypesV1.clientPublic : MediaTypesV1.clientAll,
+        },
+      });
+      const userRes = await this.authFetch(req);
       if (userRes.ok) return (await userRes.json()) as Client;
       else return null;
     },
 
-    async getDriver(id: number): Promise<Driver | null> {
-      const userRes = await this.authFetch(`${BASE_URL}/drivers/${id}`);
+    async getDriver(id: number, opts: VisibilityOpts): Promise<Driver | null> {
+      const { visibility = "public" } = opts;
+
+      const req = apiRequest(`drivers/${id}`, {
+        headers: {
+          Accept: visibility === "public" ? MediaTypesV1.driverPublic : MediaTypesV1.driverAll,
+        },
+      });
+      const userRes = await this.authFetch(req);
       if (userRes.ok) return (await userRes.json()) as Driver;
       else return null;
     },
 
-    async getUser(type: UserType, id: number): Promise<Client | Driver | null> {
-      if (type === "client") {
-        const user = await this.getClient(id);
-        if (!user) return null;
-        const userState: UserState = clientToUserState(user);
+    async getUser(): Promise<void> {
+      if (appState.user) return;
+      const payload = appState.session?.payload.auth;
+      if (!payload) return;
+
+      if (payload.type === "client") {
+        const user = await this.getClient(payload.id, { visibility: "all" });
+        if (!user) return;
+        const userState = clientToUserState(user);
         setAppState("user", userState);
-        return user;
-      } else if (type === "driver") {
-        const user = await this.getDriver(id);
-        if (!user) return null;
-        const userState: UserState = driverToUserState(user);
+      } else if (payload.type === "driver") {
+        const user = await this.getDriver(payload.id, { visibility: "all" });
+        if (!user) return;
+        const userState = driverToUserState(user);
         setAppState("user", userState);
-        return user;
       }
-      return null;
+    },
+
+    async getVehicles(driverId: number, page: number = 1): Promise<Vehicle[]> {
+      const req = apiRequest(`drivers/${driverId}/vehicles`, { queryParams: { page: page.toString() } });
+      const res = await this.authFetch(req);
+      return res.json();
+    },
+
+    async getZones(): Promise<Zone[]> {
+      const res = await this.authFetch(`${API_ROOT}/zones`);
+      return res.json();
     },
   };
 }
 
-export type Api = ReturnType<typeof initializeApi>;
+interface ApiRequestOpts {
+  headers?: HeadersInit;
+  queryParams?: Record<string, string>;
+}
+
+function apiRequest(path: string, opts?: ApiRequestOpts): Request {
+  if (path.startsWith("/")) throw new Error("`path` should be relative");
+  const url = new URL(path, API_ROOT);
+  if (opts?.queryParams) {
+    for (const param in opts.queryParams) {
+      url.searchParams.set(param, opts.queryParams[param]);
+    }
+  }
+  const req = new Request(url, { headers: opts?.headers });
+  return req;
+}
+
+function jwtExpired(payload: TokenPayload): boolean {
+  return payload.exp < Date.now() / 1000;
+}
+
+// function isJsonResponse(response: Response): boolean {
+//   const contentType = response.headers.get("Content-Type");
+//   if (!contentType) return false;
+//   return contentType.includes("application/json") || contentType.includes("+json");
+// }

@@ -1,13 +1,12 @@
 import { For, Suspense } from "solid-js";
 import { createAsync } from "@solidjs/router";
-import { addBasicAuth } from "../api/authorization";
-import { Driver } from "../api/types";
+import { Driver } from "@/api/types";
+import { useApi } from "../app-context/AppContext";
 
 export default function DriverAvailability() {
   const drivers = createAsync(async () => {
-    const request = new Request("/api/drivers");
-    addBasicAuth({ request, username: "driver1", password: "driver1Pass" });
-    const res = await fetch(request);
+    const api = useApi();
+    const res = await api.authFetch("/drivers");
     return (await res.json()) as Driver[];
   });
 

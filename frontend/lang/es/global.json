@@ -27,15 +27,32 @@
         "title": "Lo que dicen nuestros usuarios",
         "description": "Es fantástico, contratar un flete nunca fue tan facíl como cuando uso Van N' Go"
       }
+    },
+    "vehicles": {
+      "sidebar": {
+        "title": "Vehículos",
+        "allVehicles": "Ver vehículos",
+        "newVehicle": "Nuevo vehículo"
+      },
+      "rate": "Precio por hora",
+      "title": "Mis vehículos",
+      "volume": "Tamaño"
     }
   },
   "password": "Contraseña",
   "register": "Registrarse",
   "settings": "Configuración",
   "sr": {
-    "skipToMainContent": "Saltar al contenido principal",
     "closeSidebar": "Cerrar barra lateral",
-    "openSidebar": "Abrir barra lateral"
+    "loading": "Cargando",
+    "openSidebar": "Abrir barra lateral",
+    "page": "Página {{ number }}",
+    "pagination": "Paginación",
+    "previousPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "skipToMainContent": "Saltar al contenido principal",
+    "vehicleDescription": "Descripción del vehículo",
+    "vehiclePicture": "Imagen del vehículo"
   },
   "theme": {
     "label": "Tema",

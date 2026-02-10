@@ -3,12 +3,15 @@ import { Collapse } from "../transitions/Collapse";
 import { HtmlIdFamily } from "../htmlIds";
 import { A } from "@solidjs/router";
 
-type ItemProps = {
+type BaseItemProps = {
   text: string;
-  href: string;
   icon?: JSX.Element;
   onClick?: (event: Event) => void;
   selected?: boolean;
+};
+
+type ItemProps = BaseItemProps & {
+  href: string;
 };
 
 export const Item: Component<ItemProps> = (props) => {
@@ -29,7 +32,7 @@ export const Item: Component<ItemProps> = (props) => {
   );
 };
 
-type CollapsibleItemProps = ItemProps & {
+type CollapsibleItemProps = BaseItemProps & {
   beginExpanded?: boolean;
 };
 

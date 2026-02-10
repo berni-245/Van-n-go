@@ -1,12 +1,12 @@
 import { Component } from "solid-js";
-import Button from "./Button";
+import Button from "@components/Button";
 
 type CardProps = {
   img: string;
-  location: string;
+  location?: string;
   title: string;
   description: string;
-  buttonText: string;
+  buttonText?: string;
   onButtonClick?: (event: Event) => void;
 };
 

@@ -1,9 +1,11 @@
 import * as i18n from "@solid-primitives/i18n";
 import { dict as en_dict } from "~/lang/en/en";
+import * as z from "zod";
 
 type RawDictionary = typeof en_dict;
 
-export type Locale = "en" | "es";
+type Locale = z.infer<typeof LocaleSchema>;
+export const LocaleSchema = z.enum(["en", "es"]);
 
 type DeepPartial<T> = T extends Record<string, unknown> ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
 
@@ -29,7 +31,7 @@ export const toLocale = (string: string): Locale | undefined =>
   string in raw_dict_map ? (string as Locale) : undefined;
 
 /**
- * Initialize with browser locale or defaulting to englinsh. 
+ * Initialize with browser locale or defaulting to englinsh.
  */
 export function initialLocale(): Locale {
   let locale: Locale | undefined;

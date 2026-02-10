@@ -1,11 +1,18 @@
-import { type Component, JSX, Switch, Match, ErrorBoundary } from "solid-js";
 import { useAppState, useTranslator } from "@/app-context/AppContext";
 import { AppLayout } from "@components/AppLayout.tsx";
 import { Sidebar } from "@components/sidebar/Sidebar";
-import { Logo } from "./assets/Logo";
-import { FaSolidBook, FaSolidGear, FaSolidSearch, FaSolidTruck, FaSolidUserPlus } from "solid-icons/fa";
+import {
+  FaSolidAdd,
+  FaSolidBook,
+  FaSolidGear,
+  FaSolidListDots,
+  FaSolidSearch,
+  FaSolidTruck,
+  FaSolidUserPlus,
+} from "solid-icons/fa";
 import { FiLogIn } from "solid-icons/fi";
-import Button from "@components/Button";
+import { JSX, Match, Suspense, Switch, type Component } from "solid-js";
+import { Logo } from "./assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
   const [appState, _] = useAppState();
@@ -21,8 +28,23 @@ const App: Component<{ children: JSX.Element }> = (props) => {
             <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
           </Match>
           <Match when={appState.user?.type === "driver"}>
-            <Sidebar.Item href="/vehicles" text={t("global.vehicles")} icon={<FaSolidTruck size={20} />} />
-            <Sidebar.Item href="/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
+            <Sidebar.CollapsibleItem
+              text={t("global.page.vehicles.sidebar.title")}
+              icon={<FaSolidTruck size={20} />}
+              beginExpanded
+            >
+              <Sidebar.Item
+                href={`/driver/vehicles`}
+                text={t("global.page.vehicles.sidebar.allVehicles")}
+                icon={<FaSolidListDots size={20} />}
+              />
+              <Sidebar.Item
+                href={`/driver/vehicle/new`}
+                text={t("global.page.vehicles.sidebar.newVehicle")}
+                icon={<FaSolidAdd size={20} />}
+              />
+            </Sidebar.CollapsibleItem>
+            <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
             <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
           </Match>
           <Match when={!appState.user}>
@@ -32,20 +54,11 @@ const App: Component<{ children: JSX.Element }> = (props) => {
         </Switch>
       </Sidebar>
       <AppLayout.Content>
-        {/* <Suspense> */}
-        {/* TODO: this error boundary should probably be changed */}
-        <ErrorBoundary
-          fallback={(error, reset) => (
-            <div>
-              <h2>Something went wrong</h2>
-              <p>{error.message}</p>
-              <Button text="Try Again" onClick={reset} category="secondary" />
-            </div>
-          )}
-        >
+        {/* TODO: prolly remove this suspense when the app is finished */}
+        <Suspense fallback="This is the app suspense, you should probably be handling this in a child component">
+          {/* TODO: this error boundary should probably be changed */}
           {props.children}
-        </ErrorBoundary>
-        {/* </Suspense> */}
+        </Suspense>
       </AppLayout.Content>
     </AppLayout>
   );
