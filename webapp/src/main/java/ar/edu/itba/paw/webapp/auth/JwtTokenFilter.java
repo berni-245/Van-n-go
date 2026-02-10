@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private DriverService ds;
 
-    private final String REFRESH_HEADER_NAME = "Paw-refresh-token";
+    private final String REFRESH_HEADER_NAME = "vango-refresh-token";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
