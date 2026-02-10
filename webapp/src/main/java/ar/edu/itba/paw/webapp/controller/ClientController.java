@@ -42,6 +42,7 @@ public class ClientController {
 
     @GET
     @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getClientById(@PathParam("id") final int id) {
         //TODO: add 401 and 404 responses
@@ -69,6 +70,7 @@ public class ClientController {
 
     @GET
     @Path("/{clientId}/profile-picture")
+    @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces("image/*")
     public Response getProfilePicture(@PathParam("clientId") final int id) {
         //TODO: add 401 response
