@@ -279,12 +279,16 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
+        // TODO change these getBookings to database operations, idk if this getBookings brings all the vehicle bookings to memory.
         Optional<Booking> optional = vehicle.getBookings().stream()
                 .filter(b -> b.getState().equals(BookingState.ACCEPTED))
                 .findFirst();
         if (optional.isPresent())
             throw new VehicleHasAcceptedJobsException();
         vehicleDao.deleteVehicle(vehicle);
+        vehicle.getBookings().stream()
+                .filter(b -> b.getState().equals(BookingState.PENDING))
+                .forEach(b -> rejectBooking(b.getDriver(), b.getId()));
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
 }

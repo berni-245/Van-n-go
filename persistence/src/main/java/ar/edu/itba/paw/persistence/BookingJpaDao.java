@@ -64,6 +64,7 @@ public class BookingJpaDao implements BookingDao {
         em.merge(booking);
     }
 
+    // TODO this probably makes sense to use a schedule function instead of doing it every call to getBookings().
     @Override
     public void checkPending() {
         TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b FROM Booking b WHERE b.state = :state and b.date < current_date", Booking.class);
@@ -230,20 +231,6 @@ public class BookingJpaDao implements BookingDao {
         bookingQuery.setParameter("sp", sp);
         if (!bookingQuery.getResultList().isEmpty())
             throw new ClientAlreadyAppointedException();
-    }
-
-    @Override
-    public List<Booking> requestedBookingsForDate(
-            Client client, LocalDate date, Vehicle vehicle
-    ) {
-        TypedQuery<Booking> bookingQuery = em.createQuery("""
-                        From Booking b where b.vehicle = :vehicle
-                        and b.client = :client and b.date = :date
-                        """, Booking.class)
-                .setParameter("vehicle", vehicle)
-                .setParameter("client", client)
-                .setParameter("date", date);
-        return bookingQuery.getResultList();
     }
 
     @Override

@@ -19,7 +19,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO must improve the updateVehicle and updateAvailability the in the back
 @Path("/api/drivers/{driverId}/vehicles")
 @Component
 public class VehicleController {
@@ -48,6 +47,7 @@ public class VehicleController {
     ) {
         Driver driver = ds.findById(driverId);
         List<Vehicle> vehiclesFromModel;
+        // TODO unify these methods
         if (zoneId == null)
             vehiclesFromModel = ds.getVehicles(driver, page);
         else

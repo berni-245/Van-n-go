@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidVehicleException;
 import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
 import ar.edu.itba.paw.exceptions.UserAlreadyExistsException;
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
@@ -139,12 +138,5 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
                 booking.getDriver().getLanguage().getLocale()
         );
         return booking;
-    }
-
-    @Override
-    public List<ShiftPeriod> requestedShiftPeriodsForDate(Client client, LocalDate date, String plateNumber) {
-        Vehicle v = vehicleDao.findByPlateNumber(plateNumber).orElseThrow(InvalidVehicleException::new);
-        List<Booking> bookings = bookingDao.requestedBookingsForDate(client, date, v);
-        return bookings.stream().map(Booking::getShiftPeriod).toList();
     }
 }

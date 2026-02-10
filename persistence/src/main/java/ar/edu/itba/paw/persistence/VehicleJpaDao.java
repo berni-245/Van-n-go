@@ -45,16 +45,6 @@ public class VehicleJpaDao implements VehicleDao {
     }
 
     @Override
-    public Optional<Vehicle> findByPlateNumber(String plateNumber) {
-        TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle where plateNumber = :plateNumber",
-                Vehicle.class
-        );
-        query.setParameter("plateNumber", plateNumber);
-        return query.getResultList().stream().findFirst();
-    }
-
-    @Override
     public Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber) {
         TypedQuery<Vehicle> query = em.createQuery(
                 "from Vehicle v where v.driver = :driver and v.plateNumber = :plateNumber",
