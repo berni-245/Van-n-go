@@ -11,9 +11,9 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.BookingDTO;
+import ar.edu.itba.paw.webapp.dto.booking.BookingReviewDTO;
 import ar.edu.itba.paw.webapp.dto.booking.CreateBookingDTO;
 import ar.edu.itba.paw.webapp.dto.booking.CreateBookingReviewDTO;
-import ar.edu.itba.paw.webapp.dto.booking.UpdateBookingStateDTO;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -90,6 +90,27 @@ public class BookingController {
     public Response getBookingById(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
+    }
+
+    @GET
+    @Path("/{bookingId}/review")
+    @Produces(value = {"application/json"})
+    public Response getReview(@PathParam("bookingId") int bookingId) {
+        Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        if (b.getRating() == null)
+            Response.status(Response.Status.NOT_FOUND);
+        return Response.ok(BookingReviewDTO.fromBooking(uriInfo, b)).build();
+    }
+
+    @POST
+    @Path("/{bookingId}/review")
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @Consumes(value = {"application/json"})
+    @Produces(value = {"application/json"})
+    public Response updateBookingReview(@PathParam("bookingId") int bookingId, CreateBookingReviewDTO dto) {
+        Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        clientService.setBookingRatingAndReview(b.getClient(), b.getId(), dto.getRating(), dto.getComments());
+        return Response.ok(BookingReviewDTO.fromBooking(uriInfo, b)).build();
     }
 
     @GET

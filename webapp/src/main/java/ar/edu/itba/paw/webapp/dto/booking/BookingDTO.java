@@ -17,19 +17,20 @@ public class BookingDTO {
 
     public static BookingDTO fromBooking(UriInfo uriInfo, Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
-        bookingDTO.self = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId())).build();
+        UriBuilder bookingTemplate = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId()));
+        bookingDTO.self = bookingTemplate.clone().build();
         bookingDTO.client = uriInfo.getBaseUriBuilder().path("api").path("clients").path(String.valueOf(booking.getClient().getId())).build();
         UriBuilder driverTemplate = uriInfo.getBaseUriBuilder().path("api").path("drivers").path(String.valueOf(booking.getDriver().getId()));
         bookingDTO.driver = driverTemplate.clone().build();
         bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
-        bookingDTO.proofOfPayment = booking.getPop() != null ? uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId())).path("proof-of-payment").build() : null;
+        bookingDTO.proofOfPayment = booking.getPop() != null ? bookingTemplate.clone().path("proof-of-payment").build() : null;
+        bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
         bookingDTO.jobDescription = booking.getJobDescription();
         bookingDTO.date = booking.getDate().toString();
         bookingDTO.shiftPeriod = booking.getShiftPeriod();
         bookingDTO.state = booking.getState();
-        bookingDTO.rating = booking.getRating();
-        bookingDTO.review = booking.getReview();
+
         if (booking.getDestinationZone() != null) {
             bookingDTO.destinationZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getDestinationZone().getId())).build();
         }
@@ -48,8 +49,7 @@ public class BookingDTO {
     private String date;
     private ShiftPeriod shiftPeriod;
     private BookingState state;
-    private Integer rating;
-    private String review;
+    private URI review;
 
     public URI getSelf() {
         return self;
@@ -139,19 +139,11 @@ public class BookingDTO {
         this.state = state;
     }
 
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getReview() {
+    public URI getReview() {
         return review;
     }
 
-    public void setReview(String review) {
+    public void setReview(URI review) {
         this.review = review;
     }
 }

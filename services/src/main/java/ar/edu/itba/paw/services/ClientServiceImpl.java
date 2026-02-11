@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
+import ar.edu.itba.paw.exceptions.ReviewAlreadySentException;
 import ar.edu.itba.paw.exceptions.UserAlreadyExistsException;
 import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.*;
@@ -109,7 +110,10 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public void setBookingRatingAndReview(Client user, int bookingId, int rating, String review) {
-        bookingDao.setRatingAndReview(getBookingById(user, bookingId), rating, review);
+        Booking b = getBookingById(user, bookingId);
+        if (b.getRating() != null)
+            throw new ReviewAlreadySentException();
+        bookingDao.setRatingAndReview(b, rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
     }
 
