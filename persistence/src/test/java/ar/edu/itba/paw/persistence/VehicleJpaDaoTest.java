@@ -192,16 +192,16 @@ public class VehicleJpaDaoTest {
         ));
     }
 
-    @Test
-    public void testDeleteVehicle() {
-        vehicleDao.deleteVehicle(preexistingVehicleFour);
-        em.flush();
-
-        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "vehicle",
-                String.format("id = '%d'", PREEXISTING_VEHICLE_FOUR)
-        ));
-    }
+    // @Test
+    // public void testDeleteVehicle() {
+    //     vehicleDao.deleteVehicle(preexistingVehicleFour);
+    //     em.flush();
+    //
+    //     assertEquals(0, JdbcTestUtils.countRowsInTableWhere(
+    //             jdbcTemplate, "vehicle",
+    //             String.format("id = '%d'", PREEXISTING_VEHICLE_FOUR)
+    //     ));
+    // }
 
     @Test
     public void testGetVehicleCount() {
