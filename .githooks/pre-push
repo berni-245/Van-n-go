@@ -4,36 +4,48 @@ set -e
 
 zero_sha="0000000000000000000000000000000000000000"
 
+backend_changed=false
+
 while read -r _local_ref local_sha _remote_ref remote_sha; do
   # Determine commit range
   if [[ "$remote_sha" == "$zero_sha" ]]; then
-    # New branch or first push
     commits=$(git rev-list "$local_sha")
+    range="$local_sha"
   else
     commits=$(git rev-list "$remote_sha".."$local_sha")
+    range="$remote_sha..$local_sha"
   fi
 
+  # --- Check commit messages ---
   for commit in $commits; do
-    message=$(git log -1 --format=%B "$commit")
+    message=$(git log -1 --format=%s "$commit")
 
     if [[ "$message" == fixup!* ]]; then
-      echo -e "\e[31mError - fixup commit pending: \e[46m\e[31m$message\e[0m"
+      echo -e "\e[31mError - fixup commit pending:\e[0m $message"
       echo -e "\e[31mPlease squash or autosquash before pushing.\e[0m"
       exit 1
     elif [[ "$message" == wip!* ]]; then
-      echo -e "\e[31mError - wip commit pending: \e[46m\e[31m$message\e[0m"
+      echo -e "\e[31mError - wip commit pending:\e[0m $message"
       exit 1
     fi
   done
+
+  # --- Check changed files ---
+  changed_files=$(git diff --name-only "$range")
+
+  # If any file is NOT inside frontend/, backend changed
+  if echo "$changed_files" | grep -qvE '^frontend/'; then
+    backend_changed=true
+  fi
 done
 
-mvn test
-STATUS=$?
-
-if [ $STATUS -ne 0 ]; then
-  echo "❌ Tests failed. Push aborted."
-  exit 1
+# --- Run Maven only if backend changed ---
+if [ "$backend_changed" = true ]; then
+  echo "Backend changes detected. Running Maven tests..."
+  mvn test
+  echo "✅ Tests passed. Proceeding with push."
+else
+  echo "Only frontend changes detected. Skipping Maven tests."
 fi
 
-echo "✅ Tests passed. Proceeding with push."
 exit 0
