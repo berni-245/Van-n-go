@@ -11,7 +11,7 @@ En este trabajo práctico de la materia de Proyecto de Aplicaciones Web se imple
 
 Clonar el proyecto utilizando:
 ```shell
-git clone https://github.com/AlekDG/pod-tp1.git
+git clone https://github.com/berni-245/Van-n-go.git
 ```
 
 ## 🛠️ Compilación
