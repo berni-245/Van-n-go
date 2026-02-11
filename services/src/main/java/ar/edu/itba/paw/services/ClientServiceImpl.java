@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.MailAlreadyExistsException;
-import ar.edu.itba.paw.exceptions.ReviewAlreadySentException;
-import ar.edu.itba.paw.exceptions.UserAlreadyExistsException;
-import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -142,5 +139,13 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
                 booking.getDriver().getLanguage().getLocale()
         );
         return booking;
+    }
+
+    @Transactional
+    @Override
+    public void setNewBookingState(Client user, int bookingId, BookingState newState) {
+        if (!newState.equals(BookingState.CANCELED))
+            throw new ForbiddenBookingStateOperationException();
+        cancelBooking(user, bookingId);
     }
 }

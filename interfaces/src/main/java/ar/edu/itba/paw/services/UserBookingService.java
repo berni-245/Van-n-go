@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.models.BookingState;
+import ar.edu.itba.paw.models.Pagination;
+import ar.edu.itba.paw.models.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserBookingService<T extends User> {
     List<Booking> getBookings(T user, BookingState state, int page);
@@ -16,6 +18,8 @@ public interface UserBookingService<T extends User> {
         int totalBookings = this.getBookingCount(user, state);
         return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
     }
+
+    void setNewBookingState(T user, int bookingId, BookingState newState);
 
     Booking cancelBooking(T user, int bookingId);
 }

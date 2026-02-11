@@ -10,10 +10,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
-import ar.edu.itba.paw.webapp.dto.booking.BookingDTO;
-import ar.edu.itba.paw.webapp.dto.booking.BookingReviewDTO;
-import ar.edu.itba.paw.webapp.dto.booking.CreateBookingDTO;
-import ar.edu.itba.paw.webapp.dto.booking.CreateBookingReviewDTO;
+import ar.edu.itba.paw.webapp.dto.booking.*;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,6 +86,18 @@ public class BookingController {
     @Produces(value = {"application/json"})
     public Response getBookingById(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
+        return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
+    }
+
+    @POST
+    @Path("/{bookingId}")
+    @Consumes(value = {"application/json"})
+    @Produces(value = {"application/json"})
+    public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, UpdateBookingStateDTO dto) {
+        T user = getAuthUser();
+        UserService<T> userService = getBookingServiceFor(user);
+        Booking b = userService.getBookingById(user, bookingId);
+        userService.setNewBookingState(user, b.getId(), BookingState.valueOf(dto.getState().name()));
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
     }
 

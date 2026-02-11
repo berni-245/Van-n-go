@@ -296,4 +296,17 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
                 .forEach(b -> rejectBooking(b.getDriver(), b.getId()));
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
+
+    @Transactional
+    @Override
+    public void setNewBookingState(Driver user, int bookingId, BookingState newState) {
+        switch (newState) {
+            case CANCELED -> cancelBooking(user, bookingId);
+            case ACCEPTED -> acceptBooking(user, bookingId);
+            case REJECTED -> rejectBooking(user, bookingId);
+            case FINISHED -> finishBooking(user, bookingId);
+            default -> throw new ForbiddenBookingStateOperationException();
+        }
+    }
+
 }
