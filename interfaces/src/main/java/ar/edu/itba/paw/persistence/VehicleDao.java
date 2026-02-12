@@ -24,15 +24,13 @@ public interface VehicleDao {
 
     Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
-    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double maxPrice, DayOfWeek weekday);
+    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday, int page, boolean mustHaveAvailability);
 
     boolean plateNumberExists(String plateNumber);
 
     void updateVehicle(Vehicle vehicle);
 
     void deleteVehicle(Vehicle vehicle);
-
-    List<Vehicle> getDriverVehicles(Driver driver, int offset);
 
     int getVehicleCount(Driver driver);
 }

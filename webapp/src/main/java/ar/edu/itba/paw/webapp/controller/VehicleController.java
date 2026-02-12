@@ -43,18 +43,18 @@ public class VehicleController {
             @QueryParam("size") Size size,
             @QueryParam("maxPrice") Double maxPrice,
             @QueryParam("weekDay") DayOfWeek weekDay,
-            @QueryParam("page") @DefaultValue("1") int page
+            @QueryParam("page") @DefaultValue("1") int page,
+            @QueryParam("mustHaveAvailability") @DefaultValue("false") boolean mustHaveAvailability
     ) {
         Driver driver = ds.findById(driverId);
-        List<Vehicle> vehiclesFromModel;
-        // TODO unify these methods
-        if (zoneId == null)
-            vehiclesFromModel = ds.getVehicles(driver, page);
-        else
-            vehiclesFromModel = ds.getVehicles(driver, zoneId, size, maxPrice, weekDay);
+        List<Vehicle> vehiclesFromModel = ds.getVehicles(
+                driver, zoneId, size, maxPrice,
+                weekDay, page, mustHaveAvailability
+        );
         List<VehicleDTO> vehicles = vehiclesFromModel.stream().map(VehicleDTO.mapper(uriInfo)).toList();
         return Response.ok(new GenericEntity<>(vehicles) {
         }).build();
+        // TODO add pagination headers
     }
 
     @POST

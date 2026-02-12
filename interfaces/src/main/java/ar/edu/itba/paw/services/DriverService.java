@@ -16,7 +16,7 @@ public interface DriverService extends UserService<Driver> {
             double rate
     );
 
-    List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday);
+    List<Vehicle> getVehicles(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, int page, boolean mustHaveAvailability);
 
     // TODO the 3 update methods prolly need a test, the availability one apparently it didn't have a test?
     void updateAvailability(
@@ -61,8 +61,6 @@ public interface DriverService extends UserService<Driver> {
     void updatePicture(Vehicle vehicle, String imgFilename, byte[] imgData);
 
     void finishBooking(Driver driver, int bookingId);
-
-    List<Vehicle> getVehicles(Driver driver, int page);
 
     int getVehicleCount(Driver driver);
 

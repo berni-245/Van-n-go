@@ -91,11 +91,22 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
-        List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMax, weekday);
-        vehicleList.removeIf(v -> v.getAvailability().isEmpty());
-        return vehicleList;
+    public List<Vehicle> getVehicles(
+            Driver driver,
+            Integer zoneId,
+            Size size,
+            Double priceMax,
+            DayOfWeek weekday,
+            int page,
+            boolean mustHaveAvailability
+    ) {
+        Zone zone = null;
+        if (zoneId != null)
+            zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        return vehicleDao.getDriverVehicles(
+                driver, zone, size, priceMax, weekday,
+                (page - 1) * Pagination.VEHICLES_PAGE_SIZE, mustHaveAvailability
+        );
     }
 
     @Transactional
@@ -267,12 +278,6 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     public void editProfile(Driver driver, String username, String mail, String description, String cbu, String language) {
         driverDao.editProfile(driver, username, mail, description, cbu, Language.valueOf(language));
         LOGGER.info("Driver {} updated it's profile", driver.getUsername());
-    }
-
-    @Transactional
-    @Override
-    public List<Vehicle> getVehicles(Driver driver, int page) {
-        return vehicleDao.getDriverVehicles(driver, (page - 1) * Pagination.VEHICLES_PAGE_SIZE);
     }
 
     @Transactional
