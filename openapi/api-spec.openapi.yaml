@@ -325,9 +325,10 @@ paths:
         - $ref: "#/components/parameters/MaxPriceQuery"
         - $ref: "#/components/parameters/WeekDayQuery"
         - $ref: "#/components/parameters/PaginationQuery"
+        - $ref: "#/components/parameters/MustHaveAvailabilityQuery"
       summary: List vehicles
       description: >
-        Get all vehicles of driver with id `id`. If zoneId is not included, it will list all the vehicles of the driver (with pagination), otherwise it'll list the ones that match the filter query params (without pagination).
+        Get all vehicles of driver with id `id`. Pagination is always included. Either with the additional filters or not.
       # TODO It probably should have pagination the second option
       operationId: listVehicles
       tags:
@@ -1032,6 +1033,13 @@ components:
       schema:
         type: integer
         default: 1
+    MustHaveAvailabilityQuery:
+      name: mustHaveAvailability
+      in: query
+      description: Indicates if the vehicles must have availability (true) or if it's not needed (false)
+      schema:
+        type: boolean
+        default: false
     ZoneQuery:
       name: zoneId
       in: query
