@@ -13,5 +13,5 @@ public @interface ValidChangeLanguage {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Language not supported";
+    String message() default "{ValidLanguage}";
 }

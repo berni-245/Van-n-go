@@ -13,5 +13,5 @@ public @interface ValidPlateNumber {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Plate number already registered";
+    String message() default "{ValidPlateNumber}";
 }

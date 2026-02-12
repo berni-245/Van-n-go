@@ -14,5 +14,5 @@ public @interface OldPasswordMatch {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Old password does not match";
+    String message() default "{OldPasswordMatch}";
 }

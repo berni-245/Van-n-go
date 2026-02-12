@@ -15,5 +15,5 @@ public @interface ValidPasswordChange {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Old password does not match or null password provided";
+    String message() default "{ValidPasswordChange}";
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public abstract class UpdateUserDTO {
 
     @Size(min = 5, max = 20)
-    @Pattern(regexp = "^[a-zA-Z]\\w*$")
+    @Pattern(regexp = "^[a-zA-Z]\\w*$", message = "{Pattern.username}")
     @ValidChangeUsername
     private String username;
 

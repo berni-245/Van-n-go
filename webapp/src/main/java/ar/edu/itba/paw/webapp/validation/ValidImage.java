@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 public @interface ValidImage {
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    String message() default "Image must be under 10MBs";
+
+    String message() default "{ValidImage}";
 }
 
