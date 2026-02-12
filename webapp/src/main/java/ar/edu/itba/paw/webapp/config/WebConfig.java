@@ -18,7 +18,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -37,7 +36,7 @@ public class WebConfig {
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setCacheSeconds(-1);
+        ms.setCacheSeconds(5);
         ms.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         ms.addBasenames("classpath:i18n/messages");
 
@@ -110,14 +109,5 @@ public class WebConfig {
                 http://pawserver.it.itba.edu.ar/paw-2024b-01/""");
         return properties;
     }
-
-
-    @Bean
-    public LocalValidatorFactoryBean getValidator() {
-        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
-        bean.setValidationMessageSource(messageSource());
-        return bean;
-    }
-
 
 }

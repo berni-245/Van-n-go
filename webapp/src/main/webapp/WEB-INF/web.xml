@@ -34,6 +34,7 @@
             <param-value>
                 ar.edu.itba.paw.webapp.controller,
                 ar.edu.itba.paw.webapp.mapper,
+                ar.edu.itba.paw.webapp.utils,
             </param-value>
         </init-param>
         <!-- pass to next filter if Jersey/App returns 404 -->
