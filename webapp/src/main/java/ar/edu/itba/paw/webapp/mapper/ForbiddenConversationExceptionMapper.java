@@ -4,13 +4,12 @@ import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ForbiddenConversationExceptionMapper implements ExceptionMapper<ForbiddenConversationException> {
+public class ForbiddenConversationExceptionMapper extends AbstractExceptionMapper<ForbiddenConversationException> {
     @Override
-    public Response toResponse(ForbiddenConversationException e) {
+    public Response generateResponse(ForbiddenConversationException e) {
         return Response.status(Response.Status.FORBIDDEN)
                 .entity(new ErrorDTO(e))
                 .build();

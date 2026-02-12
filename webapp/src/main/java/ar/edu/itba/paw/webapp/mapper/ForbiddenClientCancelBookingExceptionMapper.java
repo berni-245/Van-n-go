@@ -4,13 +4,12 @@ import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ForbiddenClientCancelBookingExceptionMapper implements ExceptionMapper<ForbiddenClientCancelBookingException> {
+public class ForbiddenClientCancelBookingExceptionMapper extends AbstractExceptionMapper<ForbiddenClientCancelBookingException> {
     @Override
-    public Response toResponse(ForbiddenClientCancelBookingException e) {
+    public Response generateResponse(ForbiddenClientCancelBookingException e) {
         return Response.status(Response.Status.FORBIDDEN)
                 .entity(new ErrorDTO(e))
                 .build();

@@ -4,13 +4,12 @@ import ar.edu.itba.paw.exceptions.InvalidVehicleException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class InvalidVehicleExceptionMapper implements ExceptionMapper<InvalidVehicleException> {
+public class InvalidVehicleExceptionMapper extends AbstractExceptionMapper<InvalidVehicleException> {
     @Override
-    public Response toResponse(InvalidVehicleException e) {
+    public Response generateResponse(InvalidVehicleException e) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new ErrorDTO(e))
                 .build();

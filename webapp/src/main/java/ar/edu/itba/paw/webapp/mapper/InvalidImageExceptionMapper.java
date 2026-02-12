@@ -4,13 +4,12 @@ import ar.edu.itba.paw.exceptions.InvalidImageException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class InvalidImageExceptionMapper implements ExceptionMapper<InvalidImageException> {
+public class InvalidImageExceptionMapper extends AbstractExceptionMapper<InvalidImageException> {
     @Override
-    public Response toResponse(InvalidImageException e) {
+    public Response generateResponse(InvalidImageException e) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new ErrorDTO(e))
                 .build();

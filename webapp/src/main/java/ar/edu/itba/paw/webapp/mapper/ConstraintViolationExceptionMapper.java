@@ -8,16 +8,15 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
 @Provider
-public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
+public class ConstraintViolationExceptionMapper extends AbstractExceptionMapper<ConstraintViolationException> {
 
     @Override
-    public Response toResponse(ConstraintViolationException exception) {
+    public Response generateResponse(ConstraintViolationException exception) {
 
         List<ErrorDTO> errors = new ArrayList<>();
 
