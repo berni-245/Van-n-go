@@ -9,8 +9,10 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class CreateBookingDTO {
+    @NotNull
+    private Integer clientId;
 
-    @NotNull //TODO posiblemente deberiamos crear una validacion para esto tambien tipo @ValidVehicleId
+    @NotNull
     private Integer vehicleId;
 
     @NotNull
@@ -31,9 +33,6 @@ public class CreateBookingDTO {
 
     @NotNull
     private ShiftPeriod shiftPeriod;
-
-    //TODO: sacar este atributo cuando tengamos JWT, esto es solo para testear
-    private Integer clientId;
 
     public Integer getClientId() {
         return clientId;

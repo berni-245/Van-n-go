@@ -3,11 +3,14 @@ package ar.edu.itba.paw.webapp.dto.message;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CreateMessageDTO {
 
+    @NotNull
     private Integer clientId;
 
+    @NotNull
     private Integer driverId;
 
     @NotBlank
