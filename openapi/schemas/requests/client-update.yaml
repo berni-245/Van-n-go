@@ -18,7 +18,7 @@ properties:
     example: new-mail@mail.com
   preferredLanguage:
     type: string
-    example: Spanish
+    example: SPANISH
   zoneId:
     type: integer
     example: 2

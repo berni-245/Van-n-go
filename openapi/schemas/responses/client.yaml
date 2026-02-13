@@ -16,7 +16,7 @@ properties:
     example: johndoe@mail.com
   preferredLanguage:
     type: string
-    example: english
+    example: ENGLISH
   self:
     type: string
     example: /api/clients/13

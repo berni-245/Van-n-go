@@ -27,4 +27,4 @@ properties:
     example: "0000003100000000000000"
   preferredLanguage:
     type: string
-    example: Spanish
+    example: SPANISH

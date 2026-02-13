@@ -16,7 +16,7 @@ properties:
     example: berniflete@gmail.com
   preferredLanguage:
     type: string
-    example: english
+    example: ENGLISH
   description:
     type: string
     example: Best fletes in Adrogué.
