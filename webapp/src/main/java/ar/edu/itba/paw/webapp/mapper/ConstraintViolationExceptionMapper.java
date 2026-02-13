@@ -23,9 +23,8 @@ public class ConstraintViolationExceptionMapper extends AbstractExceptionMapper<
         for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
 
             String fieldName = getLastPathNode(violation.getPropertyPath());
-
-            // Can't use this exception message because we need a localized message
-            errors.add(new ErrorDTO(ErrorType.INVALID_ARGUMENTS, violation.getMessage(), fieldName));
+            var subtype = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+            errors.add(new ErrorDTO(ErrorType.INVALID_ARGUMENTS, violation.getMessage(), fieldName, subtype));
         }
 
         return Response.status(Response.Status.BAD_REQUEST)
