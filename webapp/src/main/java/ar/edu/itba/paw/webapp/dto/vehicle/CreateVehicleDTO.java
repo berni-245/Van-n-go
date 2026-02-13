@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 
 public class CreateVehicleDTO {
 
-    @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})")
+    @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})", message = "{Pattern.plateNumber}")
     @ValidPlateNumber
     @NotNull
     private String plateNumber;
@@ -26,7 +26,7 @@ public class CreateVehicleDTO {
     private Double hourlyRate;
 
     @NotBlank
-    @Length(max = 255)
+    @Length(max = 255, message = "{Length.vehicle.description}")
     private String description;
 
     public String getPlateNumber() {

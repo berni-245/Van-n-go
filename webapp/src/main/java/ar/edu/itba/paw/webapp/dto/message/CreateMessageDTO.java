@@ -11,7 +11,7 @@ public class CreateMessageDTO {
     private Integer driverId;
 
     @NotBlank
-    @Length(max = 255)
+    @Length(max = 255, message = "{Length.message}")
     private String message;
 
     public Integer getClientId() {

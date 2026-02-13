@@ -6,11 +6,12 @@ import javax.validation.constraints.Pattern;
 
 public class UpdateDriverDTO extends UpdateUserDTO {
 
-    @Pattern(regexp = "^[a-zA-Z0-9]*$")
-    @Length(min = 2, max = 32)
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{Pattern.driver.cbu}")
+    @Length(min = 2, max = 32, message = "{Length.driver.cbu}")
     private String cbu;
 
-    @Length(min = 5, max = 255)
+    @Length(min = 5, max = 255, message = "{Length.driver.description}")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{Pattern.driver.description}")
     private String description;
 
     public UpdateDriverDTO() {

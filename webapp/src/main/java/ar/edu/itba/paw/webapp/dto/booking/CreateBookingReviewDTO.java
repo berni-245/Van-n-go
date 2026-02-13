@@ -7,12 +7,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class CreateBookingReviewDTO {
-    @Min(1)
-    @Max(5)
+    @Min(value = 1, message = "{Min.rating}")
+    @Max(value = 5, message = "{Max.rating}")
     @NotNull
     private Integer rating;
 
-    @Length(max = 255)
+    @Length(max = 255, message = "{Length.review}")
     private String comments;
 
     public CreateBookingReviewDTO() {
