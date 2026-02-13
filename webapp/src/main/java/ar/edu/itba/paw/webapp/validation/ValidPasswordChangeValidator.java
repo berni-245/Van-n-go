@@ -23,6 +23,6 @@ public class ValidPasswordChangeValidator extends ValidatorWithLoggedUser implem
             return false;
         }
 
-        return (dto.getPassword() == null && dto.getOldPassword() == null) || passwordEncoder.matches(dto.getOldPassword(), getUser().getPassword());
+        return passwordEncoder.matches(dto.getOldPassword(), getUser().getPassword());
     }
 }
