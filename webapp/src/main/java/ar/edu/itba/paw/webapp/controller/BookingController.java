@@ -12,6 +12,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.*;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.validation.ValidFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,8 +24,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -139,8 +138,7 @@ public class BookingController {
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {"application/pdf"})
     @Produces(value = {"application/pdf"})
-    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, InputStream inputStream) throws IOException {
-        byte[] pdfData = inputStream.readAllBytes();
+    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] pdfData) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         int imgId = imageService.uploadPop(b.getClient(), pdfData, "booking_%d_pop".formatted(bookingId), bookingId);
         return Response.ok(imageService.getImage(imgId).getData()).build();
