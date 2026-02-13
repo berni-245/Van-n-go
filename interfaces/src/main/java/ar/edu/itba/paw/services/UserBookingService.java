@@ -12,6 +12,8 @@ public interface UserBookingService<T extends User> {
 
     Booking getBookingById(T user, int id);
 
+    boolean existsBookingBetween(int clientId, int driverId);
+
     int getBookingCount(T user, BookingState state);
 
     default int getBookingPages(T user, BookingState state) {

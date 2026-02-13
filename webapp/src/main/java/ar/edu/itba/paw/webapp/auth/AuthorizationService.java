@@ -3,9 +3,6 @@ package ar.edu.itba.paw.webapp.auth;
 import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.exceptions.UserIdentityMismatchException;
-import ar.edu.itba.paw.models.BookingState;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
@@ -57,16 +54,7 @@ public class AuthorizationService {
     public boolean isValidConversation(int driverId, int clientId) {
         isAuthUserEither(driverId, clientId);
 
-        // TODO find booking by driver_id and client_id to do this less ugly
-        long count = 0;
-        Client c = clientService.findById(clientId);
-        Driver d = driverService.findById(driverId);
-        count += clientService.getBookings(c, BookingState.PENDING, 1).stream().filter(b -> b.getDriver().equals(d)).count();
-        count += clientService.getBookings(c, BookingState.ACCEPTED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
-        count += clientService.getBookings(c, BookingState.REJECTED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
-        count += clientService.getBookings(c, BookingState.FINISHED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
-        count += clientService.getBookings(c, BookingState.CANCELED, 1).stream().filter(b -> b.getDriver().equals(d)).count();
-        if (count <= 0)
+        if (!clientService.existsBookingBetween(clientId, driverId))
             throw new ForbiddenConversationException();
         return true;
     }

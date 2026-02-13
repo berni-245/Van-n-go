@@ -82,4 +82,9 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
         LOGGER.info("{} canceled booking {}", user.getUsername(), bookingId);
         return booking;
     }
+
+    @Override
+    public boolean existsBookingBetween(int clientId, int driverId) {
+        return bookingDao.existsBookingBetween(clientId, driverId);
+    }
 }
