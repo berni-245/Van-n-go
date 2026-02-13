@@ -24,7 +24,7 @@ public abstract class CreateUserDTO {
     //TODO: change regex to a more simple one (as mentioned on tp2)
     private String password;
 
-    public @Size(min = 5, max = 20) @Pattern(regexp = "^[a-zA-Z]\\w*$") String getUsername() {
+    public String getUsername() {
         return username;
     }
 
