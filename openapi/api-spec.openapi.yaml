@@ -75,7 +75,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/ClientIdPath"
       summary: Get information of a Client
-      description: Given a client ID, obtain the information of a Client.
+      description: Given a client ID, obtain the information of a Client. The public one may be requested by drivers who share a booking with the `clientId`, the complete one only by the auth client with the same `clientId`.
       operationId: getClientById
       tags:
         - Clients
@@ -83,7 +83,10 @@ paths:
         "200":
           description: Information of a client
           content:
-            application/json:
+            application/vnd.publicClient.v1+json:
+              schema:
+                $ref: "schemas/responses/client-public.yaml"
+            application/vnd.client.v1+json:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "401":
@@ -128,7 +131,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/ClientIdPath"
       summary: Get the profile picture.
-      description: Get the profile picture of the client id.
+      description: Get the profile picture of the client id. The picture may be requested by drivers who share a booking with the `clientId` or by the client with the same `clientId`.
       operationId: getClientProfilePicture
       tags:
         - Clients
@@ -231,7 +234,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
       summary: Get information of a Driver
-      description: Given a driver ID, obtain the information of a Driver.
+      description: Given a driver ID, obtain the information of a Driver. The public one may be requested by anyone, the complete one only by the auth driver with the same `driverId`.
       operationId: getDriverById
       tags:
         - Drivers
@@ -239,9 +242,14 @@ paths:
         "200":
           description: Information of a driver
           content:
-            application/json:
+            application/vnd.publicDriver.v1+json:
+              schema:
+                $ref: "schemas/responses/driver-public.yaml"
+            application/vnd.driver.v1+json:
               schema:
                 $ref: "schemas/responses/driver.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
     patch:

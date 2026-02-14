@@ -78,7 +78,7 @@ public class ClientController {
 
     @GET
     @Path("/{clientId}/profile-picture")
-    @PreAuthorize("@authService.isAuthUser(#id)")
+    @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
     @Produces("image/*")
     public Response getProfilePicture(@PathParam("clientId") final int id) {
         Client client = clientService.findById(id);

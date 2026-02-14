@@ -52,6 +52,13 @@ public class AuthorizationService {
         return true;
     }
 
+    public boolean isAuthUserOrDriverInBookingWith(int clientId) {
+        User user = getCurrentUser().getUser();
+        if (user.isDriver() && driverService.existsBookingBetween(clientId, user.getId()))
+            return true;
+        return isAuthUser(clientId);
+    }
+
     public boolean isAuthUserInConversation(int messageId) {
         Message m = messageService.getMessageById(messageId);
         int authUserId = getCurrentUser().getUser().getId();
