@@ -45,7 +45,6 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getClientById(@PathParam("id") final int id) {
-        //TODO: add 401 and 404 responses
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
@@ -57,7 +56,6 @@ public class ClientController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
-        //TODO: add 401 , 403 responses
         Client c = clientService.findById(id);
         clientService.editProfile(
                 c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
@@ -90,7 +88,6 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
-        //TODO: add 401 and 403 responses
         Client client = clientService.findById(id);
         imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp");
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
