@@ -39,9 +39,9 @@ public interface DriverService extends UserService<Driver> {
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        return (int) Math.ceil((double) getSearchResultCount(
+        return (int) Math.round(Math.ceil((double) getSearchResultCount(
                 zoneId, size, priceMax, weekday, rating
-        ) / Pagination.SEARCH_PAGE_SIZE);
+        ) / Pagination.SEARCH_PAGE_SIZE));
     }
 
     void acceptBooking(Driver driver, int bookingId);

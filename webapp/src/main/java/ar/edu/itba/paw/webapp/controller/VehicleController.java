@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.vehicle.*;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,9 +53,13 @@ public class VehicleController {
                 weekDay, page, mustHaveAvailability
         );
         List<VehicleDTO> vehicles = vehiclesFromModel.stream().map(VehicleDTO.mapper(uriInfo)).toList();
-        return Response.ok(new GenericEntity<>(vehicles) {
-        }).build();
-        // TODO add pagination headers
+        int maxPages = ds.getVehiclePages(
+                driver, zoneId, size, maxPrice,
+                weekDay, mustHaveAvailability
+        );
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<>(vehicles) {
+        });
+        return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
     }
 
     @POST

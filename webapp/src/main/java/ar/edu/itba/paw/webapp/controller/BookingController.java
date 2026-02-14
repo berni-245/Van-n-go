@@ -9,6 +9,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.*;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,8 +56,10 @@ public class BookingController {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
         List<BookingDTO> bookings = userService.getBookings(user, state, page).stream().map(BookingDTO.mapper(uriInfo)).toList();
-        return Response.ok(new GenericEntity<>(bookings) {
-        }).build();
+        int maxPages = userService.getBookingPages(user, state);
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<>(bookings) {
+        });
+        return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
     }
 
     @POST

@@ -9,6 +9,7 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.user.CreateDriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateDriverDTO;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,8 +54,10 @@ public class DriverController {
         List<DriverDTO> drivers = ds
                 .getSearchResults(zoneId, size, maxPrice, weekDay, minRating, order, page)
                 .stream().map(DriverDTO.mapper(uriInfo)).toList();
-        return Response.ok(new GenericEntity<>(drivers) {
-        }).build();
+        int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<>(drivers) {
+        });
+        return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
     }
 
     @POST
