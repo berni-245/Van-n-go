@@ -58,40 +58,7 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public List<Vehicle> getDriverVehicles(Driver d, Zone z, Size size, Double priceMax, DayOfWeek weekday, int offset, boolean mustHaveAvailability) {
-        StringBuilder nativeSql = new StringBuilder("""
-                SELECT DISTINCT v.id
-                FROM vehicle v
-                LEFT JOIN vehicle_zone vz ON v.id = vz.vehicle_id
-                LEFT JOIN vehicle_availability a ON v.id = a.vehicle_id
-                WHERE v.driver_id = :driverId
-                  AND v.plate_number IS NOT NULL
-                """);
-        if (z != null)
-            nativeSql.append(" AND vz.zone_id = :zoneId");
-        if (size != null)
-            nativeSql.append(" AND v.volume_m3 BETWEEN :minVol AND :maxVol");
-        if (priceMax != null)
-            nativeSql.append(" AND v.hourly_rate <= :priceMax");
-        if (weekday != null) {
-            nativeSql.append(" AND a.week_day = :weekday ");
-        } else if (mustHaveAvailability) {
-            nativeSql.append(" AND a.id IS NOT NULL ");
-        }
-        Query nativeQuery = em.createNativeQuery(nativeSql.toString())
-                .setParameter("driverId", d.getId());
-        if (z != null)
-            nativeQuery.setParameter("zoneId", z.getId());
-        nativeQuery.setFirstResult(offset)
-                .setMaxResults(Pagination.VEHICLES_PAGE_SIZE);
-        if (size != null) {
-            nativeQuery.setParameter("minVol", size.getMinVolume());
-            nativeQuery.setParameter("maxVol", size.getMaxVolume());
-        }
-        if (priceMax != null)
-            nativeQuery.setParameter("priceMax", priceMax);
-        if (weekday != null)
-            nativeQuery.setParameter("weekday", weekday.name());
-        var ids = nativeQuery.getResultList();
+        List<Integer> ids = getIds(d, z, size, priceMax, weekday, offset, mustHaveAvailability);
 
         TypedQuery<Vehicle> query = em.createQuery(
                 "from Vehicle v where id in (:vehicleIds) order by v.plateNumber",
@@ -101,43 +68,6 @@ public class VehicleJpaDao implements VehicleDao {
         return query.getResultList();
     }
 
-    private List<Integer> getIds(Driver d, Zone z, Size size, Double priceMax, DayOfWeek weekday, int offset, boolean mustHaveAvailability) {
-        StringBuilder nativeSql = new StringBuilder("""
-                SELECT DISTINCT v.id
-                FROM vehicle v
-                LEFT JOIN vehicle_zone vz ON v.id = vz.vehicle_id
-                LEFT JOIN vehicle_availability a ON v.id = a.vehicle_id
-                WHERE v.driver_id = :driverId
-                  AND v.plate_number IS NOT NULL
-                """);
-        if (z != null)
-            nativeSql.append(" AND vz.zone_id = :zoneId");
-        if (size != null)
-            nativeSql.append(" AND v.volume_m3 BETWEEN :minVol AND :maxVol");
-        if (priceMax != null)
-            nativeSql.append(" AND v.hourly_rate <= :priceMax");
-        if (weekday != null) {
-            nativeSql.append(" AND a.week_day = :weekday ");
-        } else if (mustHaveAvailability) {
-            nativeSql.append(" AND a.id IS NOT NULL ");
-        }
-        Query nativeQuery = em.createNativeQuery(nativeSql.toString())
-                .setParameter("driverId", d.getId());
-        if (z != null)
-            nativeQuery.setParameter("zoneId", z.getId());
-        nativeQuery.setFirstResult(offset)
-                .setMaxResults(Pagination.VEHICLES_PAGE_SIZE);
-        if (size != null) {
-            nativeQuery.setParameter("minVol", size.getMinVolume());
-            nativeQuery.setParameter("maxVol", size.getMaxVolume());
-        }
-        if (priceMax != null)
-            nativeQuery.setParameter("priceMax", priceMax);
-        if (weekday != null)
-            nativeQuery.setParameter("weekday", weekday.name());
-        return nativeQuery.getResultList();
-        // TODO terminar
-    }
 
     @Override
     public boolean plateNumberExists(String plateNumber) {
@@ -162,11 +92,51 @@ public class VehicleJpaDao implements VehicleDao {
 
     @Override
     public int getVehicleCount(Driver driver) {
-        return em.createQuery("""
-                        select count(*) from Vehicle v
-                        where v.driver = :driver and v.plateNumber IS NOT NULL
-                        """, Long.class)
-                .setParameter("driver", driver)
-                .getSingleResult().intValue();
+        return getIds(driver, null, null, null, null, null, false).size();
+    }
+
+    @Override
+    public int getVehicleCount(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability) {
+        return getIds(driver, zone, size, priceMax, weekday, null, mustHaveAvailability).size();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Integer> getIds(Driver d, Zone z, Size size, Double priceMax, DayOfWeek weekday, Integer offset, boolean mustHaveAvailability) {
+        StringBuilder nativeSql = new StringBuilder("""
+                SELECT DISTINCT v.id
+                FROM vehicle v
+                LEFT JOIN vehicle_zone vz ON v.id = vz.vehicle_id
+                LEFT JOIN vehicle_availability a ON v.id = a.vehicle_id
+                WHERE v.driver_id = :driverId
+                  AND v.plate_number IS NOT NULL
+                """);
+        if (z != null)
+            nativeSql.append(" AND vz.zone_id = :zoneId");
+        if (size != null)
+            nativeSql.append(" AND v.volume_m3 BETWEEN :minVol AND :maxVol");
+        if (priceMax != null)
+            nativeSql.append(" AND v.hourly_rate <= :priceMax");
+        if (weekday != null) {
+            nativeSql.append(" AND a.week_day = :weekday ");
+        } else if (mustHaveAvailability) {
+            nativeSql.append(" AND a.id IS NOT NULL ");
+        }
+        Query nativeQuery = em.createNativeQuery(nativeSql.toString())
+                .setParameter("driverId", d.getId());
+        if (z != null)
+            nativeQuery.setParameter("zoneId", z.getId());
+        if (offset != null) {
+            nativeQuery.setFirstResult(offset)
+                    .setMaxResults(Pagination.VEHICLES_PAGE_SIZE);
+        }
+        if (size != null) {
+            nativeQuery.setParameter("minVol", size.getMinVolume());
+            nativeQuery.setParameter("maxVol", size.getMaxVolume());
+        }
+        if (priceMax != null)
+            nativeQuery.setParameter("priceMax", priceMax);
+        if (weekday != null)
+            nativeQuery.setParameter("weekday", weekday.name());
+        return (List<Integer>) nativeQuery.getResultList();
     }
 }

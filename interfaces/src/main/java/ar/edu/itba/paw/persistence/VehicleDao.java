@@ -33,4 +33,6 @@ public interface VehicleDao {
     void deleteVehicle(Vehicle vehicle);
 
     int getVehicleCount(Driver driver);
+
+    int getVehicleCount(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability);
 }

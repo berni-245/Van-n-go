@@ -62,7 +62,11 @@ public interface DriverService extends UserService<Driver> {
 
     void finishBooking(Driver driver, int bookingId);
 
-    int getVehicleCount(Driver driver);
+    int getVehicleCount(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability);
+
+    default int getVehiclePages(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability) {
+        return (int) Math.round(Math.ceil((double) getVehicleCount(driver, zoneId, size, priceMax, weekday, mustHaveAvailability) / Pagination.VEHICLES_PAGE_SIZE));
+    }
 
     void deleteVehicle(Vehicle vehicle);
 }

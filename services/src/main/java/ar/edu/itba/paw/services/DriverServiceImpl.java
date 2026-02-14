@@ -283,8 +283,17 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public int getVehicleCount(Driver driver) {
-        return vehicleDao.getVehicleCount(driver);
+    public int getVehicleCount(Driver driver,
+                               Integer zoneId,
+                               Size size,
+                               Double priceMax,
+                               DayOfWeek weekday,
+                               boolean mustHaveAvailability
+    ) {
+        Zone zone = null;
+        if (zoneId != null)
+            zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        return vehicleDao.getVehicleCount(driver, zone, size, priceMax, weekday, mustHaveAvailability);
     }
 
     @Transactional
