@@ -4,6 +4,7 @@ import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.exceptions.UserIdentityMismatchException;
 import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MessageService;
@@ -40,6 +41,15 @@ public class AuthorizationService {
             return true;
 
         throw new UserIdentityMismatchException();
+    }
+
+    public boolean isAuthDriverInBookingWith(int clientId) {
+        User user = getCurrentUser().getUser();
+        if (!user.isDriver())
+            throw new ForbiddenClientInfoAccessException();
+        if (!driverService.existsBookingBetween(clientId, user.getId()))
+            throw new ForbiddenClientInfoAccessException();
+        return true;
     }
 
     public boolean isAuthUserInConversation(int messageId) {

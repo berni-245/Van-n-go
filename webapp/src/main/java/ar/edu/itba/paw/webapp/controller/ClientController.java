@@ -43,10 +43,18 @@ public class ClientController {
 
     @GET
     @Path("/{id}")
+    @PreAuthorize("@authService.isAuthDriverInBookingWith(#id)")
+    @Produces(value = {"application/vnd.clientPublic.v1+json"})
+    public Response getPublicClientInfoById(@PathParam("id") final int id) {
+        Client client = clientService.findById(id);
+        return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();
+    }
+
+    @GET
+    @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {"application/vnd.client.v1+json"})
     public Response getClientById(@PathParam("id") final int id) {
-        //TODO: add 401 and 404 responses
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
@@ -58,7 +66,6 @@ public class ClientController {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
-        //TODO: add 401 , 403 responses
         Client c = clientService.findById(id);
         clientService.editProfile(
                 c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
@@ -74,7 +81,6 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces("image/*")
     public Response getProfilePicture(@PathParam("clientId") final int id) {
-        //TODO: add 401 response
         Client client = clientService.findById(id);
         Integer imageId = client.getPfp();
         if(imageId != null){
@@ -92,7 +98,6 @@ public class ClientController {
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
-        //TODO: add 401 and 403 responses
         Client client = clientService.findById(id);
         imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp", type);
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();

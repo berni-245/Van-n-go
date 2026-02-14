@@ -23,18 +23,18 @@ public abstract class UserDTO {
     private URI rejectedBookings;
     private URI canceledBookings;
 
-    protected void setFromUser(UriInfo uriInfo, User user) {
+    protected void setPublicInfoFromUser(UriInfo uriInfo, User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.email = user.getMail();
-        this.preferredLanguage = user.getLanguage();
         UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
         this.self = userIdEndpointTemplate.clone().build();
-        if (user.getPfp() != null) {
-            this.profilePic = userIdEndpointTemplate.clone().path("profile-picture").build();
-        } else {
-            this.profilePic = null;
-        }
+        this.profilePic = userIdEndpointTemplate.clone().path("profile-picture").build();
+    }
+
+    protected void setAllInfoFromUser(UriInfo uriInfo, User user) {
+        setPublicInfoFromUser(uriInfo, user);
+        this.email = user.getMail();
+        this.preferredLanguage = user.getLanguage();
         String userTypeQueryParam = user.getType().equals("driver") ? "toDriver" : "fromClient";
         UriBuilder bookingTemplate = uriInfo
                 .getBaseUriBuilder().path("api").path("bookings")
