@@ -48,15 +48,16 @@ public class VehicleController {
             @QueryParam("mustHaveAvailability") @DefaultValue("false") boolean mustHaveAvailability
     ) {
         Driver driver = ds.findById(driverId);
+        int maxPages = ds.getVehiclePages(
+                driver, zoneId, size, maxPrice,
+                weekDay, mustHaveAvailability
+        );
+        Pagination.validatePage(page, maxPages);
         List<Vehicle> vehiclesFromModel = ds.getVehicles(
                 driver, zoneId, size, maxPrice,
                 weekDay, page, mustHaveAvailability
         );
         List<VehicleDTO> vehicles = vehiclesFromModel.stream().map(VehicleDTO.mapper(uriInfo)).toList();
-        int maxPages = ds.getVehiclePages(
-                driver, zoneId, size, maxPrice,
-                weekDay, mustHaveAvailability
-        );
         Response.ResponseBuilder response = Response.ok(new GenericEntity<>(vehicles) {
         });
         return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();

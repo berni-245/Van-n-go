@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Image;
-import ar.edu.itba.paw.models.SearchOrder;
-import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.user.CreateDriverDTO;
@@ -51,10 +48,11 @@ public class DriverController {
             @QueryParam("sortOrder") @DefaultValue("ALPHABETICAL") SearchOrder order,
             @QueryParam("page") @DefaultValue("1") int page
     ) {
+        int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
+        Pagination.validatePage(page, maxPages);
         List<DriverDTO> drivers = ds
                 .getSearchResults(zoneId, size, maxPrice, weekDay, minRating, order, page)
                 .stream().map(DriverDTO.mapper(uriInfo)).toList();
-        int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
         Response.ResponseBuilder response = Response.ok(new GenericEntity<>(drivers) {
         });
         return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
