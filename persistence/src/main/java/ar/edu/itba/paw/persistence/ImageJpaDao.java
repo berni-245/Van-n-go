@@ -51,6 +51,13 @@ public class ImageJpaDao implements ImageDao {
     @Override
     public int uploadPfp(byte[] bin, String fileName, User user, String type) {
         int imageId = uploadImage(fileName, bin, type);
+        Integer oldPfp = user.getPfp();
+        if (oldPfp != null) {
+            Image oldImage = em.find(Image.class, oldPfp);
+            if (oldImage != null) {
+                em.remove(oldImage);
+            }
+        }
         user.setPfp(imageId);
         em.merge(user);
         return imageId;
