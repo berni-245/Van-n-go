@@ -52,11 +52,11 @@ public class AuthorizationService {
         return true;
     }
 
-    public boolean isAuthUserOrDriverInBookingWith(int clientId) {
+    public boolean isAuthUserOrDriverInBookingWith(Integer clientId) {
         User user = getCurrentUser().getUser();
-        if (user.isDriver() && driverService.existsBookingBetween(clientId, user.getId()))
+        if (user.getId().equals(clientId))
             return true;
-        return isAuthUser(clientId);
+        return isAuthDriverInBookingWith(clientId);
     }
 
     public boolean isAuthUserInConversation(int messageId) {
