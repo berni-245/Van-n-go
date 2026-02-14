@@ -42,8 +42,17 @@ public class ClientController {
 
     @GET
     @Path("/{id}")
+    @PreAuthorize("@authService.isAuthDriverInBookingWith(#id)")
+    @Produces(value = {"application/vnd.clientPublic.v1+json"})
+    public Response getPublicClientInfoById(@PathParam("id") final int id) {
+        Client client = clientService.findById(id);
+        return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();
+    }
+
+    @GET
+    @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {"application/vnd.client.v1+json"})
     public Response getClientById(@PathParam("id") final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
@@ -71,7 +80,6 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces("image/*")
     public Response getProfilePicture(@PathParam("clientId") final int id) {
-        //TODO: add 401 response
         Client client = clientService.findById(id);
         Integer imageId = client.getPfp();
         if(imageId != null){
