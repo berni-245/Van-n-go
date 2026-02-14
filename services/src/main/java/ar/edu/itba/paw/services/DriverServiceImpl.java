@@ -140,7 +140,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         return driverDao.getSearchCount(zone, size, priceMax, weekday, rating);
     }
 
