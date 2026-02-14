@@ -10,14 +10,16 @@ public class ClientDTO extends UserDTO {
 
     private URI zone;
 
-    public static ClientDTO fromClient(UriInfo uriInfo, Client user) {
+    public static ClientDTO fromPublicClientInfo(UriInfo uriInfo, Client client) {
         ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setFromUser(uriInfo, user);
-        if (user.getZone() != null) {
-            clientDTO.zone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(user.getZone().getId())).build();
-        }else{
-            clientDTO.zone = null;
-        }
+        clientDTO.setPublicInfoFromUser(uriInfo, client);
+        return clientDTO;
+    }
+
+    public static ClientDTO fromClient(UriInfo uriInfo, Client client) {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setAllInfoFromUser(uriInfo, client);
+        clientDTO.zone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(client.getZone().getId())).build();
         return clientDTO;
     }
 

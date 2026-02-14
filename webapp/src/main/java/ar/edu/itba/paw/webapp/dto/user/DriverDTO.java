@@ -14,13 +14,23 @@ public class DriverDTO extends UserDTO {
     private URI vehicles;
 
     public static Function<Driver, DriverDTO> mapper(UriInfo uriInfo) {
-        return (driver) -> fromDriver(uriInfo, driver);
+        return (driver) -> fromPublicDriverInfo(uriInfo, driver);
     }
 
+    public static DriverDTO fromPublicDriverInfo(UriInfo uriInfo, Driver driver) {
+        DriverDTO dto = DriverDTO.baseDriverDtoBuilder(uriInfo, driver);
+        dto.setPublicInfoFromUser(uriInfo, driver);
+        return dto;
+    }
 
     public static DriverDTO fromDriver(UriInfo uriInfo, Driver driver) {
+        DriverDTO dto = DriverDTO.baseDriverDtoBuilder(uriInfo, driver);
+        dto.setAllInfoFromUser(uriInfo, driver);
+        return dto;
+    }
+
+    private static DriverDTO baseDriverDtoBuilder(UriInfo uriInfo, Driver driver) {
         DriverDTO dto = new DriverDTO();
-        dto.setFromUser(uriInfo, driver);
         dto.setRating(driver.getRating());
         dto.setCbu(driver.getCbu());
         dto.setDescription(driver.getDescription());
