@@ -25,9 +25,9 @@ public class TokenGeneratorFilter extends OncePerRequestFilter {
                 (request.getHeader("Authorization").startsWith("Basic ") || (auth.getDetails() != null && auth.getDetails() == "REFRESH")) &&
                 auth.getPrincipal() instanceof PawUserDetails user
         ) {
-            String accessToken = jwtTokenUtil.generateAccessToken(user);
+            String authToken = jwtTokenUtil.generateAuthToken(user);
             String refreshToken = jwtTokenUtil.generateRefreshToken(user);
-            response.setHeader("vango-auth-token", accessToken);
+            response.setHeader("vango-auth-token", authToken);
             response.setHeader("vango-refresh-token", refreshToken);
         }
         chain.doFilter(request, response);

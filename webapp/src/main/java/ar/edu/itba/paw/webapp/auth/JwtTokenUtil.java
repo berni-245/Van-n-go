@@ -33,12 +33,12 @@ public class JwtTokenUtil {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
-    public String generateAccessToken(PawUserDetails userDetails) {
+    public String generateAuthToken(PawUserDetails userDetails) {
         User user = userDetails.getUser();
         return Jwts.builder()
                 .claim("type", user.getIsDriver() ? "driver" : "client")
                 .claim("id", user.getId())
-                .claim("tokenType", JwtTokenType.ACCESS.getType())
+                .claim("tokenType", JwtTokenType.AUTH.getType())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
                 .signWith(key)

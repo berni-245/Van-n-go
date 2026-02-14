@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.auth;
 
 public enum JwtTokenType {
-    ACCESS("access"),
+    AUTH("auth"),
     REFRESH("refresh");
 
     private final String type;
