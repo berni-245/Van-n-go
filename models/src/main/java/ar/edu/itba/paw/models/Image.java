@@ -17,14 +17,18 @@ public class Image {
     @Column(name = "file_name", length = 255, nullable = false)
     private String fileName;
 
+    @Column(name = "type")
+    private String type;
+
     public Image() {
 
     }
 
-    public Image(Integer id, byte[] data, String fileName) {
+    public Image(Integer id, byte[] data, String fileName, String mimeType) {
         this.id = id;
         this.data = data;
         this.fileName = fileName;
+        this.type = mimeType;
     }
 
     public Integer getId() {
@@ -45,5 +49,13 @@ public class Image {
 
     public void setData(byte[] imgData) {
         this.data = imgData;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -262,14 +262,15 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     public void updatePicture(
             Vehicle vehicle,
             String imgFilename,
-            byte[] imgData
+            byte[] imgData,
+            String type
     ) {
         Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicle.getId());
         if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
             throw new VehicleNotFoundException();
         Vehicle v = oldVehicle.get();
-        if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
-            imageDao.uploadVehicleImage(imgData, imgFilename, v);
+        if (imgFilename != null && type != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
+            imageDao.uploadVehicleImage(imgData, imgFilename, v, type);
         }
     }
 

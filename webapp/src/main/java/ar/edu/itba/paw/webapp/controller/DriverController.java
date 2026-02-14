@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Image;
 import ar.edu.itba.paw.models.SearchOrder;
 import ar.edu.itba.paw.models.Size;
 import ar.edu.itba.paw.services.DriverService;
@@ -98,9 +99,9 @@ public class DriverController {
         Driver driver = ds.findById(id);
         Integer imageId = driver.getPfp();
         if (imageId != null) {
-            byte[] pictureData = imageService.getImage(imageId).getData();
-            if (pictureData != null) {
-                return Response.ok(pictureData).build();
+            Image picture = imageService.getImage(imageId);
+            if (picture.getData() != null) {
+                return Response.ok(picture.getData()).type(picture.getType()).build();
             }
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -110,9 +111,10 @@ public class DriverController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
+    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
+                                         @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(id);
-        imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp");
+        imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp", type);
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 

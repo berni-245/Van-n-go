@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Image;
@@ -43,19 +42,19 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public int uploadPfp(User user, byte[] bin, String fileName) {
+    public int uploadPfp(User user, byte[] bin, String fileName, String type) {
         validateImage(fileName, bin);
-        int toReturn = imgDao.uploadPfp(bin, fileName, user);
+        int toReturn = imgDao.uploadPfp(bin, fileName, user, type);
         LOGGER.info("Uploaded pfp for user {}", user.getId());
         return toReturn;
     }
 
     @Transactional
     @Override
-    public int uploadPop(Client client, byte[] bin, String fileName, int bookingId) {
+    public int uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type) {
         validateImage(fileName, bin);
         Booking booking = bookingDao.getClientBookingById(client, bookingId);
-        int toReturn = imgDao.uploadPop(bin, fileName, booking );
+        int toReturn = imgDao.uploadPop(bin, fileName, booking, type);
         mailService.sendReceivedPop(client.getUsername(), booking.getDriver().getMail(), booking.getDate(), booking.getDriver().getLanguage().getLocale());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
         return toReturn;

@@ -58,7 +58,7 @@ public interface DriverService extends UserService<Driver> {
 
     void updateVehicle(Driver driver, Integer vehicleId, String plateNumber, double volume, String description, double rate);
 
-    void updatePicture(Vehicle vehicle, String imgFilename, byte[] imgData);
+    void updatePicture(Vehicle vehicle, String imgFilename, byte[] imgData, String type);
 
     void finishBooking(Driver driver, int bookingId);
 

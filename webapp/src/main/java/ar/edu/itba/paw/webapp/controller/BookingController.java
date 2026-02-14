@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.BookingState;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
@@ -123,25 +120,27 @@ public class BookingController {
 
     @GET
     @Path("/{bookingId}/proof-of-payment")
-    @Produces(value = {"application/pdf"})
+    @Produces(value = {"application/pdf", "image/*"})
     public Response getBookingProofOfPayment(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
-        Integer pdfId = b.getPop();
-        if (pdfId == null)
+        Integer popId = b.getPop();
+        if (popId == null)
             return Response.status(Response.Status.NOT_FOUND).build();
-        byte[] pdf = imageService.getImage(pdfId).getData();
-        return Response.ok(pdf).build();
+        Image pop = imageService.getImage(popId);
+        return Response.ok(pop.getData()).type(pop.getType()).build();
     }
 
     @POST
     @Path("/{bookingId}/proof-of-payment")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
-    @Consumes(value = {"application/pdf"})
-    @Produces(value = {"application/pdf"})
-    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] pdfData) {
+    @Consumes(value = {"application/pdf", "image/*"})
+    @Produces(value = {"application/json", "application/pdf", "image/*"})
+    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] proofOfPayment,
+                                                @HeaderParam("Content-Type") String contentType) {
+        System.out.println("Content-Type: " + contentType);
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
-        int imgId = imageService.uploadPop(b.getClient(), pdfData, "booking_%d_pop".formatted(bookingId), bookingId);
-        return Response.ok(imageService.getImage(imgId).getData()).build();
+        int imgId = imageService.uploadPop(b.getClient(), proofOfPayment, "booking_%d_pop".formatted(bookingId), bookingId, contentType);
+        return Response.ok().build();
     }
 
     private <T extends User> Booking getBookingIfAuthUserOwnsIt(int bookingId) {

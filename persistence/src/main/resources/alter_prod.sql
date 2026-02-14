@@ -20,3 +20,20 @@ WHERE zone_id IS NULL;
 
 ALTER TABLE client
     ALTER COLUMN zone_id SET NOT NULL;
+
+--After 14 of february
+UPDATE image
+SET type = CASE
+    -- Si los primeros 2 bytes son 'FF D8' (en hex), es un JPEG
+               WHEN encode(substring(bin from 1 for 2), 'hex') = 'ffd8' THEN 'image/jpeg'
+
+    -- Si los primeros 4 bytes son '89 50 4E 47', es un PNG
+               WHEN encode(substring(bin from 1 for 4), 'hex') = '89504e47' THEN 'image/png'
+
+    -- Si los primeros 4 bytes son '%PDF' (en hex: '25 50 44 46'), es un PDF
+               WHEN encode(substring(bin from 1 for 4), 'hex') = '25504446' THEN 'application/pdf'
+
+    -- Fallback genérico por si hay algún formato desconocido
+               ELSE 'application/octet-stream'
+    END
+WHERE type IS NULL;

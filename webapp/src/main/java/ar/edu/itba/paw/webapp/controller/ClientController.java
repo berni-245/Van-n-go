@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Image;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.user.ClientDTO;
@@ -77,9 +78,9 @@ public class ClientController {
         Client client = clientService.findById(id);
         Integer imageId = client.getPfp();
         if(imageId != null){
-            byte[] pictureData = imageService.getImage(imageId).getData();
-            if (pictureData != null) {
-                return Response.ok(pictureData).build();
+            Image picture = imageService.getImage(imageId);
+            if (picture.getData() != null) {
+                return Response.ok(picture.getData()).type(picture.getType()).build();
             }
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -89,10 +90,11 @@ public class ClientController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData) {
+    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
+                                         @HeaderParam("Content-Type") String type) {
         //TODO: add 401 and 403 responses
         Client client = clientService.findById(id);
-        imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp");
+        imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp", type);
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 

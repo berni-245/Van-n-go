@@ -118,9 +118,9 @@ public class VehicleController {
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         Integer imageId = vehicle.getImgId();
         if (imageId != null) {
-            byte[] pictureData = imageService.getImage(imageId).getData();
-            if (pictureData != null) {
-                return Response.ok(pictureData).build();
+            Image picture = imageService.getImage(imageId);
+            if (picture.getData() != null) {
+                return Response.ok(picture.getData()).type(picture.getType()).build();
             }
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -131,10 +131,11 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces({"image/jpeg", "image/png"})
     @Consumes({"image/jpeg", "image/png"})
-    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData) {
+    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData,
+                                         @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        ds.updatePicture(v, "vehicle_" + v.getId() + "_picture", imageData);
+        ds.updatePicture(v, "vehicle_" + v.getId() + "_picture", imageData, type);
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
 
