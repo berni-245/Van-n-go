@@ -67,7 +67,16 @@ public class DriverController {
 
     @GET
     @Path("/{id}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {"application/vnd.driverPublic.v1+json"})
+    public Response getPublicDriverInfoById(@PathParam("id") int id) {
+        Driver driver = ds.findById(id);
+        return Response.ok(DriverDTO.fromPublicDriverInfo(uriInfo, driver)).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Produces(value = {"application/vnd.driver.v1+json"})
     public Response getDriverById(@PathParam("id") int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
