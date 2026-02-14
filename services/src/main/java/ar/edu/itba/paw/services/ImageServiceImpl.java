@@ -42,22 +42,20 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public int uploadPfp(User user, byte[] bin, String fileName, String type) {
+    public void uploadPfp(User user, byte[] bin, String fileName, String type) {
         validateImage(fileName, bin);
-        int toReturn = imgDao.uploadPfp(bin, fileName, user, type);
+        imgDao.uploadPfp(bin, fileName, user, type);
         LOGGER.info("Uploaded pfp for user {}", user.getId());
-        return toReturn;
     }
 
     @Transactional
     @Override
-    public int uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type) {
+    public void uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type) {
         validateImage(fileName, bin);
         Booking booking = bookingDao.getClientBookingById(client, bookingId);
-        int toReturn = imgDao.uploadPop(bin, fileName, booking, type);
+        imgDao.uploadPop(bin, fileName, booking, type);
         mailService.sendReceivedPop(client.getUsername(), booking.getDriver().getMail(), booking.getDate(), booking.getDriver().getLanguage().getLocale());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
-        return toReturn;
     }
 
     private void validateImage(String filename, byte[] bin) {

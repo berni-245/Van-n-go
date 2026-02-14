@@ -33,24 +33,42 @@ public class ImageJpaDao implements ImageDao {
     }
 
     @Override
-    public int uploadPop(byte[] bin, String fileName, Booking booking, String type) {
-        int imageId = uploadImage(fileName, bin, type);
-        booking.setPop(imageId);
+    public void uploadPop(byte[] bin, String fileName, Booking booking, String type) {
+        Integer oldPopId = booking.getPop();
+        if (oldPopId != null) {
+            Image oldPop = em.find(Image.class, oldPopId);
+            em.remove(oldPop);
+        }
+        if (bin.length != 0) {
+            int imageId = uploadImage(fileName, bin, type);
+            booking.setPop(imageId);
+            em.merge(booking);
+            return;
+        }
+        booking.setPop(null);
         em.merge(booking);
-        return imageId;
     }
 
     @Override
-    public int uploadVehicleImage(byte[] bin, String fileName, Vehicle vehicle, String type) {
-        int imageId = uploadImage(fileName, bin, type);
-        vehicle.setImgId(imageId);
+    public void uploadVehicleImage(byte[] bin, String fileName, Vehicle vehicle, String type) {
+        Integer oldImgId = vehicle.getImgId();
+        if (oldImgId != null) {
+            Image oldImage = em.find(Image.class, oldImgId);
+            em.remove(oldImage);
+        }
+        if (bin.length != 0) {
+            int imageId = uploadImage(fileName, bin, type);
+            vehicle.setImgId(imageId);
+            em.merge(vehicle);
+            return;
+        }
+        vehicle.setImgId(null);
         em.merge(vehicle);
-        return imageId;
     }
 
+
     @Override
-    public int uploadPfp(byte[] bin, String fileName, User user, String type) {
-        int imageId = uploadImage(fileName, bin, type);
+    public void uploadPfp(byte[] bin, String fileName, User user, String type) {
         Integer oldPfp = user.getPfp();
         if (oldPfp != null) {
             Image oldImage = em.find(Image.class, oldPfp);
@@ -58,8 +76,14 @@ public class ImageJpaDao implements ImageDao {
                 em.remove(oldImage);
             }
         }
-        user.setPfp(imageId);
+        if (bin.length != 0) {
+            int imageId = uploadImage(fileName, bin, type);
+            user.setPfp(imageId);
+            em.merge(user);
+            return;
+        }
+        user.setPfp(null);
         em.merge(user);
-        return imageId;
+
     }
 }

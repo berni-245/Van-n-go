@@ -143,7 +143,7 @@ paths:
           $ref: "schemas/errors/unauthorized.yaml"
         "404":
           $ref: "schemas/errors/image-not-found.yaml"
-    post:
+    put:
       parameters:
         - $ref: "#/components/parameters/ClientIdPath"
       tags:
@@ -156,14 +156,8 @@ paths:
         description: Image file to use as the client’s profile picture
         $ref: "schemas/image.yaml"
       responses:
-        "201":
+        "204":
           description: Profile picture uploaded
-          headers:
-            Location:
-              description: URI of the uploaded image
-              schema:
-                type: string
-                example: "api/client/42/profile-picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -296,7 +290,7 @@ paths:
           $ref: "schemas/image.yaml"
         "404":
           $ref: "schemas/errors/image-not-found.yaml"
-    post:
+    put:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
       tags:
@@ -309,14 +303,8 @@ paths:
         description: Image file to use as the driver’s profile picture
         $ref: "schemas/image.yaml"
       responses:
-        "201":
+        "204":
           description: Profile picture uploaded
-          headers:
-            Location:
-              description: URI of the uploaded image
-              schema:
-                type: string
-                example: "api/drivers/13/profile-picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -544,7 +532,7 @@ paths:
           $ref: "schemas/image.yaml"
         "404":
           $ref: "schemas/errors/image-not-found.yaml"
-    post:
+    put:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
         - $ref: "#/components/parameters/VehicleIdPath"
@@ -557,14 +545,8 @@ paths:
         required: true
         $ref: "schemas/image.yaml"
       responses:
-        "201":
+        "204":
           description: Vehicle picture uploaded
-          headers:
-            Location:
-              description: URI of the uploaded image
-              schema:
-                type: string
-                example: "api/drivers/13/vehicles/42/picture"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -796,7 +778,7 @@ paths:
           $ref: "schemas/errors/forbidden.yaml"
         "404":
           $ref: "schemas/errors/image-not-found.yaml"
-    post:
+    put:
       parameters:
         - $ref: "#/components/parameters/BookingIdPath"
       tags:
@@ -814,14 +796,8 @@ paths:
               format: binary
               description: Pdf file to use as the booking’s proof of payment.
       responses:
-        "201":
+        "204":
           description: Proof of payment uploaded
-          headers:
-            Location:
-              description: URI of the uploaded proof of payment
-              schema:
-                type: string
-                example: "api/bookings/42/proof-of-payment"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":

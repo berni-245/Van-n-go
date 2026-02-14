@@ -117,7 +117,7 @@ public class DriverController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
+    @PUT
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
@@ -125,7 +125,7 @@ public class DriverController {
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(id);
         imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp", type);
-        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
+        return Response.noContent().build();
     }
 
 }

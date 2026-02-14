@@ -92,7 +92,7 @@ public class ClientController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
+    @PUT
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({"image/jpeg", "image/png"})
@@ -100,7 +100,7 @@ public class ClientController {
                                          @HeaderParam("Content-Type") String type) {
         Client client = clientService.findById(id);
         imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp", type);
-        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
+        return Response.noContent().build();
     }
 
 

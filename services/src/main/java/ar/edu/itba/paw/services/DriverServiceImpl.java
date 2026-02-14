@@ -269,9 +269,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
             throw new VehicleNotFoundException();
         Vehicle v = oldVehicle.get();
-        if (imgFilename != null && type != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
-            imageDao.uploadVehicleImage(imgData, imgFilename, v, type);
-        }
+        imageDao.uploadVehicleImage(imgData, imgFilename, v, type);
     }
 
     @Transactional

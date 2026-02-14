@@ -132,17 +132,17 @@ public class VehicleController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
+    @PUT
     @Path("{vehicleId}/picture")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces({"image/jpeg", "image/png"})
+    @Produces({"image/jpeg", "image/png", "application/json"})
     @Consumes({"image/jpeg", "image/png"})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.updatePicture(v, "vehicle_" + v.getId() + "_picture", imageData, type);
-        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
+        return Response.noContent().build();
     }
 
     @GET

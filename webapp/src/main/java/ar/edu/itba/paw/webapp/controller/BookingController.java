@@ -134,17 +134,16 @@ public class BookingController {
         return Response.ok(pop.getData()).type(pop.getType()).build();
     }
 
-    @POST
+    @PUT
     @Path("/{bookingId}/proof-of-payment")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {"application/pdf", "image/*"})
     @Produces(value = {"application/json", "application/pdf", "image/*"})
     public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] proofOfPayment,
                                                 @HeaderParam("Content-Type") String contentType) {
-        System.out.println("Content-Type: " + contentType);
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
-        int imgId = imageService.uploadPop(b.getClient(), proofOfPayment, "booking_%d_pop".formatted(bookingId), bookingId, contentType);
-        return Response.ok().build();
+        imageService.uploadPop(b.getClient(), proofOfPayment, "booking_%d_pop".formatted(bookingId), bookingId, contentType);
+        return Response.noContent().build();
     }
 
     private <T extends User> Booking getBookingIfAuthUserOwnsIt(int bookingId) {

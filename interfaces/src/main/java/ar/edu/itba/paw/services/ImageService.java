@@ -8,7 +8,7 @@ public interface ImageService {
 
     Image getImage(int imgId);
 
-    int uploadPfp(User user, byte[] bin, String fileName, String type);
+    void uploadPfp(User user, byte[] bin, String fileName, String type);
 
-    int uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type);
+    void uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type);
 }
