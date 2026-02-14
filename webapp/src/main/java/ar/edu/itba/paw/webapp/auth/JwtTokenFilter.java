@@ -44,22 +44,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         String token = header.split(" ")[1];
 
-        if (!tryAuthenticateFromToken(token, false)) {
-            String refreshToken = request.getHeader(REFRESH_HEADER_NAME);
-            tryAuthenticateFromToken(refreshToken, true);
-        }
+        tryAuthenticateFromToken(token);
         chain.doFilter(request, response);
     }
 
-    private boolean tryAuthenticateFromToken(String token, boolean mustRefresh) {
+    private void tryAuthenticateFromToken(String token) {
         Claims claims;
         try {
             claims = jwtTokenUtil.getPayloadFromToken(token);
         } catch (Exception e) {
-            return false;
+            return;
         }
         String type = (String) claims.get("type");
         int id = (Integer) claims.get("id");
+        boolean mustRefresh = claims.get("tokenType").equals(JwtTokenType.REFRESH.getType());
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         PawUserDetails userDetails = getUserDetails(type, id, authorities);
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -67,7 +65,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         );
         if (mustRefresh) auth.setDetails("REFRESH");
         SecurityContextHolder.getContext().setAuthentication(auth);
-        return true;
     }
 
     private PawUserDetails getUserDetails(String type, int id, Collection<SimpleGrantedAuthority> authorities) {
