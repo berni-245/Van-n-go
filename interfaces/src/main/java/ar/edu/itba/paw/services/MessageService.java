@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.Pagination;
 
 import java.util.List;
 
@@ -16,9 +16,15 @@ public interface MessageService {
 
     Message sendDriverMessageWithoutBooking(Driver sender, Integer recipient, String message); //TODO: hacer que los tests usen los metdos nuevos que no dependen del booking
 
-    List<Message> getConversation(Booking booking, Client client, Driver driver);
+    int getConversationMessageCount(Client client, Driver driver);
 
-    List<Message> getConversationWithoutBooking(Client client, Driver driver);
+    default int getConversationPages(Client client, Driver driver) {
+        return (int) Math.round(Math.ceil((double) getConversationMessageCount(
+                client, driver
+        ) / Pagination.MAX_MESSAGE_RETRIEVAL));
+    }
+
+    List<Message> getConversationWithoutBooking(Client client, Driver driver, int page);
 
     Message getMessageById(Integer messageId);
 }

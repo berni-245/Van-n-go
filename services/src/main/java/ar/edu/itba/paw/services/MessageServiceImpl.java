@@ -2,10 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.InvalidMessageException;
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
@@ -98,17 +95,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getConversation(Booking booking, Client client, Driver driver) {
-        checkValidConversation(booking, client, driver);
-        return messageDao.getConversation(client, driver);
-    }
-
-    @Override
-    public List<Message> getConversationWithoutBooking(Client client, Driver driver) { //TODO: cambiar los Tests para que usen este metodo
+    public List<Message> getConversationWithoutBooking(Client client, Driver driver, int page) { //TODO: cambiar los Tests para que usen este metodo
         if (!bookingDao.existsBookingBetween(client, driver)) {
             throw new ForbiddenConversationException();
         }
-        return messageDao.getConversation(client, driver);
+        return messageDao.getConversation(client, driver, (page - 1) * Pagination.MAX_MESSAGE_RETRIEVAL);
     }
 
     @Override
@@ -116,8 +107,8 @@ public class MessageServiceImpl implements MessageService {
         return messageDao.getMessageById(messageId);
     }
 
-    private void checkValidConversation(Booking booking, Client client, Driver driver) {
-        if (!booking.getClient().equals(client) || !booking.getDriver().equals(driver))
-            throw new ForbiddenConversationException();
+    @Override
+    public int getConversationMessageCount(Client client, Driver driver) {
+        return messageDao.getConversationMessageCount(client, driver);
     }
 }

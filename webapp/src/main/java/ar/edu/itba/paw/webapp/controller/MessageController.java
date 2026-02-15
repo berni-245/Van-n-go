@@ -3,12 +3,14 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.MessageService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.message.CreateMessageDTO;
 import ar.edu.itba.paw.webapp.dto.message.MessageDTO;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -38,15 +40,21 @@ public class MessageController {
     @GET
     @PreAuthorize("@authService.isValidConversation(#driverId, #clientId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response listMessages(@QueryParam("driverId") Integer driverId,
-                              @QueryParam("clientId") Integer clientId) {
+    public Response listMessages(
+            @QueryParam("driverId") Integer driverId,
+            @QueryParam("clientId") Integer clientId,
+            @QueryParam("page") @DefaultValue("1") int page
+    ) {
         Client client = clientService.findById(clientId);
         Driver driver = driverService.findById(driverId);
-        List<MessageDTO> messages = messageService.getConversationWithoutBooking(client, driver).stream()
+        int maxPages = messageService.getConversationPages(client, driver);
+        Pagination.validatePage(page, maxPages);
+        List<MessageDTO> messages = messageService.getConversationWithoutBooking(client, driver, page).stream()
                 .map(MessageDTO.mapper(uriInfo))
                 .toList();
-        return Response.ok(new GenericEntity<>(messages) {
-        }).build();
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<>(messages) {
+        });
+        return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
     }
 
     @POST

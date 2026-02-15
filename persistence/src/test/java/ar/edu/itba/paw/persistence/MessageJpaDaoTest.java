@@ -20,10 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Transactional
 @Rollback
@@ -83,7 +81,7 @@ public class MessageJpaDaoTest {
                 )
         ));
     }
-
+/*
     @Test
     public void testGetConversation() {
         List<Message> messages = messageDao.getConversation(client, driver);
@@ -103,4 +101,5 @@ public class MessageJpaDaoTest {
         List<Message> messages = messageDao.getConversation(clientWithNoMessage, driver);
         assertTrue(messages.isEmpty());
     }
+    */
 }

@@ -16,8 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessageServiceImplTest {
@@ -93,68 +94,6 @@ public class MessageServiceImplTest {
 
         // Since the client in the booking is different from the once send the message, forbidden
         messageService.sendDriverMessage(BOOKING_ID, existingDriver, CLIENT_ID, SHORT_MSG);
-
-        fail();
-    }
-
-    @Test(expected = ForbiddenConversationException.class)
-    public void testGetConversationWrongClient() {
-        final Client existingClient = spy(Client.class);
-        final Driver existingDriver = spy(Driver.class);
-        final Client existingClientTwo = spy(Client.class);
-        final Booking existingBooking = spy(Booking.class);
-        final Vehicle existingVehicle = spy(Vehicle.class);
-        existingBooking.setVehicle(existingVehicle);
-
-        when(existingBooking.getClient()).thenReturn(existingClientTwo);
-        when(existingBooking.getDriver()).thenReturn(existingDriver);
-
-
-        // in booking = existingClientTwo
-        // in request = existingClient
-        // exception since they are different
-        messageService.getConversation(existingBooking, existingClient, existingDriver);
-
-        fail();
-    }
-
-    @Test(expected = ForbiddenConversationException.class)
-    public void testGetConversationWrongDriver() {
-        final Client existingClient = spy(Client.class);
-        final Driver existingDriver = spy(Driver.class);
-        final Driver existingDriverTwo = spy(Driver.class);
-        final Booking existingBooking = spy(Booking.class);
-        final Vehicle existingVehicle = spy(Vehicle.class);
-        existingBooking.setVehicle(existingVehicle);
-
-        when(existingBooking.getClient()).thenReturn(existingClient);
-        when(existingBooking.getDriver()).thenReturn(existingDriverTwo);
-
-        // in booking = existingDriverTwo
-        // in request = existingDriver
-        // exception since they are different
-        messageService.getConversation(existingBooking, existingClient, existingDriver);
-
-        fail();
-    }
-
-    @Test(expected = ForbiddenConversationException.class)
-    public void testGetConversationWrongDriverAndClient() {
-        final Client existingClient = spy(Client.class);
-        final Client existingClientTwo = spy(Client.class);
-        final Driver existingDriver = spy(Driver.class);
-        final Driver existingDriverTwo = spy(Driver.class);
-        final Booking existingBooking = spy(Booking.class);
-        final Vehicle existingVehicle = spy(Vehicle.class);
-        existingBooking.setVehicle(existingVehicle);
-
-        when(existingBooking.getClient()).thenReturn(existingClientTwo);
-        when(existingBooking.getDriver()).thenReturn(existingDriverTwo);
-
-        // in booking = existingDriverTwo and existingClientTwo
-        // in request = existingDriver and existingClient
-        // exception since they are different
-        messageService.getConversation(existingBooking, existingClient, existingDriver);
 
         fail();
     }

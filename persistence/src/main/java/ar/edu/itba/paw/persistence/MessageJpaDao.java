@@ -20,13 +20,15 @@ public class MessageJpaDao implements MessageDao {
 
 
     @Override
-    public List<Message> getConversation(Client client, Driver driver) {
+    public List<Message> getConversation(Client client, Driver driver, int offset) {
         var messageIds = em.createNativeQuery("""
                     SELECT m.id FROM message m
                     WHERE m.client_id = :clientId AND m.driver_id = :driverId
                     ORDER BY m.time_sent DESC
-                """).setParameter("clientId", client.getId())
+                        """)
+                .setParameter("clientId", client.getId())
                 .setParameter("driverId", driver.getId())
+                .setFirstResult(offset)
                 .setMaxResults(Pagination.MAX_MESSAGE_RETRIEVAL)
                 .getResultList();
 
@@ -61,5 +63,16 @@ public class MessageJpaDao implements MessageDao {
                 .setMaxResults(1);
         final List<LocalDateTime> resultList = query.getResultList();
         return resultList.isEmpty() ? null : resultList.getFirst();
+    }
+
+    @Override
+    public int getConversationMessageCount(Client client, Driver driver) {
+        return em.createQuery("""
+                        select count(*) from Message m
+                        where m.client = :client and m.driver = :driver
+                        """, Long.class)
+                .setParameter("driver", driver)
+                .setParameter("client", client)
+                .getSingleResult().intValue();
     }
 }
