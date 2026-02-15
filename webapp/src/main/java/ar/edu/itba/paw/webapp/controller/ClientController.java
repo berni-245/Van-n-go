@@ -44,7 +44,7 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
-    @Produces(value = {"application/vnd.clientPublic.v1+json"})
+    @Produces(value = {"application/vnd.publicClient.v1+json"})
     public Response getPublicClientInfoById(@PathParam("id") final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();

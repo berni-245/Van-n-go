@@ -69,7 +69,7 @@ public class DriverController {
 
     @GET
     @Path("/{id}")
-    @Produces(value = {"application/vnd.driverPublic.v1+json"})
+    @Produces(value = {"application/vnd.publicDriver.v1+json"})
     public Response getPublicDriverInfoById(@PathParam("id") int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromPublicDriverInfo(uriInfo, driver)).build();
