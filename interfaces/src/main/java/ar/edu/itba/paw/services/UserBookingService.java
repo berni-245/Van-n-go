@@ -18,7 +18,7 @@ public interface UserBookingService<T extends User> {
 
     default int getBookingPages(T user, BookingState state) {
         int totalBookings = this.getBookingCount(user, state);
-        return (int) Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE);
+        return Math.min(1, (int) Math.round(Math.ceil((double) totalBookings / Pagination.BOOKINGS_PAGE_SIZE)));
     }
 
     void setNewBookingState(T user, int bookingId, BookingState newState);

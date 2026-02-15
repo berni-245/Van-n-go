@@ -19,9 +19,9 @@ public interface MessageService {
     int getConversationMessageCount(Client client, Driver driver);
 
     default int getConversationPages(Client client, Driver driver) {
-        return (int) Math.round(Math.ceil((double) getConversationMessageCount(
+        return Math.min(1, (int) Math.round(Math.ceil((double) getConversationMessageCount(
                 client, driver
-        ) / Pagination.MAX_MESSAGE_RETRIEVAL));
+        ) / Pagination.MAX_MESSAGE_RETRIEVAL)));
     }
 
     List<Message> getConversationWithoutBooking(Client client, Driver driver, int page);

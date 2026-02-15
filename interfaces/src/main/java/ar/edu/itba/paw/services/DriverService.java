@@ -39,9 +39,9 @@ public interface DriverService extends UserService<Driver> {
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        return (int) Math.round(Math.ceil((double) getSearchResultCount(
+        return Math.min(1, (int) Math.round(Math.ceil((double) getSearchResultCount(
                 zoneId, size, priceMax, weekday, rating
-        ) / Pagination.SEARCH_PAGE_SIZE));
+        ) / Pagination.SEARCH_PAGE_SIZE)));
     }
 
     void acceptBooking(Driver driver, int bookingId);
@@ -65,7 +65,7 @@ public interface DriverService extends UserService<Driver> {
     int getVehicleCount(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability);
 
     default int getVehiclePages(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability) {
-        return (int) Math.round(Math.ceil((double) getVehicleCount(driver, zoneId, size, priceMax, weekday, mustHaveAvailability) / Pagination.VEHICLES_PAGE_SIZE));
+        return Math.min(1, (int) Math.round(Math.ceil((double) getVehicleCount(driver, zoneId, size, priceMax, weekday, mustHaveAvailability) / Pagination.VEHICLES_PAGE_SIZE)));
     }
 
     void deleteVehicle(Vehicle vehicle);
