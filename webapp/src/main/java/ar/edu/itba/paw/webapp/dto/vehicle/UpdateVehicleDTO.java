@@ -1,9 +1,27 @@
 package ar.edu.itba.paw.webapp.dto.vehicle;
 
+import ar.edu.itba.paw.models.Rates;
+import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.webapp.validation.ValidChangePlateNumber;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 public class UpdateVehicleDTO {
+
+    @ValidChangePlateNumber
     private String plateNumber;
+
+    @Min(Size.MIN)
+    @Max(Size.MAX)
     private Double volumeM3;
+
+    @Min(Rates.MINIMUM)
+    @Max(Rates.MAXIMUM)
     private Double hourlyRate;
+
+    @Length(max = 255, message = "{Length.vehicle.description}")
     private String description;
 
     public UpdateVehicleDTO() {

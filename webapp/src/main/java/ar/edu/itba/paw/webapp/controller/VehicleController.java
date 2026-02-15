@@ -94,7 +94,7 @@ public class VehicleController {
     public Response updateVehicle(
             @PathParam("driverId") int driverId,
             @PathParam("vehicleId") int vehicleId,
-            UpdateVehicleDTO dto
+            @Valid UpdateVehicleDTO dto
     ) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -162,17 +162,18 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(value = {MediaType.APPLICATION_JSON})
-    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, UpdateAvailabilityDTO dto) {
+    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId,
+                                       @Valid UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         dto.setZonesIfNull(v.getZones().stream().map(Zone::getId).toList());
         dto.setTimeSlotsIfNull(v.getAvailability().stream()
-                .map(a -> new WeekTimeSlotDTO(a.getWeekDay().name(), a.getShiftPeriod().name()))
+                .map(a -> new WeekTimeSlotDTO(a.getWeekDay().name(), a.getShiftPeriod().name())) //TODO: esto genera que siempre se updateen los horarios, aunque no se hayan modificado.
                 .toList()
         );
         ds.updateAvailability(v, dto.getZones(), getMapDayTimeSlots(dto));
         AvailabilityDTO availabilityDTO = new AvailabilityDTO();
-        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo
+        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo //TODO: esto esta mal, deberia devolver los datos de la bd, no del request DTO
                 .getBaseUriBuilder().path("api").path("zones")
                 .path(String.valueOf(id)).build()).toList()
         );

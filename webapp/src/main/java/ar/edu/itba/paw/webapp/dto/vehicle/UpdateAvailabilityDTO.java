@@ -1,14 +1,18 @@
 package ar.edu.itba.paw.webapp.dto.vehicle;
 
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.webapp.validation.ValidArrayZoneId;
 
+import javax.validation.Valid;
 import java.time.DayOfWeek;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class UpdateAvailabilityDTO {
+    @ValidArrayZoneId
     private List<Integer> zones;
+    @Valid
     private List<WeekTimeSlotDTO> timeSlots;
 
     public UpdateAvailabilityDTO() {
