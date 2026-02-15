@@ -80,6 +80,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(tokenGeneratorFilter, BasicAuthenticationFilter.class);
     }
 
