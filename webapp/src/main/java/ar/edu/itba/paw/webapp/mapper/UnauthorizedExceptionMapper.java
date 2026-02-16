@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.mapper;
 
 import ar.edu.itba.paw.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -11,6 +12,7 @@ public class UnauthorizedExceptionMapper extends AbstractExceptionMapper<Unautho
     @Override
     public Response generateResponse(UnauthorizedException e) {
         return Response.status(Response.Status.UNAUTHORIZED)
+                .type(CustomMediaType.ERROR)
                 .entity(new ErrorDTO(e))
                 .build();
     }

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.mapper;
 
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.dto.general.ErrorType;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -30,6 +31,7 @@ public class ConstraintViolationExceptionMapper extends AbstractExceptionMapper<
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new GenericEntity<>(errors) {
                 })
+                .type(CustomMediaType.FORM_ERROR)
                 .build();
     }
 

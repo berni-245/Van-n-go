@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.mapper;
 
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import org.springframework.security.access.AccessDeniedException;
 
 import javax.ws.rs.core.Response;
@@ -11,7 +12,9 @@ public class AccessDeniedExceptionMapper extends AbstractExceptionMapper<AccessD
     @Override
     protected Response generateResponse(AccessDeniedException ex) {
         // Can't use this exception message because we need a localized message
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return Response.status(Response.Status.FORBIDDEN)
+                .type(CustomMediaType.ERROR)
+                .build();
     }
 }
 
