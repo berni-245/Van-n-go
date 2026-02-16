@@ -25,6 +25,9 @@ properties:
   picture:
     type: string
     example: /api/drivers/13/vehicles/1/picture
+  hasPicture:
+    type: boolean
+    example: true
   driver:
     type: string
     example: /api/drivers/13

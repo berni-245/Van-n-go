@@ -34,6 +34,9 @@ properties:
   profilePic:
     type: string
     example: /api/drivers/13/profile-picture
+  hasProfilePic:
+    type: boolean
+    example: true
   pendingBookings:
     type: string
     example: /api/bookings?toDriver=13&status=pending

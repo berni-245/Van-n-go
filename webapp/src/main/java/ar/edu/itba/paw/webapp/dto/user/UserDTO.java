@@ -17,6 +17,7 @@ public abstract class UserDTO {
     private Language preferredLanguage;
     private URI self;
     private URI profilePic;
+    private boolean hasProfilePic;
     private URI pendingBookings;
     private URI acceptedBookings;
     private URI finishedBookings;
@@ -29,6 +30,7 @@ public abstract class UserDTO {
         UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
         this.self = userIdEndpointTemplate.clone().build();
         this.profilePic = userIdEndpointTemplate.clone().path("profile-picture").build();
+        this.hasProfilePic = user.getPfp() != null;
     }
 
     protected void setAllInfoFromUser(UriInfo uriInfo, User user) {
@@ -88,6 +90,14 @@ public abstract class UserDTO {
 
     public void setProfilePic(URI profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public boolean getHasProfilePic() {
+        return hasProfilePic;
+    }
+
+    public void setHasProfilePic(boolean hasProfilePic) {
+        this.hasProfilePic = hasProfilePic;
     }
 
     public URI getPendingBookings() {

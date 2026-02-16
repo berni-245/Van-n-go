@@ -32,6 +32,9 @@ properties:
   proofOfPayment:
     type: string
     example: /api/bookings/42/proof-of-payment
+  hasProofOfPayment:
+    type: boolean
+    example: true
   originZone:
     type: string
     example: /api/zones/12

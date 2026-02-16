@@ -23,6 +23,9 @@ properties:
   profilePic:
     type: string
     example: /api/clients/13/profile-picture
+  hasProfilePic:
+    type: boolean
+    example: true
   zone:
     type: string
     example: /api/zones/1

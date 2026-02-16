@@ -11,6 +11,20 @@ import java.util.function.Function;
 
 public class BookingDTO {
 
+    private URI self;
+    private URI client;
+    private URI driver;
+    private URI vehicle;
+    private URI originZone;
+    private URI destinationZone;
+    private URI proofOfPayment;
+    private boolean hasProofOfPayment;
+    private String jobDescription;
+    private String date;
+    private ShiftPeriod shiftPeriod;
+    private BookingState state;
+    private URI review;
+
     public static Function<Booking, BookingDTO> mapper(UriInfo uriInfo) {
         return (booking) -> fromBooking(uriInfo, booking);
     }
@@ -25,6 +39,7 @@ public class BookingDTO {
         bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
         bookingDTO.proofOfPayment = booking.getPop() != null ? bookingTemplate.clone().path("proof-of-payment").build() : null;
+        bookingDTO.hasProofOfPayment = booking.getPop() != null;
         bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
         bookingDTO.jobDescription = booking.getJobDescription();
         bookingDTO.date = booking.getDate().toString();
@@ -36,20 +51,6 @@ public class BookingDTO {
         }
         return bookingDTO;
     }
-
-
-    private URI self;
-    private URI client;
-    private URI driver;
-    private URI vehicle;
-    private URI originZone;
-    private URI destinationZone;
-    private URI proofOfPayment;
-    private String jobDescription;
-    private String date;
-    private ShiftPeriod shiftPeriod;
-    private BookingState state;
-    private URI review;
 
     public URI getSelf() {
         return self;
@@ -105,6 +106,14 @@ public class BookingDTO {
 
     public void setProofOfPayment(URI proofOfPayment) {
         this.proofOfPayment = proofOfPayment;
+    }
+
+    public boolean getHasProofOfPayment() {
+        return hasProofOfPayment;
+    }
+
+    public void setHasProofOfPayment(boolean hasProofOfPayment) {
+        this.hasProofOfPayment = hasProofOfPayment;
     }
 
     public String getJobDescription() {
