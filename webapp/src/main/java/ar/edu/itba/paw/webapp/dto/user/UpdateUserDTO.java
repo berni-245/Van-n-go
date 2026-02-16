@@ -29,7 +29,7 @@ public abstract class UpdateUserDTO {
     private String oldPassword;
 
     @Size(min = 8, max = 32)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
+    @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
     private String password;
 
     public UpdateUserDTO() {

@@ -2,14 +2,14 @@ package ar.edu.itba.paw.webapp.dto.user;
 
 import ar.edu.itba.paw.webapp.validation.ValidMail;
 import ar.edu.itba.paw.webapp.validation.ValidUsername;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 public abstract class CreateUserDTO {
-    @Size(min = 5, max = 20, message = "{Size.username}")
+    @Length(min = 5, max = 20, message = "{Size.username}")
     @Pattern(regexp = "^[a-zA-Z]\\w*$", message = "{Pattern.username}")
     @ValidUsername
     private String username;
@@ -19,9 +19,8 @@ public abstract class CreateUserDTO {
     @NotBlank
     private String email;
 
-    @Size(min = 8, max = 32, message = "{Size.password}")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
-    //TODO: change regex to a more simple one (as mentioned on tp2)
+    @Length(min = 8, max = 32, message = "{Size.password}")
+    @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
     private String password;
 
     public String getUsername() {
