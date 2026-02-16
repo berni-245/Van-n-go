@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.UnauthorizedException;
+import ar.edu.itba.paw.exceptions.UserIdNotProvidedException;
 import ar.edu.itba.paw.exceptions.UserIdentityMismatchException;
 import ar.edu.itba.paw.models.Message;
 import ar.edu.itba.paw.models.User;
@@ -28,6 +29,8 @@ public class AuthorizationService {
     MessageService messageService;
 
     public boolean isAuthUser(Integer userId) {
+        if (userId == null)
+            throw new UserIdNotProvidedException();
         return isAuthUserEither(userId, userId);
     }
 

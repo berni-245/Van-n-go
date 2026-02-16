@@ -8,7 +8,6 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.*;
-import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidFile;
@@ -44,17 +43,13 @@ public class BookingController {
     private ImageService imageService;
 
     @GET
-    @PreAuthorize("@authService.isAuthUserEither(#fromClientId, #toDriverId)")
+    @PreAuthorize("@authService.isAuthUser(#userId)")
     @Produces(value = {CustomMediaType.BOOKING_LIST})
     public <T extends User> Response listBookings(
-            @QueryParam("fromClient") Integer fromClientId,
-            @QueryParam("toDriver") Integer toDriverId,
+            @QueryParam("userId") Integer userId,
             @QueryParam("state") BookingState state,
             @QueryParam("page") @DefaultValue("1") int page
     ) {
-        if ((fromClientId == null) == (toDriverId == null)) { // Basically a not xor
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO()).build();
-        }
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
         int maxPages = userService.getBookingPages(user, state);

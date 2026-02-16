@@ -557,18 +557,12 @@ paths:
     get:
       summary: List bookings
       description: >
-        Retrieves a user's bookings. Exactly one of `fromClient` or `toDriver` must be specified.
+        Retrieves a user's bookings.
       parameters:
-        - name: fromClient
+        - name: userId
           in: query
-          description: Filter bookings created by a specific client
-          required: false
-          schema:
-            type: integer
-        - name: toDriver
-          in: query
-          description: Filter bookings assigned to a specific driver
-          required: false
+          description: Filter bookings where the userId is a participant of a booking.
+          required: true
           schema:
             type: integer
         - name: state
