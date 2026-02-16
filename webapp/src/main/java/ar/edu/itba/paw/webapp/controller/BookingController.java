@@ -93,7 +93,7 @@ public class BookingController {
 
     @POST
     @Path("/{bookingId}")
-    @Consumes(value = {CustomMediaType.BOOKING_UPDATE})
+    @Consumes(value = {CustomMediaType.BOOKING_UPDATE_STATE})
     @Produces(value = {CustomMediaType.BOOKING})
     public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, UpdateBookingStateDTO dto) {
         T user = getAuthUser();

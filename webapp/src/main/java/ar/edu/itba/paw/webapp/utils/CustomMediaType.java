@@ -6,7 +6,7 @@ public class CustomMediaType {
     public static final String BOOKING_LIST = "application/vnd.bookingList.v1+json";
     public static final String BOOKING_CREATE = "application/vnd.bookingCreate.v1+json";
     public static final String BOOKING = "application/vnd.booking.v1+json";
-    public static final String BOOKING_UPDATE = "application/vnd.bookingUpdate.v1+json";
+    public static final String BOOKING_UPDATE_STATE = "application/vnd.bookingUpdateState.v1+json";
     public static final String BOOKING_REVIEW = "application/vnd.bookingReview.v1+json";
     public static final String CLIENT_CREATE = "application/vnd.clientCreate.v1+json";
     public static final String CLIENT = "application/vnd.client.v1+json";

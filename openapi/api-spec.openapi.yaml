@@ -48,8 +48,7 @@ paths:
           Client information required to create a new client account.
           The email address must be unique.
         content:
-          # TODO: use custom versioned mimetype?
-          application/json:
+          application/vnd.clientCreate.v1+json:
             schema:
               $ref: "schemas/requests/client-create.yaml"
       responses:
@@ -62,7 +61,7 @@ paths:
                 type: string
                 example: "api/clients/13"
           content:
-            application/json:
+            application/vnd.client.v1+json:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
@@ -105,14 +104,14 @@ paths:
         required: true
         description: Fields that may be updated for an existing client.
         content:
-          application/json:
+          application/vnd.clientUpdate.v1+json:
             schema:
               $ref: "schemas/requests/client-update.yaml"
       responses:
         "200":
           description: Client updated successfully
           content:
-            application/json:
+            application/vnd.client.v1+json:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
@@ -187,7 +186,7 @@ paths:
               $ref: "schemas/headers/link.yaml"
               example: </drivers?page=2>; rel="next"
           content:
-            application/json:
+            application/vnd.driverList.v1+json:
               schema:
                 type: array
                 items:
@@ -204,7 +203,7 @@ paths:
           Client information required to create a new client account.
           The email address and username must be unique.
         content:
-          application/json:
+          application/vnd.driverCreate.v1+json:
             schema:
               $ref: "schemas/requests/driver-create.yaml"
       responses:
@@ -217,7 +216,7 @@ paths:
                 type: string
                 example: "api/drivers/13"
           content:
-            application/json:
+            application/vnd.driver.v1+json:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
@@ -257,14 +256,14 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/vnd.driverUpdate.v1+json:
             schema:
               $ref: "schemas/requests/driver-update.yaml"
       responses:
         "200":
           description: Driver updated successfully
           content:
-            application/json:
+            "application/vnd.driver.v1+json":
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
@@ -325,7 +324,6 @@ paths:
       summary: List vehicles
       description: >
         Get all vehicles of driver with id `id`. Pagination is always included. Either with the additional filters or not.
-      # TODO It probably should have pagination the second option
       operationId: listVehicles
       tags:
         - Vehicles
@@ -337,7 +335,7 @@ paths:
               $ref: "schemas/headers/link.yaml"
               example: </drivers?page=2>; rel="next"
           content:
-            application/json:
+            application/vnd.vehicleList.v1+json:
               schema:
                 type: array
                 items:
@@ -356,7 +354,7 @@ paths:
           The email license plate must be unique.
         required: true
         content:
-          application/json:
+          application/vnd.vehicleCreate.v1+json:
             schema:
               $ref: "schemas/requests/vehicle-create.yaml"
       responses:
@@ -369,7 +367,7 @@ paths:
                 type: string
                 example: "api/drivers/10/vehicles/42"
           content:
-            application/json:
+            application/vnd.vehicle.v1+json:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
@@ -394,7 +392,7 @@ paths:
         "200":
           description: Information of a vehicle
           content:
-            application/json:
+            application/vnd.vehicle.v1+json:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "404":
@@ -412,14 +410,14 @@ paths:
         description: Fields that may be updated for an existing vehicle.
         required: true
         content:
-          application/json:
+          application/vnd.vehicleUpdate.v1+json:
             schema:
               $ref: "schemas/requests/vehicle-update.yaml"
       responses:
         "200":
           description: Vehicle updated successfully
           content:
-            application/json:
+            application/vnd.vehicle.v1+json:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
@@ -459,7 +457,7 @@ paths:
         "200":
           description: A list of zones where the vehicle operates and the days and times during which it operates
           content:
-            application/json:
+            application/vnd.availability.v1+json:
               schema:
                 $ref: "schemas/responses/availability.yaml"
         "404":
@@ -469,7 +467,6 @@ paths:
         - $ref: "#/components/parameters/DriverIdPath"
         - $ref: "#/components/parameters/VehicleIdPath"
       summary: Update Availability for the vehicle
-      # TODO: What does this mean? Can a vehicle have different time slots for different zones?
       description: Update the vehicle's availability in the specified zones (Partial Update)
       operationId: updateAvailability
       tags:
@@ -477,14 +474,14 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/vnd.availabilityUpdate.v1+json:
             schema:
               $ref: "schemas/responses/availability.yaml"
       responses:
         "200":
           description: Availability updated successfully
           content:
-            application/json:
+            application/vnd.availability.v1+json:
               schema:
                 $ref: "schemas/responses/availability.yaml"
         "400":
@@ -508,7 +505,7 @@ paths:
         "200":
           description: A list of times
           content:
-            application/json:
+            application/vnd.bookedTimes.v1+json:
               schema:
                 type: array
                 items:
@@ -591,7 +588,7 @@ paths:
               $ref: "schemas/headers/link.yaml"
               example: </bookings?page=2>; rel="next"
           content:
-            application/json:
+            application/vnd.bookingList.v1+json:
               schema:
                 type: array
                 items:
@@ -610,14 +607,12 @@ paths:
         - Bookings
       requestBody:
         required: true
-        # TODO: which is the error code if the vehicle is already booked?
         description: >
           Information required to create a new booking.\
 
           This operation will fail if the vehicle is already booked at the specified time.
         content:
-          # TODO: use custom versioned mimetype?
-          application/json:
+          application/vnd.bookingCreate.v1+json:
             schema:
               $ref: "schemas/requests/booking-create.yaml"
       responses:
@@ -630,7 +625,7 @@ paths:
                 type: string
                 example: "api/bookings/42"
           content:
-            application/json:
+            application/vnd.booking.v1+json:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "400":
@@ -639,6 +634,8 @@ paths:
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
 
   /bookings/{bookingId}:
     get:
@@ -653,7 +650,7 @@ paths:
         "200":
           description: Booking found
           content:
-            application/json:
+            application/vnd.booking.v1+json:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "401":
@@ -678,15 +675,14 @@ paths:
           from ACCEPTED to CANCELED if payment was not made for booking (can be either role), 
           and from ACCEPTED to FINISHED if payment was made and auth user is driver.
         content:
-          # TODO: use custom versioned mimetype?
-          application/json:
+          application/vnd.bookingUpdateState.v1+json:
             schema:
               $ref: "schemas/requests/booking-update-state.yaml"
       responses:
         "200":
           description: Booking state successfully updated
           content:
-            application/json:
+            application/vnd.booking.v1+json:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "401":
@@ -709,7 +705,7 @@ paths:
         "200":
           description: Review found
           content:
-            application/json:
+            application/vnd.bookingReview.v1+json:
               schema:
                 $ref: "schemas/responses/booking-review.yaml"
         "401":
@@ -731,8 +727,7 @@ paths:
         description: >
           Booking review information. This can only be done once by the client that belongs to the booking id.
         content:
-          # TODO: use custom versioned mimetype?
-          application/json:
+          application/vnd.bookingReview.v1+json:
             schema:
               $ref: "schemas/responses/booking-review.yaml"
       responses:
@@ -744,7 +739,7 @@ paths:
               type: string
               example: "api/bookings/42/review"
           content:
-            application/json:
+            application/vnd.bookingReview.v1+json:
               schema:
                 $ref: "schemas/responses/booking-review.yaml"
         "401":
@@ -766,12 +761,8 @@ paths:
         - Bookings
       responses:
         "200":
-          description: Pdf retrieved successfully
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
+          description: Proof of payment retrieved successfully
+          $ref: "schemas/proof-of-payment.yaml"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -787,14 +778,9 @@ paths:
       description: Uploads or replaces the proof of payment for a booking (format PDF).
       operationId: uploadBookingProofOfPayment
       requestBody:
-        description: Pdf
         required: true
-        content:
-          application/pdf:
-            schema:
-              type: string
-              format: binary
-              description: Pdf file to use as the booking’s proof of payment.
+        description: JPG, PNG or PDF file with the proof of payment
+        $ref: "schemas/proof-of-payment.yaml"
       responses:
         "204":
           description: Proof of payment uploaded
@@ -823,7 +809,7 @@ paths:
               $ref: "schemas/headers/link.yaml"
               example: </drivers?page=2>; rel="next"
           content:
-            application/json:
+            application/vnd.messageList.v1+json:
               schema:
                 $ref: "schemas/responses/messages.yaml"
               example:
@@ -853,7 +839,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/vnd.messageCreate.v1+json:
             schema:
               type: object
               required: [ clientId, driverId, message ]
@@ -877,7 +863,7 @@ paths:
                 type: string
                 example: "api/messages/42"
           content:
-            application/json:
+            application/vnd.message.v1+json:
               schema:
                 $ref: "schemas/responses/message.yaml"
         "400":
@@ -907,7 +893,7 @@ paths:
         "200":
           description: Message details
           content:
-            application/json:
+            application/vnd.message.v1+json:
               schema:
                 $ref: "schemas/responses/message.yaml"
         "401":
@@ -927,7 +913,7 @@ paths:
         "200":
           description: A list of all zones
           content:
-            application/json:
+            application/vnd.zoneList.v1+json:
               schema:
                 type: array
                 items:
@@ -946,7 +932,7 @@ paths:
         "200":
           description: Zone retrieved
           content:
-            application/json:
+            application/vnd.zone.v1+json:
               schema:
                 $ref: "schemas/responses/zone.yaml"
         "404":
