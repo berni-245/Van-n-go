@@ -2,16 +2,16 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.persistence.*;
+import ar.edu.itba.paw.persistence.BookingDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientServiceImplTest {
@@ -48,7 +48,7 @@ public class ClientServiceImplTest {
 
         Booking canceledBooking = clientService.cancelBooking(existingClient, BOOKING_ID);
 
-        assertEquals(canceledBooking.getState(), BookingState.CANCELED);
+        assertEquals(BookingState.CANCELED, canceledBooking.getState());
     }
 
     @Test(expected = ForbiddenClientCancelBookingException.class)
