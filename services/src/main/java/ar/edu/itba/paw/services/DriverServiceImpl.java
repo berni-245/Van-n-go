@@ -27,6 +27,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     private final AvailabilityDao availabilityDao;
 
+    private final VehicleService vehicleService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverServiceImpl.class);
 
     @Autowired
@@ -39,6 +41,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             ImageDao imageDao,
             ZoneDao zoneDao,
             AvailabilityDao availabilityDao,
+            VehicleService vehicleService,
             PasswordEncoder passwordEncoder
     ) {
         super(userDao, passwordEncoder, mailService, bookingDao);
@@ -47,6 +50,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         this.imageDao = imageDao;
         this.zoneDao = zoneDao;
         this.availabilityDao = availabilityDao;
+        this.vehicleService = vehicleService;
     }
 
     @Transactional
@@ -81,6 +85,9 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     ) {
         if (vehicleDao.getVehicleCount(driver) >= MAX_VEHICLES_PER_DRIVER) {
             throw new DriverVehicleLimitReachedException(driver);
+        }
+        if (vehicleService.plateNumberExists(plateNumber)) {
+            throw new PlateNumberAlreadyExistsException();
         }
         Vehicle v = vehicleDao.create(
                 driver, plateNumber, volume, description, rate
@@ -251,6 +258,10 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicleId);
         if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
             throw new VehicleNotFoundException();
+
+        if (plateNumber != null && vehicleService.plateNumberExists(plateNumber) && !oldVehicle.get().getPlateNumber().equals(plateNumber)) {
+            throw new PlateNumberAlreadyExistsException();
+        }
         Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, null, rate);
         v.setImgId(oldVehicle.get().getImgId());
         vehicleDao.updateVehicle(v);
