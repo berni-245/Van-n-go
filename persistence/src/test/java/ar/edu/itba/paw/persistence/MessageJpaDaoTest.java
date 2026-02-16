@@ -105,7 +105,6 @@ public class MessageJpaDaoTest {
 
     @Test
     public void testGetLastMessageSentByClient() {
-        // El último mensaje del cliente (id 502) fue enviado a las 14:00:00
         LocalDateTime lastClientTime = messageDao.getLastMessageSentByUser(client, driver, false);
         assertNotNull(lastClientTime);
         assertEquals(LAST_CLIENT_MSG_TIME, lastClientTime);
@@ -113,7 +112,6 @@ public class MessageJpaDaoTest {
 
     @Test
     public void testGetLastMessageSentByDriver() {
-        // El último mensaje del driver (id 501) fue enviado a las 13:00:00
         LocalDateTime lastDriverTime = messageDao.getLastMessageSentByUser(client, driver, true);
         assertNotNull(lastDriverTime);
         assertEquals(LAST_DRIVER_MSG_TIME, lastDriverTime);
