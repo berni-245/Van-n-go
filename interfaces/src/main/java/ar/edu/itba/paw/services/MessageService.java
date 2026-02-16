@@ -19,7 +19,7 @@ public interface MessageService {
     int getConversationMessageCount(Client client, Driver driver);
 
     default int getConversationPages(Client client, Driver driver) {
-        return Math.min(1, (int) Math.round(Math.ceil((double) getConversationMessageCount(
+        return Math.max(1, (int) Math.round(Math.ceil((double) getConversationMessageCount(
                 client, driver
         ) / Pagination.MAX_MESSAGE_RETRIEVAL)));
     }
