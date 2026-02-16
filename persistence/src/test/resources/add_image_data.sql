@@ -7,17 +7,38 @@ insert into client (id, zone_id) values (1, 1);
 insert into driver (id) values (2);
 
 insert into vehicle (id, driver_id, plate_number, volume_m3, description, hourly_rate)
-values (1, 2, 'AAA999', 100, 'hola', 100);
+values (1, 2, 'AAA999', 100, 'hola', 100),
+       (2, 2, 'BBB999', 100, 'hola', 100);
 
 insert into vehicle_zone (vehicle_id, zone_id)
-values (1, 1);
+values (1, 1),
+       (2, 1);
 
 insert into vehicle_availability (id, week_day, vehicle_id, shift_period)
 values
     -- miércoles
-    (1, 'WEDNESDAY', 1, 'EVENING')
+    (1, 'WEDNESDAY', 1, 'EVENING'),
+    (2, 'WEDNESDAY', 2, 'EVENING')
 ;
 
 insert into booking (id, date, shift_period, client_id, vehicle_id, origin_zone_id, destination_zone_id, state)
-values (500, '2030-5-1', 'EVENING', 1, 1, 1, 20, 'ACCEPTED')  -- will be with booking id 500
+values (500, '2030-5-1', 'EVENING', 1, 1, 1, 20, 'ACCEPTED'),
+       (501, '2030-5-1', 'EVENING', 1, 1, 1, 20, 'ACCEPTED')
 ;
+
+insert into image (id, file_name, bin, type)
+values (400, 'pfp_JuanClient.jpg', X'31', 'jpg'),
+       (401, 'image2.jpg', X'32', 'jpg'),
+       (402, 'image3.jpg', X'33', 'jpg');
+
+update app_user
+set pfp = 400
+where id = 1;
+
+update booking
+set proof_of_payment = 401
+where id = 500;
+
+update vehicle
+set img_id = 402
+where id = 1;

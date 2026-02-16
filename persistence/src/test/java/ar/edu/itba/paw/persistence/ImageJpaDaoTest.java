@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Booking;
-import ar.edu.itba.paw.models.Client;
-import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +30,27 @@ public class ImageJpaDaoTest {
     private static final String FILE_NAME = "file.png";
     private static final String FILE_TYPE = "image/png";
     private static final byte[] FILE_BYTES = new byte[] {1, 2, 3, 4, 5, 6};
-    private static final Integer PREEXISTING_BOOK_ID = 500;
-    private static final Integer PREEXISTING_VEHICLE_ID = 1;
-    private static final Integer PREEXISTING_USER_ID = 1;
 
-    private static Booking booking;
-    private static Vehicle vehicle;
-    private static Client client;
+
+    private static final Integer BOOKING_WITH_POP_ID = 500;
+    private static final Integer BOOKING_WITHOUT_POP_ID = 501;
+    private static final Integer VEHICLE_WITH_IMAGE_ID = 1;
+    private static final Integer VEHICLE_WITHOUT_IMAGE_ID = 2;
+    private static final Integer USER_WITH_PFP_ID = 1;
+    private static final Integer USER_WITHOUT_PFP_ID = 2;
+
+    private static final Integer PREEXISTING_PFP_ID = 400;
+    private static final Integer PREEXISTING_POP_ID = 401;
+    private static final Integer PREEXISTING_VEHICLE_IMG_ID = 402;
+
+    private static final String NEW_FILE_NAME = "new.png";
+
+    private static Booking bookingWithPop;
+    private static Booking bookingWithoutPop;
+    private static Vehicle vehicleWithImage;
+    private static Vehicle vehicleWithoutImage;
+    private static Client clientWithPfp;
+    private static Driver driverWithoutPfp;
 
     @PersistenceContext
     private EntityManager em;
@@ -54,118 +66,152 @@ public class ImageJpaDaoTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        booking = em.find(Booking.class, PREEXISTING_BOOK_ID);
-        vehicle = em.find(Vehicle.class, PREEXISTING_VEHICLE_ID);
-        client = em.find(Client.class, PREEXISTING_USER_ID);
+        bookingWithPop = em.find(Booking.class, BOOKING_WITH_POP_ID);
+        bookingWithoutPop = em.find(Booking.class, BOOKING_WITHOUT_POP_ID);
+        vehicleWithImage = em.find(Vehicle.class, VEHICLE_WITH_IMAGE_ID);
+        vehicleWithoutImage = em.find(Vehicle.class, VEHICLE_WITHOUT_IMAGE_ID);
+        clientWithPfp = em.find(Client.class, USER_WITH_PFP_ID);
+        driverWithoutPfp = em.find(Driver.class, USER_WITHOUT_PFP_ID);
     }
+
+
+    @Test
+    public void testGetImage() {
+        Image retrievedImage = imageDao.getImage(PREEXISTING_PFP_ID);
+
+        assertNotNull(retrievedImage);
+        assertEquals("pfp_JuanClient.jpg", retrievedImage.getFileName());
+        assertEquals("jpg", retrievedImage.getType());
+        assertArrayEquals(new byte[]{0x31}, retrievedImage.getData());
+    }
+
 
     @Test
     public void testUploadPop() {
-        imageDao.uploadPop(FILE_BYTES, FILE_NAME, booking, FILE_TYPE);
+        imageDao.uploadPop(FILE_BYTES, FILE_NAME, bookingWithoutPop, FILE_TYPE);
         em.flush();
 
+        Integer newImgId = bookingWithoutPop.getPop();
+        assertNotNull(newImgId);
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "image",
-                String.format("file_name = '%s' and type = '%s'",
-                        FILE_NAME, FILE_TYPE
-                )
+                String.format("file_name = '%s' and type = '%s'", FILE_NAME, FILE_TYPE)
         ));
 
-
-        Integer id = jdbcTemplate.queryForObject(
-                "SELECT id FROM image WHERE file_name = ? AND type = ?",
-                new Object[]{FILE_NAME, FILE_TYPE},
-                Integer.class
-        );
-
-        assertNotNull(id);
-
-
-        byte[] fetchedBytes = jdbcTemplate.queryForObject(
-                "SELECT bin FROM image WHERE id = ?",
-                new Object[] { id }, byte[].class);
-
-        assertArrayEquals(FILE_BYTES, fetchedBytes);
-
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "booking",
-                String.format("id = '%d' and proof_of_payment = '%d'",
-                        PREEXISTING_BOOK_ID, id
-                )
-        ));
-    }
-
-    @Test
-    public void testUploadVehicleImage() {
-        imageDao.uploadVehicleImage(FILE_BYTES, FILE_NAME, vehicle, FILE_TYPE);
-        em.flush();
-
-
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "image",
-                String.format(" file_name = '%s' and type = '%s'",
-                        FILE_NAME, FILE_TYPE
-                )
-        ));
-
-        Integer id = jdbcTemplate.queryForObject(
-                "SELECT id FROM image WHERE file_name = ? AND type = ?",
-                new Object[]{FILE_NAME, FILE_TYPE},
-                Integer.class
-        );
-
-        assertNotNull(id);
-
-
-        byte[] fetchedBytes = jdbcTemplate.queryForObject(
-                "SELECT bin FROM image WHERE id = ?",
-                new Object[] { id }, byte[].class);
-
-        assertArrayEquals(FILE_BYTES, fetchedBytes);
-
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "vehicle",
-                String.format("id = '%d' and img_id = '%d'",
-                        PREEXISTING_VEHICLE_ID, id
-                )
-        ));
+        Image savedImage = em.find(Image.class, newImgId);
+        assertNotNull(savedImage);
+        assertArrayEquals(FILE_BYTES, savedImage.getData());
     }
 
     @Test
     public void testUploadPfp() {
-        imageDao.uploadPfp(FILE_BYTES, FILE_NAME, client, FILE_TYPE);
+        imageDao.uploadPfp(FILE_BYTES, FILE_NAME, driverWithoutPfp, FILE_TYPE);
         em.flush();
+
+        Integer newImgId = driverWithoutPfp.getPfp();
+        assertNotNull(newImgId);
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "image",
-                String.format("file_name = '%s' and type = '%s'",
-                        FILE_NAME, FILE_TYPE
-                )
+                String.format("file_name = '%s' and type = '%s'", FILE_NAME, FILE_TYPE)
         ));
 
-        Integer id = jdbcTemplate.queryForObject(
-                "SELECT id FROM image WHERE file_name = ? AND type = ?",
-                new Object[]{FILE_NAME, FILE_TYPE},
-                Integer.class
-        );
+        Image savedImage = em.find(Image.class, newImgId);
+        assertNotNull(savedImage);
+        assertArrayEquals(FILE_BYTES, savedImage.getData());
+    }
 
-        assertNotNull(id);
+    @Test
+    public void testUploadVehicleImage() {
+        imageDao.uploadVehicleImage(FILE_BYTES, FILE_NAME, vehicleWithoutImage, FILE_TYPE);
+        em.flush();
 
-        byte[] fetchedBytes = jdbcTemplate.queryForObject(
-                "SELECT bin FROM image WHERE id = ?",
-                new Object[] { id }, byte[].class);
-
-        assertArrayEquals(FILE_BYTES, fetchedBytes);
+        Integer newImgId = vehicleWithoutImage.getImgId();
+        assertNotNull(newImgId);
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
-                jdbcTemplate, "app_user",
-                String.format("id = '%d' and pfp = '%d'",
-                        PREEXISTING_USER_ID, id
-                )
+                jdbcTemplate, "image",
+                String.format("file_name = '%s' and type = '%s'", FILE_NAME, FILE_TYPE)
         ));
+
+        Image savedImage = em.find(Image.class, newImgId);
+        assertNotNull(savedImage);
+        assertArrayEquals(FILE_BYTES, savedImage.getData());
     }
 
 
-    // We won't be testing getImage because I can't insert bytea types into db, and all alternatives I found didn't work :(
+    @Test
+    public void testReplacePop() {
+        byte[] newBytes = new byte[]{9, 8, 7};
+        imageDao.uploadPop(newBytes, NEW_FILE_NAME, bookingWithPop, FILE_TYPE);
+        em.flush();
+
+        Integer newImgId = bookingWithPop.getPop();
+
+        assertNotEquals(PREEXISTING_POP_ID, newImgId);
+        assertNull(em.find(Image.class, PREEXISTING_POP_ID));
+
+        Image newImage = em.find(Image.class, newImgId);
+        assertNotNull(newImage);
+        assertArrayEquals(newBytes, newImage.getData());
+    }
+
+    @Test
+    public void testReplacePfp() {
+        byte[] newBytes = new byte[]{9, 8, 7};
+        imageDao.uploadPfp(newBytes, NEW_FILE_NAME, clientWithPfp, FILE_TYPE);
+        em.flush();
+
+        Integer newImgId = clientWithPfp.getPfp();
+
+        assertNotEquals(PREEXISTING_PFP_ID, newImgId);
+        assertNull(em.find(Image.class, PREEXISTING_PFP_ID));
+
+        Image newImage = em.find(Image.class, newImgId);
+        assertNotNull(newImage);
+        assertArrayEquals(newBytes, newImage.getData());
+    }
+
+    @Test
+    public void testReplaceVehicleImage() {
+        byte[] newBytes = new byte[]{9, 8, 7};
+        imageDao.uploadVehicleImage(newBytes, NEW_FILE_NAME, vehicleWithImage, FILE_TYPE);
+        em.flush();
+        Integer newImgId = vehicleWithImage.getImgId();
+
+        assertNotEquals(PREEXISTING_VEHICLE_IMG_ID, newImgId);
+        assertNull(em.find(Image.class, PREEXISTING_VEHICLE_IMG_ID));
+
+        Image newImage = em.find(Image.class, newImgId);
+        assertNotNull(newImage);
+        assertArrayEquals(newBytes, newImage.getData());
+    }
+
+    @Test
+    public void testRemovePop() {
+        imageDao.uploadPop(new byte[0], FILE_NAME, bookingWithPop, FILE_TYPE);
+        em.flush();
+
+        assertNull(bookingWithPop.getPop());
+        assertNull(em.find(Image.class, PREEXISTING_POP_ID));
+    }
+
+    @Test
+    public void testRemovePfp() {
+        imageDao.uploadPfp(new byte[0], FILE_NAME, clientWithPfp, FILE_TYPE);
+        em.flush();
+
+        assertNull(clientWithPfp.getPfp());
+        assertNull(em.find(Image.class, PREEXISTING_PFP_ID));
+    }
+
+    @Test
+    public void testRemoveVehicleImage() {
+        imageDao.uploadVehicleImage(new byte[0], FILE_NAME, vehicleWithImage, FILE_TYPE);
+        em.flush();
+
+        assertNull(vehicleWithImage.getImgId());
+        assertNull(em.find(Image.class, PREEXISTING_VEHICLE_IMG_ID));
+    }
 }
