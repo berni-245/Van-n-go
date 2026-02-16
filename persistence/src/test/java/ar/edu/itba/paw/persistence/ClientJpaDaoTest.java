@@ -40,6 +40,7 @@ public class ClientJpaDaoTest {
     private final static String PREEXISTING_USERNAME = "AnotherJuanClient";
     private final static String PREEXISTING_MAIL = "AjuanC@mail.com";
     private final static String PREEXISTING_PASSWORD = "123321";
+    private final static Integer PREEXISTING_ZONE_ID = 1;
 
     private final static String CHANGED_USERNAME = "Carlos";
     private final static String CHANGED_MAIL = "Carlos@mail.com";
@@ -85,6 +86,11 @@ public class ClientJpaDaoTest {
                                 """, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
                         PASSWORD_NOT_CREATED, ENGLISH.name())
         ));
+
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
+                jdbcTemplate, "client",
+                String.format("id = '%d' and zone_id = '%d'", client.getId(), CHANGED_ZONE_ID)
+        ));
     }
 
     @Test
@@ -95,6 +101,7 @@ public class ClientJpaDaoTest {
         assertEquals(PREEXISTING_MAIL, client.getMail());
         assertEquals(PREEXISTING_PASSWORD, client.getPassword());
         assertEquals(SPANISH, client.getLanguage());
+        assertEquals(PREEXISTING_ZONE_ID, client.getZone().getId());
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -115,6 +122,7 @@ public class ClientJpaDaoTest {
         assertEquals(PREEXISTING_MAIL, client.getMail());
         assertEquals(PREEXISTING_PASSWORD, client.getPassword());
         assertEquals(SPANISH, client.getLanguage());
+        assertEquals(PREEXISTING_ZONE_ID, client.getZone().getId());
     }
 
     @Test
