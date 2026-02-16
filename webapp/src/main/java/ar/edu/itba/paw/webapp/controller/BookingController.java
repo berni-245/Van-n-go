@@ -9,9 +9,11 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.booking.*;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -43,7 +45,7 @@ public class BookingController {
 
     @GET
     @PreAuthorize("@authService.isAuthUserEither(#fromClientId, #toDriverId)")
-    @Produces(value = {"application/json"})
+    @Produces(value = {CustomMediaType.BOOKING_LIST})
     public <T extends User> Response listBookings(
             @QueryParam("fromClient") Integer fromClientId,
             @QueryParam("toDriver") Integer toDriverId,
@@ -65,8 +67,8 @@ public class BookingController {
 
     @POST
     @PreAuthorize("hasRole('ROLE_CLIENT')")
-    @Consumes(value = {"application/json"})
-    @Produces(value = {"application/json"})
+    @Consumes(value = {CustomMediaType.BOOKING_CREATE})
+    @Produces(value = {CustomMediaType.BOOKING})
     public Response createBooking(@Valid final CreateBookingDTO createBookingDTO) {
         PawUserDetails pawUserDetails = (PawUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Client client = (Client) pawUserDetails.getUser();
@@ -83,7 +85,7 @@ public class BookingController {
 
     @GET
     @Path("/{bookingId}")
-    @Produces(value = {"application/json"})
+    @Produces(value = {CustomMediaType.BOOKING})
     public Response getBookingById(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
@@ -91,8 +93,8 @@ public class BookingController {
 
     @POST
     @Path("/{bookingId}")
-    @Consumes(value = {"application/json"})
-    @Produces(value = {"application/json"})
+    @Consumes(value = {CustomMediaType.BOOKING_UPDATE})
+    @Produces(value = {CustomMediaType.BOOKING})
     public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, UpdateBookingStateDTO dto) {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
@@ -103,7 +105,7 @@ public class BookingController {
 
     @GET
     @Path("/{bookingId}/review")
-    @Produces(value = {"application/json"})
+    @Produces(value = {CustomMediaType.BOOKING_REVIEW})
     public Response getReview(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         if (b.getRating() == null)
@@ -114,8 +116,8 @@ public class BookingController {
     @POST
     @Path("/{bookingId}/review")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
-    @Consumes(value = {"application/json"})
-    @Produces(value = {"application/json"})
+    @Consumes(value = {CustomMediaType.BOOKING_REVIEW})
+    @Produces(value = {CustomMediaType.BOOKING_REVIEW})
     public Response updateBookingReview(@PathParam("bookingId") int bookingId, CreateBookingReviewDTO dto) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         clientService.setBookingRatingAndReview(b.getClient(), b.getId(), dto.getRating(), dto.getComments());
@@ -124,7 +126,7 @@ public class BookingController {
 
     @GET
     @Path("/{bookingId}/proof-of-payment")
-    @Produces(value = {"application/pdf", "image/*"})
+    @Produces(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response getBookingProofOfPayment(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         Integer popId = b.getPop();
@@ -137,8 +139,8 @@ public class BookingController {
     @PUT
     @Path("/{bookingId}/proof-of-payment")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
-    @Consumes(value = {"application/pdf", "image/*"})
-    @Produces(value = {"application/json", "application/pdf", "image/*"})
+    @Consumes(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @Produces(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] proofOfPayment,
                                                 @HeaderParam("Content-Type") String contentType) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);

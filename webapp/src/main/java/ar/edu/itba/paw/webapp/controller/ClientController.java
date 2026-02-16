@@ -8,15 +8,16 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.user.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.Locale;
@@ -35,7 +36,8 @@ public class ClientController {
     private UriInfo uriInfo;
 
     @POST
-    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.CLIENT_CREATE})
+    @Produces(value = {CustomMediaType.CLIENT})
     public Response createClient(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateClientDTO clientDTO) {
         Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), Locale.forLanguageTag(lang));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
@@ -44,7 +46,7 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
-    @Produces(value = {"application/vnd.publicClient.v1+json"})
+    @Produces(value = {CustomMediaType.PUBLIC_CLIENT})
     public Response getPublicClientInfoById(@PathParam("id") final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();
@@ -53,7 +55,7 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Produces(value = {"application/vnd.client.v1+json"})
+    @Produces(value = {CustomMediaType.CLIENT})
     public Response getClientById(@PathParam("id") final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
@@ -63,8 +65,8 @@ public class ClientController {
     @PATCH
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Consumes(value = {MediaType.APPLICATION_JSON})
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.CLIENT_UPDATE})
+    @Produces(value = {CustomMediaType.CLIENT})
     public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
         Client c = clientService.findById(id);
         clientService.editProfile(
@@ -79,7 +81,7 @@ public class ClientController {
     @GET
     @Path("/{clientId}/profile-picture")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
-    @Produces("image/*")
+    @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response getProfilePicture(@PathParam("clientId") final int id) {
         Client client = clientService.findById(id);
         Integer imageId = client.getPfp();
@@ -95,7 +97,7 @@ public class ClientController {
     @PUT
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Consumes({"image/jpeg", "image/png"})
+    @Consumes({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Client client = clientService.findById(id);

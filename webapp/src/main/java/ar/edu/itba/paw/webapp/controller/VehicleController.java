@@ -5,15 +5,20 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.vehicle.*;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.EnumMap;
@@ -37,7 +42,7 @@ public class VehicleController {
     }
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.VEHICLE_LIST})
     public Response getVehicles(
             @PathParam("driverId") int driverId,
             @QueryParam("zoneId") Integer zoneId,
@@ -65,8 +70,8 @@ public class VehicleController {
 
     @POST
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Consumes(value = {MediaType.APPLICATION_JSON})
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.VEHICLE_CREATE})
+    @Produces(value = {CustomMediaType.VEHICLE})
     public Response createVehicle(@PathParam("driverId") int driverId, @Valid final CreateVehicleDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.addVehicle(
@@ -79,7 +84,7 @@ public class VehicleController {
 
     @GET
     @Path("{vehicleId}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.VEHICLE})
     public Response getVehicleById(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -89,8 +94,8 @@ public class VehicleController {
     @PATCH
     @Path("{vehicleId}")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.VEHICLE_UPDATE})
+    @Consumes(value = {CustomMediaType.VEHICLE})
     public Response updateVehicle(
             @PathParam("driverId") int driverId,
             @PathParam("vehicleId") int vehicleId,
@@ -118,7 +123,7 @@ public class VehicleController {
 
     @GET
     @Path("{vehicleId}/picture")
-    @Produces({"image/jpeg", "image/png"})
+    @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response getVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -135,8 +140,8 @@ public class VehicleController {
     @PUT
     @Path("{vehicleId}/picture")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces({"image/jpeg", "image/png", "application/json"})
-    @Consumes({"image/jpeg", "image/png"})
+    @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @Consumes({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(driverId);
@@ -147,7 +152,7 @@ public class VehicleController {
 
     @GET
     @Path("{vehicleId}/availability")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.AVAILABILITY})
     public Response listAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -160,8 +165,8 @@ public class VehicleController {
     @PATCH
     @Path("{vehicleId}/availability")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.AVAILABILITY_UPDATE})
+    @Consumes(value = {CustomMediaType.AVAILABILITY})
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId,
                                        @Valid UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
@@ -191,7 +196,7 @@ public class VehicleController {
 
     @GET
     @Path("{vehicleId}/booked-times")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.BOOKED_TIMES})
     public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);

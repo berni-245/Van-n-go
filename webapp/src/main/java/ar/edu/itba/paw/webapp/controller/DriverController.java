@@ -6,15 +6,20 @@ import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.user.CreateDriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateDriverDTO;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -38,7 +43,7 @@ public class DriverController {
     }
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.DRIVER_LIST})
     public Response listDrivers(
             @QueryParam("originZoneId") int zoneId,
             @QueryParam("size") Size size,
@@ -59,8 +64,8 @@ public class DriverController {
     }
 
     @POST
-    @Consumes(value = {MediaType.APPLICATION_JSON})
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.DRIVER_CREATE})
+    @Produces(value = {CustomMediaType.DRIVER})
     public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateDriverDTO dto) {
         Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), dto.getCbu(), Locale.forLanguageTag(lang));
         URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
@@ -69,7 +74,7 @@ public class DriverController {
 
     @GET
     @Path("/{id}")
-    @Produces(value = {"application/vnd.publicDriver.v1+json"})
+    @Produces(value = {CustomMediaType.PUBLIC_DRIVER})
     public Response getPublicDriverInfoById(@PathParam("id") int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromPublicDriverInfo(uriInfo, driver)).build();
@@ -78,7 +83,7 @@ public class DriverController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Produces(value = {"application/vnd.driver.v1+json"})
+    @Produces(value = {CustomMediaType.DRIVER})
     public Response getDriverById(@PathParam("id") int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
@@ -87,8 +92,8 @@ public class DriverController {
     @PATCH
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Consumes(value = {MediaType.APPLICATION_JSON})
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.DRIVER_UPDATE})
+    @Produces(value = {CustomMediaType.DRIVER})
     public Response updateDriverById(@PathParam("id") int id, @Valid final UpdateDriverDTO dto) {
         Driver d = ds.findById(id);
         ds.editProfile(
@@ -104,7 +109,7 @@ public class DriverController {
 
     @GET
     @Path("/{id}/profile-picture")
-    @Produces({"image/jpeg", "image/png"})
+    @Produces(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response getProfilePicture(@PathParam("id") final int id) {
         Driver driver = ds.findById(id);
         Integer imageId = driver.getPfp();
@@ -120,7 +125,7 @@ public class DriverController {
     @PUT
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
-    @Consumes({"image/jpeg", "image/png"})
+    @Consumes(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(id);

@@ -10,6 +10,7 @@ import ar.edu.itba.paw.services.MessageService;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
 import ar.edu.itba.paw.webapp.dto.message.CreateMessageDTO;
 import ar.edu.itba.paw.webapp.dto.message.MessageDTO;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,10 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/api/messages")
@@ -39,7 +43,7 @@ public class MessageController {
 
     @GET
     @PreAuthorize("@authService.isValidConversation(#driverId, #clientId)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.MESSAGE_LIST})
     public Response listMessages(
             @QueryParam("driverId") Integer driverId,
             @QueryParam("clientId") Integer clientId,
@@ -59,8 +63,8 @@ public class MessageController {
 
     @POST
     @PreAuthorize("@authService.isValidConversation(#createMessageDTO.driverId, #createMessageDTO.clientId)")
-    @Consumes(value = {MediaType.APPLICATION_JSON})
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {CustomMediaType.MESSAGE_CREATE})
+    @Produces(value = {CustomMediaType.MESSAGE})
     public Response sendMessage(@Valid final CreateMessageDTO createMessageDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof PawUserDetails pawUserDetails)) {
@@ -92,7 +96,7 @@ public class MessageController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserInConversation(#id)")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {CustomMediaType.MESSAGE})
     public Response getMessageById(@PathParam("id") final int id) {
         Message message = messageService.getMessageById(id);
         return Response.ok(MessageDTO.fromMessage(uriInfo, message)).build();
