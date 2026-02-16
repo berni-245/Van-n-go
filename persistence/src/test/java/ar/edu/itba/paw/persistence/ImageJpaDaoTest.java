@@ -1,6 +1,8 @@
-/*package ar.edu.itba.paw.persistence;
+package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Vehicle;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import static org.junit.Assert.*;
 public class ImageJpaDaoTest {
 
     private static final String FILE_NAME = "file.png";
+    private static final String FILE_TYPE = "image/png";
     private static final byte[] FILE_BYTES = new byte[] {1, 2, 3, 4, 5, 6};
     private static final Integer PREEXISTING_BOOK_ID = 500;
     private static final Integer PREEXISTING_VEHICLE_ID = 1;
@@ -58,15 +61,26 @@ public class ImageJpaDaoTest {
 
     @Test
     public void testUploadPop() {
-        int id = imageDao.uploadPop(FILE_BYTES, FILE_NAME, booking);
+        imageDao.uploadPop(FILE_BYTES, FILE_NAME, booking, FILE_TYPE);
         em.flush();
+
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "image",
-                String.format("id = '%d' and file_name = '%s'",
-                        id, FILE_NAME
+                String.format("file_name = '%s' and type = '%s'",
+                        FILE_NAME, FILE_TYPE
                 )
         ));
+
+
+        Integer id = jdbcTemplate.queryForObject(
+                "SELECT id FROM image WHERE file_name = ? AND type = ?",
+                new Object[]{FILE_NAME, FILE_TYPE},
+                Integer.class
+        );
+
+        assertNotNull(id);
+
 
         byte[] fetchedBytes = jdbcTemplate.queryForObject(
                 "SELECT bin FROM image WHERE id = ?",
@@ -84,15 +98,25 @@ public class ImageJpaDaoTest {
 
     @Test
     public void testUploadVehicleImage() {
-        int id = imageDao.uploadVehicleImage(FILE_BYTES, FILE_NAME, vehicle);
+        imageDao.uploadVehicleImage(FILE_BYTES, FILE_NAME, vehicle, FILE_TYPE);
         em.flush();
+
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "image",
-                String.format("id = '%d' and file_name = '%s'",
-                        id, FILE_NAME
+                String.format(" file_name = '%s' and type = '%s'",
+                        FILE_NAME, FILE_TYPE
                 )
         ));
+
+        Integer id = jdbcTemplate.queryForObject(
+                "SELECT id FROM image WHERE file_name = ? AND type = ?",
+                new Object[]{FILE_NAME, FILE_TYPE},
+                Integer.class
+        );
+
+        assertNotNull(id);
+
 
         byte[] fetchedBytes = jdbcTemplate.queryForObject(
                 "SELECT bin FROM image WHERE id = ?",
@@ -110,15 +134,23 @@ public class ImageJpaDaoTest {
 
     @Test
     public void testUploadPfp() {
-        int id = imageDao.uploadPfp(FILE_BYTES, FILE_NAME, client);
+        imageDao.uploadPfp(FILE_BYTES, FILE_NAME, client, FILE_TYPE);
         em.flush();
 
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "image",
-                String.format("id = '%d' and file_name = '%s'",
-                        id, FILE_NAME
+                String.format("file_name = '%s' and type = '%s'",
+                        FILE_NAME, FILE_TYPE
                 )
         ));
+
+        Integer id = jdbcTemplate.queryForObject(
+                "SELECT id FROM image WHERE file_name = ? AND type = ?",
+                new Object[]{FILE_NAME, FILE_TYPE},
+                Integer.class
+        );
+
+        assertNotNull(id);
 
         byte[] fetchedBytes = jdbcTemplate.queryForObject(
                 "SELECT bin FROM image WHERE id = ?",
@@ -137,4 +169,3 @@ public class ImageJpaDaoTest {
 
     // We won't be testing getImage because I can't insert bytea types into db, and all alternatives I found didn't work :(
 }
-*/

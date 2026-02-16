@@ -19,9 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @Transactional
 @Rollback
@@ -45,6 +46,7 @@ public class MessageJpaDaoTest {
     private static final Integer CREATED_MSG_ID = 1;
     private static Client clientWithNoMessage;
     private static final String MSG = "Greeting!";
+    private static final int OFFSET = 0;
 
     @PersistenceContext
     private EntityManager em;
@@ -81,10 +83,10 @@ public class MessageJpaDaoTest {
                 )
         ));
     }
-/*
+
     @Test
     public void testGetConversation() {
-        List<Message> messages = messageDao.getConversation(client, driver);
+        List<Message> messages = messageDao.getConversation(client, driver, OFFSET);
         assertFalse(messages.isEmpty());
         Iterator<Message> iterator = messages.iterator();
         Message thirdMsg = iterator.next();
@@ -98,8 +100,8 @@ public class MessageJpaDaoTest {
 
     @Test
     public void testGetConversationWithNoMessage() {
-        List<Message> messages = messageDao.getConversation(clientWithNoMessage, driver);
+        List<Message> messages = messageDao.getConversation(clientWithNoMessage, driver, OFFSET);
         assertTrue(messages.isEmpty());
     }
-    */
+
 }

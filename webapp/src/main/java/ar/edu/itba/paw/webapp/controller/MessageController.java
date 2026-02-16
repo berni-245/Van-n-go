@@ -74,14 +74,14 @@ public class MessageController {
         Message message;
         if (loggedUserIsDriver) {
             Driver sender = driverService.findById(createMessageDTO.getDriverId());
-            message = messageService.sendDriverMessageWithoutBooking(
+            message = messageService.sendDriverMessage(
                     sender,
                     createMessageDTO.getClientId(),
                     createMessageDTO.getMessage()
             );
         } else {
             Client sender = clientService.findById(createMessageDTO.getClientId());
-            message = messageService.sendClientMessageWithoutBooking(
+            message = messageService.sendClientMessage(
                     sender,
                     createMessageDTO.getDriverId(),
                     createMessageDTO.getMessage()

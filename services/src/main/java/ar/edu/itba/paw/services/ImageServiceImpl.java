@@ -43,7 +43,7 @@ public class ImageServiceImpl implements ImageService {
     @Transactional
     @Override
     public void uploadPfp(User user, byte[] bin, String fileName, String type) {
-        validateImage(fileName, bin);
+        validateImage(fileName, bin, type);
         imgDao.uploadPfp(bin, fileName, user, type);
         LOGGER.info("Uploaded pfp for user {}", user.getId());
     }
@@ -51,15 +51,15 @@ public class ImageServiceImpl implements ImageService {
     @Transactional
     @Override
     public void uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type) {
-        validateImage(fileName, bin);
+        validateImage(fileName, bin, type);
         Booking booking = bookingDao.getClientBookingById(client, bookingId);
         imgDao.uploadPop(bin, fileName, booking, type);
         mailService.sendReceivedPop(client.getUsername(), booking.getDriver().getMail(), booking.getDate(), booking.getDriver().getLanguage().getLocale());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
     }
 
-    private void validateImage(String filename, byte[] bin) {
-        if (bin == null || bin.length > 10 * 1024 * 1024 || filename == null || filename.isEmpty())
+    private void validateImage(String filename, byte[] bin, String type) {
+        if (bin == null || bin.length > 10 * 1024 * 1024 || filename == null || filename.isEmpty() || type == null || type.isEmpty())
             throw new InvalidImageException();
     }
 }

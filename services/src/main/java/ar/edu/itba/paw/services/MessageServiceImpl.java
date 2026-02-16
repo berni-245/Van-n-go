@@ -2,7 +2,10 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.InvalidMessageException;
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
@@ -37,20 +40,10 @@ public class MessageServiceImpl implements MessageService {
         this.mailService = mailService;
     }
 
-    @Transactional
-    @Override
-    public void sendClientMessage(Integer bookingId, Client sender, Integer recipientId, String message) { //TODO: delete after tests refactoring
-        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
-        Driver driver = driverDao.findById(recipientId);
-        Booking booking = bookingDao.getClientBookingById(sender, bookingId);
-        if (!booking.getDriver().equals(driver)) throw new ForbiddenConversationException();
-        messageDao.sendMessage(sender, driver, message, false);
-        mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
-    }
 
     @Transactional
     @Override
-    public Message sendClientMessageWithoutBooking(Client sender, Integer recipient, String message) {
+    public Message sendClientMessage(Client sender, Integer recipient, String message) {
         if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
         Driver driver = driverDao.findById(recipient);
         if (!bookingDao.existsBookingBetween(sender, driver)) {
@@ -69,20 +62,10 @@ public class MessageServiceImpl implements MessageService {
         return Duration.between(lastMessageTime, now).toMinutes() >= EMAIL_THROTTLING_MINUTES;
     }
 
-    @Transactional
-    @Override
-    public void sendDriverMessage(Integer bookingId, Driver sender, Integer recipientId, String message) {
-        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
-        Client client = clientDao.findById(recipientId);
-        Booking booking = bookingDao.getDriverBookingById(sender, bookingId);
-        if (!booking.getClient().equals(client)) throw new ForbiddenConversationException();
-        messageDao.sendMessage(client, sender, message, true);
-        mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
-    }
 
     @Transactional
     @Override
-    public Message sendDriverMessageWithoutBooking(Driver sender, Integer recipient, String message) {
+    public Message sendDriverMessage(Driver sender, Integer recipient, String message) {
         if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
         Client client = clientDao.findById(recipient);
         if (!bookingDao.existsBookingBetween(client, sender)) {
