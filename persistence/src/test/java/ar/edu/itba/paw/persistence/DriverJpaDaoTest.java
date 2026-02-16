@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
-import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.Language;
-import ar.edu.itba.paw.models.Size;
-import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,6 +99,11 @@ public class DriverJpaDaoTest {
                                 """, USERNAME_NOT_CREATED, MAIL_NOT_CREATED,
                         PASSWORD_NOT_CREATED, ENGLISH.name())
         ));
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
+                jdbcTemplate, "driver",
+                String.format("id = '%d' and description = '%s' and cbu = '%s'",
+                        driver.getId(), DESCRIPTION, "09201929380")
+        ));
     }
 
     @Test
@@ -112,6 +114,8 @@ public class DriverJpaDaoTest {
         assertEquals(PREEXISTING_MAIL, driver.getMail());
         assertEquals(PREEXISTING_PASSWORD, driver.getPassword());
         assertEquals(SPANISH, driver.getLanguage());
+        assertEquals(PREEXISTING_DESCRIPTION, driver.getDescription());
+        assertEquals(PREEXISTING_CBU, driver.getCbu());
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -132,6 +136,8 @@ public class DriverJpaDaoTest {
         assertEquals(PREEXISTING_MAIL, driver.getMail());
         assertEquals(PREEXISTING_PASSWORD, driver.getPassword());
         assertEquals(SPANISH, driver.getLanguage());
+        assertEquals(PREEXISTING_DESCRIPTION, driver.getDescription());
+        assertEquals(PREEXISTING_CBU, driver.getCbu());
     }
 
     @Test
@@ -270,6 +276,51 @@ public class DriverJpaDaoTest {
         assertEquals(DRIVER_COUNT, matchingDrivers.size());
         assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID)));
         assertTrue(matchingDrivers.stream().anyMatch(driver -> driver.getId().equals(PREEXISTING_ID_TWO)));
+    }
+
+    @Test
+    public void testGetSearchResultsFilterByRating() {
+        // Driver 500 tiene rating 4.3, Driver 501 tiene 3.5. Si pedimos min 4, solo debe volver el 500.
+        List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, null, null, null, 4, null, 0);
+
+        assertEquals(1, matchingDrivers.size());
+        assertEquals(PREEXISTING_ID, matchingDrivers.getFirst().getId());
+    }
+
+    @Test
+    public void testGetSearchResultsFilterByPriceMax() {
+        // Ambos tienen rate de 100. Si pedimos max 50, no debe volver ninguno.
+        List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, null, 50.0, null, null, null, 0);
+
+        assertTrue(matchingDrivers.isEmpty());
+    }
+
+    @Test
+    public void testGetSearchResultsFilterByWeekday() {
+        // Ambos trabajan el Miércoles. Si pedimos Lunes, no debe haber resultados.
+        List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, null, null, DayOfWeek.MONDAY, null, null, 0);
+
+        assertTrue(matchingDrivers.isEmpty());
+    }
+
+    @Test
+    public void testGetSearchResultsOrderBestRating() {
+        // Driver 500 (4.3) debería aparecer antes que Driver 501 (3.5)
+        List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, null, null, null, null, SearchOrder.BEST_RATING, 0);
+
+        assertEquals(DRIVER_COUNT, matchingDrivers.size());
+        assertEquals(PREEXISTING_ID, matchingDrivers.get(0).getId());
+        assertEquals(PREEXISTING_ID_TWO, matchingDrivers.get(1).getId());
+    }
+
+    @Test
+    public void testGetSearchResultsOrderAlphabetical() {
+        // THEDriver (500) vs YetAnotherDriver (501). "T" va antes que "Y".
+        List<Driver> matchingDrivers = driverDao.getSearchResults(preexistingVehicleZone, null, null, null, null, SearchOrder.ALPHABETICAL, 0);
+
+        assertEquals(DRIVER_COUNT, matchingDrivers.size());
+        assertEquals(PREEXISTING_ID, matchingDrivers.get(0).getId());
+        assertEquals(PREEXISTING_ID_TWO, matchingDrivers.get(1).getId());
     }
 
     @Test
