@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
 import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
 import ar.edu.itba.paw.exceptions.ForbiddenDriverCancelBookingException;
+import ar.edu.itba.paw.exceptions.PlateNumberAlreadyExistsException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,6 +35,8 @@ public class DriverServiceImplTest {
     @Mock
     private BookingDao bookingDao;
     @Mock
+    private VehicleService vehicleService;
+    @Mock
     private AvailabilityDao availabilityDao;
     @InjectMocks
     private DriverServiceImpl driverService;
@@ -47,42 +52,55 @@ public class DriverServiceImplTest {
 
     private static final Integer BOOKING_ID = 1;
 
-    /*
-    TODO refactor
+    private Driver existingDriver;
+    private Vehicle expectedVehicle;
+
+    @Before
+    public void setUp() {
+        existingDriver = new Driver("driver", "mail@mail.com", "pass", "desc", null, "123", Language.SPANISH);
+        expectedVehicle = new Vehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, null, RATE);
+    }
+
+
+
     @Test
-    public void testAddVehicle() {
-        final Driver existingDriver = spy(Driver.class);
-        final Zone zone1 = spy(Zone.class);
-        final Zone zone2 = spy(Zone.class);
-
-        final Vehicle resultVehicle = spy(Vehicle.class);
-
+    public void testAddVehicleSuccessful() {
         when(vehicleDao.getVehicleCount(existingDriver)).thenReturn(LOW_VEHICLE_COUNT);
-        when(zoneDao.getZonesById(ZONE_IDS)).thenReturn(List.of(zone1, zone2));
+        when(vehicleService.plateNumberExists(PLATE_NUMBER)).thenReturn(false);
 
         when(vehicleDao.create(
-                existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, List.of(zone1, zone2), RATE
-            )
-        ).thenReturn(resultVehicle);
+                eq(existingDriver), eq(PLATE_NUMBER), eq(VOLUME), eq(DESCRIPTION), eq(RATE)
+        )).thenReturn(expectedVehicle);
 
-        Vehicle result = driverService.addVehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, ZONE_IDS, RATE, null, null);
 
-        assertSame(resultVehicle, result);
-        // No exception was thrown!
+        Vehicle result = driverService.addVehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, RATE);
+
+        assertNotNull(result);
+        assertEquals(expectedVehicle.getPlateNumber(), result.getPlateNumber());
+
+        // Verificamos que se haya llamado al DAO exactamente una vez
+        verify(vehicleDao).create(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, RATE);
     }
 
     @Test(expected = DriverVehicleLimitReachedException.class)
-    public void testAddVehicleLimitReached() {
-        final Driver existingDriver = spy(Driver.class);
-
+    public void testAddVehicleExceedsLimit() {
         when(vehicleDao.getVehicleCount(existingDriver)).thenReturn(EXCEEDED_VEHICLE_COUNT);
 
-        driverService.addVehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, ZONE_IDS, RATE, null, null);
+        driverService.addVehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, RATE);
 
         fail();
-
     }
-    */
+
+    @Test(expected = PlateNumberAlreadyExistsException.class)
+    public void testAddVehiclePlateAlreadyExists() {
+        when(vehicleDao.getVehicleCount(existingDriver)).thenReturn(LOW_VEHICLE_COUNT);
+        when(vehicleService.plateNumberExists(PLATE_NUMBER)).thenReturn(true);
+
+        driverService.addVehicle(existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, RATE);
+
+        fail();
+    }
+
 
     @Test
     public void getWorkingDays() {
@@ -126,7 +144,7 @@ public class DriverServiceImplTest {
 
         driverService.acceptBooking(existingDriver, BOOKING_ID);
 
-        assertEquals(existingBooking.getState(), BookingState.ACCEPTED);
+        assertEquals(BookingState.ACCEPTED, existingBooking.getState());
     }
 
     @Test(expected = ForbiddenBookingStateOperationException.class)
@@ -164,7 +182,7 @@ public class DriverServiceImplTest {
 
         driverService.rejectBooking(existingDriver, BOOKING_ID);
 
-        assertEquals(existingBooking.getState(), BookingState.REJECTED);
+        assertEquals(BookingState.REJECTED, existingBooking.getState());
     }
 
     @Test(expected = ForbiddenBookingStateOperationException.class)
@@ -199,7 +217,7 @@ public class DriverServiceImplTest {
 
         driverService.finishBooking(existingDriver, BOOKING_ID);
 
-        assertEquals(existingBooking.getState(), BookingState.FINISHED);
+        assertEquals(BookingState.FINISHED, existingBooking.getState());
     }
 
     @Test(expected = ForbiddenBookingStateOperationException.class)
@@ -234,7 +252,7 @@ public class DriverServiceImplTest {
 
         Booking canceledBooking = driverService.cancelBooking(existingDriver, BOOKING_ID);
 
-        assertEquals(canceledBooking.getState(), BookingState.CANCELED);
+        assertEquals(BookingState.CANCELED, canceledBooking.getState());
     }
 
     @Test(expected = ForbiddenDriverCancelBookingException.class)
@@ -249,6 +267,7 @@ public class DriverServiceImplTest {
 
         fail();
     }
+
 
     // There's not point in testing methods that are only wrappers to their daos because they were already tested in persistence
 }
