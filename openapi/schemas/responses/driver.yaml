@@ -2,7 +2,7 @@ description: >
   A registered user of the application who has vehicles and can get his services requested
   by a client.
 type: object
-required: [ id, username, email, description, rating, cbu ]
+required: [ id, username, email, description ]
 properties:
   id:
     type: integer
