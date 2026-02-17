@@ -16,6 +16,8 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @EnableAsync
+@EnableScheduling
 @EnableTransactionManagement
 @ComponentScan({"ar.edu.itba.paw.webapp.controller",
         "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
@@ -108,6 +111,16 @@ public class WebConfig {
         properties.setProperty("base.prod.url", """
                 http://pawserver.it.itba.edu.ar/paw-2024b-01/""");
         return properties;
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    public ThreadPoolTaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setThreadNamePrefix("scheduled-task-");
+        scheduler.setWaitForTasksToCompleteOnShutdown(true);
+        scheduler.setAwaitTerminationSeconds(2);
+        scheduler.initialize();
+        return scheduler;
     }
 
 }

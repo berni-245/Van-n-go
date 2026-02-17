@@ -2,12 +2,14 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -64,11 +66,16 @@ public class BookingJpaDao implements BookingDao {
         em.merge(booking);
     }
 
-    // TODO this probably makes sense to use a schedule function instead of doing it every call to getBookings().
+    private final static int a = 2;
+
     @Override
+    @Scheduled(cron = "0 0 6,19,20 * * ?")
     public void checkPending() {
-        TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b FROM Booking b WHERE b.state = :state and b.date < current_date", Booking.class);
+        List<ShiftPeriod> shifts = ShiftPeriod.getActualAndPreviousShiftPeriod(LocalTime.now());
+        TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b " +
+                "FROM Booking b WHERE b.state = :state and ( b.date < current_date or (b.date = current_date and b.shiftPeriod IN :shifts ) ) ", Booking.class);
         bookingQuery.setParameter("state", BookingState.PENDING);
+        bookingQuery.setParameter("shifts", shifts);
         List<Booking> bookings = bookingQuery.getResultList();
         for (Booking booking : bookings) {
             rejectBooking(booking);
