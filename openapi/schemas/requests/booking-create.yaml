@@ -17,6 +17,6 @@ properties:
     example: "2026-01-10"
   shiftPeriod:
     $ref: "../enums/shift-period.yaml"
-  description:
+  jobDescription:
     type: string
     example: "Hola, necesito un flete"

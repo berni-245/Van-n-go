@@ -10,9 +10,6 @@ import java.time.LocalDate;
 
 public class CreateBookingDTO {
     @NotNull
-    private Integer clientId;
-
-    @NotNull
     private Integer vehicleId;
 
     @NotNull
@@ -33,14 +30,6 @@ public class CreateBookingDTO {
 
     @NotNull
     private ShiftPeriod shiftPeriod;
-
-    public Integer getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
 
     public Integer getVehicleId() {
         return vehicleId;
