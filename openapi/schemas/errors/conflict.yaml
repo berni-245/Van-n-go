@@ -1,5 +1,5 @@
 description: Conflict Error
 content:
-  application/json:
+  application/vnd.errorInfo.v1+json:
     schema:
       $ref: "error-base-format.yaml"

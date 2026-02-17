@@ -2,6 +2,8 @@ type: object
 required:
   - type
   - description
+  - entity
+  - subtype
 properties:
   type:
     type: string
@@ -13,11 +15,11 @@ properties:
     example: Username already in use
   entity:
     type: string
-    description: Property that had the conflict within the schema.
+    description: Property that had the conflict within the request body.
     example: username
   subtype:
     type: string
-    description: Specific validation type that was broken, it's unique for the `entity` but not unique for the whole schema.
+    description: Specific validation type that was broken, it's unique for the `entity` but not unique for the whole error body.
     example: ValidUsername
 
 

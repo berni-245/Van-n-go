@@ -1,6 +1,6 @@
 description: Bad Request
 content:
-  application/json:
+  application/vnd.formErrorInfo.v1+json:
     schema:
       type: array
       items:
