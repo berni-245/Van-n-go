@@ -24,6 +24,9 @@ properties:
   profilePic:
     type: string
     example: /api/drivers/13/profile-picture
+  hasProfilePic:
+    type: boolean
+    example: true
   vehicles:
     type: string
     example: /api/driver/13/vehicles

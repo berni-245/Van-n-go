@@ -16,3 +16,6 @@ properties:
   profilePic:
     type: string
     example: /api/clients/13/profile-picture
+  hasProfilePic:
+    type: boolean
+    example: true
