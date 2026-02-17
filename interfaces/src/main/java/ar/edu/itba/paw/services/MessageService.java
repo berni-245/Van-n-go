@@ -12,7 +12,7 @@ public interface MessageService {
     Message sendClientMessage(Client sender, Integer recipient, String message);
 
 
-    Message sendDriverMessage(Driver sender, Integer recipient, String message); //TODO: hacer que los tests usen los metdos nuevos que no dependen del booking
+    Message sendDriverMessage(Driver sender, Integer recipient, String message);
 
     int getConversationMessageCount(Client client, Driver driver);
 
