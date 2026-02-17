@@ -1,0 +1,23 @@
+type: object
+required:
+  - type
+  - description
+properties:
+  type:
+    type: string
+    description: Constant that identifies the specific error type within the global HTTP status, it's always INVALID_ARGUMENTS in these forms.
+    example: INVALID_ARGUMENTS
+  description:
+    type: string
+    description: Human-readable description of the specific error.
+    example: Username already in use
+  entity:
+    type: string
+    description: Property that had the conflict within the schema.
+    example: username
+  subtype:
+    type: string
+    description: Specific validation type that was broken, it's unique for the `entity` but not unique for the whole schema.
+    example: ValidUsername
+
+

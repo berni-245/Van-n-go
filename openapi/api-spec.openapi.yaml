@@ -65,7 +65,9 @@ paths:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: >
+            Possible errors: LALLALAL
         "409":
           $ref: "schemas/errors/conflict.yaml"
 
@@ -115,7 +117,7 @@ paths:
               schema:
                 $ref: "schemas/responses/client.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -220,7 +222,7 @@ paths:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
 
   /drivers/{driverId}:
     get:
@@ -267,7 +269,7 @@ paths:
               schema:
                 $ref: "schemas/responses/driver.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -421,7 +423,7 @@ paths:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
@@ -555,18 +557,12 @@ paths:
     get:
       summary: List bookings
       description: >
-        Retrieves a user's bookings. Exactly one of `fromClient` or `toDriver` must be specified.
+        Retrieves a user's bookings.
       parameters:
-        - name: fromClient
+        - name: userId
           in: query
-          description: Filter bookings created by a specific client
-          required: false
-          schema:
-            type: integer
-        - name: toDriver
-          in: query
-          description: Filter bookings assigned to a specific driver
-          required: false
+          description: Filter bookings where the userId is a participant of a booking.
+          required: true
           schema:
             type: integer
         - name: state
@@ -629,7 +625,7 @@ paths:
               schema:
                 $ref: "schemas/responses/booking.yaml"
         "400":
-          $ref: "schemas/errors/bad-request.yaml"
+          $ref: "schemas/errors/bad-request-form.yaml"
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
