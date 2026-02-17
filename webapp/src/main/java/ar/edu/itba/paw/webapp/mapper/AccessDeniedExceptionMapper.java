@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.mapper;
 
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.general.ErrorType;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -13,6 +15,10 @@ public class AccessDeniedExceptionMapper extends AbstractExceptionMapper<AccessD
     protected Response generateResponse(AccessDeniedException ex) {
         // Can't use this exception message because we need a localized message
         return Response.status(Response.Status.FORBIDDEN)
+                .entity(new ErrorDTO(
+                        ErrorType.FORBIDDEN_ROLE_ACCESS,
+                        "Your role isn't allowed to access this resource."
+                ))
                 .type(CustomMediaType.ERROR)
                 .build();
     }

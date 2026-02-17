@@ -5,6 +5,7 @@ package ar.edu.itba.paw.webapp.config;
 import ar.edu.itba.paw.webapp.auth.JwtTokenFilter;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.auth.TokenGeneratorFilter;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -75,6 +76,20 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                                 HttpServletResponse.SC_UNAUTHORIZED,
                                 ex.getMessage()
                         )
+                )
+                .accessDeniedHandler(
+                        (request, response, ex) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType(CustomMediaType.ERROR);
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("""
+                                    {
+                                      "type": "FORBIDDEN_ACCESS",
+                                      "description": "You do not have permission to access this resource"
+                                    }
+                                    """
+                            );
+                        }
                 )
                 .and()
                 .httpBasic()
