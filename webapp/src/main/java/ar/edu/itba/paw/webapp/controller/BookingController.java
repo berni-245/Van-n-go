@@ -115,7 +115,7 @@ public class BookingController {
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {CustomMediaType.BOOKING_REVIEW})
     @Produces(value = {CustomMediaType.BOOKING_REVIEW})
-    public Response updateBookingReview(@PathParam("bookingId") int bookingId, CreateBookingReviewDTO dto) {
+    public Response updateBookingReview(@PathParam("bookingId") int bookingId, @Valid CreateBookingReviewDTO dto) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         clientService.setBookingRatingAndReview(b.getClient(), b.getId(), dto.getRating(), dto.getComments());
         return Response.ok(BookingReviewDTO.fromBooking(uriInfo, b)).build();

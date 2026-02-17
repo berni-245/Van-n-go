@@ -65,7 +65,7 @@ public class AuthorizationService {
     public boolean isAuthUserInConversation(int messageId) {
         Message m = messageService.getMessageById(messageId);
         int authUserId = getCurrentUser().getUser().getId();
-        if (authUserId != m.getClient().getId() && authUserId != m.getDriver().getId()) {
+        if (m == null || (authUserId != m.getClient().getId() && authUserId != m.getDriver().getId())) {
             throw new ForbiddenConversationException();
         }
         return true;

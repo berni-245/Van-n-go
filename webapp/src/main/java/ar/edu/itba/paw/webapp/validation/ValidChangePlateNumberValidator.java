@@ -20,7 +20,7 @@ public class ValidChangePlateNumberValidator extends ValidatorWithLoggedUser imp
 
     @Override
     public boolean isValid(String plateNumber, ConstraintValidatorContext constraintValidatorContext) {
-        if (getUser() instanceof Driver driver) { //TODO: esto no podria encontrar un vehicle con el mismo numero de patente que licensePlate pero que sea con diferente id al que se quiere actualizar?
+        if (getUser() instanceof Driver driver) {
             Optional<Vehicle> optional = ds.findVehicleByPlateNumber(driver, plateNumber);
             if (optional.isPresent()) return true;
         }

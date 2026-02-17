@@ -11,7 +11,7 @@ import javax.ws.rs.ext.Provider;
 public class PageOutOfBoundsExceptionMapper extends AbstractExceptionMapper<PageOutOfBoundsException> {
     @Override
     protected Response generateResponse(PageOutOfBoundsException e) {
-        return Response.status(Response.Status.REQUESTED_RANGE_NOT_SATISFIABLE)
+        return Response.status(Response.Status.BAD_REQUEST)
                 .type(CustomMediaType.ERROR)
                 .entity(new ErrorDTO(e))
                 .build();

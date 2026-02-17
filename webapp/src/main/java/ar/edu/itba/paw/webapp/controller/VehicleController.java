@@ -168,8 +168,8 @@ public class VehicleController {
     @PATCH
     @Path("{vehicleId}/availability")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces(value = {CustomMediaType.AVAILABILITY_UPDATE})
-    @Consumes(value = {CustomMediaType.AVAILABILITY})
+    @Consumes(value = {CustomMediaType.AVAILABILITY_UPDATE})
+    @Produces(value = {CustomMediaType.AVAILABILITY})
     public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId,
                                        @Valid UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
@@ -181,7 +181,7 @@ public class VehicleController {
         );
         ds.updateAvailability(v, dto.getZones(), getMapDayTimeSlots(dto));
         AvailabilityDTO availabilityDTO = new AvailabilityDTO();
-        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo //TODO: esto esta mal, deberia devolver los datos de la bd, no del request DTO
+        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo //TODO: esto esta mal, deberia devolver los datos de la bd, no del request DTO.
                 .getBaseUriBuilder().path("api").path("zones")
                 .path(String.valueOf(id)).build()).toList()
         );
@@ -203,8 +203,7 @@ public class VehicleController {
     public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        List<Booking> bookings = vehicle.getBookings();
-        List<DatedTimeSlotDTO> bookedTimes = bookings.stream()
+        List<DatedTimeSlotDTO> bookedTimes = vehicle.getBookings().stream() // TODO: ver si esto trae todos los bookings en memoria, might be a problem in that case
                 .filter(b -> LocalDate.now().isBefore(b.getDate()))
                 .filter(b -> b.getState().equals(BookingState.ACCEPTED))
                 .map(DatedTimeSlotDTO::fromBooking)

@@ -41,7 +41,7 @@ public class VehicleDTO {
         dto.driver = baseDriverURI.clone().build();
         dto.self = baseVehicleURI.clone().build();
         dto.picture = baseVehicleURI.clone().path("picture").build();
-        dto.hasPicture = vehicle.getId() != null;
+        dto.hasPicture = vehicle.getImgId() != null;
         dto.availability = baseVehicleURI.clone().path("availability").build();
         dto.bookedTimes = baseVehicleURI.clone().path("booked-times").build();
 
