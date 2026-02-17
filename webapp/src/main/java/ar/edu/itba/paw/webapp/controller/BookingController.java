@@ -88,15 +88,15 @@ public class BookingController {
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
     }
 
-    @POST
+    @PATCH
     @Path("/{bookingId}")
     @Consumes(value = {CustomMediaType.BOOKING_UPDATE_STATE})
     @Produces(value = {CustomMediaType.BOOKING})
-    public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, UpdateBookingStateDTO dto) {
+    public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, @Valid UpdateBookingStateDTO dto) {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
         Booking b = userService.getBookingById(user, bookingId);
-        userService.setNewBookingState(user, b.getId(), BookingState.valueOf(dto.getState().name()));
+        userService.setNewBookingState(user, b.getId(), BookingState.valueOf(dto.getState()));
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
     }
 

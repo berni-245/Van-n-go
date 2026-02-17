@@ -653,9 +653,9 @@ paths:
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
-    post:
+          description: >
+            Possible errors `type`s: FORBIDDEN_USER_BOOKING_ACCESS
+    patch:
       parameters:
         - $ref: "#/components/parameters/BookingIdPath"
       summary: Update booking state with given ID
