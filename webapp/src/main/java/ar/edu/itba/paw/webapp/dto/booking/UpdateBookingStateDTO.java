@@ -1,26 +1,21 @@
 package ar.edu.itba.paw.webapp.dto.booking;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class UpdateBookingStateDTO {
     @NotNull
-    private BookingStateDTO state;
+    @Pattern(regexp = "ACCEPTED|REJECTED|FINISHED|CANCELED")
+    private String state;
 
     public UpdateBookingStateDTO() {
     }
 
-    public BookingStateDTO getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(BookingStateDTO state) {
+    public void setState(String state) {
         this.state = state;
-    }
-
-    public enum BookingStateDTO {
-        ACCEPTED,
-        REJECTED,
-        FINISHED,
-        CANCELED
     }
 }

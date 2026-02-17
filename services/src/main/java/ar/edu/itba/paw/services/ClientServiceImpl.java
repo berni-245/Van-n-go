@@ -74,9 +74,9 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
             ShiftPeriod shiftPeriod,
             String jobDescription
     ) {
-        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
+        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow(VehicleNotAvailableException::new);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        Zone destination = zoneDao.getZone(destinationId).orElseThrow(ZoneNotFoundException::new);
         Booking booking = bookingDao.appointBooking(
                 v, client, zone, destination, date, shiftPeriod, jobDescription
         );

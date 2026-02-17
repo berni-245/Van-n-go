@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto.vehicle;
 
 import ar.edu.itba.paw.models.Rates;
 import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.webapp.validation.ValidChangePlateNumber;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Pattern;
 public class UpdateVehicleDTO {
 
     @Pattern(regexp = "([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})", message = "{Pattern.plateNumber}")
+    @ValidChangePlateNumber
     private String plateNumber;
 
     @Min(Size.MIN)

@@ -4,15 +4,15 @@ import ar.edu.itba.paw.webapp.validation.ValidChangeLanguage;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
 import ar.edu.itba.paw.webapp.validation.ValidPasswordChange;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @ValidPasswordChange
 public abstract class UpdateUserDTO {
 
-    @Size(min = 5, max = 20, message = "{Size.username}")
+    @Length(min = 5, max = 20, message = "{Size.username}")
     @Pattern(regexp = "^[a-zA-Z]\\w*$", message = "{Pattern.username}")
     @ValidChangeUsername
     private String username;
@@ -21,14 +21,13 @@ public abstract class UpdateUserDTO {
     @ValidChangeMail
     private String email;
 
-
     @ValidChangeLanguage
     private String preferredLanguage;
 
-    @Size(min = 8, max = 32)
+    @Length(min = 8, max = 32)
     private String oldPassword;
 
-    @Size(min = 8, max = 32)
+    @Length(min = 8, max = 32)
     @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
     private String password;
 

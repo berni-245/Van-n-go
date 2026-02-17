@@ -6,12 +6,14 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public abstract class CreateUserDTO {
     @Length(min = 5, max = 20, message = "{Size.username}")
     @Pattern(regexp = "^[a-zA-Z]\\w*$", message = "{Pattern.username}")
     @ValidUsername
+    @NotNull
     private String username;
 
     @Email
@@ -21,6 +23,7 @@ public abstract class CreateUserDTO {
 
     @Length(min = 8, max = 32, message = "{Size.password}")
     @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
+    @NotNull
     private String password;
 
     public String getUsername() {
