@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ImageNotFoundException;
 import ar.edu.itba.paw.exceptions.VehicleNotFoundException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.dto.vehicle.*;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
@@ -134,7 +136,8 @@ public class VehicleController {
                 return Response.ok(picture.getData()).type(picture.getType()).build();
             }
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)
+                .entity(new ErrorDTO(new ImageNotFoundException())).build();
     }
 
     @PUT

@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.ImageNotFoundException;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Image;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.dto.user.ClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
@@ -91,7 +93,8 @@ public class ClientController {
                 return Response.ok(picture.getData()).type(picture.getType()).build();
             }
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)
+                .entity(new ErrorDTO(new ImageNotFoundException())).build();
     }
 
     @PUT
