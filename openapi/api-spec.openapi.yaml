@@ -66,10 +66,30 @@ paths:
                 $ref: "schemas/responses/client.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
-          description: >
-            Possible errors: LALLALAL
-        "409":
-          $ref: "schemas/errors/conflict.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            username:
+              - Length: must be between 5 and 20 characters
+              - Pattern: must follow this regex pattern ^[a-zA-Z]\w$
+              - ValidUsername: username must not already be in use
+              - NotNull: value must not be null 
+
+            email:
+              - Email: must be a correct email format
+              - ValidMail: email must not already be in use
+              - NotBlank: string must not be null nor empty
+
+            password:
+              - Length: must be between 8 and 32 characters
+              - Pattern: must follow this regex pattern ^[A-Za-z\d@$!%*#?&]+$
+              - NotNull: value must not be null
+            
+            zoneId:
+              - ValidZoneId: must be a zoneId that exists in the `/zones` endpoint
+              - NotNull: value must not be null
 
   /clients/{clientId}:
     get:
@@ -90,10 +110,16 @@ paths:
             application/vnd.client.v1+json:
               schema:
                 $ref: "schemas/responses/client.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: USER_ID_NOT_PROVIDED.
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_CLIENT_INFO_ACCESS (for failed application/vnd.publicClient.v1+json), USER_IDENTITY_MISMATCH (for failed application/vnd.client.v1+json).
     patch:
       parameters:
         - $ref: "#/components/parameters/ClientIdPath"
@@ -118,14 +144,41 @@ paths:
                 $ref: "schemas/responses/client.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+            
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            username:
+              - Length: must be between 5 and 20 characters
+              - Pattern: must follow this regex pattern ^[a-zA-Z]\w$
+              - ValidChangeUsername: username must not already be in use or be the same one the user had
+
+            email:
+              - Email: must be a correct email format
+              - ValidChangeMail: email must not already be in use or be the same one the user had
+            
+            preferredLanguage:
+              - ValidChangeLanguage: language must be allowed by the system (either ENGLISH or SPANISH)
+            
+            oldPassword:
+              - Length: must be between 8 and 32 characters
+            
+            password:
+              - Length: must be between 8 and 32 characters
+              - Pattern: must follow this regex pattern ^[A-Za-z\d@$!%*#?&]+$
+            
+            zoneId:
+              - ValidZoneId: must be a zoneId that exists in the `/zones` endpoint
+            
+            no_entity (these subtypes do not have entity associated):
+              - ValidPasswordChange: If oldPassword and password are not null, check if the oldPassword matches with the previous password from the client
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
-        "409":
-          $ref: "schemas/errors/conflict.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
 
   /clients/{clientId}/profile-picture:
     get:
@@ -140,10 +193,20 @@ paths:
         "200":
           description: Client's profile picture
           $ref: "schemas/image.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: USER_ID_NOT_PROVIDED
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_CLIENT_INFO_ACCESS
         "404":
-          $ref: "schemas/errors/image-not-found.yaml"
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: IMAGE_NOT_FOUND
     put:
       parameters:
         - $ref: "#/components/parameters/ClientIdPath"
@@ -159,10 +222,21 @@ paths:
       responses:
         "204":
           description: Profile picture uploaded
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+            
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+            
+            no_entity (these subtypes do not have entity associated):
+              - ValidImage: Images must be lower than 10MB
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
         "415":
           $ref: "schemas/errors/unsupported-media-type.yaml"
 
@@ -193,6 +267,15 @@ paths:
                 type: array
                 items:
                   $ref: "schemas/responses/driver.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: PAGE_OUT_OF_BOUNDS
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: ZONE_NOT_FOUND
+
     post:
       summary: Create a new driver
       description: Registers a new client account in the system..
@@ -202,7 +285,7 @@ paths:
       requestBody:
         required: true
         description: >
-          Client information required to create a new client account.
+          Driver information required to create a new driver account.
           The email address and username must be unique.
         content:
           application/vnd.driverCreate.v1+json:
@@ -223,6 +306,30 @@ paths:
                 $ref: "schemas/responses/driver.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            username:
+              - Length: must be between 5 and 20 characters
+              - Pattern: must follow this regex pattern ^[a-zA-Z]\w$
+              - ValidUsername: username must not already be in use
+              - NotNull: value must not be null 
+
+            email:
+              - Email: must be a correct email format
+              - ValidMail: email must not already be in use
+              - NotBlank: string must not be null nor empty
+
+            password:
+              - Length: must be between 8 and 32 characters
+              - Pattern: must follow this regex pattern ^[A-Za-z\d@$!%*#?&]+$
+              - NotNull: value must not be null
+
+            description:
+              - Length: must be between 5 and 255 characters
+              - NotNull: value must not be null
 
   /drivers/{driverId}:
     get:
@@ -243,10 +350,21 @@ paths:
             application/vnd.driver.v1+json:
               schema:
                 $ref: "schemas/responses/driver.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: USER_ID_NOT_PROVIDED.
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+          description: (only for application/vnd.driver.v1+json)
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH (for failed application/vnd.driver.v1+json).
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: USER_NOT_FOUND (only for application/vnd.publicDriver.v1+json).
     patch:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -270,12 +388,42 @@ paths:
                 $ref: "schemas/responses/driver.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            username:
+              - Length: must be between 5 and 20 characters
+              - Pattern: must follow this regex pattern ^[a-zA-Z]\w$
+              - ValidChangeUsername: username must not already be in use or be the same one the user had
+
+            email:
+              - Email: must be a correct email format
+              - ValidChangeMail: email must not already be in use or be the same one the user had
+
+            preferredLanguage:
+              - ValidChangeLanguage: language must be allowed by the system (either ENGLISH or SPANISH)
+
+            oldPassword:
+              - Length: must be between 8 and 32 characters
+
+            password:
+              - Length: must be between 8 and 32 characters
+              - Pattern: must follow this regex pattern ^[A-Za-z\d@$!%*#?&]+$
+
+            description:
+              - Length: must be between 5 and 255 characters
+              - Pattern: must follow this regex pattern ^[a-zA-Z0-9]*$
+
+            no_entity (these subtypes do not have entity associated):
+              - ValidPasswordChange: If oldPassword and password are not null, check if the oldPassword matches with the previous password from the client
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden - Current user is not profile owner
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
 
   /drivers/{driverId}/profile-picture:
     get:
@@ -289,8 +437,14 @@ paths:
         "200":
           description: Driver's profile picture
           $ref: "schemas/image.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: USER_ID_NOT_PROVIDED
         "404":
-          $ref: "schemas/errors/image-not-found.yaml"
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: IMAGE_NOT_FOUND
     put:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -306,10 +460,21 @@ paths:
       responses:
         "204":
           description: Profile picture uploaded
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            no_entity (these subtypes do not have entity associated):
+              - ValidImage: Images must be lower than 10MB
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
         "415":
           $ref: "schemas/errors/unsupported-media-type.yaml"
 
@@ -342,6 +507,14 @@ paths:
                 type: array
                 items:
                   $ref: "schemas/responses/vehicle.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: PAGE_OUT_OF_BOUNDS
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: USER_NOT_FOUND, ZONE_NOT_FOUND
     post:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -373,12 +546,40 @@ paths:
               schema:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
-          # TODO: specify what "Validation error" means
-          description: Bad Request - Validation error or specified plate number already registered
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+            
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+            
+            plateNumber:
+              - Pattern: must follow this regex pattern ([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})
+              - ValidPlateNumber: plateNumber must not already be in use
+              - NotNull: value must not be null 
+            
+            volumeM3:
+              - Min: min value must be 1
+              - Max: max value must be 100
+              - NotNull: value must not be null
+            
+            hourlyRate:
+              - Min: min value must be 100
+              - Max: max value must be 100000
+              - NotNull: value must not be null
+            
+            description:
+              - Length: string must not exceed 255 characters
+              - NotBlank: string must not be null nor empty
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
+          description: >
+            Possible errors `type`s: DRIVER_VEHICLE_LIMIT_REACHED
 
   /drivers/{driverId}/vehicles/{vehicleId}:
     get:
@@ -399,6 +600,8 @@ paths:
                 $ref: "schemas/responses/vehicle.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: USER_NOT_FOUND, VEHICLE_NOT_FOUND
     patch:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -424,12 +627,35 @@ paths:
                 $ref: "schemas/responses/vehicle.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+            
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+            
+            plateNumber:
+              - Pattern: must follow this regex pattern ([a-zA-Z]{3}[0-9]{3})|([a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})
+              - ValidChangePlateNumber: plateNumber must not already be in use or be the same one the vehicle had
+            
+            volumeM3:
+              - Min: min value must be 1
+              - Max: max value must be 100
+            
+            hourlyRate:
+              - Min: min value must be 100
+              - Max: max value must be 100000
+            
+            description:
+              - Length: string must not exceed 255 characters
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden - Only the owner can update the vehicle
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_NOT_FOUND
     delete:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -442,9 +668,75 @@ paths:
       responses:
         "204":
           description: No content.
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_NOT_FOUND
+        "409":
+          $ref: "schemas/errors/conflict.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_HAS_ACCEPTED_JOBS
 
+  /drivers/{driverId}/vehicles/{vehicleId}/picture:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/DriverIdPath"
+        - $ref: "#/components/parameters/VehicleIdPath"
+      summary: Get a vehicle's picture.
+      description: Get the picture for a driver's vehicle
+      operationId: getVehiclePicture
+      tags:
+        - Vehicles
+      responses:
+        "200":
+          description: Image retrieved successfully
+          $ref: "schemas/image.yaml"
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: IMAGE_NOT_FOUND, USER_NOT_FOUND, VEHICLE_NOT_FOUND
+    put:
+      parameters:
+        - $ref: "#/components/parameters/DriverIdPath"
+        - $ref: "#/components/parameters/VehicleIdPath"
+      tags:
+        - Vehicles
+      summary: Upload vehicle picture
+      description: Uploads or replaces the picture for a vehicle (format PNG or JPG).
+      operationId: uploadVehiclePicture
+      requestBody:
+        required: true
+        $ref: "schemas/image.yaml"
+      responses:
+        "204":
+          description: Vehicle picture uploaded
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            no_entity (these subtypes do not have entity associated):
+              - ValidImage: Images must be lower than 10MB
+        "401":
+          $ref: "schemas/errors/unauthorized.yaml"
+        "403":
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_NOT_FOUND
+        "415":
+          $ref: "schemas/errors/unsupported-media-type.yaml"
   /drivers/{driverId}/vehicles/{vehicleId}/availability:
     get:
       parameters:
@@ -464,6 +756,8 @@ paths:
                 $ref: "schemas/responses/availability.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: USER_NOT_FOUND, VEHICLE_NOT_FOUND
     patch:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
@@ -487,12 +781,32 @@ paths:
               schema:
                 $ref: "schemas/responses/availability.yaml"
         "400":
-          description: Invalid zone ids or timeSlots
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            zones:
+              - ValidArrayZoneId: All zone ids from array must be valid
+
+            shift:
+              - Pattern: The shift must be one of the following: MORNING, AFTERNOON, EVENING
+              - NotNull: value must not be null (if you include a timeslot in the array this subproperty is needed)
+            
+            day:
+              - Pattern: The day must be one of the following: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+              - NotNull: value must not be null (if you include a timeslot in the array this subproperty is needed)
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
-
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_NOT_FOUND
   /drivers/{driverId}/vehicles/{vehicleId}/booked-times:
     get:
       parameters:
@@ -514,44 +828,10 @@ paths:
                   $ref: "schemas/responses/dated-time-slot.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: USER_NOT_FOUND, VEHICLE_NOT_FOUND
 
-  /drivers/{driverId}/vehicles/{vehicleId}/picture:
-    get:
-      parameters:
-        - $ref: "#/components/parameters/DriverIdPath"
-        - $ref: "#/components/parameters/VehicleIdPath"
-      summary: Get a vehicle's picture.
-      description: Get the picture for a driver's vehicle
-      operationId: getVehiclePicture
-      tags:
-        - Vehicles
-      responses:
-        "200":
-          description: Image retrieved successfully
-          $ref: "schemas/image.yaml"
-        "404":
-          $ref: "schemas/errors/image-not-found.yaml"
-    put:
-      parameters:
-        - $ref: "#/components/parameters/DriverIdPath"
-        - $ref: "#/components/parameters/VehicleIdPath"
-      tags:
-        - Vehicles
-      summary: Upload vehicle picture
-      description: Uploads or replaces the picture for a vehicle (format PNG or JPG).
-      operationId: uploadVehiclePicture
-      requestBody:
-        required: true
-        $ref: "schemas/image.yaml"
-      responses:
-        "204":
-          description: Vehicle picture uploaded
-        "401":
-          $ref: "schemas/errors/unauthorized.yaml"
-        "403":
-          $ref: "schemas/errors/forbidden.yaml"
-        "415":
-          $ref: "schemas/errors/unsupported-media-type.yaml"
+
 
   /bookings:
     get:
@@ -590,11 +870,15 @@ paths:
                 items:
                   $ref: "schemas/responses/booking.yaml"
         "400":
-          description: Invalid query parameters
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, PAGE_OUT_OF_BOUNDS.
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH.
     post:
       summary: Create a new booking
       description: As a client, create a new booking
@@ -626,13 +910,46 @@ paths:
                 $ref: "schemas/responses/booking.yaml"
         "400":
           $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            vehicleId:
+              - NotNull: value must not be null
+
+            originZoneId:
+              - ValidZoneId: must be a zoneId that exists in the `/zones` endpoint
+              - NotNull: value must not be null
+            
+            destinationZoneId:
+              - ValidZoneId: must be a zoneId that exists in the `/zones` endpoint
+              - NotNull: value must not be null
+
+            jobDescription:
+              - Length: must be between 5 and 500 characters
+              - NotNull: value must not be null
+            
+            date:
+              - Future: la fecha tiene que ser futura a la actual
+              - NotNull: value must not be null
+            
+            shiftPeriod:
+              - NotNull: value must not be null
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: ACCESS_DENIED (if user type is not client)
+        "404":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_NOT_FOUND
         "409":
           $ref: "schemas/errors/conflict.yaml"
-
+          description: >
+            Possible errors `type`s: TIME_ALREADY_PASSED, VEHICLE_NOT_AVAILABLE, VEHICLE_IS_ALREADY_ACCEPTED, CLIENT_ALREADY_APPOINTED
   /bookings/{bookingId}:
     get:
       parameters:
@@ -681,12 +998,26 @@ paths:
             application/vnd.booking.v1+json:
               schema:
                 $ref: "schemas/responses/booking.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            state:
+              - Pattern: The new state must be one of the following: ACCEPTED, REJECTED, FINISHED, CANCELED
+              - NotNull: value must not be null
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_USER_BOOKING_ACCESS, FORBIDDEN_BOOKING_STATE_OPERATION, FORBIDDEN_DRIVER_CANCEL_BOOKING, FORBIDDEN_CLIENT_CANCEL_BOOKING
         "409":
           $ref: "schemas/errors/conflict.yaml"
+          description: >
+            Possible errors `type`s: VEHICLE_IS_ALREADY_ACCEPTED
 
   /bookings/{bookingId}/review:
     get:
@@ -708,6 +1039,8 @@ paths:
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_USER_BOOKING_ACCESS
         "404":
           $ref: "schemas/errors/not-found.yaml"
     post:
@@ -738,12 +1071,30 @@ paths:
             application/vnd.bookingReview.v1+json:
               schema:
                 $ref: "schemas/responses/booking-review.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            rating:
+              - Min: The minimum rating is 1 star
+              - Max: The maximum rating are 5 stars
+              - NotNull: value must not be null
+            
+            comments:
+              - Length: must have less than 255 characters
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: ACCESS_DENIED (if user type is not client), FORBIDDEN_USER_BOOKING_ACCESS
         "409":
           $ref: "schemas/errors/conflict.yaml"
+          description: >
+            Possible errors `type`s: REVIEW_ALREADY_SENT
 
 
   /bookings/{bookingId}/proof-of-payment:
@@ -763,8 +1114,12 @@ paths:
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_USER_BOOKING_ACCESS
         "404":
-          $ref: "schemas/errors/image-not-found.yaml"
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: IMAGE_NOT_FOUND
     put:
       parameters:
         - $ref: "#/components/parameters/BookingIdPath"
@@ -780,10 +1135,21 @@ paths:
       responses:
         "204":
           description: Proof of payment uploaded
+        "400":
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: USER_ID_NOT_PROVIDED, INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            no_entity (these subtypes do not have entity associated):
+              - ValidFile: File must be lower than 10MB
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
           $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_USER_BOOKING_ACCESS.
         "415":
           $ref: "schemas/errors/unsupported-media-type.yaml"
 
@@ -818,14 +1184,16 @@ paths:
                     sentByDriver: false
                     content: "Ya llego"
                     timestamp: "2026-01-10T18:32:00Z"
-
-
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: PAGE_OUT_OF_BOUNDS
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden - User is not part of the conversation
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH, FORBIDDEN_CONVERSATION
     post:
       tags:
         - Messages
@@ -863,13 +1231,27 @@ paths:
               schema:
                 $ref: "schemas/responses/message.yaml"
         "400":
-          description: Invalid Input
+          $ref: "schemas/errors/bad-request-form.yaml"
+          description: |
+            Possible errors `type`s: INVALID_ARGUMENTS (see subtypes and entities for this one).
+
+            Possible errors `subtype`s for each `entity` (entity: subtype1, subtype2, ...):
+
+            clientId:
+              - NotNull: value must not be null
+            
+            driverId:
+              - NotNull: value must not be null
+
+            message:
+              - Length: must not exceed 255 characters 
+              - NotBlank: string must not be null nor empty
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Forbidden - User is not part of the conversation
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: USER_IDENTITY_MISMATCH, FORBIDDEN_CONVERSATION
 
   /messages/{messageId}:
     get:
@@ -895,9 +1277,9 @@ paths:
         "401":
           $ref: "schemas/errors/unauthorized.yaml"
         "403":
-          description: Not Authorized (User is not part of the conversation)
-        "404":
-          $ref: "schemas/errors/not-found.yaml"
+          $ref: "schemas/errors/forbidden.yaml"
+          description: >
+            Possible errors `type`s: FORBIDDEN_CONVERSATION
 
   /zones:
     get:
@@ -933,6 +1315,8 @@ paths:
                 $ref: "schemas/responses/zone.yaml"
         "404":
           $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: ZONE_NOT_FOUND
 
 components:
   parameters:
