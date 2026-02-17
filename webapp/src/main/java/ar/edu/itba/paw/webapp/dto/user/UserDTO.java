@@ -37,10 +37,9 @@ public abstract class UserDTO {
         setPublicInfoFromUser(uriInfo, user);
         this.email = user.getMail();
         this.preferredLanguage = user.getLanguage();
-        String userTypeQueryParam = user.getType().equals("driver") ? "toDriver" : "fromClient";
         UriBuilder bookingTemplate = uriInfo
                 .getBaseUriBuilder().path("api").path("bookings")
-                .queryParam(userTypeQueryParam, user.getId());
+                .queryParam("userId", user.getId());
         this.pendingBookings = bookingTemplate.clone().queryParam("status", BookingState.PENDING.name()).build();
         this.acceptedBookings = bookingTemplate.clone().queryParam("status", BookingState.ACCEPTED.name()).build();
         this.finishedBookings = bookingTemplate.clone().queryParam("status", BookingState.FINISHED.name()).build();
