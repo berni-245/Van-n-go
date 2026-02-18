@@ -19,7 +19,6 @@ public interface DriverService extends UserService<Driver> {
 
     List<Vehicle> getVehicles(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, int page, boolean mustHaveAvailability);
 
-    // TODO the 3 update methods prolly need a test, the availability one apparently it didn't have a test?
     void updateAvailability(
             Vehicle vehicle,
             List<Integer> zoneIds,
