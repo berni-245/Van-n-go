@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
-import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
-import ar.edu.itba.paw.exceptions.ForbiddenDriverCancelBookingException;
-import ar.edu.itba.paw.exceptions.PlateNumberAlreadyExistsException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.junit.Before;
@@ -15,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -268,6 +266,38 @@ public class DriverServiceImplTest {
         fail();
     }
 
+    @Test(expected = VehicleNotFoundException.class)
+    public void testUpdateVehicleNotFound() {
+        when(vehicleDao.findById(10)).thenReturn(Optional.empty());
+        driverService.updateVehicle(existingDriver, 10, "NEW999", VOLUME, DESCRIPTION, RATE);
+    }
+
+    @Test(expected = PlateNumberAlreadyExistsException.class)
+    public void testUpdateVehiclePlateAlreadyExists() {
+        Vehicle vehicleWithId = new Vehicle(10, existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, null, RATE);
+        when(vehicleDao.findById(10)).thenReturn(Optional.of(vehicleWithId));
+        when(vehicleService.plateNumberExists("NEW999")).thenReturn(true);
+        driverService.updateVehicle(existingDriver, 10, "NEW999", VOLUME, DESCRIPTION, RATE);
+    }
+
+
+    @Test
+    public void testUpdatePictureSuccessful() {
+        Vehicle vehicleWithId = new Vehicle(10, existingDriver, PLATE_NUMBER, VOLUME, DESCRIPTION, null, RATE);
+        when(vehicleDao.findById(10)).thenReturn(Optional.of(vehicleWithId));
+
+        byte[] bytes = new byte[]{1, 2, 3};
+        driverService.updatePicture(vehicleWithId, "foto.png", bytes, "image/png");
+
+        verify(imageDao).uploadVehicleImage(bytes, "foto.png", vehicleWithId, "image/png");
+    }
+
+    @Test(expected = VehicleHasAcceptedJobsException.class)
+    public void testDeleteVehicleWithAcceptedJobs() {
+        Vehicle vehicle = spy(expectedVehicle);
+        when(bookingDao.hasAnAcceptedBooking(vehicle)).thenReturn(true);
+        driverService.deleteVehicle(vehicle);
+    }
 
     // There's not point in testing methods that are only wrappers to their daos because they were already tested in persistence
 }
