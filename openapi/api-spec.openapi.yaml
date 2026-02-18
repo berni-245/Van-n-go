@@ -812,8 +812,10 @@ paths:
       parameters:
         - $ref: "#/components/parameters/DriverIdPath"
         - $ref: "#/components/parameters/VehicleIdPath"
+        - $ref: "#/components/parameters/Month"
+        - $ref: "#/components/parameters/Year"
       summary: Get booked times for the vehicle
-      description: Get the times the vehicle was booked for.
+      description: Get the times the vehicle was booked for in the given year and month.
       operationId: listBookedTimes
       tags:
         - Vehicles
@@ -826,10 +828,18 @@ paths:
                 type: array
                 items:
                   $ref: "schemas/responses/dated-time-slot.yaml"
+        "400":
+          $ref: "schemas/errors/bad-request.yaml"
+          description: >
+            Possible errors `type`s: YEAR_AND_MONTH_MUST_BE_PROVIDED
         "404":
           $ref: "schemas/errors/not-found.yaml"
           description: >
             Possible errors `type`s: USER_NOT_FOUND, VEHICLE_NOT_FOUND
+        "409":
+          $ref: "schemas/errors/not-found.yaml"
+          description: >
+            Possible errors `type`s: TIME_ALREADY_PASSED
 
 
 
@@ -1442,3 +1452,19 @@ components:
         type: string
         default: ALPHABETICAL
         enum: [ ALPHABETICAL, "LEAST_PRICE", "BEST_RATING" ]
+    Month:
+      name: month
+      description: month where the booked times will be searched
+      in: query
+      required: true
+      schema:
+        type: string
+        enum: [ JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER ]
+    Year:
+      name: year
+      description: year where the booked times will be searched
+      in: query
+      required: true
+      schema:
+        type: int
+        example: 2026
