@@ -4,6 +4,7 @@ import ar.edu.itba.paw.exceptions.ZoneNotFoundException;
 import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.dto.general.ZoneDTO;
+import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +42,6 @@ public class ZoneController {
     @Produces(value = {CustomMediaType.ZONE})
     public Response getZoneById(@PathParam("id") final int id) {
         Zone zone = zoneService.getZone(id).orElseThrow(ZoneNotFoundException::new);
-        return Response.ok(ZoneDTO.fromZone(uriInfo, zone)).build();
+        return CacheControlUtils.setMaxTimeToResponse(Response.ok(ZoneDTO.fromZone(uriInfo, zone)));
     }
 }
