@@ -40,6 +40,8 @@
     }
   },
   "password": "Contraseña",
+  "confirmPassword": "Confirmar Contraseña",
+  "email": "Correo Electrónico",
   "register": "Registrarse",
   "settings": "Configuración",
   "sr": {
@@ -109,5 +111,8 @@
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",
-  "vehicles": "Vehículos"
+  "vehicles": "Vehículos",
+  "userType.label": "Elija su tipo de usuario",
+  "userType.client": "Cliente",
+  "userType.driver": "Conductor"
 }
