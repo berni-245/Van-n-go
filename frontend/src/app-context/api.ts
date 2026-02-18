@@ -131,7 +131,15 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     async getVehicles(driverId: number, page: number = 1): Promise<Vehicle[]> {
       const req = apiRequest(`drivers/${driverId}/vehicles`, { queryParams: { page: page.toString() } });
       const res = await this.authFetch(req);
-      return res.json();
+      if (res.ok) return res.json();
+      else {
+        console.log("getVehicles error:", res);
+        return [];
+        // switch (res.status) {
+        //     case 400: toast('Invalid page number');
+        //     return [];
+        // }
+      }
     },
 
     async getZones(): Promise<Zone[]> {
