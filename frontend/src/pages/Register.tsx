@@ -24,7 +24,8 @@ export default function Register() {
     const [confirmedPassword, setConfirmedPassword] = createSignal("");
 
     const [description, setDescription] = createSignal("");
-    const [zoneId, setZoneId] = createSignal<string | null>(null);
+    const [zoneQuery, setZoneQuery] = createSignal<string>("");
+    const [zoneId, setZoneId] = createSignal<number | null>(null);
 
     const [type, setType] = createSignal<RoleEntry["value"]>("client");
 
@@ -145,10 +146,10 @@ export default function Register() {
                             <ZoneInput
                                 label={t("global.zone.label" as any)}
                                 value={zoneQuery()}
-                                onInput={(val) => setZoneQuery(val)}
-                                onSelect={(id) => setZoneId(id)}
-                                error={!zoneId() && zoneQuery().trim() !== "" ? t("global.zone.invalid") : null}
+                                onInput={(v) => setZoneQuery(v)}
+                                onSelect={(id: number | null) => setZoneId(id)}
                             />
+
                         )}
 
                         <Button type="submit" disabled={loading()} category="info"

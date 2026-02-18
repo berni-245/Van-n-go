@@ -7,14 +7,14 @@ export type ZoneDTO = {
     neighborhood?: { name?: string };
 };
 
-// *** Props ***
 type ZoneInputProps = {
     label: string;
     value: string;
     onInput: (value: string) => void;
-    onSelect: (zoneId: number) => void;
+    onSelect: (zoneId: number | null) => void;
     error?: string | null;
 };
+
 
 export default function ZoneInput(props: ZoneInputProps) {
     const [zones, setZones] = createSignal<ZoneDTO[] | null>(null);
