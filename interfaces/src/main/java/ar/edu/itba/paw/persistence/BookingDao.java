@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 public interface BookingDao {
@@ -43,4 +44,10 @@ public interface BookingDao {
     boolean existsBookingBetween(Client client, Driver driver);
 
     boolean existsBookingBetween(int clientId, int driverId);
+
+    boolean hasAnAcceptedBooking(Vehicle vehicle);
+
+    void rejectAllPendingBookingsFromVehicle(Vehicle vehicle);
+
+    List<Booking> getBookingsByVehicleInYearMonth(Vehicle vehicle, YearMonth yearMonth);
 }

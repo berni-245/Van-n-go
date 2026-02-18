@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -306,16 +308,10 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
-        // TODO change these getBookings to database operations, idk if this getBookings brings all the vehicle bookings to memory.
-        Optional<Booking> optional = vehicle.getBookings().stream()
-                .filter(b -> b.getState().equals(BookingState.ACCEPTED))
-                .findFirst();
-        if (optional.isPresent())
+        if (bookingDao.hasAnAcceptedBooking(vehicle))
             throw new VehicleHasAcceptedJobsException();
         vehicleDao.deleteVehicle(vehicle);
-        vehicle.getBookings().stream()
-                .filter(b -> b.getState().equals(BookingState.PENDING))
-                .forEach(b -> rejectBooking(b.getDriver(), b.getId()));
+        bookingDao.rejectAllPendingBookingsFromVehicle(vehicle);
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
     }
 
@@ -331,4 +327,13 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         }
     }
 
+    @Override
+    public List<Booking> getBookingsForVehicleInYearMonth(Vehicle vehicle, Integer year, Month month) {
+        if (year == null || month == null)
+            throw new YearAndMonthMustBeProvidedException();
+        YearMonth currentYearMonth = YearMonth.now();
+        if (year < currentYearMonth.getYear() || (year == currentYearMonth.getYear() && month.getValue() < currentYearMonth.getMonthValue()))
+            throw new TimeAlreadyPassedException();
+        return bookingDao.getBookingsByVehicleInYearMonth(vehicle, YearMonth.of(year, month));
+    }
 }

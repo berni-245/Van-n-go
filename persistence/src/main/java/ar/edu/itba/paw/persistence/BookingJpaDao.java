@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.List;
 
 @Repository
@@ -256,4 +258,58 @@ public class BookingJpaDao implements BookingDao {
                 .getSingleResult();
         return count > 0;
     }
+
+    @Override
+    public boolean hasAnAcceptedBooking(Vehicle vehicle) {
+        TypedQuery<Vehicle> query = em.createQuery(
+                "from Booking b where b.vehicle = :vehicle and b.state = :state",
+                Vehicle.class
+        );
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("state", BookingState.ACCEPTED);
+        return !query.getResultList().isEmpty();
+    }
+
+    @Override
+    public void rejectAllPendingBookingsFromVehicle(Vehicle vehicle) {
+        em.flush();
+        Query query = em.createQuery("""
+                    update Booking b set b.state = :newState
+                    where b.vehicle = :vehicle and b.state = :oldState
+                """);
+
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("oldState", BookingState.PENDING);
+        query.setParameter("newState", BookingState.REJECTED);
+        query.executeUpdate();
+        em.clear();
+    }
+
+    @Override
+    public List<Booking> getBookingsByVehicleInYearMonth(Vehicle vehicle, YearMonth yearMonth) {
+        YearMonth currentYearMonth = YearMonth.now();
+        LocalDate currentDate = LocalDate.now();
+
+        if (yearMonth.isBefore(currentYearMonth))
+            throw new TimeAlreadyPassedException();
+
+        LocalDate start = yearMonth.atDay(yearMonth.equals(currentYearMonth) ? currentDate.getDayOfMonth() : 1);
+        LocalDate end = yearMonth.atEndOfMonth();
+
+        TypedQuery<Booking> query = em.createQuery(
+                """
+                        from Booking b
+                        where b.vehicle = :vehicle
+                          and b.date between :start and :end
+                        """,
+                Booking.class
+        );
+
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("start", start);
+        query.setParameter("end", end);
+
+        return query.getResultList();
+    }
+
 }

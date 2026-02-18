@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.*;
 
 import java.time.DayOfWeek;
+import java.time.Month;
 import java.util.*;
 
 public interface DriverService extends UserService<Driver> {
@@ -69,4 +70,6 @@ public interface DriverService extends UserService<Driver> {
     }
 
     void deleteVehicle(Vehicle vehicle);
+
+    List<Booking> getBookingsForVehicleInYearMonth(Vehicle vehicle, Integer year, Month month);
 }

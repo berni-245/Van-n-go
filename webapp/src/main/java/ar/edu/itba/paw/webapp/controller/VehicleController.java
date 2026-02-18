@@ -22,7 +22,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.time.Month;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -200,12 +200,16 @@ public class VehicleController {
     @GET
     @Path("{vehicleId}/booked-times")
     @Produces(value = {CustomMediaType.BOOKED_TIMES})
-    public Response listBookedTimes(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+    public Response listBookedTimes(
+            @PathParam("driverId") int driverId,
+            @PathParam("vehicleId") int vehicleId,
+            @QueryParam("year") Integer year,
+            @QueryParam("month") Month month
+    ) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
-        List<DatedTimeSlotDTO> bookedTimes = vehicle.getBookings().stream() // TODO: ver si esto trae todos los bookings en memoria, might be a problem in that case
-                .filter(b -> LocalDate.now().isBefore(b.getDate()))
-                .filter(b -> b.getState().equals(BookingState.ACCEPTED))
+        List<DatedTimeSlotDTO> bookedTimes = ds.getBookingsForVehicleInYearMonth(vehicle, year, month)
+                .stream()
                 .map(DatedTimeSlotDTO::fromBooking)
                 .toList();
         return Response.ok(new GenericEntity<>(bookedTimes) {
