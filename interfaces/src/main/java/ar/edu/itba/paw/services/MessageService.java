@@ -22,7 +22,7 @@ public interface MessageService {
         ) / Pagination.MAX_MESSAGE_RETRIEVAL)));
     }
 
-    List<Message> getConversationWithoutBooking(Client client, Driver driver, int page);
+    List<Message> getConversation(Client client, Driver driver, int page);
 
     Message getMessageById(Integer messageId);
 }

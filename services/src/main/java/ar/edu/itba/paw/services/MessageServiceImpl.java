@@ -77,7 +77,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getConversationWithoutBooking(Client client, Driver driver, int page) { //TODO: testear este metodo
+    public List<Message> getConversation(Client client, Driver driver, int page) {
         if (!bookingDao.existsBookingBetween(client, driver)) {
             throw new ForbiddenConversationException();
         }

@@ -53,7 +53,7 @@ public class MessageController {
         Driver driver = driverService.findById(driverId);
         int maxPages = messageService.getConversationPages(client, driver);
         Pagination.validatePage(page, maxPages);
-        List<MessageDTO> messages = messageService.getConversationWithoutBooking(client, driver, page).stream()
+        List<MessageDTO> messages = messageService.getConversation(client, driver, page).stream()
                 .map(MessageDTO.mapper(uriInfo))
                 .toList();
         Response.ResponseBuilder response = Response.ok(new GenericEntity<>(messages) {
