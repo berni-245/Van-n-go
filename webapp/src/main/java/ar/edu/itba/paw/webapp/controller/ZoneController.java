@@ -33,8 +33,8 @@ public class ZoneController {
     @Produces(value = {CustomMediaType.ZONE_LIST})
     public Response listZones(){
         List<ZoneDTO> zones = zoneService.getAllZones().stream().map(ZoneDTO.mapper(uriInfo)).toList();
-        return Response.ok(new GenericEntity<>(zones) {
-        }).build();
+        return CacheControlUtils.setShortMaxTimeToResponse(Response.ok(new GenericEntity<>(zones) {
+        }));
     }
 
     @GET
@@ -42,6 +42,6 @@ public class ZoneController {
     @Produces(value = {CustomMediaType.ZONE})
     public Response getZoneById(@PathParam("id") final int id) {
         Zone zone = zoneService.getZone(id).orElseThrow(ZoneNotFoundException::new);
-        return CacheControlUtils.setMaxTimeToResponse(Response.ok(ZoneDTO.fromZone(uriInfo, zone)));
+        return CacheControlUtils.setLongMaxTimeToResponse(Response.ok(ZoneDTO.fromZone(uriInfo, zone)));
     }
 }

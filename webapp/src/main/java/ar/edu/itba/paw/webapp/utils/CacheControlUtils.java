@@ -7,14 +7,22 @@ import javax.ws.rs.core.Response;
 
 public class CacheControlUtils {
 
-    public static final int MAX_CACHE_TIME = 15724800; // 6 meses
-    public static final int MAX_CONDITIONAL_CACHE_TIME = 86400; // 1 dia
+    private static final int LONG_MAX_CACHE_TIME = 15724800; // 6 meses
+    private static final int SHORT_MAX_CACHE_TIME = 86400; // 1 dia
+    private static final int MAX_CONDITIONAL_CACHE_TIME = 3600; // 1 hora
 
-
-    public static Response setMaxTimeToResponse(final Response.ResponseBuilder responseBuilder) {
+    public static Response setMaxTimeToResponse(final Response.ResponseBuilder responseBuilder, int maxCacheTime) {
         final CacheControl cacheControl = new CacheControl();
-        cacheControl.setMaxAge(MAX_CACHE_TIME);
+        cacheControl.setMaxAge(maxCacheTime);
         return responseBuilder.cacheControl(cacheControl).build();
+    }
+
+    public static Response setLongMaxTimeToResponse(final Response.ResponseBuilder responseBuilder) {
+        return setMaxTimeToResponse(responseBuilder, LONG_MAX_CACHE_TIME);
+    }
+
+    public static Response setShortMaxTimeToResponse(final Response.ResponseBuilder responseBuilder) {
+        return setMaxTimeToResponse(responseBuilder, SHORT_MAX_CACHE_TIME);
     }
 
     public static Response setEtagToResponse(final Response.ResponseBuilder responseBuilder, Request request, int resourceHash) {
