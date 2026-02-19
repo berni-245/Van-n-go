@@ -8,6 +8,10 @@ properties:
   shiftPeriod:
     type: string
     enum: [ MORNING, AFTERNOON, EVENING ]
+  state:
+    type: string
+    enum: [ PENDING, ACCEPTED, REJECTED, FINISHED, CANCELED ]
+    example: PENDING
   jobDescription:
     type: string
     example: "Hola, necesito un flete"
