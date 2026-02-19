@@ -10,11 +10,7 @@ const PasswordInput: Component<InputProps> = (props) => {
 
   const inputId = new HtmlIdFamily("input");
 
-  const [_, filteredProps] = splitProps(props, [
-    "label",
-    "class",
-  ]);
-
+  const [_, filteredProps] = splitProps(props, ["label", "class"]);
 
   return (
     <div class={"flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark " + props.class}>
@@ -32,7 +28,7 @@ const PasswordInput: Component<InputProps> = (props) => {
         />
         <button
           type="button"
-          onClick={() => setShowPassword(!showPassword())}
+          onClick={() => setShowPassword((showPass) => !showPass)}
           class="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface dark:text-on-surface-dark"
           aria-label="Show password"
         >

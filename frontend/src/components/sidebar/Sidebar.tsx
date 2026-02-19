@@ -47,7 +47,7 @@ const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
       {/* <!-- toggle button for small screen  --> */}
       <button
         class="fixed right-4 top-4 z-20 rounded-full bg-primary p-4 md:hidden text-on-primary dark:bg-primary-dark dark:text-on-primary-dark"
-        onClick={() => setShowSidebar(!showSidebar())}
+        onClick={() => setShowSidebar((showSidebar) => !showSidebar)}
       >
         <Show
           when={showSidebar()}
