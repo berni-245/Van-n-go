@@ -25,6 +25,6 @@ public class CacheControlUtils {
         if (resourceChangedResponseBuilder != null) {
             return resourceChangedResponseBuilder.cacheControl(cacheControl).tag(etag).build();
         }
-        return responseBuilder.cacheControl(cacheControl).tag(etag).build();
+        return responseBuilder.status(Response.Status.NOT_MODIFIED).cacheControl(cacheControl).tag(etag).build();
     }
 }
