@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.dto.user.CreateDriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateDriverDTO;
+import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.net.URI;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -112,13 +110,13 @@ public class DriverController {
     @GET
     @Path("/{id}/profile-picture")
     @Produces(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getProfilePicture(@PathParam("id") final int id) {
+    public Response getProfilePicture(@PathParam("id") final int id, @Context Request request) {
         Driver driver = ds.findById(id);
         Integer imageId = driver.getPfp();
         if (imageId != null) {
             Image picture = imageService.getImage(imageId);
             if (picture.getData() != null) {
-                return Response.ok(picture.getData()).type(picture.getType()).build();
+                return CacheControlUtils.setEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
             }
         }
         return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)
