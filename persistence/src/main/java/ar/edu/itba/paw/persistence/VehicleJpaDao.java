@@ -61,7 +61,7 @@ public class VehicleJpaDao implements VehicleDao {
         List<Integer> ids = getIds(d, z, size, priceMax, weekday, offset, mustHaveAvailability);
 
         TypedQuery<Vehicle> query = em.createQuery(
-                "from Vehicle v where id in (:vehicleIds) order by v.plateNumber",
+                "from Vehicle v where id in (:vehicleIds)",
                 Vehicle.class
         );
         query.setParameter("vehicleIds", ids);
@@ -121,6 +121,7 @@ public class VehicleJpaDao implements VehicleDao {
         } else if (mustHaveAvailability) {
             nativeSql.append(" AND a.id IS NOT NULL ");
         }
+        nativeSql.append(" ORDER BY v.id");
         Query nativeQuery = em.createNativeQuery(nativeSql.toString())
                 .setParameter("driverId", d.getId());
         if (z != null)
