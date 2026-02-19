@@ -31,13 +31,10 @@ public class CacheControlUtils {
         EntityTag etag = new EntityTag(String.valueOf(resourceHash));
         Response.ResponseBuilder evaluatedResponseBuilder = request.evaluatePreconditions(etag);
         if (evaluatedResponseBuilder == null) {
-            // CASO 1: No hay headers condicionales o el contenido cambió.
-            // Se debe devolver 200 OK con el cuerpo (la imagen).
-            // Usamos el responseBuilder original que pasaste por parámetro.
+            // CASO 1: No hay headers condicionales o el contenido cambió. Devolvemos el contenido con el ETag y Cache-Control.
             return responseBuilder.cacheControl(cacheControl).tag(etag).build();
         }
-        // CASO 2: El contenido no cambió (304) o precondición fallida (412).
-        // Usamos el builder que nos devolvió JAX-RS.
+        // CASO 2: El contenido no cambió (304)
         return evaluatedResponseBuilder.cacheControl(cacheControl).tag(etag).build();
 
     }
