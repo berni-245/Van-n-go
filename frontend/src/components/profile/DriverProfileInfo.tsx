@@ -20,12 +20,6 @@ export default function DriverProfileInfo(props: { user: Driver }) {
         </strong>{" "}
         {props.user.description || t("global.public.profile.noDescription")}
       </p>
-      <p>
-        <strong class="font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
-          {t("global.generic.word.cbu")}:
-        </strong>{" "}
-        {props.user.cbu || t("global.public.profile.noCbu")}
-      </p>
 
       {/* Sistema de Estrellas */}
       <div class="mt-2 flex items-center justify-center gap-3">
