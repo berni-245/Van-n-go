@@ -5,6 +5,10 @@ properties:
   id:
     type: integer
     example: 42
+  date:
+    type: string
+    formate: date
+    example: '2026-03-30'
   shiftPeriod:
     type: string
     enum: [ MORNING, AFTERNOON, EVENING ]
