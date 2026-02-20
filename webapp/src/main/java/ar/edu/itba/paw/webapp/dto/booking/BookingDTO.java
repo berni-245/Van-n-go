@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 public class BookingDTO {
 
+    private int id;
     private URI self;
     private URI client;
     private URI driver;
@@ -31,6 +32,7 @@ public class BookingDTO {
 
     public static BookingDTO fromBooking(UriInfo uriInfo, Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.id = booking.getId();
         UriBuilder bookingTemplate = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId()));
         bookingDTO.self = bookingTemplate.clone().build();
         bookingDTO.client = uriInfo.getBaseUriBuilder().path("api").path("clients").path(String.valueOf(booking.getClient().getId())).build();
@@ -154,5 +156,13 @@ public class BookingDTO {
 
     public void setReview(URI review) {
         this.review = review;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

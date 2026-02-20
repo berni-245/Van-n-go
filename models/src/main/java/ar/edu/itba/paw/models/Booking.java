@@ -148,6 +148,10 @@ public class Booking {
 
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public String getClientFormattedDate() {
         var clientDf = FORMATTER.withLocale(client.getLanguage().getLocale());
         return getDate().format(clientDf);

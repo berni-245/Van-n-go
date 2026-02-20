@@ -21,10 +21,8 @@ properties:
     example: "Hola, necesito un flete"
   review:
     type: string
-    example: "Me encantó"
-  rating:
-    type: integer
-    example: 4
+    format: uri
+    example: /api/bookings/42/review
   self:
     type: string
     example: /api/bookings/42
