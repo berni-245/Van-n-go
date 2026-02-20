@@ -4,8 +4,8 @@
   "home": "Inicio",
   "language": {
     "label": "Idioma",
-    "english": "Inglés",
-    "spanish": "Español"
+    "ENGLISH": "Inglés",
+    "SPANISH": "Español"
   },
   "login": "Iniciar sesión",
   "name": "Español",
