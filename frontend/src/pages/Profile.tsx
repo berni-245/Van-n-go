@@ -74,7 +74,7 @@ export default function Profile() {
                       <strong class="font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
                         {t("global.language.label")}:
                       </strong>{" "}
-                      <span class="capitalize">{user().preferredLanguage}</span>
+                      <span class="capitalize">{t(`global.language.${user().preferredLanguage}`)}</span>
                     </p>
 
                     <Switch>

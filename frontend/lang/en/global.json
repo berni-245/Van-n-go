@@ -4,8 +4,8 @@
   "home": "Home",
   "language": {
     "label": "Language",
-    "english": "English",
-    "spanish": "Spanish"
+    "ENGLISH": "English",
+    "SPANISH": "Spanish"
   },
   "login": "Log in",
   "name": "English",
