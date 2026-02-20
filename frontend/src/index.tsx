@@ -14,6 +14,7 @@ import Vehicles from "@/pages/Vehicles";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
+import Test from "./pages/Test";
 
 const root = document.getElementById("root");
 
@@ -59,6 +60,7 @@ render(
             </AppContextProvider>
           )}
         >
+          <Route path="/test" component={Test} />
           <Route path="/" component={AnonRoute}>
             <Route path="/" component={Home} />
             <Route path="/login" component={Login} />

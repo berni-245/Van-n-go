@@ -11,9 +11,15 @@ importers:
       '@solid-primitives/i18n':
         specifier: ^2.2.1
         version: 2.2.1(solid-js@1.9.11)
+      '@solid-primitives/pagination':
+        specifier: ^0.5.0
+        version: 0.5.0(solid-js@1.9.11)
       '@solid-primitives/scheduled':
         specifier: ^1.5.2
         version: 1.5.2(solid-js@1.9.11)
+      '@solid-primitives/utils':
+        specifier: ^6.3.2
+        version: 6.3.2(solid-js@1.9.11)
       '@solidjs/meta':
         specifier: ^0.29.4
         version: 0.29.4(solid-js@1.9.11)
@@ -553,6 +559,11 @@ packages:
 
   '@solid-primitives/media@2.3.3':
     resolution: {integrity: sha512-hQ4hLOGvfbugQi5Eu1BFWAIJGIAzztq9x0h02xgBGl2l0Jaa3h7tg6bz5tV1NSuNYVGio4rPoa7zVQQLkkx9dA==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/pagination@0.5.0':
+    resolution: {integrity: sha512-+M0QYjFhFWkI+5dK/A1lY6bk6RHU2K3Q6gGJCb7E+dGwKikxa/iClP1bx4VViEMhPUjCYV8iT+j6QIhEgtnVtQ==}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -1662,6 +1673,11 @@ snapshots:
       '@solid-primitives/event-listener': 2.4.3(solid-js@1.9.11)
       '@solid-primitives/rootless': 1.5.2(solid-js@1.9.11)
       '@solid-primitives/static-store': 0.1.2(solid-js@1.9.11)
+      '@solid-primitives/utils': 6.3.2(solid-js@1.9.11)
+      solid-js: 1.9.11
+
+  '@solid-primitives/pagination@0.5.0(solid-js@1.9.11)':
+    dependencies:
       '@solid-primitives/utils': 6.3.2(solid-js@1.9.11)
       solid-js: 1.9.11
 

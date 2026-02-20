@@ -12,7 +12,7 @@ import {
 } from "solid-icons/fa";
 import { FiLogIn } from "solid-icons/fi";
 import { JSX, Match, Suspense, Switch, type Component } from "solid-js";
-import { Logo } from "./assets/Logo";
+import { Logo } from "@/assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
   const [appState, _] = useAppState();
@@ -56,7 +56,6 @@ const App: Component<{ children: JSX.Element }> = (props) => {
       <AppLayout.Content>
         {/* TODO: prolly remove this suspense when the app is finished */}
         <Suspense fallback="This is the app suspense, you should probably be handling this in a child component">
-          {/* TODO: this error boundary should probably be changed */}
           {props.children}
         </Suspense>
       </AppLayout.Content>

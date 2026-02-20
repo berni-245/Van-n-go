@@ -1,5 +1,6 @@
 import { Component, For } from "solid-js";
-import { useTranslator } from "../app-context/AppContext";
+import { useTranslator } from "@/app-context/AppContext";
+import { createInfiniteScroll } from "@solid-primitives/pagination";
 
 type PaginationProps = {
   totalPages: number;
@@ -10,12 +11,23 @@ type PaginationProps = {
 // TODO: use https://primitives.solidjs.community/package/pagination/
 const Pagination: Component<PaginationProps> = (props) => {
   const t = useTranslator();
+  //
+  // const pageHref = (page: number) => {
+  //   const url = new URL(props.baseHref);
+  //   url.searchParams.set("page", page.toString());
+  //   return url.toString();
+  // };
+  //
+  // const [pages, setEl, { end }] = createInfiniteScroll(fetcher);
 
-  const pageHref = (page: number) => {
-    const url = new URL(props.baseHref);
-    url.searchParams.set("page", page.toString());
-    return url.toString();
-  };
+  return (
+    <div>
+      {/* <For each={pages()}>{(item) => <h4>{item}</h4>}</For> */}
+      {/* <Show when={!end()}> */}
+      {/*   <h1 ref={setEl}>Loading...</h1> */}
+      {/* </Show> */}
+    </div>
+  );
 
   return (
     <nav aria-label={t("global.sr.pagination")}>
