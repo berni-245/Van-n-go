@@ -68,8 +68,6 @@ public class BookingJpaDao implements BookingDao {
         em.merge(booking);
     }
 
-    private final static int a = 2;
-
     @Override
     @Scheduled(cron = "0 0 6,19,20 * * ?")
     public void checkPending() {
@@ -301,6 +299,7 @@ public class BookingJpaDao implements BookingDao {
                         from Booking b
                         where b.vehicle = :vehicle
                           and b.date between :start and :end
+                          and b.state in (:unavailableStates)
                         """,
                 Booking.class
         );
@@ -308,6 +307,7 @@ public class BookingJpaDao implements BookingDao {
         query.setParameter("vehicle", vehicle);
         query.setParameter("start", start);
         query.setParameter("end", end);
+        query.setParameter("unavailableStates", List.of(BookingState.ACCEPTED, BookingState.FINISHED));
 
         return query.getResultList();
     }
