@@ -11,6 +11,7 @@ import DriverAvailability from "@/pages/DriverAvailability";
 import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
 import Vehicles from "@/pages/Vehicles";
+import Profile from "@/pages/Profile";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
@@ -70,6 +71,7 @@ render(
             <Route path="/vehicles" component={Vehicles} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile} />
           </Route>
           <Route path="**" component={Error404} />
         </Router>

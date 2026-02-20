@@ -59,6 +59,41 @@
     "light": "Claro",
     "dark": "Oscuro"
   },
+  "components": {
+    "header": {
+      "profile": "Perfil"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Idioma"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No subió su descripción",
+      "noCbu": "No subió su CBU"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No tiene reseñas"
+    }
+  },
+  "user": {
+    "editUser": {
+      "changePassword": "Modificar contraseña"
+    }
+  },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",
   "vehicles": "Vehículos"
