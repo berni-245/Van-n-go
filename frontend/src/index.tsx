@@ -10,6 +10,7 @@ import { worker } from "@/api-mock/browser";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
+import Profile from "@/pages/Profile";
 
 const root = document.getElementById("root");
 
@@ -70,6 +71,7 @@ render(
             <Route path="/vehicles" component={Vehicles} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile} />
           </Route>
           <Route path="**" component={Error404} />
         </Router>

@@ -59,6 +59,41 @@
     "light": "Light",
     "dark": "Dark"
   },
+  "components": {
+    "header": {
+      "profile": "Profile"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Language"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No description uploaded yet",
+      "noCbu": "No CBU uploaded yet"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No rating available"
+    }
+  },
+  "user": {
+    "editUser": {
+      "changePassword": "Change password"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Email",
+      "zone": "Zone",
+      "description": "Description",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Edit"
+    }
+  },
   "title": "Van N' Go",
   "username": "Username",
   "vehicles": "Vehicles"
