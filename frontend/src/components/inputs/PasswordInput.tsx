@@ -13,7 +13,7 @@ const PasswordInput: Component<InputProps> = (props) => {
   const [_, filteredProps] = splitProps(props, ["label", "class"]);
 
   return (
-    <div class={"flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark " + props.class}>
+    <div class={`flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark ${props.class ?? ""}`}>
       <label for={inputId.id()} class="w-fit pl-0.5 text-sm">
         {props.label}
       </label>

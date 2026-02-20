@@ -9,14 +9,10 @@ type InputProps = {
 const TextInput: Component<InputProps> = (props) => {
   const inputId = new HtmlIdFamily("input");
 
-  const [_, filteredProps] = splitProps(props, [
-    "label",
-    "error",
-    "class",
-  ]);
+  const [_, filteredProps] = splitProps(props, ["label", "error", "class"]);
 
   return (
-    <div class={"flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark " + props.class}>
+    <div class={`flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark ${props.class ?? ""}`}>
       <label
         for={inputId.id()}
         class="flex w-fit items-center gap-1 pl-0.5 text-sm"
