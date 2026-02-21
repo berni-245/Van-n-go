@@ -45,7 +45,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
               />
             </Sidebar.CollapsibleItem>
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
-            <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
+            <Sidebar.Item href="/driver/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
           </Match>
           <Match when={!appState.user}>
             <Sidebar.Item href="/login" text={t("global.login")} icon={<FiLogIn size={20} />} />

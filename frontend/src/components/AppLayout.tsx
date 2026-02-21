@@ -8,9 +8,9 @@ const AppLayoutRoot: ParentComponent = (props) => {
 const Content: ParentComponent = (props) => {
   const resolvedChildren = children(() => props.children);
   return (
-    <div id="main-content" class="h-svh w-full overflow-y-auto p-4">
+    <main id="main-content" class="h-svh w-full overflow-y-auto p-4">
       {resolvedChildren()}
-    </div>
+    </main>
   );
 };
 

@@ -133,12 +133,13 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(req);
       if (res.ok) return res.json();
       else {
-        console.log("getVehicles error:", res);
-        return [];
+        console.error("getVehicles error:", res);
         // switch (res.status) {
-        //     case 400: toast('Invalid page number');
-        //     return [];
+        //   case 400:
+        //     toaster.notify("Invalid page number", { type: "error" });
+        //     break;
         // }
+        return [];
       }
     },
 
