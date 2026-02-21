@@ -8,8 +8,8 @@ public class Pagination {
     public static final int VEHICLES_PAGE_SIZE = 6;
     public static final int MAX_MESSAGE_RETRIEVAL = 50;
 
-    public static void validatePage(int page, int totalPages) {
-        if (page < 1 || page > totalPages)
-            throw new PageOutOfBoundsException(totalPages);
+    public static void validatePage(int page) {
+        if (page < 1)
+            throw new PageOutOfBoundsException();
     }
 }

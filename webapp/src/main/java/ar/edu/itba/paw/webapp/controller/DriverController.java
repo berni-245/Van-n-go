@@ -54,7 +54,7 @@ public class DriverController {
             @QueryParam("page") @DefaultValue("1") int page
     ) {
         int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
-        Pagination.validatePage(page, maxPages);
+        Pagination.validatePage(page);
         List<DriverDTO> drivers = ds
                 .getSearchResults(zoneId, size, maxPrice, weekDay, minRating, order, page)
                 .stream().map(DriverDTO.mapper(uriInfo)).toList();

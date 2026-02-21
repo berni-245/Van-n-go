@@ -57,7 +57,7 @@ public class VehicleController {
                 driver, zoneId, size, maxPrice,
                 weekDay, mustHaveAvailability
         );
-        Pagination.validatePage(page, maxPages);
+        Pagination.validatePage(page);
         List<Vehicle> vehiclesFromModel = ds.getVehicles(
                 driver, zoneId, size, maxPrice,
                 weekDay, page, mustHaveAvailability

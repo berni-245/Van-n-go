@@ -52,7 +52,7 @@ public class MessageController {
         Client client = clientService.findById(clientId);
         Driver driver = driverService.findById(driverId);
         int maxPages = messageService.getConversationPages(client, driver);
-        Pagination.validatePage(page, maxPages);
+        Pagination.validatePage(page);
         List<MessageDTO> messages = messageService.getConversation(client, driver, page).stream()
                 .map(MessageDTO.mapper(uriInfo))
                 .toList();
