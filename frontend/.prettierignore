@@ -1,0 +1,10 @@
+# Ignore everything recursively
+*
+
+# But not the .<ext> files
+!*.ts
+!*.tsx
+!*.json
+
+# Check subdirectories too
+!*/
