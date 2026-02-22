@@ -14,9 +14,10 @@ import PasswordInput from "@/components/inputs/PasswordInput";
 import EditClientProfile from "@/components/profile/EditClientProfile";
 import EditDriverProfile from "@/components/profile/EditDriverProfile";
 import { Api } from "@/app-context/api.ts";
-import Select from "@components/Select.tsx";
+import Select from "@/components/Select.tsx";
 import { EditProfilePicForm } from "@components/profile/EditProfilePicForm";
 import {clientToUserState, driverToUserState} from "@/app-context/userState.ts";
+import ProfilePageSkeleton from "@/components/skeletons/ProfilePageSkeleton";
 
 const userProfileQuery = query(async () => {
     const api = useApi();
@@ -44,7 +45,7 @@ export default function Profile() {
             <Title>{t("global.components.header.profile")} - Van N' Go</Title>
 
             <section class="mx-auto w-full max-w-3xl px-4 py-8">
-                <Suspense fallback={<div class="text-center">Loading profile...</div>}>
+                <Suspense fallback={<ProfilePageSkeleton />}>
                     <Show when={fullUser()}>
                         {(user) => (
                             <div

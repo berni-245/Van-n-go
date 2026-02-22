@@ -5,7 +5,7 @@ export interface ApiError {
   subtype?: string;
 }
 
-type Language = "english" | "spanish";
+type Language = "ENGLISH" | "SPANISH";
 
 interface BaseUser {
   id: number;
