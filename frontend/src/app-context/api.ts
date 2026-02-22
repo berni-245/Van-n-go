@@ -1,5 +1,5 @@
 import { TokenPayload } from "@/api/jwt";
-import { Client, Driver, Vehicle, Zone } from "@/api/types";
+import { Client, Driver, UpdateClient, UpdateDriver, Vehicle, Zone } from "@/api/types";
 import { AppState } from "@/app-context/appState";
 import { jwtDecode } from "jwt-decode";
 import { SetStoreFunction } from "solid-js/store";
@@ -147,7 +147,58 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(`${API_ROOT}/zones`);
       return res.json();
     },
+
+    async updateClientInfo(id: number, data: UpdateClient): Promise<Response> {
+      const url = new URL(`clients/${id}`, API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.clientUpdate,
+        },
+        body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
+
+    async updateDriverInfo(id: number, data: UpdateDriver): Promise<Response> {
+      const url = new URL(`drivers/${id}`, API_ROOT);
+
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.driverUpdate,
+        },
+        body: JSON.stringify(data),
+      });
+
+      return await this.authFetch(req);
+    },
+
+    async putClientProfilePicture(clientId: number, file: File): Promise<Response> {
+      const url = new URL(`clients/${clientId}/profile-picture`, API_ROOT);
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type, // image/png o image/jpeg
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
+    },
+    async putDriverProfilePicture(driverId: number, file: File): Promise<Response> {
+      const url = new URL(`drivers/${driverId}/profile-picture`, API_ROOT);
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type, // image/png o image/jpeg
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
+    },
   };
+
+
 }
 
 interface ApiRequestOpts {

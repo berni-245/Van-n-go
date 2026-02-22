@@ -1,9 +1,9 @@
-import { Component, JSX, Show, splitProps } from "solid-js";
+import { Component, JSX, Show, splitProps, For } from "solid-js";
 import { HtmlIdFamily } from "@/components/htmlIds";
 
 type InputProps = {
   label?: string;
-  error?: string;
+  error?: string | string[];
 } & JSX.InputHTMLAttributes<HTMLInputElement>;
 
 const TextInput: Component<InputProps> = (props) => {
@@ -37,9 +37,21 @@ const TextInput: Component<InputProps> = (props) => {
         classList={{ "border-danger": !!props.error }}
         {...filteredProps}
       />
+
+
       <Show when={props.error}>
-        <small class="pl-0.5 text-danger">{props.error}</small>
+        <div class="flex flex-col gap-0.5">
+          <Show
+            when={Array.isArray(props.error)}
+            fallback={<small class="pl-0.5 text-danger">{props.error}</small>}
+          >
+            <For each={props.error as string[]}>
+              {(err) => <small class="pl-0.5 text-danger">• {err}</small>}
+            </For>
+          </Show>
+        </div>
       </Show>
+
     </div>
   );
 };

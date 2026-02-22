@@ -70,7 +70,12 @@
       "zone": "Zona",
       "description": "Descripción",
       "cbu": "CBU/CVU/Alias",
-      "edit": "Editar"
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil"
     }
   },
   "global": {
@@ -91,8 +96,16 @@
   },
   "user": {
     "editUser": {
-      "changePassword": "Modificar contraseña"
+      "changePassword": "Cambiar contraseña",
+      "newPassword": "Nueva contraseña",
+      "oldPassword": "Contraseña actual",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB."
     }
+  },
+  "error": {
+    "imageUnsupportedMediaType": "El archivo no es una imagen válida",
+    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)"
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",

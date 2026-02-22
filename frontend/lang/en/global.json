@@ -82,7 +82,11 @@
   },
   "user": {
     "editUser": {
-      "changePassword": "Change password"
+      "changePassword": "Change password",
+      "newPassword": "New password",
+      "oldPassword": "Old password",
+      "confirmNewPassword": "Confirm new password",
+      "uploadPicture": "Upload profile picture. Supported formats: jpg, jpeg, png. Max size: 10MB."
     }
   },
   "generic": {
@@ -91,8 +95,17 @@
       "zone": "Zone",
       "description": "Description",
       "cbu": "CBU/CVU/Alias",
-      "edit": "Edit"
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "send": "Send",
+      "password": "Password",
+      "chooseFile": "Choose file",
+      "profilePicture": "Profile picture"
     }
+  },
+  "error": {
+    "imageUnsupportedMediaType": "Unsupported media type. Please upload an image file (jpg, jpeg, png).",
+    "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB."
   },
   "title": "Van N' Go",
   "username": "Username",

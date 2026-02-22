@@ -9,7 +9,7 @@ import {  Driver } from "@/api/types";
 export default function DriverProfileInfo(props: { user: Driver }) {
   const t = useTranslator();
 
-  // Convertimos a entero por las dudas (como pediste del 0 al 5)
+
   const ratingInt = () => Math.round(props.user.rating || 0);
 
   return (
