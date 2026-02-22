@@ -43,7 +43,7 @@ const ImageWithFallback: Component<ImageProps> = (props) => {
 
   return (
     <div class="relative h-full w-full">
-      <Suspense fallback={<ImgSkeleton />}>
+      <Suspense fallback={<ImgSkeleton class={props.class} />}>
         <img src={blobSrc()} class={props.class} alt={props.alt} onLoad={handleOnload} {...filteredProps} />
       </Suspense>
     </div>
