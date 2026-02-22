@@ -1,5 +1,5 @@
 import { TokenPayload } from "@/api/jwt";
-import { Client, Driver, UpdateClient, UpdateDriver, Vehicle, Zone } from "@/api/types";
+import { Availability, Client, Driver, UpdateClient, UpdateDriver, Vehicle, Zone } from "@/api/types";
 import { AppState } from "@/app-context/appState";
 import { jwtDecode } from "jwt-decode";
 import { SetStoreFunction } from "solid-js/store";
@@ -45,7 +45,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         }
       }
 
-      await sleep(1000);
+      await sleep(2000);
       const res = await fetch(request);
 
       if (res.status === 401) {
@@ -148,6 +148,14 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return res.json();
     },
 
+    async getZonesRecord(): Promise<Record<number, Zone>> {
+      const req = apiRequest("zones", { headers: { Accept: MediaTypesV1.zones } });
+      const res = await this.authFetch(req);
+      const zones = (await res.json()) as Zone[];
+      const zoneEntries = zones.map((z) => [z.id, z] as [number, Zone]);
+      return Object.fromEntries(zoneEntries) as Record<number, Zone>;
+    },
+
     async getZoneByUri(uri: string): Promise<Zone> {
       // Como el HATEOAS ya te da la ruta correcta, se la pasamos directo al authFetch
       const res = await this.authFetch(uri);
@@ -195,6 +203,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       });
       return await this.authFetch(req);
     },
+
     async putDriverProfilePicture(driverId: number, file: File): Promise<Response> {
       const url = new URL(`drivers/${driverId}/profile-picture`, API_ROOT);
       const req = new Request(url, {
@@ -206,9 +215,34 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       });
       return await this.authFetch(req);
     },
+
+    async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
+      const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`, {
+        headers: { Accept: MediaTypesV1.vehicle },
+      });
+      const res = await this.authFetch(req);
+      if (res.ok) return res.json();
+      else {
+        console.error(`getVehicle ${driverId}@${vehicleId} error:`, res);
+        return null;
+      }
+    },
+
+    async getVehicleAvailability(url: string): Promise<Availability | null> {
+      const req = apiRequest(url, { headers: { Accept: MediaTypesV1.availability } });
+      const res = await this.authFetch(req);
+      // WARNING: as I'm asking directly for the url here I could potentially get a valid url
+      // but for another endpoint. In that case the response could be okay but the parsed json
+      // wouldn't be an `Availability`.
+      // Although now that I think about it specifying the `Accept`ed media type should cause
+      // a failed reponse in that case.
+      if (res.ok) return res.json();
+      else {
+        console.error(`getVehicleAvailability ${url} error:`, res);
+        return null;
+      }
+    },
   };
-
-
 }
 
 interface ApiRequestOpts {
@@ -217,6 +251,7 @@ interface ApiRequestOpts {
 }
 
 function apiRequest(path: string, opts?: ApiRequestOpts): Request {
+  path = path.replace(API_ROOT, "");
   if (path.startsWith("/")) throw new Error("`path` should be relative");
   const url = new URL(path, API_ROOT);
   if (opts?.queryParams) {

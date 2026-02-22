@@ -15,7 +15,7 @@ const VehicleCard: Component<CardProps> = (props) => {
   const cardId = new HtmlIdFamily("card");
 
   return (
-    <A ref={props.ref} href={"/vehicles/" + props.vehicle.id}>
+    <A ref={props.ref} href={props.vehicle.id.toString()}>
       <article class="group flex rounded-radius max-w-sm flex-col overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
         <div class="h-44 md:h-64 overflow-hidden">
           <ImageWithFallback

@@ -47,21 +47,34 @@ export interface Vehicle {
   bookedTimes: string;
 }
 
-export enum Size {
-  Small = "small",
-  Medium = "medium",
-  Large = "large",
+export type WeekDay = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+export type Shift = "MORNING" | "AFTERNOON" | "NIGHT";
+
+export interface TimeSlots {
+  day: WeekDay;
+  shift: Shift;
 }
 
-export enum WeekDay {
-  Monday = "small",
-  Tuesday = "medium",
-  Wednesday = "large",
-  Thursday = "thursday",
-  Friday = "friday",
-  Saturday = "saturday",
-  Sunday = "sunday",
+export interface Availability {
+  zones: string[];
+  timeSlots: TimeSlots[];
 }
+
+// export enum Size {
+//   Small = "small",
+//   Medium = "medium",
+//   Large = "large",
+// }
+//
+// export enum WeekDay {
+//   Monday = "monday",
+//   Tuesday = "tuesday",
+//   Wednesday = "wednesday",
+//   Thursday = "thursday",
+//   Friday = "friday",
+//   Saturday = "saturday",
+//   Sunday = "sunday",
+// }
 
 export interface Country {
   name: string;

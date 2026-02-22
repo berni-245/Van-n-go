@@ -22,6 +22,7 @@ const Login = lazy(() => import("@/pages/Login"));
 const DriverAvailability = lazy(() => import("@/pages/DriverAvailability"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
+const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
@@ -39,10 +40,9 @@ async function enableMocking() {
 
 // await enableMocking();
 
-// const filters = {
-//   driverId: /^\d+$/,
-//   vehicleId: /^\d+$/,
-// };
+const filters = {
+  vehicleId: /^\d+$/,
+};
 
 render(
   () => (
@@ -69,6 +69,7 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
+            <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile} />
