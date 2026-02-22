@@ -16,6 +16,7 @@ import EditDriverProfile from "@/components/profile/EditDriverProfile";
 import { Api } from "@/app-context/api.ts";
 import Select from "@components/Select.tsx";
 import { EditProfilePicForm } from "@components/profile/EditProfilePicForm";
+import {clientToUserState, driverToUserState} from "@/app-context/userState.ts";
 
 const userProfileQuery = query(async () => {
     const api = useApi();
@@ -68,7 +69,7 @@ export default function Profile() {
                                                 <div class="group relative h-40 w-40 cursor-pointer overflow-hidden rounded-full border-4 border-outline dark:border-outline-dark">
                                                     <ImageWithFallback
                                                         src={user().profilePic}
-                                                        fallbackSrc="/images/defaultUserPfp.png"
+                                                        fallbackSrc="/images/default-user.png"
                                                         skipSrc={!user().hasProfilePic}
                                                         class="h-full w-full object-cover transition-all duration-200 group-hover:brightness-75"
                                                         alt="Profile Picture"
@@ -213,7 +214,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
     const t = useTranslator();
     const modalContext = useModalContext();
     const [_, setIsOpen] = modalContext.open;
-    const [appState] = useAppState();
+    const [appState, setAppState] = useAppState();
     const api = useApi();
 
     const submission = useSubmission(updateProfileAction);
@@ -221,6 +222,14 @@ function EditProfileForm(props: { user: Client | Driver }) {
     createEffect((wasPending) => {
         const isPending = submission.pending;
         if (wasPending && !isPending && submission.result?.ok) {
+            const rawUserFromApi = submission.result.resp;
+
+            const mappedUser = appState.user?.type === "client"
+                ? clientToUserState(rawUserFromApi)
+                : driverToUserState(rawUserFromApi);
+
+            setAppState("user", mappedUser);
+
             setIsOpen(false);
             //toast(succes)
         }
