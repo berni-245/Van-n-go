@@ -33,7 +33,7 @@ export default function Vehicles() {
           <h2 class="text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">My vehicles</h2>
 
           {/* Placeholder for future pagination controls */}
-          <Pagination totalPages={10} currentPage={2} baseHref="http://localhost:8080/webapp/api/driver/vehicles" />
+          <Pagination totalPages={10} currentPage={2} baseHref="http://localhost:8080/api/driver/vehicles" />
         </div>
 
         <Suspense fallback={<VehicleGridSkeleton />}>

@@ -380,6 +380,7 @@ function ChangePasswordForm() {
           />
           <PasswordInput
             name="confirmPassword"
+            value={undefined}
             disabled={submission.pending}
             label={t("global.user.editUser.confirmNewPassword")}
             error={errors()["confirmPassword"]}
