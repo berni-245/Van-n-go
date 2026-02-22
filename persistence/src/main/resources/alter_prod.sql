@@ -37,3 +37,11 @@ SET type = CASE
                ELSE 'application/octet-stream'
     END
 WHERE type IS NULL;
+
+-- After 21 of february
+UPDATE booking
+set destination_zone_id = 1
+where destination_zone_id is null;
+
+alter table booking
+    alter column destination_zone_id set not null;
