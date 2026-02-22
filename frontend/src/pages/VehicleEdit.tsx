@@ -3,6 +3,7 @@ import { Suspense, createMemo } from "solid-js";
 import { useApi, useAppState } from "../app-context/AppContext";
 import { useToast } from "solid-notifications";
 import { Availability, Zone } from "../api/types";
+import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 
 // NOTE: the page is separated in so many sections because solid sucks and using a `createAsync`
 // accessor inside a query (like for `availability` which needs `vehicle`), or inside a
@@ -64,6 +65,7 @@ function VehicleSection(props: { vehicleId: number }) {
   return (
     <div>
       <div>
+        <FileInputDragDrop label="Vehicle Image" fileTypes={["PNG", "JPEG"]} maxSize={500} maxSizeUnit={"KB"} />
         <h3>Vehicle</h3>
         <Suspense fallback="Loading vehicle...">
           <p>{JSON.stringify(vehicle.latest)}</p>

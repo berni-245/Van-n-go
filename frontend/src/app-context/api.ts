@@ -6,6 +6,7 @@ import { SetStoreFunction } from "solid-js/store";
 import { clientToUserState, driverToUserState } from "./userState";
 import { createMediaType as createMediaTypes } from "../api/media-types";
 import { useLocation, useNavigate } from "@solidjs/router";
+import { PaginatedResource, parsePageInfo } from "./pagination";
 
 // export const API_ROOT = `${window.location.protocol}//${window.location.host}/api/`;
 export const API_ROOT = `http://${window.location.hostname}:8080/api/`;
@@ -128,18 +129,21 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
     },
 
-    async getVehicles(driverId: number, page: number = 1): Promise<Vehicle[]> {
+    async getVehicles(driverId: number, page: number = 1): Promise<PaginatedResource<Vehicle>> {
       const req = apiRequest(`drivers/${driverId}/vehicles`, { queryParams: { page: page.toString() } });
       const res = await this.authFetch(req);
-      if (res.ok) return res.json();
-      else {
+      const pages = parsePageInfo(res)!;
+      if (res.ok) {
+        const vehicles: Vehicle[] = await res.json();
+        return { data: vehicles, pages };
+      } else {
         console.error("getVehicles error:", res);
         // switch (res.status) {
         //   case 400:
         //     toaster.notify("Invalid page number", { type: "error" });
         //     break;
         // }
-        return [];
+        return { data: [], pages };
       }
     },
 
@@ -265,44 +269,6 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
 
 function jwtExpired(payload: TokenPayload): boolean {
   return payload.exp < Date.now() / 1000;
-}
-
-const RELS = ["first", "last", "next", "prev"] as const;
-type Rel = (typeof RELS)[number];
-const REL_SET: ReadonlySet<string> = new Set(RELS);
-
-interface PageLinkHeader {
-  url: string;
-  page: number;
-  rel: Rel;
-}
-
-function parsePageLinkHeader(link: string): PageLinkHeader | null {
-  const parts = link.split("; ");
-  if (parts.length !== 2) return null;
-  const url = parts[0].match(/<(.*)>/)?.[1];
-  if (!url) return null;
-  const rel = parts[1].match(/"(.*)"/)?.[1];
-  if (!rel || !REL_SET.has(rel)) return null;
-  const pageStr = parts[0].match(/\?page=(\d+)/)?.[1];
-  if (!pageStr) return null;
-  const page = parseInt(pageStr);
-  if (!Number.isInteger(page)) return null;
-  return { url, page, rel: rel as Rel };
-}
-
-type PageInfo = Partial<Record<Rel, PageLinkHeader>>;
-
-function parsePageInfo(res: Response): PageInfo {
-  const linkHeader = res.headers.get("link");
-  if (!linkHeader) return {};
-
-  const pageEntries = linkHeader.split(", ").flatMap((link) => {
-    const page = parsePageLinkHeader(link);
-    return page ? [[page.rel, page] as const] : [];
-  });
-
-  return Object.fromEntries(pageEntries);
 }
 
 // function isJsonResponse(response: Response): boolean {

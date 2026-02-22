@@ -23,7 +23,7 @@ export default function Vehicles() {
         </div>
 
         <Suspense fallback={<VehicleGridSkeleton />}>
-          <InfiniteScroll fetcher={(page) => vehiclesQuery(page + 1)}>
+          <InfiniteScroll fetcher={vehiclesQuery}>
             {({ content, loaderElement, containerElement, end }) => (
               <>
                 <div ref={containerElement} class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">

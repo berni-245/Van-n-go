@@ -14,8 +14,9 @@ import {
   onCleanup,
   Setter,
 } from "solid-js";
+import { PaginatedResource } from "@/app-context/pagination";
 
-export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<T[]>): [
+export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<PaginatedResource<T>>): [
   pages: Accessor<T[]>,
   loaderElement: (el: Element) => void,
   containerElement: (el: Element) => void,
@@ -27,16 +28,18 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<T[]>)
     setEnd: Setter<boolean>;
   },
 ] {
-  const [page, setPage] = createSignal(0);
+  const [page, setPage] = createSignal(1);
   const [pages, setPages] = createSignal<T[]>([]);
   const [end, setEnd] = createSignal(false);
 
   const io = new IntersectionObserver((entries) => {
     if (entries.length === 0) return;
     const entry = entries[0];
-    if (entry.isIntersecting && !end() && !contents.loading) {
-      setPage((p) => p + 1);
+    const nextPage = contents.latest?.pages.next?.pageNumber;
+    if (entry.isIntersecting && !contents.loading && nextPage) {
+      setPage(nextPage);
     }
+    if (!nextPage) setEnd(true);
   });
   onCleanup(() => io.disconnect());
 
@@ -48,7 +51,7 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<T[]>)
   const lastLoaded = (el: Element) => {
     createEffect(() => {
       pages();
-      el.scrollIntoView({ block: "end", behavior: "smooth" });
+      el.scrollIntoView({ block: "end", behavior: "instant" });
     });
   };
 
@@ -58,8 +61,7 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<T[]>)
     const content = contents.latest;
     if (!content) return;
     batch(() => {
-      if (content.length === 0) setEnd(true);
-      setPages((p) => [...p, ...content]);
+      setPages((p) => [...p, ...content.data]);
     });
   });
 
