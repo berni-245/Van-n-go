@@ -54,7 +54,7 @@ export default function Home() {
             <div>
               <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">{t("global.page.home.clientOpinion.title")}</h2>
               <p class="text-lg mb-4">"{t("global.page.home.clientOpinion.description")}"</p>
-              <footer class="text-sm dark:text-on-surface-dark-alt opacity-50 before:content-['—_']">
+              <footer class="text-sm text-on-surface dark:text-on-surface-dark opacity-50 before:content-['—_']">
                 Belon Tusk, <cite title="Source Title">Space X</cite>
               </footer>
             </div>
