@@ -219,6 +219,11 @@ function EditProfileForm(props: { user: Client | Driver }) {
 
     const submission = useSubmission(updateProfileAction);
 
+    const languageToLocale: Record<string, "es" | "en"> = {
+        "SPANISH": "es",
+        "ENGLISH": "en"
+    };
+
     createEffect((wasPending) => {
         const isPending = submission.pending;
         if (wasPending && !isPending && submission.result?.ok) {
@@ -228,7 +233,10 @@ function EditProfileForm(props: { user: Client | Driver }) {
                 ? clientToUserState(rawUserFromApi)
                 : driverToUserState(rawUserFromApi);
 
+            const newLocale = languageToLocale[rawUserFromApi.preferredLanguage] || "es";
+
             setAppState("user", mappedUser);
+            setAppState("preferences", "locale", newLocale);
 
             setIsOpen(false);
             //toast(succes)
