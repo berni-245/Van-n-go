@@ -13,7 +13,7 @@ import Login from "@/pages/Login";
 import Vehicles from "@/pages/Vehicles";
 import Profile from "@/pages/Profile";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
+import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
 
 const root = document.getElementById("root");
@@ -69,6 +69,12 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
+            <Route path="/bookings" component={Vehicles} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile} />
+          </Route>
+          <Route path="/client" component={ClientRoute}>
+            <Route path="/search" component={DriverAvailability} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile} />

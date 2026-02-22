@@ -4,6 +4,7 @@
   "home": "Home",
   "language": {
     "label": "Language",
+    "prefferedLanguage": "Preferred language",
     "ENGLISH": "English",
     "SPANISH": "Spanish"
   },
@@ -42,6 +43,7 @@
   "password": "Password",
   "register": "Register",
   "settings": "Settings",
+  "profile": "Profile",
   "sr": {
     "closeSidebar": "Close sidebar",
     "loading": "Loading",
