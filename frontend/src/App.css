@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "solid-notifications/index.css";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -70,11 +69,6 @@
 
   /* border radius */
   --radius-radius: var(--radius-sm);
-}
-
-:root {
-  /* Solid Notifications */
-  --sn-progress-bar-height: 3px;
 }
 
 @layer base {

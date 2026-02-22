@@ -45,7 +45,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         }
       }
 
-      await sleep(1000);
+      // await sleep(1000);
       const res = await fetch(request);
 
       if (res.status === 401) {
@@ -133,13 +133,12 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(req);
       if (res.ok) return res.json();
       else {
-        console.error("getVehicles error:", res);
-        // switch (res.status) {
-        //   case 400:
-        //     toaster.notify("Invalid page number", { type: "error" });
-        //     break;
-        // }
+        console.log("getVehicles error:", res);
         return [];
+        // switch (res.status) {
+        //     case 400: toast('Invalid page number');
+        //     return [];
+        // }
       }
     },
 

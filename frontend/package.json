@@ -21,9 +21,7 @@
   },
   "dependencies": {
     "@solid-primitives/i18n": "^2.2.1",
-    "@solid-primitives/pagination": "^0.5.0",
     "@solid-primitives/scheduled": "^1.5.2",
-    "@solid-primitives/utils": "^6.3.2",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.1",
     "jwt-decode": "^4.0.0",
@@ -31,7 +29,6 @@
     "solid-focus-trap": "^0.1.9",
     "solid-icons": "^1.2.0",
     "solid-js": "^1.9.11",
-    "solid-notifications": "^1.2.0",
     "solid-transition-group": "^0.3.0",
     "zod": "^4.3.6"
   },

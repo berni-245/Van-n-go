@@ -7,10 +7,14 @@ import { Router, Route, Navigate } from "@solidjs/router";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { AppContextProvider } from "@/app-context/AppContext";
 import { worker } from "@/api-mock/browser";
+import DriverAvailability from "@/pages/DriverAvailability";
+import Settings from "@/pages/Settings";
+import Login from "@/pages/Login";
+import Vehicles from "@/pages/Vehicles";
+import Profile from "@/pages/Profile";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
-import Profile from "@/pages/Profile";
 
 const root = document.getElementById("root");
 
@@ -18,10 +22,6 @@ const root = document.getElementById("root");
 const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
 const About = lazy(() => import("@/pages/About"));
-const Login = lazy(() => import("@/pages/Login"));
-const DriverAvailability = lazy(() => import("@/pages/DriverAvailability"));
-const Settings = lazy(() => import("@/pages/Settings"));
-const Vehicles = lazy(() => import("@/pages/Vehicles"));
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(

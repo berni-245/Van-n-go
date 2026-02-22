@@ -1,4 +1,4 @@
-import {Component, createSignal, For, JSX, Show, splitProps} from "solid-js";
+import { Component, createSignal, JSX, Show, splitProps, For } from "solid-js";
 import { HtmlIdFamily } from "@/components/htmlIds";
 
 type InputProps = {
@@ -38,6 +38,7 @@ const PasswordInput: Component<InputProps> = (props) => {
         </Show>
         {local.label}
       </label>
+
       <div class="relative">
         <input
           type={showPassword() ? "text" : "password"}
@@ -53,7 +54,7 @@ const PasswordInput: Component<InputProps> = (props) => {
         />
         <button
           type="button"
-          onClick={() => setShowPassword((showPass) => !showPass)}
+          onClick={() => setShowPassword(!showPassword())}
           class="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface dark:text-on-surface-dark"
           aria-label="Show password"
         >

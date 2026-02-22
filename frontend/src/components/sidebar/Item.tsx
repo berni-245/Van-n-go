@@ -48,7 +48,7 @@ export const CollapsibleItem: ParentComponent<CollapsibleItemProps> = (props) =>
     <div class="flex flex-col">
       <button
         type="button"
-        onClick={() => setExpanded((expanded) => !expanded)}
+        onClick={() => setExpanded(!expanded())}
         id={itemId.id("btn")}
         aria-controls={itemId.id("item-list")}
         aria-expanded={expanded() ? "true" : "false"}

@@ -13,7 +13,7 @@ import {
 } from "solid-icons/fa";
 import { FiLogIn } from "solid-icons/fi";
 import { JSX, Match, Suspense, Switch, type Component } from "solid-js";
-import { Logo } from "@/assets/Logo";
+import { Logo } from "./assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
   const [appState, _] = useAppState();
@@ -48,7 +48,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
             </Sidebar.CollapsibleItem>
             <Sidebar.Item href="/driver/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20} />} />
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
-            <Sidebar.Item href="/driver/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
+            <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
           </Match>
           <Match when={!appState.user}>
             <Sidebar.Item href="/login" text={t("global.login")} icon={<FiLogIn size={20} />} />
@@ -59,6 +59,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
       <AppLayout.Content>
         {/* TODO: prolly remove this suspense when the app is finished */}
         <Suspense fallback="This is the app suspense, you should probably be handling this in a child component">
+          {/* TODO: this error boundary should probably be changed */}
           {props.children}
         </Suspense>
       </AppLayout.Content>

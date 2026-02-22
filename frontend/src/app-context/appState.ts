@@ -1,5 +1,6 @@
 import { TokenPayloadSchema } from "@/api/jwt";
 import { initialLocale } from "@/app-context/locale";
+import { debounce } from "@solid-primitives/scheduled";
 import * as z from "zod";
 import { LocaleSchema } from "@/app-context/locale";
 import { UserStateSchema } from "@/app-context/userState";
@@ -42,9 +43,9 @@ export function getSavedState(): AppState | null {
   return null;
 }
 
-export const saveState = (state: AppState) => {
+export const saveState = debounce((state: AppState) => {
   localStorage.setItem("appState", JSON.stringify(state));
-}
+}, 150);
 
 export function initialState(): AppState {
   const saved = getSavedState();

@@ -21,7 +21,7 @@ const Button: Component<ButtonProps> = (props) => {
           type="button"
           href={props.href!}
           onClick={props.onClick}
-          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]} ${props.class ?? ""}`}
+          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]} ${props.class}`}
         >
           {props.icon}
           {props.text}
@@ -31,7 +31,7 @@ const Button: Component<ButtonProps> = (props) => {
         <button
           type={props.type || "button"}
           onClick={props.onClick}
-          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]} ${props.class ?? ""}`}
+          class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category]}`}
           disabled={props.disabled}
         >
           {props.icon}
