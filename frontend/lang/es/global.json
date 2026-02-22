@@ -92,12 +92,13 @@
     }
   },
   "user": {
-    "editUser": "Cambiar contraseña",
+    "editUser":{
+      "changePassword": "Cambiar contraseña",
       "newPassword": "Nueva contraseña",
       "oldPassword": "Contraseña actual",
       "confirmNewPassword": "Confirmar nueva contraseña",
       "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB."
-    },
+    }},
 
   "error": {
     "imageUnsupportedMediaType": "El archivo no es una imagen válida",
