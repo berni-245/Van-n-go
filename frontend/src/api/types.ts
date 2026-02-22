@@ -1,6 +1,8 @@
 export interface ApiError {
   type: string;
   description: string;
+  entity?: string;
+  subtype?: string;
 }
 
 type Language = "english" | "spanish";
@@ -77,4 +79,20 @@ export interface Zone {
   province: Province;
   neighborhood: Neighborhood;
   self: string;
+}
+
+interface UpdateUser {
+  username?: string;
+  oldPassword?: string;
+  password?: string;
+  email?: string;
+  preferredLanguage?: string;
+}
+
+export interface UpdateClient extends UpdateUser {
+  zoneId?: number;
+}
+
+export interface UpdateDriver extends UpdateUser {
+  description?: string;
 }
