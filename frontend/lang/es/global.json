@@ -4,11 +4,13 @@
   "home": "Inicio",
   "language": {
     "label": "Idioma",
+    "preferredLanguage": "Idioma preferido",
     "ENGLISH": "Inglés",
     "SPANISH": "Español"
   },
   "login": "Iniciar sesión",
   "name": "Español",
+  "profile": "Perfil",
   "page": {
     "home": {
       "callToAction": "¡Empecemos!",

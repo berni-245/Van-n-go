@@ -9,6 +9,7 @@ import {
   FaSolidSearch,
   FaSolidTruck,
   FaSolidUserPlus,
+  FaSolidUserAlt,
 } from "solid-icons/fa";
 import { FiLogIn } from "solid-icons/fi";
 import { JSX, Match, Suspense, Switch, type Component } from "solid-js";
@@ -26,6 +27,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
             <Sidebar.Item href="/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20} />} />
             <Sidebar.Item href="/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
             <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
+            <Sidebar.Item href="/client/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20} />} />
           </Match>
           <Match when={appState.user?.type === "driver"}>
             <Sidebar.CollapsibleItem
@@ -44,6 +46,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
                 icon={<FaSolidAdd size={20} />}
               />
             </Sidebar.CollapsibleItem>
+            <Sidebar.Item href="/driver/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20} />} />
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
             <Sidebar.Item href="/driver/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
           </Match>

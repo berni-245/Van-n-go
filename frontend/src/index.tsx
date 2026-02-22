@@ -8,7 +8,7 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { AppContextProvider } from "@/app-context/AppContext";
 import { worker } from "@/api-mock/browser";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
+import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
 import Profile from "@/pages/Profile";
 
@@ -69,6 +69,12 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
+            <Route path="/bookings" component={Vehicles} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile} />
+          </Route>
+          <Route path="/client" component={ClientRoute}>
+            <Route path="/search" component={DriverAvailability} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile} />
