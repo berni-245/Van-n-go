@@ -1,5 +1,12 @@
 {
   "bookings": "Reservas",
+  "fileDragDrop": {
+    "browse": "Buscar archivo",
+    "orDragAndDrop": "o arrastrar aquí",
+    "fileTypeNotSupported": "Tipo de archivo no soportado",
+    "fileTooLarge": "Archivo muy grande",
+    "max": "Máximo"
+  },
   "find-freight": "Encuentra tu flete",
   "home": "Inicio",
   "language": {

@@ -1,5 +1,12 @@
 {
   "bookings": "Bookings",
+  "fileDragDrop": {
+    "browse": "Browse",
+    "orDragAndDrop": "or drag and drop here",
+    "fileTypeNotSupported": "File type not supported",
+    "fileTooLarge": "File too large",
+    "max": "Max"
+  },
   "find-freight": "Find your freight",
   "home": "Home",
   "language": {
