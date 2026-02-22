@@ -267,6 +267,44 @@ function jwtExpired(payload: TokenPayload): boolean {
   return payload.exp < Date.now() / 1000;
 }
 
+const RELS = ["first", "last", "next", "prev"] as const;
+type Rel = (typeof RELS)[number];
+const REL_SET: ReadonlySet<string> = new Set(RELS);
+
+interface PageLinkHeader {
+  url: string;
+  page: number;
+  rel: Rel;
+}
+
+function parsePageLinkHeader(link: string): PageLinkHeader | null {
+  const parts = link.split("; ");
+  if (parts.length !== 2) return null;
+  const url = parts[0].match(/<(.*)>/)?.[1];
+  if (!url) return null;
+  const rel = parts[1].match(/"(.*)"/)?.[1];
+  if (!rel || !REL_SET.has(rel)) return null;
+  const pageStr = parts[0].match(/\?page=(\d+)/)?.[1];
+  if (!pageStr) return null;
+  const page = parseInt(pageStr);
+  if (!Number.isInteger(page)) return null;
+  return { url, page, rel: rel as Rel };
+}
+
+type PageInfo = Partial<Record<Rel, PageLinkHeader>>;
+
+function parsePageInfo(res: Response): PageInfo {
+  const linkHeader = res.headers.get("link");
+  if (!linkHeader) return {};
+
+  const pageEntries = linkHeader.split(", ").flatMap((link) => {
+    const page = parsePageLinkHeader(link);
+    return page ? [[page.rel, page] as const] : [];
+  });
+
+  return Object.fromEntries(pageEntries);
+}
+
 // function isJsonResponse(response: Response): boolean {
 //   const contentType = response.headers.get("Content-Type");
 //   if (!contentType) return false;
