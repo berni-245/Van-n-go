@@ -44,7 +44,9 @@
       "eveningDateTime": "{{date}} in the evening",
       "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
       "details": "Details",
-      "chat": "Chat"
+      "chat": "Chat",
+      "vehiclePlateNumber": "Assigned to vehicle with plate number {{plateNumber}}",
+      "hourlyRate": "Price per hour: ${{price}}"
     }
   },
   "password": "Password",

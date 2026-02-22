@@ -6,13 +6,14 @@ import BookingCardClient from "@components/cards/BookingCardClient";
 import VehicleGridSkeleton from "@components/skeletons/VehicleGridSkeleton";
 import Pagination from "@components/Pagination";
 import {Title} from "@solidjs/meta";
-import type {Booking, Client, Driver, Zone} from "@/api/types";
+import type {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import {BookingState} from "@/api/types";
 import {API_ROOT} from "@/app-context/api";
 
 type BookingWithTarget = {
     booking: Booking;
     targetUser: Client | Driver;
+    vehicle: Vehicle
     originZone: Zone;
     destinationZone: Zone;
 }
@@ -28,12 +29,13 @@ const bookingsQuery = query(async (): Promise<BookingWithTarget[]> => {
     return Promise.all(
         bookings.map(async (booking) => {
             const targetUser = await (isDriver ? api.getClientFromURI(booking.client) : api.getDriverFromURI(booking.driver));
+            const vehicle = await api.getVehicleFromURI(booking.vehicle)
             const originZone = await api.getZoneFromURI(booking.originZone)
             const destinationZone = await api.getZoneFromURI(booking.destinationZone)
 
-            if (!targetUser || !originZone || !destinationZone) throw new Error("BookingUser, originZone and destinationZone should never be null");
+            if (!targetUser || !vehicle || !originZone || !destinationZone) throw new Error("BookingUser, vehicle, originZone and destinationZone should never be null");
 
-            return {booking, targetUser, originZone, destinationZone};
+            return {booking, targetUser, vehicle, originZone, destinationZone};
         })
     );
 }, "bookingsInfo");
@@ -61,12 +63,12 @@ export default function Bookings() {
                 <Suspense fallback={<VehicleGridSkeleton/>}>
                     <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                         <For each={bookingItems()}>
-                            {({booking, targetUser, originZone, destinationZone}) =>
+                            {({booking, targetUser, vehicle, originZone, destinationZone}) =>
                                 isDriver ?
-                                    <BookingCardClient booking={booking} client={targetUser as Client}
+                                    <BookingCardClient booking={booking} client={targetUser as Client} vehicle={vehicle}
                                                        originZone={originZone} destinationZone={destinationZone}/>
                                     :
-                                    <BookingCardDriver booking={booking} driver={targetUser as Driver}
+                                    <BookingCardDriver booking={booking} driver={targetUser as Driver} vehicle={vehicle}
                                                        originZone={originZone} destinationZone={destinationZone}/>
                             }
                         </For>

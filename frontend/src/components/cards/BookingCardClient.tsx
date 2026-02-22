@@ -1,23 +1,33 @@
-import {Component} from "solid-js";
-// import { HtmlIdFamily } from "@components/htmlIds";
-import {BsChatDots, BsJournalText} from 'solid-icons/bs'
+import {Component, createSignal, onCleanup, onMount} from "solid-js";
+import {BsChatDots, BsJournalText} from "solid-icons/bs";
 import {useTranslator} from "@/app-context/AppContext";
-import {Booking, Client, Zone} from "@/api/types";
+import {Booking, Client, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
+import {BookingModal} from "@components/modal/BookingModal";
 
 type CardProps = {
     booking: Booking;
     client: Client;
+    vehicle: Vehicle;
     originZone: Zone;
     destinationZone: Zone;
 };
 
-
 const BookingCardClient: Component<CardProps> = (props) => {
     const t = useTranslator();
-    // const cardId = new HtmlIdFamily("card");
+    const [modalIsOpen, setModalIsOpen] = createSignal(false);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setModalIsOpen(false);
+    };
+
+    onMount(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        onCleanup(() => document.removeEventListener("keydown", handleKeyDown));
+    });
 
     return (
+        <>
         <article
             class="group max-w-sm overflow-hidden rounded-radius border border-outline bg-surface-alt text-on-surface shadow-sm transition hover:shadow-md dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
             <div class="grid grid-cols-[1fr_auto] gap-4 p-4 items-center">
@@ -56,22 +66,55 @@ const BookingCardClient: Component<CardProps> = (props) => {
                 </div>
             </div>
 
-
             <div class="grid grid-cols-2 gap-3 border-t border-outline p-4 dark:border-outline-dark">
-                <button type="button"
-                        class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark">
+                <button
+                    type="button"
+                    onClick={() => setModalIsOpen(true)}
+                    class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
+                >
                     <BsJournalText class="text-lg"/>
-                    <span class="hidden sm:inline">{t("global.page.bookings.details")}</span>
+                    <span class="hidden sm:inline">
+              {t("global.page.bookings.details")}
+            </span>
                 </button>
 
-
-                <button type="button"
-                        class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark">
+                <button
+                    type="button"
+                    class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
+                >
                     <BsChatDots class="text-lg"/>
-                    <span class="hidden sm:inline">{t("global.page.bookings.chat")}</span>
+                    <span class="hidden sm:inline">
+              {t("global.page.bookings.chat")}
+            </span>
                 </button>
             </div>
         </article>
+
+            {/* MODAL NUEVO */}
+            <BookingModal
+                booking={props.booking}
+                targetUser={props.client}
+                vehicle={props.vehicle}
+                originZone={props.originZone}
+                destinationZone={props.destinationZone}
+                open={modalIsOpen()}
+                title={t("global.page.bookings.details")}
+                onClose={() => setModalIsOpen(false)}
+            >
+                <div class="flex justify-end gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setModalIsOpen(false)}
+                        class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
+                    >
+                        <BsJournalText class="text-lg"/>
+                        <span class="hidden sm:inline">
+              {"Botón template"}
+            </span>
+                    </button>
+                </div>
+            </BookingModal>
+        </>
     );
 };
 
