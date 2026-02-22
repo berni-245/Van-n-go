@@ -144,7 +144,17 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getZones(): Promise<Zone[]> {
-      const res = await this.authFetch(`${API_ROOT}/zones`);
+      const res = await this.authFetch(`${API_ROOT}zones`);
+      return res.json();
+    },
+
+    async getZoneByUri(uri: string): Promise<Zone> {
+      // Como el HATEOAS ya te da la ruta correcta, se la pasamos directo al authFetch
+      const res = await this.authFetch(uri);
+
+      if (!res.ok) {
+        throw new Error("No se pudo obtener la zona");
+      }
       return res.json();
     },
 
