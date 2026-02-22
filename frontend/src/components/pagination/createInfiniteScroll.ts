@@ -4,22 +4,12 @@
 // `https://github.com/solidjs-community/solid-primitives/issues/795#issuecomment-2938828459`
 
 import { tryOnCleanup } from "@solid-primitives/utils";
-import {
-  Accessor,
-  batch,
-  createComputed,
-  createEffect,
-  createResource,
-  createSignal,
-  onCleanup,
-  Setter,
-} from "solid-js";
+import { Accessor, batch, createComputed, createResource, createSignal, onCleanup, Setter } from "solid-js";
 import { PaginatedResource } from "@/app-context/pagination";
 
 export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<PaginatedResource<T>>): [
   pages: Accessor<T[]>,
   loaderElement: (el: Element) => void,
-  containerElement: (el: Element) => void,
   options: {
     page: Accessor<number>;
     setPage: Setter<number>;
@@ -48,13 +38,6 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<Pagin
     tryOnCleanup(() => io.unobserve(el));
   };
 
-  const lastLoaded = (el: Element) => {
-    createEffect(() => {
-      pages();
-      el.scrollIntoView({ block: "end", behavior: "instant" });
-    });
-  };
-
   const [contents] = createResource(page, fetcher);
 
   createComputed(() => {
@@ -68,7 +51,6 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<Pagin
   return [
     pages,
     loaderElement,
-    lastLoaded,
     {
       page,
       setPage,

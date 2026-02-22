@@ -1,4 +1,4 @@
-import { For, Show, Suspense } from "solid-js";
+import { For, Suspense } from "solid-js";
 import { query } from "@solidjs/router";
 import { useApi, useAppState } from "@/app-context/AppContext";
 import VehicleCard from "@components/cards/VehicleCard";
@@ -24,15 +24,10 @@ export default function Vehicles() {
 
         <Suspense fallback={<VehicleGridSkeleton />}>
           <InfiniteScroll fetcher={vehiclesQuery}>
-            {({ content, loaderElement, containerElement, end }) => (
-              <>
-                <div ref={containerElement} class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-                  <For each={content()}>{(v) => <VehicleCard vehicle={v} />}</For>
-                </div>
-                <Show when={!end()}>
-                  <VehicleGridSkeleton ref={loaderElement} class="mt-6" />
-                </Show>
-              </>
+            {(vehicles) => (
+              <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+                <For each={vehicles()}>{(v) => <VehicleCard vehicle={v} />}</For>
+              </div>
             )}
           </InfiniteScroll>
         </Suspense>
