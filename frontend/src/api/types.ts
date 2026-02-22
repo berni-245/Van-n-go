@@ -5,6 +5,8 @@ export interface ApiError {
 
 type Language = "english" | "spanish";
 
+export type UserType = "driver" | "client";
+
 interface BaseUser {
   id: number;
   username: string;
@@ -45,6 +47,22 @@ export interface Vehicle {
   bookedTimes: string;
 }
 
+export interface Booking {
+  self: string;
+  client: string;
+  driver: string;
+  vehicle: string;
+  originZone: string;
+  destinationZone: string;
+  proofOfPayment: string;
+  hasProofOfPayment: boolean;
+  state: BookingState;
+  date: string;
+  jobDescription: string;
+  shiftPeriod: ShiftPeriod;
+  review: string;
+}
+
 export enum Size {
   Small = "small",
   Medium = "medium",
@@ -59,6 +77,19 @@ export enum WeekDay {
   Friday = "friday",
   Saturday = "saturday",
   Sunday = "sunday",
+}
+
+export enum BookingState {
+  Pending = "PENDING",
+  Accepted = "ACCEPTED",
+  Rejected = "REJECTED",
+  Finished = "FINISHED",
+  Canceled = "CANCELED",
+}
+
+export enum ShiftPeriod {
+  Morning = "MORNING",
+  Afternoon = "AFTERNOON"
 }
 
 export interface Country {

@@ -1,19 +1,20 @@
 /* @refresh reload */
 import "solid-devtools";
 import "@/App.css";
-import { render } from "solid-js/web";
+import {render} from "solid-js/web";
 import App from "@/App";
-import { Router, Route, Navigate } from "@solidjs/router";
-import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { AppContextProvider } from "@/app-context/AppContext";
-import { worker } from "@/api-mock/browser";
+import {Navigate, Route, Router} from "@solidjs/router";
+import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
+import {AppContextProvider} from "@/app-context/AppContext";
+import {worker} from "@/api-mock/browser";
 import DriverAvailability from "@/pages/DriverAvailability";
 import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
 import Vehicles from "@/pages/Vehicles";
+import Bookings from "@/pages/Bookings";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
-import { lazy } from "solid-js";
+import {AnonRoute, DriverRoute} from "./components/ProtectedRoute";
+import {lazy} from "solid-js";
 
 const root = document.getElementById("root");
 
@@ -68,7 +69,7 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
-            <Route path="/bookings" component={Vehicles} />
+            <Route path="/bookings" component={Bookings}/>
             <Route path="/settings" component={Settings} />
           </Route>
           <Route path="**" component={Error404} />
