@@ -1,11 +1,11 @@
-import { TokenPayload } from "@/api/jwt";
-import { Client, Driver, Vehicle, Zone } from "@/api/types";
-import { AppState } from "@/app-context/appState";
-import { jwtDecode } from "jwt-decode";
-import { SetStoreFunction } from "solid-js/store";
-import { clientToUserState, driverToUserState } from "./userState";
-import { createMediaType as createMediaTypes } from "../api/media-types";
-import { useLocation, useNavigate } from "@solidjs/router";
+import {TokenPayload} from "@/api/jwt";
+import {Booking, BookingState, Client, Driver, Vehicle, Zone} from "@/api/types";
+import {AppState} from "@/app-context/appState";
+import {jwtDecode} from "jwt-decode";
+import {SetStoreFunction} from "solid-js/store";
+import {clientToUserState, driverToUserState} from "./userState";
+import {createMediaType as createMediaTypes} from "../api/media-types";
+import {useLocation, useNavigate} from "@solidjs/router";
 
 // export const API_ROOT = `${window.location.protocol}//${window.location.host}/webapp/api/`;
 export const API_ROOT = `http://${window.location.hostname}:8080/webapp/api/`;
@@ -97,6 +97,12 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       else return null;
     },
 
+    async getClientFromURI(clientURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Client | null> {
+      const id = extractNumericId(clientURI);
+      if (id === null) return null;
+      return this.getClient(id, opts);
+    },
+
     async getDriver(id: number, opts: VisibilityOpts): Promise<Driver | null> {
       const { visibility = "public" } = opts;
 
@@ -108,6 +114,12 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const userRes = await this.authFetch(req);
       if (userRes.ok) return (await userRes.json()) as Driver;
       else return null;
+    },
+
+    async getDriverFromURI(driverURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Driver | null> {
+      const id = extractNumericIdFromEndOfPath(driverURI);
+      if (id === null) return null;
+      return this.getDriver(id, opts);
     },
 
     async getUser(): Promise<void> {
@@ -142,6 +154,14 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
     },
 
+    async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {
+      const req = apiRequest('bookings',
+          {queryParams: {userId: userId.toString(), state: state.toUpperCase(), page: page.toString()}});
+      const res = await this.authFetch(req)
+      if (res.ok) return res.json();
+      else return [];
+    },
+
     async getZones(): Promise<Zone[]> {
       const res = await this.authFetch(`${API_ROOT}/zones`);
       return res.json();
@@ -168,6 +188,14 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
 
 function jwtExpired(payload: TokenPayload): boolean {
   return payload.exp < Date.now() / 1000;
+}
+
+function extractNumericIdFromEndOfPath(uri: string): number | null {
+  const idStr = uri.replace(/\/+$/, '').split('/').pop();
+  if (!idStr) return null;
+
+  const id = Number(idStr);
+  return Number.isNaN(id) ? null : id;
 }
 
 // function isJsonResponse(response: Response): boolean {
