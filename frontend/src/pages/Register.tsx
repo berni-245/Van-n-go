@@ -1,9 +1,11 @@
 import { createSignal, For } from "solid-js";
-import {useAppState, useTranslator} from "@/app-context/AppContext";
+import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
 import PasswordInput from "@/components/inputs/PasswordInput";
 import ZoneInput from "@components/inputs/ZoneInput.tsx";
+import { useNavigate } from "@solidjs/router";
+import { Title } from "@solidjs/meta";
 
 const UserRoles = [
     { key: "CLIENT", value: "client", labelKey: "global.userType.client" },
@@ -14,6 +16,8 @@ type RoleEntry = typeof UserRoles[number];
 export default function Register() {
     const t = useTranslator();
     const [appState] = useAppState();
+    const api = useApi();
+    const navigate = useNavigate();
 
     const [loading, setLoading] = createSignal(false);
     const [errors, setErrors] = createSignal<string[]>([]);
@@ -32,63 +36,53 @@ export default function Register() {
     const handleSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
         setErrors([]);
+
         if (password() !== confirmedPassword()) {
-            setErrors((prev) => [...prev, "Passwords do not match"]);
+            setErrors(["Passwords do not match"]);
             return;
         }
 
         setLoading(true);
         try {
-            const langHeader = (appState.preferences && appState.preferences.locale) || "es-AR";
-            const headers: Record<string, string> = {
-                "Content-Type": "application/json",
-                "Accept-Language": langHeader,
-            };
-
-            let url = "";
-            let bodyObj: Record<string, any> = {
-                username: username(),
-                email: email(),
-                password: password(),
-            };
+            const lang = appState.preferences?.locale || "es-AR";
+            let res: Response;
 
             if (type() === "client") {
-                url = "/clients";
-                if (zoneId()) {
-                    const z = Number(zoneId());
-                    if (!Number.isNaN(z)) bodyObj.zoneId = z;
+                const body: { username: string; email: string; password: string; zoneId?: number } = {
+                    username: username(),
+                    email: email(),
+                    password: password(),
+                };
+                const parsedZone = Number(zoneId());
+                if (zoneId() !== null && !Number.isNaN(parsedZone)) {
+                    body.zoneId = parsedZone;
                 }
+                res = await api.registerClient(body, lang);
             } else {
-                url = "/drivers";
-                bodyObj.description = description();
+                res = await api.registerDriver(
+                    {
+                        username: username(),
+                        email: email(),
+                        password: password(),
+                        description: description(),
+                    },
+                    lang,
+                );
             }
 
-            const res = await fetch(url, {
-                method: "POST",
-                headers,
-                body: JSON.stringify(bodyObj),
-            });
-
-            const json = await res.json().catch(() => ({}));
-
             if (!res.ok) {
+                const json = await res.json().catch(() => ({}));
                 const errMsg =
                     (json && (json.description || json.message || JSON.stringify(json))) ||
                     `${res.status} ${res.statusText}`;
                 throw new Error(errMsg);
             }
 
-            setUsername("");
-            setEmail("");
-            setPassword("");
-            setConfirmedPassword("");
-            setDescription("");
-            setZoneId(null);
-            setErrors((prev) => [...prev, "Registration successful — please log in."]);
+            navigate("/login", { replace: true });
         } catch (err) {
             console.error(err);
-            if (err instanceof Error) setErrors((prev) => [...prev, err.message]);
-            else setErrors((prev) => [...prev, "Unknown error"]);
+            if (err instanceof Error) setErrors([err.message]);
+            else setErrors(["Unknown error"]);
         } finally {
             setLoading(false);
         }
@@ -96,6 +90,7 @@ export default function Register() {
 
     return (
         <>
+            <Title>Register - Van N' go</Title>
             <div class="min-h-screen flex items-center justify-center p-4">
                 <div class="w-full max-w-lg bg-white dark:bg-gray-900 shadow-md rounded-lg p-6 sm:p-8 mx-2">
                     <form onSubmit={handleSubmit}>
@@ -119,7 +114,7 @@ export default function Register() {
                         />
                         <PasswordInput
                             label={t("global.confirmPassword")}
-                            value={password()}
+                            value={confirmedPassword()}
                             onInput={(e) => setConfirmedPassword(e.currentTarget.value)}
                             class="mb-4"
                         />
@@ -136,11 +131,14 @@ export default function Register() {
                                 )}
                             </For>
                         </select>
+
                         {type() === "driver" && (
-                            <>
-                                <TextInput label="Description" value={description()}
-                                           onInput={(e) => setDescription(e.currentTarget.value)} class="mb-4"/>
-                            </>
+                            <TextInput
+                                label="Description"
+                                value={description()}
+                                onInput={(e) => setDescription(e.currentTarget.value)}
+                                class="mb-4"
+                            />
                         )}
                         {type() === "client" && (
                             <ZoneInput
@@ -149,15 +147,21 @@ export default function Register() {
                                 onInput={(v) => setZoneQuery(v)}
                                 onSelect={(id: number | null) => setZoneId(id)}
                             />
-
                         )}
 
-                        <Button type="submit" disabled={loading()} category="info"
-                                text={loading() ? "Registering…" : "Register"}/>
+                        <Button
+                            type="submit"
+                            disabled={loading()}
+                            category="info"
+                            text={loading() ? "Registering…" : "Register"}
+                        />
                     </form>
+
+                    <For each={errors()}>
+                        {(error) => <p class="mt-3 text-red-600">{error}</p>}
+                    </For>
                 </div>
             </div>
-                    <For each={errors()}>{(error) => <p class="text-red-600">{error}</p>}</For>
-                </>
-);
+        </>
+    );
 }

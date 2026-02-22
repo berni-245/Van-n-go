@@ -8,8 +8,10 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { AppContextProvider } from "@/app-context/AppContext";
 import { worker } from "@/api-mock/browser";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import { AnonRoute, DriverRoute } from "./components/ProtectedRoute";
+import {AnonRoute, ClientRoute, DriverRoute} from "./components/ProtectedRoute";
 import { lazy } from "solid-js";
+import Search from "@/pages/Search.tsx";
+import Register from "@/pages/Register.tsx";
 
 const root = document.getElementById("root");
 
@@ -18,7 +20,6 @@ const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
 const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
-const DriverAvailability = lazy(() => import("@/pages/DriverAvailability"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
 
@@ -62,7 +63,7 @@ render(
           <Route path="/" component={AnonRoute}>
             <Route path="/" component={Home} />
             <Route path="/login" component={Login} />
-            <Route path="/search" component={DriverAvailability} />
+            <Route path="/register" component={Register}/>
             <Route path="/about" component={About} />
           </Route>
           <Route path="/driver" component={DriverRoute}>
@@ -70,6 +71,9 @@ render(
             <Route path="/vehicles" component={Vehicles} />
             <Route path="/bookings" component={Vehicles} />
             <Route path="/settings" component={Settings} />
+          </Route>
+          <Route path="/client" component={ClientRoute}>
+              <Route path="/search" component={Search} />
           </Route>
           <Route path="**" component={Error404} />
         </Router>

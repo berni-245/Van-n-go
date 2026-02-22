@@ -144,7 +144,8 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getZones(): Promise<Zone[]> {
-      const res = await this.authFetch(`${API_ROOT}/zones`);
+      const req = apiRequest("zones");
+      const res = await this.authFetch(req);
       return res.json();
     },
 
@@ -196,6 +197,53 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       });
       return await this.authFetch(req);
     },
+
+    async registerClient(data: { username: string; email: string; password: string; zoneId?: number }, lang: string): Promise<Response> {
+      const url = new URL("clients", API_ROOT);
+      return await fetch(new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.clientCreate,
+          "Accept-Language": lang,
+        },
+        body: JSON.stringify(data),
+      }));
+    },
+
+    async registerDriver(data: { username: string; email: string; password: string; description: string }, lang: string): Promise<Response> {
+      const url = new URL("drivers", API_ROOT);
+      return await fetch(new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.driverCreate,
+          "Accept-Language": lang,
+        },
+        body: JSON.stringify(data),
+      }));
+    },
+
+    async searchDrivers(params: DriverSearchParams): Promise<{ drivers: Driver[]; maxPages: number }> {
+      const queryParams: Record<string, string> = {};
+      if (params.originZoneId != null) queryParams.originZoneId = String(params.originZoneId);
+      if (params.size)               queryParams.size          = params.size;
+      if (params.maxPrice   != null) queryParams.maxPrice      = String(params.maxPrice);
+      if (params.weekDay)            queryParams.weekDay       = params.weekDay;
+      if (params.minRating  != null) queryParams.minRating     = String(params.minRating);
+      if (params.sortOrder)          queryParams.sortOrder     = params.sortOrder;
+      queryParams.page = String(params.page ?? 1);
+
+      const req = apiRequest("drivers", {
+        headers: { Accept: MediaTypesV1.driverList },
+        queryParams,
+      });
+
+      const res = await this.authFetch(req);
+      if (!res.ok) return { drivers: [], maxPages: 1 };
+
+      const drivers = (await res.json()) as Driver[];
+      const maxPages = parseTotalPages(res.headers.get("Link"), params.page ?? 1);
+      return { drivers, maxPages };
+    },
   };
 
 
@@ -218,6 +266,15 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
   return req;
 }
 
+
+// Parses the last "rel=last" page number from a Link header.
+// Falls back to the current page if no last link is present.
+function parseTotalPages(linkHeader: string | null, currentPage: number): number {
+  if (!linkHeader) return currentPage;
+  const match = linkHeader.match(/[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+  return match ? parseInt(match[1], 10) : currentPage;
+}
+
 function jwtExpired(payload: TokenPayload): boolean {
   return payload.exp < Date.now() / 1000;
 }
@@ -227,3 +284,13 @@ function jwtExpired(payload: TokenPayload): boolean {
 //   if (!contentType) return false;
 //   return contentType.includes("application/json") || contentType.includes("+json");
 // }
+
+export interface DriverSearchParams {
+  originZoneId?: number | null;
+  size?: string;
+  maxPrice?: number | null;
+  weekDay?: string;
+  minRating?: number | null;
+  sortOrder?: string;
+  page?: number;
+}

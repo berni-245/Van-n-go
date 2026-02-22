@@ -1,4 +1,5 @@
 import { createSignal, For, onCleanup } from "solid-js";
+import { useApi } from "@/app-context/AppContext";
 
 export type ZoneDTO = {
     id: number;
@@ -17,6 +18,7 @@ type ZoneInputProps = {
 
 
 export default function ZoneInput(props: ZoneInputProps) {
+    const api = useApi();
     const [zones, setZones] = createSignal<ZoneDTO[] | null>(null);
     const [showSuggestions, setShowSuggestions] = createSignal(false);
     const [highlightIndex, setHighlightIndex] = createSignal(-1);
@@ -34,11 +36,7 @@ export default function ZoneInput(props: ZoneInputProps) {
     async function fetchZones() {
         if (zones()) return zones();
         try {
-            const res = await fetch("/webapp/api/zones", {
-                headers: { Accept: "application/json" },
-            });
-            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-            const json = await res.json();
+            const json = await api.getZones();
             setZones(json as ZoneDTO[]);
             return json as ZoneDTO[];
         } catch (err) {
