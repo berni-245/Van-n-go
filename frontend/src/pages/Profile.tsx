@@ -165,6 +165,7 @@ export default function Profile() {
 
 export const updateProfileAction = action(async (api: Api, userId: number, userType: string, formData: FormData) => {
   let response: Response;
+ // const [_, setAppState] = useAppState();
 
   if (userType === "client") {
     const clientData: UpdateClient = {
@@ -205,7 +206,7 @@ export const updateProfileAction = action(async (api: Api, userId: number, userT
     throw new Error();
   }
 
-
+  api.getUser()
   return { ok: true, resp: await response.json() };
 }, "update-profile-action");
 
@@ -247,7 +248,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
                      error={errors()["email"]}
           />
           <Select
-            label={t("global.language.label")}
+            label={t("global.language.preferredLanguage")}
             name="preferredLanguage"
             value={props.user.preferredLanguage}
           >
