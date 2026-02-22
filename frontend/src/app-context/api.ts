@@ -154,6 +154,27 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
     },
 
+    async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
+      const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`);
+      const res = await this.authFetch(req);
+      if (res.ok) return res.json()
+      else return null;
+    },
+
+    async getVehicleFromURI(vehicleURI: string): Promise<Vehicle | null> {
+      const segments = new URL(vehicleURI).pathname
+          .split("/")
+
+      const vehicleId = Number(segments[segments.length - 1]);
+      const driverId = Number(segments[segments.length - 3]);
+
+      if (Number.isNaN(driverId) || Number.isNaN(vehicleId)) {
+        throw new Error("URI does not contain valid driverId and vehicleId");
+      }
+
+      return this.getVehicle(driverId, vehicleId)
+    },
+
     async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {
       const req = apiRequest('bookings',
           {queryParams: {userId: userId.toString(), state: state.toUpperCase(), page: page.toString()}});
