@@ -43,10 +43,22 @@
       "afternoonDateTime": "{{date}} in the afternoon",
       "eveningDateTime": "{{date}} in the evening",
       "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
+      "pending": "PENDING",
+      "rejected": "REJECTED",
+      "accepted": "ACCEPTED",
+      "canceled": "CANCELED",
+      "finished": "TERMINADA",
       "details": "Details",
+      "detailsForTimeShift": "Details for booking during {{timeShift}}",
       "chat": "Chat",
       "vehiclePlateNumber": "Assigned to vehicle with plate number {{plateNumber}}",
-      "hourlyRate": "Price per hour: ${{price}}"
+      "client": "Client",
+      "driver": "Driver",
+      "route": "Route",
+      "vehicleInformation": "Assigned vehicle information",
+      "plate": "License plate",
+      "description": "Description",
+      "hourlyRate": "Price per hour"
     }
   },
   "password": "Password",

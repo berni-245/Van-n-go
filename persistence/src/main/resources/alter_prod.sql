@@ -45,3 +45,10 @@ where destination_zone_id is null;
 
 alter table booking
     alter column destination_zone_id set not null;
+
+UPDATE booking
+set job_description = 'Lo organizamos por chat'
+where job_description is null;
+
+alter table booking
+    alter column job_description set not null;

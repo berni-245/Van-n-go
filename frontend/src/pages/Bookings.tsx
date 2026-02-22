@@ -18,13 +18,13 @@ type BookingWithTarget = {
     destinationZone: Zone;
 }
 
-const bookingsQuery = query(async (): Promise<BookingWithTarget[]> => {
+const bookingsQuery = query(async (state: BookingState): Promise<BookingWithTarget[]> => {
     const api = useApi();
     const [appState] = useAppState();
 
     const isDriver = appState.user!.type === "driver";
 
-    const bookings = await api.getBookings(appState.user!.id, BookingState.Rejected, 1);
+    const bookings = await api.getBookings(appState.user!.id, state, 1);
 
     return Promise.all(
         bookings.map(async (booking) => {
@@ -44,7 +44,7 @@ export default function Bookings() {
     const [appState] = useAppState();
     const isDriver = appState.user!.type === "driver";
 
-    const bookingItems = createAsync(() => bookingsQuery());
+    const bookingItems = createAsync(() => bookingsQuery(BookingState.Rejected));
 
     return (
         <>

@@ -43,10 +43,22 @@
       "afternoonDateTime": "{{date}} por la tarde",
       "eveningDateTime": "{{date}} por la noche",
       "travelZones": "Desde {{originNeighborhood}} hasta {{destinationNeighborhood}}",
+      "pending": "PENDIENTE",
+      "rejected": "RECHAZADA",
+      "accepted": "ACEPTADA",
+      "canceled": "CANCELADA",
+      "finished": "TERMINADA",
       "details": "Detalles",
+      "detailsForTimeShift": "Detalles para reserva durante {{timeShift}}",
       "chat": "Chat",
       "vehiclePlateNumber": "Asignado al vehículo con patente {{plateNumber}}",
-      "hourlyRate": "Precio por hora: ${{price}}"
+      "client": "Cliente",
+      "driver": "Conductor",
+      "route": "Ruta",
+      "vehicleInformation": "Información del vehículo asignado",
+      "plate": "Patente",
+      "description": "Descripción",
+      "hourlyRate": "Precio por hora"
     }
   },
   "password": "Contraseña",

@@ -94,11 +94,12 @@ const BookingCardClient: Component<CardProps> = (props) => {
             <BookingModal
                 booking={props.booking}
                 targetUser={props.driver}
+                targetUserType={"driver"}
                 vehicle={props.vehicle}
                 originZone={props.originZone}
                 destinationZone={props.destinationZone}
-                open={modalIsOpen()}
                 title={t("global.page.bookings.details")}
+                open={modalIsOpen()}
                 onClose={() => setModalIsOpen(false)}
             >
                 <div class="flex justify-end gap-2">
