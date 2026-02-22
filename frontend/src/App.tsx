@@ -1,4 +1,4 @@
-import { useAppState, useTranslator } from "@/app-context/AppContext";
+import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import { AppLayout } from "@components/AppLayout.tsx";
 import { Sidebar } from "@components/sidebar/Sidebar";
 import {
@@ -11,13 +11,15 @@ import {
   FaSolidUserPlus,
   FaSolidUserAlt,
 } from "solid-icons/fa";
-import { FiLogIn } from "solid-icons/fi";
-import { JSX, Match, Suspense, Switch, type Component } from "solid-js";
+import {FiLogIn, FiLogOut} from "solid-icons/fi";
+import {JSX, Match, Suspense, Switch, type Component, Show} from "solid-js";
 import { Logo } from "@/assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
   const [appState, _] = useAppState();
   const t = useTranslator();
+  const api = useApi();
+
 
   return (
     <AppLayout>
@@ -45,6 +47,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
                 text={t("global.page.vehicles.sidebar.newVehicle")}
                 icon={<FaSolidAdd size={20} />}
               />
+
             </Sidebar.CollapsibleItem>
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
             <Sidebar.Item href="/driver/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
@@ -55,6 +58,16 @@ const App: Component<{ children: JSX.Element }> = (props) => {
             <Sidebar.Item href="/register" text={t("global.register")} icon={<FaSolidUserPlus size={20} />} />
           </Match>
         </Switch>
+        <Show when={appState.user}>
+          <div class="mt-auto pt-4">
+            <Sidebar.Item
+                onClick={() => api.logout("/login")}
+                href="/login"
+                text={t("global.generic.word.logout")}
+                icon={<FiLogOut size={20} />}
+            />
+          </div>
+        </Show>
       </Sidebar>
       <AppLayout.Content>
         {/* TODO: prolly remove this suspense when the app is finished */}

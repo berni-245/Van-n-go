@@ -91,8 +91,8 @@ export function EditProfilePicForm () {
         <form
             action={EditProfilePictureAction.with(api, appState.user?.id!,  appState.user?.type!, t)}
             method="post"
-            encType="multipart/form-data"
-            className="flex flex-col gap-4"
+            enctype="multipart/form-data"
+            class="flex flex-col gap-4"
         >
             <Modal.Dialog.Body>
                 <FileInput

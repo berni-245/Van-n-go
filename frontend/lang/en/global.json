@@ -109,7 +109,8 @@
       "send": "Send",
       "password": "Password",
       "chooseFile": "Choose file",
-      "profilePicture": "Profile picture"
+      "profilePicture": "Profile picture",
+      "logout": "Logout"
     }
   },
   "error": {

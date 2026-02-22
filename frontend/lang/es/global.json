@@ -79,7 +79,8 @@
       "send": "Enviar",
       "password": "Contraseña",
       "chooseFile": "Elegir archivo",
-      "profilePicture": "Imagen de perfil"
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión"
     }
   },
   "global": {
