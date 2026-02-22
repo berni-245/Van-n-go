@@ -141,8 +141,8 @@ export default function Search() {
                             </label>
                             <input
                                 type="number"
-                                min="0"
-                                step="100"
+                                min="1000"
+                                step="1000"
                                 placeholder="—"
                                 class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={maxPrice()}
