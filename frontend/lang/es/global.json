@@ -4,8 +4,9 @@
   "home": "Inicio",
   "language": {
     "label": "Idioma",
-    "english": "Inglés",
-    "spanish": "Español"
+    "preferredLanguage": "Idioma preferido",
+    "ENGLISH": "Inglés",
+    "SPANISH": "Español"
   },
   "login": "Iniciar sesión",
   "name": "Español",
@@ -42,6 +43,7 @@
   "password": "Contraseña",
   "register": "Registrarse",
   "settings": "Configuración",
+  "profile": "Perfil",
   "sr": {
     "closeSidebar": "Cerrar barra lateral",
     "loading": "Cargando",
@@ -53,6 +55,53 @@
     "skipToMainContent": "Saltar al contenido principal",
     "vehicleDescription": "Descripción del vehículo",
     "vehiclePicture": "Imagen del vehículo"
+  },
+  "components": {
+    "header": {
+      "profile": "Perfil"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Idioma"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No subió su descripción",
+      "noCbu": "No subió su CBU"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No tiene reseñas"
+    }
+  },
+  "user": {
+    "editUser": "Cambiar contraseña",
+      "newPassword": "Nueva contraseña",
+      "oldPassword": "Contraseña actual",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB."
+    },
+
+  "error": {
+    "imageUnsupportedMediaType": "El archivo no es una imagen válida",
+    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)"
   },
   "theme": {
     "label": "Tema",

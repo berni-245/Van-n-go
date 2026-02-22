@@ -4,7 +4,7 @@ import { authorizedResponse, handleAuthorization, publicResponse } from "./auth"
 import { getMockUser } from "./users";
 import { VEHICLES } from "./vehicles";
 
-const baseUrl = "http://localhost:8080/webapp";
+const baseUrl = "http://localhost:8080/";
 export const worker = setupWorker(
   http.get(
     `${baseUrl}/*`,
