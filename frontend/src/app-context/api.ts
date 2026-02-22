@@ -98,7 +98,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getClientFromURI(clientURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Client | null> {
-      const id = extractNumericId(clientURI);
+      const id = extractNumericIdFromEndOfPath(clientURI);
       if (id === null) return null;
       return this.getClient(id, opts);
     },
@@ -166,6 +166,18 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(`${API_ROOT}/zones`);
       return res.json();
     },
+
+    async getZone(zoneId: number): Promise<Zone | null> {
+      const res = await this.authFetch(apiRequest(`zones/${zoneId}`))
+      if (res.ok) return res.json();
+      else return null;
+    },
+
+    async getZoneFromURI(zoneURI: string) {
+      const id = extractNumericIdFromEndOfPath(zoneURI);
+      if (id === null) return null;
+      return this.getZone(id);
+    }
   };
 }
 

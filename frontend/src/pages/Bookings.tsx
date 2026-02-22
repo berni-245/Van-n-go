@@ -6,11 +6,16 @@ import BookingCardClient from "@components/cards/BookingCardClient";
 import VehicleGridSkeleton from "@components/skeletons/VehicleGridSkeleton";
 import Pagination from "@components/Pagination";
 import {Title} from "@solidjs/meta";
-import type {Booking, Client, Driver} from "@/api/types";
+import type {Booking, Client, Driver, Zone} from "@/api/types";
 import {BookingState} from "@/api/types";
 import {API_ROOT} from "@/app-context/api";
 
-type BookingWithTarget = { booking: Booking; targetUser: Client | Driver }
+type BookingWithTarget = {
+    booking: Booking;
+    targetUser: Client | Driver;
+    originZone: Zone;
+    destinationZone: Zone;
+}
 
 const bookingsQuery = query(async (): Promise<BookingWithTarget[]> => {
     const api = useApi();
@@ -23,9 +28,12 @@ const bookingsQuery = query(async (): Promise<BookingWithTarget[]> => {
     return Promise.all(
         bookings.map(async (booking) => {
             const targetUser = await (isDriver ? api.getClientFromURI(booking.client) : api.getDriverFromURI(booking.driver));
-            if (!targetUser) throw new Error("Target user should never be null");
+            const originZone = await api.getZoneFromURI(booking.originZone)
+            const destinationZone = await api.getZoneFromURI(booking.destinationZone)
 
-            return {booking, targetUser};
+            if (!targetUser || !originZone || !destinationZone) throw new Error("BookingUser, originZone and destinationZone should never be null");
+
+            return {booking, targetUser, originZone, destinationZone};
         })
     );
 }, "bookingsInfo");
@@ -53,11 +61,13 @@ export default function Bookings() {
                 <Suspense fallback={<VehicleGridSkeleton/>}>
                     <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                         <For each={bookingItems()}>
-                            {({booking, targetUser}) =>
+                            {({booking, targetUser, originZone, destinationZone}) =>
                                 isDriver ?
-                                    <BookingCardClient booking={booking} client={targetUser as Client}/>
+                                    <BookingCardClient booking={booking} client={targetUser as Client}
+                                                       originZone={originZone} destinationZone={destinationZone}/>
                                     :
-                                    <BookingCardDriver booking={booking} driver={targetUser as Driver}/>
+                                    <BookingCardDriver booking={booking} driver={targetUser as Driver}
+                                                       originZone={originZone} destinationZone={destinationZone}/>
                             }
                         </For>
                     </div>

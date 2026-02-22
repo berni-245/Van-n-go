@@ -37,6 +37,14 @@
       "rate": "Hourly Rate",
       "title": "My vehicles",
       "volume": "Size"
+    },
+    "bookings": {
+      "morningDateTime": "{{date}} in the morning",
+      "afternoonDateTime": "{{date}} in the afternoon",
+      "eveningDateTime": "{{date}} in the evening",
+      "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
+      "details": "Details",
+      "chat": "Chat"
     }
   },
   "password": "Password",

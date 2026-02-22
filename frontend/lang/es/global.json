@@ -37,6 +37,14 @@
       "rate": "Precio por hora",
       "title": "Mis vehículos",
       "volume": "Tamaño"
+    },
+    "bookings": {
+      "morningDateTime": "{{date}} por la mañana",
+      "afternoonDateTime": "{{date}} por la tarde",
+      "eveningDateTime": "{{date}} por la noche",
+      "travelZones": "Desde {{originNeighborhood}} hasta {{destinationNeighborhood}}",
+      "details": "Detalles",
+      "chat": "Chat"
     }
   },
   "password": "Contraseña",
