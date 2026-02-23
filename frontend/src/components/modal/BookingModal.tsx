@@ -57,7 +57,7 @@ export function BookingModal(props: BookingModalProps) {
 
                             <span
                                 class={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase text-xs font-medium border bg-on-surface dark:bg-surface-dark ${getColorTagForBookingState(props.booking.state)}`}>
-                              {t(`global.page.bookings.${props.booking.state.toLowerCase()}` as any)}
+                              {t(`global.page.bookings.${props.booking.state.toLowerCase()}` as any).toString().toUpperCase()}
                             </span>
 
                         </div>

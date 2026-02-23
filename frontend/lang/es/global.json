@@ -49,15 +49,16 @@
       "volume": "Tamaño"
     },
     "bookings": {
+      "myBookings": "Mis reservas",
       "morningDateTime": "{{date}} por la mañana",
       "afternoonDateTime": "{{date}} por la tarde",
       "eveningDateTime": "{{date}} por la noche",
       "travelZones": "Desde {{originNeighborhood}} hasta {{destinationNeighborhood}}",
-      "pending": "PENDIENTE",
-      "rejected": "RECHAZADA",
-      "accepted": "ACEPTADA",
-      "canceled": "CANCELADA",
-      "finished": "TERMINADA",
+      "pending": "Pendiente",
+      "rejected": "Rechazada",
+      "accepted": "Aceptada",
+      "canceled": "Cancelada",
+      "finished": "Terminada",
       "details": "Detalles",
       "detailsForTimeShift": "Detalles para reserva durante {{timeShift}}",
       "chat": "Chat",
@@ -87,24 +88,17 @@
     "vehicleDescription": "Descripción del vehículo",
     "vehiclePicture": "Imagen del vehículo"
   },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
   "components": {
     "header": {
       "profile": "Perfil"
-    }
-  },
-  "generic": {
-    "word": {
-      "email": "Correo",
-      "zone": "Zona",
-      "description": "Descripción",
-      "cbu": "CBU/CVU/Alias",
-      "edit": "Editar",
-      "cancel": "Cancelar",
-      "send": "Enviar",
-      "password": "Contraseña",
-      "chooseFile": "Elegir archivo",
-      "profilePicture": "Imagen de perfil",
-      "logout": "Cerrar sesión"
+    },
+    "availability": {
+      "Search": "Buscar"
     }
   },
   "global": {
@@ -135,16 +129,65 @@
       "updatePfpSuccess": "Imagen de perfil actualizada exitosamente"
     }
   },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión",
+      "size": "Tamaño",
+      "any": "Cualquiera",
+      "weekday": "Día",
+      "small": "Chico",
+      "medium": "Mediano",
+      "large": "Grande"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión",
+      "size": "Tamaño",
+      "any": "Cualquiera",
+      "weekday": "Día",
+      "small": "Chico",
+      "medium": "Mediano",
+      "large": "Grande"
+    }
+  },
   "error": {
     "imageUnsupportedMediaType": "El archivo no es una imagen válida",
-    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)"
-  },
-  "theme": {
-    "label": "Tema",
-    "light": "Claro",
-    "dark": "Oscuro"
+    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "unknown": "Ocurrió un error desconocido"
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",
-  "vehicles": "Vehículos"
+  "vehicles": "Vehículos",
+  "confirmPassword": "Confirmar contraseña",
+  "registering": "Registrando…",
+  "userType": {
+    "label": "Tipo de cuenta",
+    "client": "Cliente",
+    "driver": "Conductor"
+  },
+  "zone": {
+    "label": "Zona"
+  }
 }

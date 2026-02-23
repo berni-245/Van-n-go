@@ -48,7 +48,7 @@ const BookingCardClient: Component<CardProps> = (props) => {
                             class="h-full w-full object-cover transition group-hover:scale-105"
                             alt={t("global.sr.vehiclePicture")}
                             src={props.driver.profilePic}
-                            fallbackSrc="/images/blank_user.jpg"
+                            fallbackSrc="/images/blank-user.jpg"
                             skipSrc={!props.driver.hasProfilePic}
                         />
                     </div>

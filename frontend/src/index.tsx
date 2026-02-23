@@ -18,11 +18,13 @@ const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
 const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
-const DriverAvailability = lazy(() => import("@/pages/DriverAvailability"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
 const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
 const Bookings = lazy(() => import("@/pages/Bookings"))
+const Register = lazy(() => import ("@/pages/Register"))
+const Search = lazy(() => import("@/pages/Search"))
+
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
@@ -54,7 +56,8 @@ render(
           <Route path="/" component={AnonRoute}>
             <Route path="/" component={Home} />
             <Route path="/login" component={Login} />
-            <Route path="/search" component={DriverAvailability} />
+            <Route path="/register" component={Register} />
+            <Route path="/search" component={Search} />
             <Route path="/about" component={About} />
           </Route>
           <Route path="/driver" component={DriverRoute}>
@@ -66,7 +69,7 @@ render(
             <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="/client" component={ClientRoute}>
-            <Route path="/search" component={DriverAvailability}/>
+            <Route path="/search" component={Search}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile}/>

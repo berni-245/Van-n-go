@@ -49,15 +49,16 @@
       "volume": "Size"
     },
     "bookings": {
+      "myBookings": "My bookings",
       "morningDateTime": "{{date}} in the morning",
       "afternoonDateTime": "{{date}} in the afternoon",
       "eveningDateTime": "{{date}} in the evening",
       "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
-      "pending": "PENDING",
-      "rejected": "REJECTED",
-      "accepted": "ACCEPTED",
-      "canceled": "CANCELED",
-      "finished": "TERMINADA",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "accepted": "Accepted",
+      "canceled": "Canceled",
+      "finished": "Finished",
       "details": "Details",
       "detailsForTimeShift": "Details for booking during {{timeShift}}",
       "chat": "Chat",
@@ -95,6 +96,9 @@
   "components": {
     "header": {
       "profile": "Profile"
+    },
+    "availability": {
+      "Search": "Search"
     }
   },
   "global": {
@@ -136,14 +140,32 @@
       "password": "Password",
       "chooseFile": "Choose file",
       "profilePicture": "Profile picture",
-      "logout": "Logout"
+      "logout": "Logout",
+      "size": "Size",
+      "any": "Any",
+      "weekday": "Weekday",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
     }
   },
   "error": {
     "imageUnsupportedMediaType": "Unsupported media type. Please upload an image file (jpg, jpeg, png).",
-    "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB."
+    "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB.",
+    "passwordMismatch": "Passwords do not match",
+    "unknown": "An unknown error occurred"
   },
   "title": "Van N' Go",
   "username": "Username",
-  "vehicles": "Vehicles"
+  "vehicles": "Vehicles",
+  "confirmPassword": "Confirm password",
+  "registering": "Registering…",
+  "userType": {
+    "label": "Account type",
+    "client": "Client",
+    "driver": "Driver"
+  },
+  "zone": {
+    "label": "Zone"
+  }
 }
