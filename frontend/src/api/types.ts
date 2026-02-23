@@ -65,6 +65,12 @@ export interface Booking {
   review: string;
 }
 
+export interface Review {
+  rating: number;
+  comments: string;
+  booking: string;
+}
+
 export enum BookingState {
   Pending = "PENDING",
   Accepted = "ACCEPTED",

@@ -6,6 +6,7 @@ import {
   Client,
   Driver,
   Message,
+  Review,
   UpdateClient,
   UpdateDriver,
   Vehicle,
@@ -292,24 +293,6 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return await this.authFetch(req);
     },
 
-    async postReview(bookingId: number, rating: number, comments: string): Promise<Response> {
-      const payload = {
-        rating: rating,
-        comments: comments,
-        booking: `api/bookings/${bookingId}`
-      };
-      const url = new URL(`bookings/${bookingId}/review`, API_ROOT);
-      const req = new Request(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": MediaTypesV1.bookingReview,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      return await this.authFetch(req);
-    },
-
     async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
       const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`, {
         headers: {Accept: MediaTypesV1.vehicle},
@@ -384,6 +367,59 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(req)
       if (res.ok) return res.json();
       else return [];
+    },
+
+    async updateBookingState(bookingId: number, state: BookingState): Promise<Response> {
+      const payload = {
+        state: state.toUpperCase()
+      };
+      const url = new URL(`bookings/${bookingId}`, API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.bookingUpdateState,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      return await this.authFetch(req);
+    },
+
+    async getReview(bookingId: number): Promise<Review | null> {
+      const req = apiRequest(`bookings/${bookingId}/review`);
+      const res = await this.authFetch(req)
+      if (res.ok) return res.json();
+      else return null;
+    },
+
+    async postReview(bookingId: number, rating: number, comments: string): Promise<Response> {
+      const payload = {
+        rating: rating,
+        comments: comments,
+        booking: `api/bookings/${bookingId}`
+      };
+      const url = new URL(`bookings/${bookingId}/review`, API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.bookingReview,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      return await this.authFetch(req);
+    },
+
+    async putProofOfPayment(bookingId: number, file: File): Promise<Response> {
+      const url = new URL(`bookings/${bookingId}/proof-of-payment`, API_ROOT);
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
     },
   };
 }

@@ -16,6 +16,7 @@ export function createMediaType(version: Version) {
       zones: `application/vnd.zoneList.${version}+json`,
       zone: `application/vnd.zone.${version}+json`,
     bookingReview: `application/vnd.bookingReview.${version}+json`,
+    bookingUpdateState: `application/vnd.bookingUpdateState.${version}+json`,
     messageList: `application/vnd.messageList.${version}+json`,
     messageCreate: `application/vnd.messageCreate.${version}+json`,
     message: `application/vnd.message.${version}+json`,
