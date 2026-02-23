@@ -1,5 +1,5 @@
 import { createSignal, For, Show, onMount } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { useSearchParams, useNavigate } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
 import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import ImageWithFallback from "@/components/ImageWithFallback";
@@ -11,6 +11,7 @@ export default function Chat() {
     const [appState] = useAppState();
     const [searchParams] = useSearchParams();
 
+    const navigate = useNavigate();
     const driverId = () => Number(searchParams.driverId);
     const clientId = () => Number(searchParams.clientId);
     const isDriver = () => appState.user?.type === "driver";
@@ -35,7 +36,13 @@ export default function Chat() {
     const loadMessages = async (p: number, prepend = false) => {
         setLoadingMore(true);
         try {
-            const { messages: msgs, maxPages: mp } = await api.getMessages(driverId(), clientId(), p);
+            const result = await api.getMessages(driverId(), clientId(), p);
+            if (!result) {
+                const role = isDriver() ? "driver" : "client";
+                navigate(`/${role}/bookings`, { replace: true });
+                return;
+            }
+            const { messages: msgs, maxPages: mp } = result;
             setMaxPages(mp);
             // API returns newest-first; reverse so oldest appears at top
             const ordered = [...msgs].reverse();
@@ -44,6 +51,9 @@ export default function Chat() {
             } else {
                 setMessages(ordered);
             }
+        } catch (err: any) {
+            const role = isDriver() ? "driver" : "client";
+            navigate(`/${role}/bookings`, { replace: true });
         } finally {
             setLoadingMore(false);
         }
