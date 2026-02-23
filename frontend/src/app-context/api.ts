@@ -7,7 +7,7 @@ import {
   Driver,
   Message,
   UpdateClient,
-  UpdateDriver,
+  UpdateDriver, UpdateVehicle,
   Vehicle,
   Zone,
 } from "@/api/types";
@@ -360,13 +360,51 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return this.getVehicle(driverId, vehicleId);
     },
 
-    async putVehiclePicture(url: string, file: File) {
-      const req = apiRequest(url, { method: "put", headers: { "Content-Type": file.type }, body: file });
-      const res = await this.authFetch(req);
-      if (!res.ok) {
-        // TODO: idk better error handling and at least localization.
-        throw new Error("Failed to put image");
-      }
+
+
+
+    async updateVehicle(driverId: number, vehicleId: number, data: UpdateVehicle): Promise<Response> {
+      const url = new URL(`drivers/${driverId}/vehicles/${vehicleId}`, API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.vehicleUpdate,
+        },
+        body: JSON.stringify(data),
+      });
+
+
+      return await this.authFetch(req);
+    },
+
+
+    async putVehicleImage(url: string, file: File): Promise<Response> {
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
+    },
+
+    async updateVehicleAvailability(
+        driverId: number,
+        vehicleId: number,
+        payload: { zones: number[], timeSlots: { day: string, shift: string }[] }
+    ): Promise<Response>{
+      const url = new URL(`drivers/${driverId}/vehicles/${vehicleId}/availability`, API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.availabilityUpdate,
+        },
+        body: JSON.stringify(payload),
+      });
+
+
+      return await this.authFetch(req);
     },
 
     async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number }> {

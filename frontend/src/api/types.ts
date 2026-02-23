@@ -131,3 +131,10 @@ export type Message = {
   sentByDriver: boolean;
   sentAt: string; // ISO datetime
 };
+
+export interface UpdateVehicle {
+  plateNumber?: string;
+  volumeM3?: number;
+  hourlyRate?: number;
+  description?: string;
+}
