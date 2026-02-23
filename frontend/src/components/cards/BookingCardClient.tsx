@@ -98,7 +98,6 @@ const BookingCardClient: Component<CardProps> = (props) => {
             </div>
         </article>
 
-            {/* MODAL NUEVO */}
             <BookingModal
                 booking={props.booking}
                 targetUser={props.client}

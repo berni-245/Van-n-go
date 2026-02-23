@@ -1,6 +1,6 @@
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
-import { AppLayout } from "@components/AppLayout.tsx";
-import { Sidebar } from "@components/sidebar/Sidebar";
+import {AppLayout} from "@components/AppLayout.tsx";
+import {Sidebar} from "@components/sidebar/Sidebar";
 import {
   FaSolidAdd,
   FaSolidBook,
@@ -8,11 +8,11 @@ import {
   FaSolidListDots,
   FaSolidSearch,
   FaSolidTruck,
-  FaSolidUserPlus,
   FaSolidUserAlt,
+  FaSolidUserPlus,
 } from "solid-icons/fa";
 import {FiLogIn, FiLogOut} from "solid-icons/fi";
-import {JSX, Match, Suspense, Switch, type Component, Show} from "solid-js";
+import {type Component, JSX, Match, Show, Suspense, Switch} from "solid-js";
 import {Logo} from "@/assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
@@ -26,9 +26,9 @@ const App: Component<{ children: JSX.Element }> = (props) => {
       <Sidebar logo={<Logo />}>
         <Switch>
           <Match when={appState.user?.type === "client"}>
-            <Sidebar.Item href="/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20} />} />
-            <Sidebar.Item href="/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
-            <Sidebar.Item href="/settings" text={t("global.settings")} icon={<FaSolidGear size={20} />} />
+            <Sidebar.Item href="/client/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20}/>}/>
+            <Sidebar.Item href="/client/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20}/>}/>
+            <Sidebar.Item href="/client/settings" text={t("global.settings")} icon={<FaSolidGear size={20}/>}/>
             <Sidebar.Item href="/client/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20}/>}/>
           </Match>
           <Match when={appState.user?.type === "driver"}>

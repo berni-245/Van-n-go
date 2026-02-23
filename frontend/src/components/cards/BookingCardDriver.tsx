@@ -1,6 +1,6 @@
 import {Component, createSignal, onCleanup, onMount} from "solid-js";
 import {BsChatDots, BsJournalText} from "solid-icons/bs";
-import {useTranslator} from "@/app-context/AppContext";
+import {useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {BookingModal} from "@components/modal/BookingModal";
@@ -13,8 +13,9 @@ type CardProps = {
     destinationZone: Zone;
 };
 
-const BookingCardClient: Component<CardProps> = (props) => {
+const BookingCardDriver: Component<CardProps> = (props) => {
     const t = useTranslator();
+    const [appState] = useAppState();
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -26,6 +27,14 @@ const BookingCardClient: Component<CardProps> = (props) => {
         onCleanup(() => document.removeEventListener("keydown", handleKeyDown));
     });
 
+    function formatLocalDate(date: string, locale: string) {
+        return new Intl.DateTimeFormat(locale, {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).format(new Date(date));
+    }
+
     return (
         <>
             <article
@@ -35,7 +44,7 @@ const BookingCardClient: Component<CardProps> = (props) => {
                   <span class="text-m text-on-surface-weak dark:text-on-surface-dark-weak">
                     {t(
                         `global.page.bookings.${props.booking.shiftPeriod.toLowerCase()}DateTime` as any,
-                        {date: props.booking.date}
+                        {date: formatLocalDate(props.booking.date, appState.preferences.locale)}
                     )}
                   </span>
                         <span class="text-sm font-semibold">
@@ -67,10 +76,9 @@ const BookingCardClient: Component<CardProps> = (props) => {
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 border-t border-outline p-4 dark:border-outline-dark">
-                    <button
-                        type="button"
-                        onClick={() => setModalIsOpen(true)}
-                        class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
+                    <button type="button"
+                            onClick={() => setModalIsOpen(true)}
+                            class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
                     >
                         <BsJournalText class="text-lg"/>
                         <span class="hidden sm:inline">
@@ -90,15 +98,17 @@ const BookingCardClient: Component<CardProps> = (props) => {
                 </div>
             </article>
 
-            {/* MODAL NUEVO */}
             <BookingModal
                 booking={props.booking}
                 targetUser={props.driver}
-                targetUserType={"driver"}
+                targetUserType={"client"}
                 vehicle={props.vehicle}
                 originZone={props.originZone}
                 destinationZone={props.destinationZone}
-                title={t("global.page.bookings.details")}
+                title={t(
+                    `global.page.bookings.${props.booking.shiftPeriod.toLowerCase()}DateTime` as any,
+                    {date: formatLocalDate(props.booking.date, appState.preferences.locale)}
+                )}
                 open={modalIsOpen()}
                 onClose={() => setModalIsOpen(false)}
             >
@@ -119,4 +129,4 @@ const BookingCardClient: Component<CardProps> = (props) => {
     );
 };
 
-export default BookingCardClient;
+export default BookingCardDriver;
