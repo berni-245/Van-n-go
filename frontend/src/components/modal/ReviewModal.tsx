@@ -1,18 +1,26 @@
-import { action, useSubmission } from "@solidjs/router";
-import { Api } from "@/app-context/api.ts";
-import { ApiError } from "@/api/types.ts";
-import { useApi, useTranslator } from "@/app-context/AppContext.tsx";
-import { useModalContext } from "@components/modal/Context.tsx";
-import { useToast } from "solid-notifications";
 import {createEffect, Show} from "solid-js";
-import { Modal } from "@components/modal/Modal.tsx";
+import {action, useSubmission} from "@solidjs/router";
+import {useApi, useTranslator} from "@/app-context/AppContext.tsx";
+import {Api} from "@/app-context/api.ts";
+import {ApiError} from "@/api/types.ts";
+import {useToast} from "solid-notifications";
 import Button from "@components/Button.tsx";
 import Stars from "@components/inputs/Stars.tsx";
 
+interface ReviewBookingModalProps {
+    open: boolean;
+    bookingId: number;
+    onClose: () => void;
+}
 
 export const submitReviewAction = action(
-    async (api: Api, bookingId: number, t: any, toaster: any, formData: FormData) => {
-
+    async (
+        api: Api,
+        bookingId: number,
+        t: any,
+        toaster: any,
+        formData: FormData
+    ) => {
         const ratingString = formData.get("rating");
 
         if (!ratingString) {
@@ -20,121 +28,150 @@ export const submitReviewAction = action(
         }
 
         const rating = Number(ratingString);
+        const comments = formData.get("review") as string;
 
-        const commentsText = formData.get("review") as string;
-
-        const response = await api.postReview(bookingId, rating, commentsText);
+        const response = await api.postReview(bookingId, rating, comments);
 
         if (!response.ok) {
             if (response.status === 400) {
-                const errorList: ApiError[] = await response.json();
+                const errors: ApiError[] = await response.json();
                 const fieldErrors: Record<string, string[]> = {};
 
-                errorList.forEach(err => {
-                    if (err.description) {
+                errors.forEach(err => {
+                    if (!err.description) return;
 
-                        toaster.notify(err.description, { type: "error" });
+                    toaster.notify(err.description, { type: "error" });
 
-                        if (err.entity) {
-                            if (!fieldErrors[err.entity]) fieldErrors[err.entity] = [];
-                            fieldErrors[err.entity].push(err.description);
-                        }
+                    if (err.entity) {
+                        fieldErrors[err.entity] ??= [];
+                        fieldErrors[err.entity].push(err.description);
                     }
                 });
+
                 return { ok: false, resp: fieldErrors };
             }
-            if (response.status === 401) {
-                toaster.notify(t("global.error.unauthorizedReview"), { type: "error" });
-            }
-            toaster.notify(t("global.error.generic"), { type: "error" });
+
+            toaster.notify(
+                t(
+                    response.status === 401
+                        ? "global.error.unauthorizedReview"
+                        : "global.error.generic"
+                ),
+                { type: "error" }
+            );
+
             return { ok: false, resp: {} };
         }
 
         toaster.notify(t("global.review.success"), { type: "success" });
-        return { ok: true, resp: await response.json() };
+        return { ok: true };
     },
     "submit-review-action"
 );
 
-
-export function ReviewBookingForm(props: { bookingId: number }) {
+export function ReviewBookingModal(props: ReviewBookingModalProps) {
     const t = useTranslator();
-    const modalContext = useModalContext();
-    const [_, setIsOpen] = modalContext.open;
     const api = useApi();
     const toaster = useToast();
 
     const submission = useSubmission(submitReviewAction);
 
+    /* 🔒 cerrar solo si terminó pending y fue OK */
     createEffect((wasPending) => {
-        const isPending = submission.pending;
-        if (wasPending && !isPending && submission.result?.ok) {
-            setIsOpen(false);
+        if (wasPending && !submission.pending && submission.result?.ok) {
+            props.onClose();
         }
-        return isPending;
+        return submission.pending;
     }, false);
 
-    const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
-
+    const errors = () =>
+        submission.result?.ok === false ? submission.result.resp : {};
 
     const reviewForm = t("global.reviewForm") as any;
 
     return (
-        <form
-            action={submitReviewAction.with(api, props.bookingId, t, toaster)}
-            method="post"
-            class="flex flex-col gap-4"
-        >
-            <Modal.Dialog.Body>
-                <div class="space-y-6">
+        <Show when={props.open}>
+            <div
+                class="fixed inset-0 z-40 flex items-end justify-center bg-black/20 p-4 pb-8 backdrop-blur-md sm:items-center"
+                onClick={(e) => e.target === e.currentTarget && props.onClose()}
+            >
+                <div class="w-full max-w-lg overflow-hidden rounded-radius border border-outline bg-surface text-on-surface dark:border-outline-dark dark:bg-surface-dark">
 
-                    <Stars
-                        name="rating"
-                        label={reviewForm.title}
-                        error={errors()?.["rating"]}
-                    />
+                    <div class="flex items-center justify-between border-b border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20">
+                        <h4 class="font-semibold tracking-wide">
+                            {reviewForm.title}
+                        </h4>
 
-                    <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-                        <label for="review" class="w-fit pl-0.5 text-sm">
-                            {reviewForm.yourComment}
-                        </label>
-                        <textarea
-                            id="review"
-                            name="review"
-                            maxLength={255}
-                            rows={4}
-                            placeholder={reviewForm.ratingPlaceholder}
-                            class="w-full resize-none rounded-radius border bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
-                            classList={{
-                                "border-danger": !!errors()?.["review"],
-                                "border-outline dark:border-outline-dark": !errors()?.["review"]
-                            }}
-                            disabled={submission.pending}
-                        />
-
-                        <Show when={errors()?.["review"]}>
-                            <small class="pl-0.5 text-danger">• {errors()?.["review"]?.[0]}</small>
-                        </Show>
+                        <button onClick={props.onClose} aria-label="close">
+                            ✕
+                        </button>
                     </div>
 
-                </div>
-            </Modal.Dialog.Body>
+                    {/* FORM */}
+                    <form
+                        action={submitReviewAction.with(
+                            api,
+                            props.bookingId,
+                            t,
+                            toaster
+                        )}
+                        method="post"
+                        class="flex flex-col gap-6 px-5 py-6"
+                    >
+                        {/* BODY */}
+                        <Stars
+                            name="rating"
+                            label={reviewForm.title}
+                            error={errors()?.rating}
+                        />
 
-            <Modal.Dialog.Footer>
-                <Button
-                    type="button"
-                    category="secondary"
-                    text={t("global.generic.word.cancel")}
-                    onClick={() => setIsOpen(false)}
-                    disabled={submission.pending}
-                />
-                <Button
-                    type="submit"
-                    category="primary"
-                    text={submission.pending ? "..." : t("global.generic.word.send")}
-                    disabled={submission.pending}
-                />
-            </Modal.Dialog.Footer>
-        </form>
+                        <div class="flex flex-col gap-1">
+                            <label for="review" class="text-sm">
+                                {reviewForm.yourComment}
+                            </label>
+
+                            <textarea
+                                id="review"
+                                name="review"
+                                rows={4}
+                                maxLength={255}
+                                placeholder={reviewForm.ratingPlaceholder}
+                                disabled={submission.pending}
+                                class="resize-none rounded-radius border bg-surface-alt px-4 py-2 text-sm
+                       focus-visible:outline-primary disabled:opacity-70
+                       dark:bg-surface-dark-alt"
+                                classList={{
+                                    "border-danger": !!errors()?.["review"],
+                                    "border-outline dark:border-outline-dark": !errors()?.["review"]
+                                }}
+                            />
+
+                            <Show when={errors()?.["review"]}>
+                                <small class="text-danger">
+                                    • {errors()?.["review"]?.[0]}
+                                </small>
+                            </Show>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 border-t border-outline pt-4 dark:border-outline-dark">
+                            <Button
+                                type="button"
+                                category="secondary"
+                                text={t("global.generic.word.cancel")}
+                                onClick={props.onClose}
+                                disabled={submission.pending}
+                            />
+
+                            <Button
+                                type="submit"
+                                category="primary"
+                                text={submission.pending ? "…" : t("global.generic.word.send")}
+                                disabled={submission.pending}
+                            />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </Show>
     );
 }

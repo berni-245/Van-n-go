@@ -50,6 +50,7 @@ export interface Vehicle {
 }
 
 export interface Booking {
+  id: number;
   self: string;
   client: string;
   driver: string;

@@ -1,26 +1,19 @@
 import {JSX} from "solid-js";
-import {Booking} from "@/api/types";
+import {Booking, BookingState} from "@/api/types";
 import {useApi, useTranslator} from "@/app-context/AppContext.tsx";
 
 export type UserInBookingRole = "driver" | "client";
-export type BookingState =
-    | "PENDING"
-    | "ACCEPTED"
-    | "FINISHED"
-    | "REJECTED"
-    | "CANCELED";
 
 export type BookingActionContext = {
     api: ReturnType<typeof useApi>
     t: ReturnType<typeof useTranslator>;
     closeCurrentModal: () => void;
 
-    openUploadProofModal: (booking: Booking) => void;
-    openViewProofModal: (booking: Booking) => void;
-    openUploadReviewModal: (booking: Booking) => void;
-    openViewReviewModal: (booking: Booking) => void;
-
-    refreshBookings?: (newState: BookingState) => void;
+    openUploadProofModal: () => void;
+    openViewProofModal: () => void;
+    openUploadReviewModal: () => void;
+    openViewReviewModal: () => void;
+    refreshBookings: (newStateTab: BookingState) => void;
 };
 
 export type BookingActionRenderer = (booking: Booking, ctx: BookingActionContext) => JSX.Element;
@@ -63,24 +56,74 @@ export const bookingActions: Record<
 
         ACCEPTED: (booking, {api, t, closeCurrentModal, openViewProofModal, openUploadProofModal, refreshBookings}) =>
             booking.proofOfPayment ? (
-                <PrimaryButton>{t("global.page.bookings.viewProofOfPayment")}</PrimaryButton>
+                <PrimaryButton
+                    onClick={() => {
+                        openViewProofModal()
+                    }}
+                >
+                    {t("global.page.bookings.viewProofOfPayment")}
+                </PrimaryButton>
             ) : (
                 <>
-                    <SecondaryButton>{t("global.page.bookings.cancelBooking")}</SecondaryButton>
-                    <PrimaryButton>{t("global.page.bookings.uploadProofOfPayment")}</PrimaryButton>
+                    <SecondaryButton
+                        onClick={() => {
+                            api.updateBookingState(booking.id, BookingState.Canceled)
+                            // TODO manage errors
+                            closeCurrentModal()
+                            refreshBookings(BookingState.Canceled)
+                        }}
+                    >
+                        {t("global.page.bookings.cancelBooking")}
+                    </SecondaryButton>
+                    <PrimaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openUploadProofModal()
+                        }}
+                    >
+                        {t("global.page.bookings.uploadProofOfPayment")}
+                    </PrimaryButton>
                 </>
             ),
 
-        FINISHED: (booking, {api, t, closeCurrentModal, openViewProofModal, openViewReviewModal, openUploadReviewModal, refreshBookings}) => (
+        FINISHED: (booking, {t, closeCurrentModal, openViewProofModal, openViewReviewModal, openUploadReviewModal}) => (
             booking.review ? (
                 <>
-                    <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
-                    <PrimaryButton>{t("global.page.bookings.viewReview")}</PrimaryButton>
+                    <SecondaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openViewProofModal()
+                        }}
+                    >
+                        {t("global.page.bookings.viewProofOfPayment")}
+                    </SecondaryButton>
+                    <PrimaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openViewReviewModal()
+                        }}
+                    >
+                        {t("global.page.bookings.viewReview")}
+                    </PrimaryButton>
                 </>
                 ) : (
             <>
-                <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
-                <PrimaryButton>{t("global.page.bookings.leaveReview")}</PrimaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        closeCurrentModal()
+                        openViewProofModal()
+                    }}
+                >
+                    {t("global.page.bookings.viewProofOfPayment")}
+                </SecondaryButton>
+                <PrimaryButton
+                    onClick={() => {
+                        closeCurrentModal()
+                        openUploadReviewModal()
+                    }}
+                >
+                    {t("global.page.bookings.leaveReview")}
+                </PrimaryButton>
             </>
             )
         ),
@@ -94,10 +137,28 @@ export const bookingActions: Record<
     },
 
     client: {
-        PENDING: (booking, {api, t, refreshBookings}) => (
+        PENDING: (booking, {api, t, closeCurrentModal, refreshBookings}) => (
             <>
-                <PrimaryButton>{t("global.page.bookings.acceptBooking")}</PrimaryButton>
-                <SecondaryButton>{t("global.page.bookings.rejectBooking")}</SecondaryButton>
+                <PrimaryButton
+                    onClick={() => {
+                        api.updateBookingState(booking.id, BookingState.Accepted)
+                        // TODO manage errors
+                        closeCurrentModal()
+                        refreshBookings(BookingState.Accepted)
+                    }}
+                >
+                    {t("global.page.bookings.acceptBooking")}
+                </PrimaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        api.updateBookingState(booking.id, BookingState.Rejected)
+                        // TODO manage errors
+                        closeCurrentModal()
+                        refreshBookings(BookingState.Rejected)
+                    }}
+                >
+                    {t("global.page.bookings.rejectBooking")}
+                </SecondaryButton>
             </>
         ),
 
@@ -105,24 +166,77 @@ export const bookingActions: Record<
             booking.hasProofOfPayment ? (
                 new Date(booking.date) <= new Date(Date.now()) ? (
                     <>
-                        <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
-                        <PrimaryButton>{t("global.page.bookings.finishBooking")}</PrimaryButton>
+                        <SecondaryButton
+                            onClick={() => {
+                                closeCurrentModal()
+                                openViewProofModal()
+                            }}
+                        >
+                            {t("global.page.bookings.viewProofOfPayment")}
+                        </SecondaryButton>
+                        <PrimaryButton
+                            onClick={() => {
+                                api.updateBookingState(booking.id, BookingState.Finished)
+                                // TODO manage errors
+                                closeCurrentModal()
+                                refreshBookings(BookingState.Finished)
+                            }}
+                        >
+                            {t("global.page.bookings.finishBooking")}
+                        </PrimaryButton>
                     </>
                 ) : (
-                    <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
+                    <SecondaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openViewProofModal()
+                        }}
+                    >
+                        {t("global.page.bookings.viewProofOfPayment")}
+                    </SecondaryButton>
                 )
             ) : (
-                <SecondaryButton>{t("global.page.bookings.cancelBooking")}</SecondaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        api.updateBookingState(booking.id, BookingState.Canceled)
+                        // TODO manage errors
+                        closeCurrentModal()
+                        refreshBookings(BookingState.Canceled)
+                    }}
+                >
+                    {t("global.page.bookings.cancelBooking")}
+                </SecondaryButton>
             ),
 
-        FINISHED: (booking, {api, t, closeCurrentModal, openViewProofModal, openViewReviewModal, refreshBookings}) => (
+        FINISHED: (booking, {t, closeCurrentModal, openViewProofModal, openViewReviewModal}) => (
             booking.review ? (  // todo cambiar por hasReview, necesita cambiar en bookingDTO también
             <>
-                <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
-                <SecondaryButton>{t("global.page.bookings.viewReview")}</SecondaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        closeCurrentModal()
+                        openViewProofModal()
+                    }}
+                >
+                    {t("global.page.bookings.viewProofOfPayment")}
+                </SecondaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        closeCurrentModal()
+                        openViewReviewModal()
+                    }}
+                >
+                    {t("global.page.bookings.viewReview")}
+                </SecondaryButton>
             </>
             ) : (
-                <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
+                <SecondaryButton
+                    onClick={() => {
+                        closeCurrentModal()
+                        openViewProofModal()
+                    }}
+                >
+                    {t("global.page.bookings.viewProofOfPayment")}
+                </SecondaryButton>
             )
         ),
 

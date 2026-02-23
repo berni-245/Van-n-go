@@ -4,6 +4,7 @@ import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {BookingModal} from "@components/modal/BookingModal";
+import {ReviewBookingModal} from "@components/modal/ReviewModal";
 import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
 
 type CardProps = {
@@ -17,8 +18,10 @@ type CardProps = {
 
 const BookingCard: Component<CardProps> = (props) => {
     const t = useTranslator();
+    const api = useApi();
     const [appState] = useAppState();
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
+    const [reviewOpen, setReviewOpen] = createSignal(false);
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") setModalIsOpen(false);
@@ -38,25 +41,34 @@ const BookingCard: Component<CardProps> = (props) => {
     }
 
     function renderModalFooter() {
-        const api = useApi();
-        const t = useTranslator();
-
         const ctx: BookingActionContext = {
             api,
             t,
-            closeCurrentModal: () => setModalIsOpen(false),
+            closeCurrentModal: () => {
+                setModalIsOpen(false)
+                setReviewOpen(false)
+            },
 
-            openUploadProofModal: (booking) => {
+            openViewProofModal: () => {
 
             },
 
-            openViewReviewModal: (booking) => {
+            openUploadProofModal: () => {
 
             },
 
-            openViewProofModal: (booking) => {
+            openViewReviewModal: () => {
 
             },
+
+            openUploadReviewModal: () => {
+                ctx.closeCurrentModal()
+                setReviewOpen(true)
+            },
+
+            refreshBookings: () => {
+
+            }
         };
 
         const action =
@@ -148,6 +160,13 @@ const BookingCard: Component<CardProps> = (props) => {
                     {renderModalFooter()}
                 </div>
             </BookingModal>
+
+            <ReviewBookingModal
+                bookingId={props.booking.id}
+                open={reviewOpen()}
+                onClose={() => setReviewOpen(false)}
+            />
+
         </>
     );
 };
