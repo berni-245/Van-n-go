@@ -18,6 +18,7 @@ import Select from "@/components/Select.tsx";
 import {EditProfilePicForm} from "@components/profile/EditProfilePicForm";
 import {clientToUserState, driverToUserState} from "@/app-context/userState.ts";
 import ProfilePageSkeleton from "@/components/skeletons/ProfilePageSkeleton";
+import {useToast} from "solid-notifications";
 
 const userProfileQuery = query(async () => {
     const api = useApi();
@@ -175,9 +176,8 @@ export default function Profile() {
 }
 
 
-export const updateProfileAction = action(async (api: Api, userId: number, userType: string, formData: FormData) => {
+export const updateProfileAction = action(async (api: Api, userId: number, userType: string, t, toaster, formData: FormData) => {
     let response: Response;
-
     if (userType === "client") {
         const clientData: UpdateClient = {
             username: formData.get("username") as string,
@@ -217,7 +217,7 @@ export const updateProfileAction = action(async (api: Api, userId: number, userT
         throw new Error();
     }
 
-
+    toaster.notify(t("global.user.editUser.updateProfileSuccess"), {type: "success"});
     return {ok: true, resp: await response.json()};
 }, "update-profile-action");
 
@@ -227,6 +227,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
     const [_, setIsOpen] = modalContext.open;
     const [appState, setAppState] = useAppState();
     const api = useApi();
+    const toaster = useToast()
 
     const submission = useSubmission(updateProfileAction);
 
@@ -257,7 +258,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
     const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
 
     return (
-        <form action={updateProfileAction.with(api, appState.user?.id!, appState.user?.type!)}
+        <form action={updateProfileAction.with(api, appState.user?.id!, appState.user?.type!, t , toaster)}
               method="post" class="flex flex-col gap-4">
             <Modal.Dialog.Body>
                 <div class="space-y-4">
@@ -318,7 +319,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
 }
 
 
-export const changePasswordAction = action(async (api: Api, userId: number, userType: string, formData: FormData) => {
+export const changePasswordAction = action(async (api: Api, userId: number, userType: string, t, toaster, formData: FormData) => {
     let response: Response;
     let password = formData.get("password") as string;
     let oldPassword = formData.get("oldPassword") as string;
@@ -352,11 +353,8 @@ export const changePasswordAction = action(async (api: Api, userId: number, user
             const fieldErrors: Record<string, string[]> = {};
 
             errorList.forEach(err => {
-                if (err.entity && err.description) {
-                    if (!fieldErrors[err.entity]) {
-                        fieldErrors[err.entity] = [];
-                    }
-                    fieldErrors[err.entity].push(err.description);
+                if ( err.description) {
+                    toaster.notify(err.description, {type: "error"});
                 }
             });
             return {ok: false, resp: fieldErrors};
@@ -364,7 +362,7 @@ export const changePasswordAction = action(async (api: Api, userId: number, user
         throw new Error();
     }
 
-
+    toaster.notify(t("global.user.editUser.updatePasswordSuccess"), {type: "success"});
     return {ok: true, resp: await response.json()};
 }, "change-password-action");
 
@@ -375,7 +373,7 @@ function ChangePasswordForm() {
     const [_, setIsOpen] = modalContext.open;
     const [appState] = useAppState();
     const api = useApi();
-
+    const toaster = useToast()
 
     const submission = useSubmission(changePasswordAction);
 
@@ -390,7 +388,7 @@ function ChangePasswordForm() {
     const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
 
     return (
-        <form action={changePasswordAction.with(api, appState.user?.id!, appState.user?.type!)} method="post"
+        <form action={changePasswordAction.with(api, appState.user?.id!, appState.user?.type!,t , toaster)} method="post"
               class="flex flex-col gap-4">
             <Modal.Dialog.Body>
                 <div class="space-y-4">

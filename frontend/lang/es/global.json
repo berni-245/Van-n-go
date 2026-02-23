@@ -127,7 +127,10 @@
       "newPassword": "Nueva contraseña",
       "oldPassword": "Contraseña actual",
       "confirmNewPassword": "Confirmar nueva contraseña",
-      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB."
+      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB.",
+      "updateProfileSuccess": "Perfil actualizado exitosamente",
+      "updatePasswordSuccess": "Contraseña actualizada exitosamente",
+      "updatePfpSuccess": "Imagen de perfil actualizada exitosamente"
     }
   },
   "error": {

@@ -7,9 +7,10 @@ import {createEffect} from "solid-js";
 import {Modal} from "@components/modal/Modal.tsx";
 import Button from "@components/Button.tsx";
 import FileInput from "@components/inputs/FileInput.tsx";
+import {useToast} from "solid-notifications";
 
 export const EditProfilePictureAction = action(
-    async (api: Api, userId: number, userType: string, t, formData: FormData) => {
+    async (api: Api, userId: number, userType: string, t, toaster, formData: FormData) => {
 
         const file = formData.get("file");
 
@@ -64,6 +65,7 @@ export const EditProfilePictureAction = action(
             }
             throw new Error();
         }
+        toaster.notify(t("global.user.editUser.updatePfpSuccess"), {type: "success"});
         return {ok: true};
     },
     "put-profile-picture-action"
@@ -75,6 +77,7 @@ export function EditProfilePicForm() {
     const [_, setIsOpen] = modalContext.open;
     const [appState] = useAppState();
     const api = useApi();
+    const toaster = useToast()
 
     const submission = useSubmission(EditProfilePictureAction);
 
@@ -90,7 +93,7 @@ export function EditProfilePicForm() {
 
     return (
         <form
-            action={EditProfilePictureAction.with(api, appState.user?.id!, appState.user?.type!, t)}
+            action={EditProfilePictureAction.with(api, appState.user?.id!, appState.user?.type!, t, toaster)}
             method="post"
             enctype="multipart/form-data"
             class="flex flex-col gap-4"

@@ -117,7 +117,9 @@
       "newPassword": "New password",
       "oldPassword": "Old password",
       "confirmNewPassword": "Confirm new password",
-      "uploadPicture": "Upload profile picture. Supported formats: jpg, jpeg, png. Max size: 10MB."
+      "uploadPicture": "Upload profile picture. Supported formats: jpg, jpeg, png. Max size: 10MB.",
+      "updateProfileSuccess": "Profile updated successfully",
+      "updatePfpSuccess" : "Profile picture updated successfully"
     }
   },
   "generic": {
