@@ -71,8 +71,9 @@ public class MessageServiceImpl implements MessageService {
         if (!bookingDao.existsBookingBetween(client, sender)) {
             throw new ForbiddenConversationException();
         }
+        LocalDateTime lastMessageTime = messageDao.getLastMessageSentByUser(client, sender , true);
         Message createdMessage = messageDao.sendMessage(client, sender, message, true);
-        mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
+        if (shouldSendEmail(lastMessageTime)) mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
         return createdMessage;
     }
 
