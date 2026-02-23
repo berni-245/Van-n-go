@@ -94,8 +94,8 @@ public class VehicleController {
     @PATCH
     @Path("{vehicleId}")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    @Produces(value = {CustomMediaType.VEHICLE_UPDATE})
-    @Consumes(value = {CustomMediaType.VEHICLE})
+    @Produces(value = {CustomMediaType.VEHICLE})
+    @Consumes(value = {CustomMediaType.VEHICLE_UPDATE})
     public Response updateVehicle(
             @PathParam("driverId") int driverId,
             @PathParam("vehicleId") int vehicleId,

@@ -20,5 +20,7 @@ export function createMediaType(version: Version) {
     messageList: `application/vnd.messageList.${version}+json`,
     messageCreate: `application/vnd.messageCreate.${version}+json`,
     message: `application/vnd.message.${version}+json`,
+    vehicleUpdate: "application/vnd.vehicleUpdate.v1+json",
+    availabilityUpdate: "application/vnd.availabilityUpdate.v1+json"
   } as const;
 }

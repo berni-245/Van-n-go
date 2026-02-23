@@ -69,6 +69,7 @@ render(
             <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="/client" component={ClientRoute}>
+            <Route path="/" component={() => <Navigate href="search" />} />
             <Route path="/search" component={Search}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/chat" component={Chat} />

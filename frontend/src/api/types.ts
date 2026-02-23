@@ -137,3 +137,11 @@ export interface Message {
   sentByDriver: boolean;
   self: string;
 }
+
+
+export interface UpdateVehicle {
+    plateNumber?: string;
+    volumeM3?: number;
+    hourlyRate?: number;
+    description?: string;
+}

@@ -1,17 +1,17 @@
 import { Component, createEffect, createSignal, JSX, onCleanup, Show, Suspense } from "solid-js";
 import { HtmlIdFamily } from "../htmlIds";
 import { useApi, useTranslator } from "~/src/app-context/AppContext";
-import { action, createAsync, query } from "@solidjs/router";
+import { createAsync, query } from "@solidjs/router";
 import ImgSkeleton from "../skeletons/ImgSkeleton";
 
 type SizeUnits = "B" | "KB" | "MB" | "GB" | "TB";
 
 type Props = {
+  name?: string;
   label?: string;
   fileTypes: string[];
   maxSize: number;
   maxSizeUnit: SizeUnits;
-  // onFileSelected?: (file: File | null) => void;
   putEndpoint: string;
   currentValue?: {
     url: string;
@@ -22,9 +22,9 @@ type Props = {
 const SizeMultiplier: Record<SizeUnits, number> = {
     B: 1,
     KB: 2 ** 10,
-    MB: 2 ** 11,
-    GB: 2 ** 12,
-    TB: 2 ** 13,
+    MB: 2 ** 20,
+    GB: 2 ** 30,
+    TB: 2 ** 40,
 } as const;
 
 const FileInputDragDrop: Component<Props> = (props) => {
@@ -44,11 +44,6 @@ const FileInputDragDrop: Component<Props> = (props) => {
   const [localFile, setLocalFile] = createSignal<File | null>(null);
 
   const file = () => localFile() ?? remoteFile();
-
-  // createEffect(() => {
-  //   const file = currentValueFile();
-  //   if (file) setFile(file);
-  // });
 
   const rejectFile = (error: string) => {
     setError(error);
@@ -76,7 +71,6 @@ const FileInputDragDrop: Component<Props> = (props) => {
         }
 
     setLocalFile(file);
-    // props.onFileSelected?.(file);
   };
 
     const preventDefaultBehavior: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
@@ -163,6 +157,7 @@ const FileInputDragDrop: Component<Props> = (props) => {
               id={idFam.id("input")}
               type="file"
               class="sr-only"
+              name={props.name}
               aria-describedby={idFam.id("description")}
               onChange={(e) => {
                 const file = e.currentTarget.files?.[0];
@@ -230,7 +225,7 @@ const FilePreview: Component<{ a?: string; file: File | undefined; dragOver: boo
           </div>
         </Show>
       </Suspense>
-      {/* <Show when={!isImage()}> */}
+
       <Suspense fallback={<p>Loading preview...</p>}>
         <Show when={url() && !isImage()}>
           <div class="mt-3 flex justify-center" classList={{ "pointer-events-none": props.dragOver }}>
@@ -241,7 +236,7 @@ const FilePreview: Component<{ a?: string; file: File | undefined; dragOver: boo
           </div>
         </Show>
       </Suspense>
-      {/* </Show> */}
+
     </>
   );
 };
@@ -255,4 +250,4 @@ const currenFilePreviewBlobQuery = query(async (src: string) => {
   return res.blob();
 }, "image-blob-with-fallback");
 
-const asdf = action((endpoint: string) => {});
+
