@@ -294,7 +294,8 @@
       "weekday": "Día",
       "small": "Chico",
       "medium": "Mediano",
-      "large": "Grande"
+      "large": "Grande",
+      "close": "Cerrar"
     }
   },
   "error": {
@@ -343,5 +344,11 @@
     "loadOlder": "Cargar mensajes viejos",
     "inputPlaceholder": "Escribe un mensaje…",
     "enterHint": "Enter para enviar · Shift+Enter para una nueva línea"
+  },
+  "review": {
+    "success": "¡Reseña enviada con éxito!",
+    "viewTitle": "Reseña del viaje",
+    "loading": "Cargando reseña...",
+    "noComments": "El usuario no dejó ningún comentario adicional."
   }
 }

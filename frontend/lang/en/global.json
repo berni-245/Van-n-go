@@ -293,7 +293,8 @@
       "weekday": "Weekday",
       "small": "Small",
       "medium": "Medium",
-      "large": "Large"
+      "large": "Large",
+      "close": "Close"
     }
   },
   "error": {
@@ -342,5 +343,11 @@
     "loadOlder": "Load older messages",
     "inputPlaceholder": "Type a message…",
     "enterHint": "Enter to send · Shift+Enter for new line"
+  },
+  "review": {
+    "success": "Review submitted successfully!",
+    "viewTitle": "Trip Review",
+    "loading": "Loading review...",
+    "noComments": "The user didn't leave any additional comments."
   }
 }

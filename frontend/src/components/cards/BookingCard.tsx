@@ -5,7 +5,7 @@ import {Booking, BookingState, Client, Driver, Vehicle, Zone} from "@/api/types"
 import ImageWithFallback from "../ImageWithFallback";
 import {useNavigate} from "@solidjs/router";
 import {BookingModal} from "@components/modal/BookingModal";
-import {ReviewBookingModal} from "@components/modal/ReviewModal";
+import {ReviewBookingModal, ViewReviewModal} from "@components/modal/ReviewModal";
 import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
 
 type CardProps = {
@@ -22,11 +22,17 @@ const BookingCard: Component<CardProps> = (props) => {
     const api = useApi();
     const [appState] = useAppState();
     const navigate = useNavigate();
+
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
     const [reviewOpen, setReviewOpen] = createSignal(false);
+    const [viewReviewOpen, setViewReviewOpen] = createSignal(false);
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setModalIsOpen(false);
+        if (e.key === "Escape") {
+            setModalIsOpen(false);
+            setReviewOpen(false);
+            setViewReviewOpen(false);
+        }
     };
 
     onMount(() => {
@@ -49,6 +55,7 @@ const BookingCard: Component<CardProps> = (props) => {
             closeCurrentModal: () => {
                 setModalIsOpen(false)
                 setReviewOpen(false)
+                setViewReviewOpen(false)
             },
 
             openViewProofModal: () => {
@@ -60,7 +67,8 @@ const BookingCard: Component<CardProps> = (props) => {
             },
 
             openViewReviewModal: () => {
-
+                ctx.closeCurrentModal()
+                setViewReviewOpen(true)
             },
 
             openUploadReviewModal: () => {
@@ -117,7 +125,6 @@ const BookingCard: Component<CardProps> = (props) => {
                     </div>
                 </div>
 
-
                 <div class="px-4 pb-4">
                     <div class="rounded-radius bg-surface px-3 py-2 text-center dark:bg-surface-dark">
                   <span class="text-base font-semibold">
@@ -167,7 +174,7 @@ const BookingCard: Component<CardProps> = (props) => {
                 open={modalIsOpen()}
                 onClose={() => setModalIsOpen(false)}
             >
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col gap-2">
                     {renderModalFooter()}
                 </div>
             </BookingModal>
@@ -176,6 +183,12 @@ const BookingCard: Component<CardProps> = (props) => {
                 bookingId={props.booking.id}
                 open={reviewOpen()}
                 onClose={() => setReviewOpen(false)}
+            />
+
+            <ViewReviewModal
+                bookingId={props.booking.id}
+                open={viewReviewOpen()}
+                onClose={() => setViewReviewOpen(false)}
             />
 
         </>
