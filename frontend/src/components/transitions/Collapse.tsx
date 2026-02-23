@@ -23,7 +23,7 @@ export const Collapse: ParentComponent<CollapseProps> = (props) => {
     borderBottomWidth: 0,
   };
 
-  function getHeight(el: Element): string {
+  function getHeight(_el: Element): string {
     // const rect = el.getBoundingClientRect();
     // return `${rect.height}px`;
     return `${props.height}px`;

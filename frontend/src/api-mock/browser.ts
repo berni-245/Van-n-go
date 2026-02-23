@@ -1,8 +1,5 @@
 import { delay, http, passthrough } from "msw";
 import { setupWorker } from "msw/browser";
-import { authorizedResponse, handleAuthorization, publicResponse } from "./auth";
-import { getMockUser } from "./users";
-import { VEHICLES } from "./vehicles";
 
 const baseUrl = "http://localhost:8080/";
 export const worker = setupWorker(
