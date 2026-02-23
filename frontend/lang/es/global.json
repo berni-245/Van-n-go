@@ -148,6 +148,27 @@
       "large": "Grande"
     }
   },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión",
+      "size": "Tamaño",
+      "any": "Cualquiera",
+      "weekday": "Día",
+      "small": "Chico",
+      "medium": "Mediano",
+      "large": "Grande"
+    }
+  },
   "error": {
     "imageUnsupportedMediaType": "El archivo no es una imagen válida",
     "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
