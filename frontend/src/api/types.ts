@@ -124,3 +124,10 @@ export interface UpdateClient extends UpdateUser {
 export interface UpdateDriver extends UpdateUser {
   description?: string;
 }
+
+export type Message = {
+  id: number;
+  message: string;
+  sentByDriver: boolean;
+  sentAt: string; // ISO datetime
+};

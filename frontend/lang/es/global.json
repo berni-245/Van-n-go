@@ -181,5 +181,10 @@
   },
   "zone": {
     "label": "Zona"
+  },
+  "chat": {
+    "loadOlder": "Cargar mensajes viejos",
+    "inputPlaceholder": "Escribe un mensaje…",
+    "enterHint": "Enter para enviar · Shift+Enter para una nueva línea"
   }
 }

@@ -5,6 +5,7 @@ import {
   BookingState,
   Client,
   Driver,
+  Message,
   UpdateClient,
   UpdateDriver,
   Vehicle,
@@ -344,6 +345,33 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
 
       return this.getVehicle(driverId, vehicleId)
+    },
+
+    async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number }> {
+      const req = apiRequest("messages", {
+        headers: { Accept: MediaTypesV1.messageList },
+        queryParams: { driverId: String(driverId), clientId: String(clientId), page: String(page) },
+      });
+      const res = await this.authFetch(req);
+      if (!res.ok) return { messages: [], maxPages: 1 };
+      const messages = (await res.json()) as Message[];
+      const maxPages = parseTotalPages(res.headers.get("Link"), page);
+      return { messages, maxPages };
+    },
+
+    async sendMessage(driverId: number, clientId: number, message: string): Promise<Message | null> {
+      const url = new URL("messages", API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.messageCreate,
+          Accept: MediaTypesV1.message,
+        },
+        body: JSON.stringify({ driverId, clientId, message }),
+      });
+      const res = await this.authFetch(req);
+      if (!res.ok) return null;
+      return res.json() as Promise<Message>;
     },
 
     async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {

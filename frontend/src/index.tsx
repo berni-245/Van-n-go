@@ -24,6 +24,7 @@ const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
 const Bookings = lazy(() => import("@/pages/Bookings"))
 const Register = lazy(() => import ("@/pages/Register"))
 const Search = lazy(() => import("@/pages/Search"))
+const Chat= lazy(() => import("@/pages/Chat"))
 
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
@@ -63,6 +64,7 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
+            <Route path="/chat" component={Chat} />
             <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/settings" component={Settings}/>
@@ -71,6 +73,7 @@ render(
           <Route path="/client" component={ClientRoute}>
             <Route path="/search" component={Search}/>
             <Route path="/bookings" component={Bookings}/>
+            <Route path="/chat" component={Chat} />
             <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile}/>
           </Route>

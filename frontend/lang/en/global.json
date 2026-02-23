@@ -180,5 +180,10 @@
   },
   "zone": {
     "label": "Zone"
+  },
+  "chat": {
+    "loadOlder": "Load older messages",
+    "inputPlaceholder": "Type a message…",
+    "enterHint": "Enter to send · Shift+Enter for new line"
   }
 }
