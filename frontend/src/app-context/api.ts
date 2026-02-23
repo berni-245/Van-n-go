@@ -31,9 +31,6 @@ const MediaTypesV1 = createMediaTypes("v1");
 interface VisibilityOpts {
   visibility?: "public" | "all";
 }
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 export function initializeApi(appState: AppState, setAppState: SetStoreFunction<AppState>) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -287,6 +284,24 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         },
         body: file,
       });
+      return await this.authFetch(req);
+    },
+
+    async postReview(bookingId: number, rating: number, comments: string): Promise<Response> {
+      const payload = {
+        rating: rating,
+        comments: comments,
+        booking: `api/bookings/${bookingId}`
+      };
+      const url = new URL(`bookings/${bookingId}/review`, API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.bookingReview,
+        },
+        body: JSON.stringify(payload),
+      });
+
       return await this.authFetch(req);
     },
 

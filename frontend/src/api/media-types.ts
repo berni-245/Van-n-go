@@ -15,5 +15,6 @@ export function createMediaType(version: Version) {
       availability: `application/vnd.availability.${version}+json`,
       zones: `application/vnd.zoneList.${version}+json`,
       zone: `application/vnd.zone.${version}+json`,
+    bookingReview: `application/vnd.bookingReview.${version}+json`,
   } as const;
 }
