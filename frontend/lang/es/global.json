@@ -150,32 +150,24 @@
       "large": "Grande"
     }
   },
-  "generic": {
-    "word": {
-      "email": "Correo",
-      "zone": "Zona",
-      "description": "Descripción",
-      "cbu": "CBU/CVU/Alias",
-      "edit": "Editar",
-      "cancel": "Cancelar",
-      "send": "Enviar",
-      "password": "Contraseña",
-      "chooseFile": "Elegir archivo",
-      "profilePicture": "Imagen de perfil",
-      "logout": "Cerrar sesión",
-      "size": "Tamaño",
-      "any": "Cualquiera",
-      "weekday": "Día",
-      "small": "Chico",
-      "medium": "Mediano",
-      "large": "Grande"
-    }
-  },
   "error": {
     "imageUnsupportedMediaType": "El archivo no es una imagen válida",
     "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
     "passwordMismatch": "Las contraseñas no coinciden",
-    "unknown": "Ocurrió un error desconocido"
+    "unknown": "Ocurrió un error desconocido",
+    "validation": {
+      "NotBlank": "Este campo es obligatorio",
+      "NotNull": "Este campo es obligatorio",
+      "NotEmpty": "Este campo no puede estar vacío",
+      "Size": "La longitud del campo no es válida",
+      "Email": "Ingresá un correo electrónico válido",
+      "ValidUsername": "El nombre de usuario ya está en uso",
+      "ValidEmail": "El correo electrónico ya está en uso",
+      "Min": "El valor es demasiado pequeño",
+      "Max": "El valor es demasiado grande",
+      "Pattern": "Formato inválido",
+      "InvalidZone": "Por favor seleccioná una zona válida de la lista"
+    }
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",

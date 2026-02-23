@@ -13,6 +13,24 @@ const UserRoles = [
 ] as const;
 type RoleEntry = typeof UserRoles[number];
 
+type ApiValidationError = {
+    description: string;
+    entity: string;
+    subtype: string;
+    type: string;
+};
+
+type FieldErrors = Partial<Record<string, string[]>>;
+
+function FieldError(props: { errors: FieldErrors; field: string }) {
+    const msgs = () => props.errors[props.field];
+    return (
+        <For each={msgs()}>
+            {(msg) => <p class="mt-1 mb-2 text-sm text-red-500">{msg}</p>}
+        </For>
+    );
+}
+
 export default function Register() {
     const t = useTranslator();
     const [appState] = useAppState();
@@ -20,7 +38,8 @@ export default function Register() {
     const navigate = useNavigate();
 
     const [loading, setLoading] = createSignal(false);
-    const [errors, setErrors] = createSignal<string[]>([]);
+    const [fieldErrors, setFieldErrors] = createSignal<FieldErrors>({});
+    const [generalErrors, setGeneralErrors] = createSignal<string[]>([]);
 
     const [username, setUsername] = createSignal("");
     const [email, setEmail] = createSignal("");
@@ -35,12 +54,27 @@ export default function Register() {
 
     const handleSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setGeneralErrors([]);
 
-        if (password() !== confirmedPassword()) {
-            setErrors([t("global.error.passwordMismatch") as string]);
-            return;
+        const clientErrors: FieldErrors = {};
+
+        if (!username().trim()) clientErrors.username = [t("global.error.validation.NotBlank") as string];
+        if (!email().trim()) clientErrors.email = [t("global.error.validation.NotBlank") as string];
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email().trim())) clientErrors.email = [t("global.error.validation.Email") as string];
+        if (!password().trim()) clientErrors.password = [t("global.error.validation.NotBlank") as string];
+        if (!confirmedPassword().trim()) clientErrors.confirmedPassword = [t("global.error.validation.NotBlank") as string];
+        else if (password() !== confirmedPassword()) clientErrors.confirmedPassword = [t("global.error.passwordMismatch") as string];
+
+        if (type() === "driver" && !description().trim()) {
+            clientErrors.description = [t("global.error.validation.NotBlank") as string];
         }
+        if (type() === "client") {
+            if (!zoneQuery().trim()) clientErrors.zoneId = [t("global.error.validation.NotBlank") as string];
+            else if (zoneId() === null) clientErrors.zoneId = [t("global.error.validation.InvalidZone") as string];
+        }
+
+        setFieldErrors(clientErrors);
+        if (Object.keys(clientErrors).length > 0) return;
 
         setLoading(true);
         try {
@@ -71,18 +105,74 @@ export default function Register() {
             }
 
             if (!res.ok) {
-                const json = await res.json().catch(() => ({}));
+                const json = await res.json().catch(() => null);
+
+                // Handle array of validation errors from the API
+                if (Array.isArray(json)) {
+                    const mapped: FieldErrors = {};
+                    const unmatched: string[] = [];
+
+                    for (const err of json as ApiValidationError[]) {
+                        const field = err.entity ?? null;
+
+                        // Special case: zoneId NotNull means the user typed something but didn't pick from the list
+                        let msg: string;
+                        if (err.entity === "zoneId" && err.subtype === "NotNull" && zoneQuery().trim() !== "") {
+                            msg = t("global.error.validation.InvalidZone") as string;
+                        } else {
+                            const translationKey = `global.error.validation.${err.subtype}` as any;
+                            const translated = t(translationKey);
+                            msg = (translated && translated !== translationKey)
+                                ? (translated as string)
+                                : (err.description ?? (t("global.error.unknown") as string));
+                        }
+
+                        // Map API entity names to our local field names
+                        const fieldMap: Record<string, string> = {
+                            zoneId: "zoneId",
+                            username: "username",
+                            email: "email",
+                            password: "password",
+                            description: "description",
+                        };
+
+                        const localField = field && fieldMap[field] ? fieldMap[field] : null;
+                        if (localField) {
+                            mapped[localField] = [...(mapped[localField] ?? []), msg];
+                        } else {
+                            unmatched.push(msg);
+                        }
+                    }
+
+                    // Merge in client-side password mismatch if applicable
+                    if (password() !== confirmedPassword()) {
+                        mapped.confirmedPassword = [
+                            ...(mapped.confirmedPassword ?? []),
+                            t("global.error.passwordMismatch") as string,
+                        ];
+                    }
+
+                    setFieldErrors(mapped);
+                    if (unmatched.length > 0) setGeneralErrors(unmatched);
+                    return;
+                }
+
+                // Fallback for non-array error responses
                 const errMsg =
-                    (json && (json.description || json.message || JSON.stringify(json))) ||
+                    (json && (json.description || json.message)) ||
                     `${res.status} ${res.statusText}`;
                 throw new Error(errMsg);
             }
 
+            if (password() !== confirmedPassword()) {
+                setFieldErrors({ confirmedPassword: [t("global.error.passwordMismatch") as string] });
+                return;
+            }
             navigate("/login", { replace: true });
         } catch (err) {
             console.error(err);
-            if (err instanceof Error) setErrors([err.message]);
-            else setErrors([t("global.error.unknown") as string]);
+            if (err instanceof Error) setGeneralErrors([err.message]);
+            else setGeneralErrors([t("global.error.unknown") as string]);
         } finally {
             setLoading(false);
         }
@@ -98,26 +188,33 @@ export default function Register() {
                             label={t("global.username")}
                             value={username()}
                             onInput={(e) => setUsername(e.currentTarget.value)}
-                            class="mb-4"
+                            class="mb-1"
                         />
+                        <FieldError errors={fieldErrors()} field="username" />
+
                         <TextInput
                             label={t("global.generic.word.email")}
                             value={email()}
                             onInput={(e) => setEmail(e.currentTarget.value)}
-                            class="mb-4"
+                            class="mb-1"
                         />
+                        <FieldError errors={fieldErrors()} field="email" />
+
                         <PasswordInput
                             label={t("global.password")}
                             value={password()}
                             onInput={(e) => setPassword(e.currentTarget.value)}
-                            class="mb-4"
+                            class="mb-1"
                         />
+                        <FieldError errors={fieldErrors()} field="password" />
+
                         <PasswordInput
                             label={t("global.confirmPassword")}
                             value={confirmedPassword()}
                             onInput={(e) => setConfirmedPassword(e.currentTarget.value)}
-                            class="mb-4"
+                            class="mb-1"
                         />
+                        <FieldError errors={fieldErrors()} field="confirmedPassword" />
 
                         <label>{t("global.userType.label")}</label>
                         <select
@@ -133,20 +230,26 @@ export default function Register() {
                         </select>
 
                         {type() === "driver" && (
-                            <TextInput
-                                label={t("global.generic.word.description") as string}
-                                value={description()}
-                                onInput={(e) => setDescription(e.currentTarget.value)}
-                                class="mb-4"
-                            />
+                            <>
+                                <TextInput
+                                    label={t("global.generic.word.description") as string}
+                                    value={description()}
+                                    onInput={(e) => setDescription(e.currentTarget.value)}
+                                    class="mb-1"
+                                />
+                                <FieldError errors={fieldErrors()} field="description" />
+                            </>
                         )}
                         {type() === "client" && (
-                            <ZoneInput
-                                label={t("global.zone.label" as any)}
-                                value={zoneQuery()}
-                                onInput={(v) => setZoneQuery(v)}
-                                onSelect={(id: number | null) => setZoneId(id)}
-                            />
+                            <>
+                                <ZoneInput
+                                    label={t("global.zone.label" as any)}
+                                    value={zoneQuery()}
+                                    onInput={(v) => setZoneQuery(v)}
+                                    onSelect={(id: number | null) => setZoneId(id)}
+                                />
+                                <FieldError errors={fieldErrors()} field="zoneId" />
+                            </>
                         )}
 
                         <Button
@@ -157,7 +260,7 @@ export default function Register() {
                         />
                     </form>
 
-                    <For each={errors()}>
+                    <For each={generalErrors()}>
                         {(error) => <p class="mt-3 text-red-600">{error}</p>}
                     </For>
                 </div>
