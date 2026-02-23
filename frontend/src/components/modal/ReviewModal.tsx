@@ -13,7 +13,6 @@ import Stars from "@components/inputs/Stars.tsx";
 export const submitReviewAction = action(
     async (api: Api, bookingId: number, t: any, toaster: any, formData: FormData) => {
 
-
         const ratingString = formData.get("rating");
 
         if (!ratingString) {
@@ -21,7 +20,6 @@ export const submitReviewAction = action(
         }
 
         const rating = Number(ratingString);
-
 
         const commentsText = formData.get("review") as string;
 
@@ -46,7 +44,7 @@ export const submitReviewAction = action(
                 return { ok: false, resp: fieldErrors };
             }
             if (response.status === 401) {
-                    toaster.notify(t("global.error.unauthorizedReview"), { type: "error" });
+                toaster.notify(t("global.error.unauthorizedReview"), { type: "error" });
             }
             toaster.notify(t("global.error.generic"), { type: "error" });
             return { ok: false, resp: {} };
@@ -78,6 +76,9 @@ export function ReviewBookingForm(props: { bookingId: number }) {
 
     const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
 
+
+    const reviewForm = t("global.reviewForm") as any;
+
     return (
         <form
             action={submitReviewAction.with(api, props.bookingId, t, toaster)}
@@ -87,24 +88,22 @@ export function ReviewBookingForm(props: { bookingId: number }) {
             <Modal.Dialog.Body>
                 <div class="space-y-6">
 
-
                     <Stars
                         name="rating"
-                        label="¿Cómo calificarías el servicio?"
+                        label={reviewForm.title}
                         error={errors()?.["rating"]}
                     />
 
-
                     <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                         <label for="review" class="w-fit pl-0.5 text-sm">
-                            Tu comentario (opcional)
+                            {reviewForm.yourComment}
                         </label>
                         <textarea
                             id="review"
                             name="review"
                             maxLength={255}
                             rows={4}
-                            placeholder="Escribe tu reseña aquí..."
+                            placeholder={reviewForm.ratingPlaceholder}
                             class="w-full resize-none rounded-radius border bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
                             classList={{
                                 "border-danger": !!errors()?.["review"],

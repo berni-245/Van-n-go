@@ -70,121 +70,131 @@
       "plate": "Patente",
       "description": "Descripción",
       "hourlyRate": "Precio por hora"
-    }
-  },
-  "password": "Contraseña",
-  "register": "Registrarse",
-  "settings": "Configuración",
-  "profile": "Perfil",
-  "sr": {
-    "closeSidebar": "Cerrar barra lateral",
-    "loading": "Cargando",
-    "openSidebar": "Abrir barra lateral",
-    "page": "Página {{ number }}",
-    "pagination": "Paginación",
-    "previousPage": "Página anterior",
-    "nextPage": "Próxima página",
-    "skipToMainContent": "Saltar al contenido principal",
-    "vehicleDescription": "Descripción del vehículo",
-    "vehiclePicture": "Imagen del vehículo"
-  },
-  "theme": {
-    "label": "Tema",
-    "light": "Claro",
-    "dark": "Oscuro"
-  },
-  "components": {
-    "header": {
-      "profile": "Perfil"
     },
-    "availability": {
-      "Search": "Buscar"
+    "password": "Contraseña",
+    "register": "Registrarse",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "sr": {
+      "closeSidebar": "Cerrar barra lateral",
+      "loading": "Cargando",
+      "openSidebar": "Abrir barra lateral",
+      "page": "Página {{ number }}",
+      "pagination": "Paginación",
+      "previousPage": "Página anterior",
+      "nextPage": "Próxima página",
+      "skipToMainContent": "Saltar al contenido principal",
+      "vehicleDescription": "Descripción del vehículo",
+      "vehiclePicture": "Imagen del vehículo",
+      "ratingRequired": "Calificación requerida",
+      "unauthorizedReview": "No estás autorizado para escribir una reseña para esta reserva"
+    },
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
+    "components": {
+      "header": {
+        "profile": "Perfil"
+      },
+      "availability": {
+        "Search": "Buscar"
+      }
+    },
+    "global": {
+      "language": {
+        "label": "Idioma"
+      }
+    },
+    "public": {
+      "profile": {
+        "noDescription": "No subió su descripción",
+        "noCbu": "No subió su CBU"
+      }
+    },
+    "client": {
+      "availability": {
+        "no_rating": "No tiene reseñas"
+      }
+    },
+    "user": {
+      "editUser": {
+        "changePassword": "Cambiar contraseña",
+        "newPassword": "Nueva contraseña",
+        "oldPassword": "Contraseña actual",
+        "confirmNewPassword": "Confirmar nueva contraseña",
+        "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB.",
+        "updateProfileSuccess": "Perfil actualizado exitosamente",
+        "updatePasswordSuccess": "Contraseña actualizada exitosamente",
+        "updatePfpSuccess": "Imagen de perfil actualizada exitosamente"
+      }
+    },
+    "generic": {
+      "word": {
+        "email": "Correo",
+        "zone": "Zona",
+        "description": "Descripción",
+        "cbu": "CBU/CVU/Alias",
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "send": "Enviar",
+        "password": "Contraseña",
+        "chooseFile": "Elegir archivo",
+        "profilePicture": "Imagen de perfil",
+        "logout": "Cerrar sesión",
+        "size": "Tamaño",
+        "any": "Cualquiera",
+        "weekday": "Día",
+        "small": "Chico",
+        "medium": "Mediano",
+        "large": "Grande"
+      }
+    },
+    "error": {
+      "imageUnsupportedMediaType": "El archivo no es una imagen válida",
+      "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "unknown": "Ocurrió un error desconocido",
+      "validation": {
+        "NotBlank": "Este campo es obligatorio",
+        "NotNull": "Este campo es obligatorio",
+        "NotEmpty": "Este campo no puede estar vacío",
+        "Size": "La longitud del campo no es válida",
+        "Email": "Ingresá un correo electrónico válido",
+        "ValidUsername": "El nombre de usuario ya está en uso",
+        "ValidEmail": "El correo electrónico ya está en uso",
+        "Min": "El valor es demasiado pequeño",
+        "Max": "El valor es demasiado grande",
+        "Pattern": "Formato inválido",
+        "InvalidZone": "Por favor seleccioná una zona válida de la lista"
+      }
+    },
+    "title": "Van N' Go",
+    "username": "Nombre de Usuario",
+    "vehicles": "Vehículos",
+    "confirmPassword": "Confirmar contraseña",
+    "registering": "Registrando…",
+    "userType": {
+      "label": "Tipo de cuenta",
+      "client": "Cliente",
+      "driver": "Conductor"
+    },
+    "zone": {
+      "label": "Zona"
+    },
+    "reviewForm": {
+      "title": "Deja tu reseña",
+      "rating": "Calificación",
+      "comment": "Comentario",
+      "submit": "Enviar reseña",
+      "yourComment": "Tu comentario (opcional)",
+      "ratingPlaceholder": "Escribe tu reseña aquí..."
+    },
+    "chat": {
+      "loadOlder": "Cargar mensajes viejos",
+      "inputPlaceholder": "Escribe un mensaje…",
+      "enterHint": "Enter para enviar · Shift+Enter para una nueva línea"
     }
-  },
-  "global": {
-    "language": {
-      "label": "Idioma"
-    }
-  },
-  "public": {
-    "profile": {
-      "noDescription": "No subió su descripción",
-      "noCbu": "No subió su CBU"
-    }
-  },
-  "client": {
-    "availability": {
-      "no_rating": "No tiene reseñas"
-    }
-  },
-  "user": {
-    "editUser": {
-      "changePassword": "Cambiar contraseña",
-      "newPassword": "Nueva contraseña",
-      "oldPassword": "Contraseña actual",
-      "confirmNewPassword": "Confirmar nueva contraseña",
-      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB.",
-      "updateProfileSuccess": "Perfil actualizado exitosamente",
-      "updatePasswordSuccess": "Contraseña actualizada exitosamente",
-      "updatePfpSuccess": "Imagen de perfil actualizada exitosamente"
-    }
-  },
-  "generic": {
-    "word": {
-      "email": "Correo",
-      "zone": "Zona",
-      "description": "Descripción",
-      "cbu": "CBU/CVU/Alias",
-      "edit": "Editar",
-      "cancel": "Cancelar",
-      "send": "Enviar",
-      "password": "Contraseña",
-      "chooseFile": "Elegir archivo",
-      "profilePicture": "Imagen de perfil",
-      "logout": "Cerrar sesión",
-      "size": "Tamaño",
-      "any": "Cualquiera",
-      "weekday": "Día",
-      "small": "Chico",
-      "medium": "Mediano",
-      "large": "Grande"
-    }
-  },
-  "error": {
-    "imageUnsupportedMediaType": "El archivo no es una imagen válida",
-    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
-    "passwordMismatch": "Las contraseñas no coinciden",
-    "unknown": "Ocurrió un error desconocido",
-    "validation": {
-      "NotBlank": "Este campo es obligatorio",
-      "NotNull": "Este campo es obligatorio",
-      "NotEmpty": "Este campo no puede estar vacío",
-      "Size": "La longitud del campo no es válida",
-      "Email": "Ingresá un correo electrónico válido",
-      "ValidUsername": "El nombre de usuario ya está en uso",
-      "ValidEmail": "El correo electrónico ya está en uso",
-      "Min": "El valor es demasiado pequeño",
-      "Max": "El valor es demasiado grande",
-      "Pattern": "Formato inválido",
-      "InvalidZone": "Por favor seleccioná una zona válida de la lista"
-    }
-  },
-  "title": "Van N' Go",
-  "username": "Nombre de Usuario",
-  "vehicles": "Vehículos",
-  "confirmPassword": "Confirmar contraseña",
-  "registering": "Registrando…",
-  "userType": {
-    "label": "Tipo de cuenta",
-    "client": "Cliente",
-    "driver": "Conductor"
-  },
-  "zone": {
-    "label": "Zona"
-  },
-  "chat": {
-    "loadOlder": "Cargar mensajes viejos",
-    "inputPlaceholder": "Escribe un mensaje…",
-    "enterHint": "Enter para enviar · Shift+Enter para una nueva línea"
   }
 }
