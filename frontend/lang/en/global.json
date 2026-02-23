@@ -349,5 +349,20 @@
     "viewTitle": "Trip Review",
     "loading": "Loading review...",
     "noComments": "The user didn't leave any additional comments."
+  },
+  "proofOfPayment": {
+    "uploadTitle": "Upload Proof of Payment",
+    "viewTitle": "Proof of Payment",
+    "uploading": "Uploading...",
+    "save": "Save Proof",
+    "close": "Close",
+    "success": "Proof of payment uploaded successfully!",
+    "errors": {
+      "selectFirst": "Please select a file first.",
+      "invalidType": "The file must be a PDF.",
+      "uploadFailed": "Error uploading proof of payment.",
+      "fetchFailed": "Error loading proof of payment."
+    },
+    "loadingView": "Loading proof..."
   }
 }

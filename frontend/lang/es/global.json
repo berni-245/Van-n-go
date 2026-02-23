@@ -350,5 +350,20 @@
     "viewTitle": "Reseña del viaje",
     "loading": "Cargando reseña...",
     "noComments": "El usuario no dejó ningún comentario adicional."
+  },
+  "proofOfPayment": {
+    "uploadTitle": "Subir Comprobante de Pago",
+    "viewTitle": "Comprobante de Pago",
+    "uploading": "Subiendo...",
+    "save": "Guardar Comprobante",
+    "close": "Cerrar",
+    "success": "¡Comprobante subido con éxito!",
+    "errors": {
+      "selectFirst": "Por favor, seleccioná un archivo primero.",
+      "invalidType": "El archivo debe ser un PDF.",
+      "uploadFailed": "Error al subir el comprobante.",
+      "fetchFailed": "Error al cargar el comprobante."
+    },
+    "loadingView": "Cargando comprobante..."
   }
 }

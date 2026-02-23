@@ -7,6 +7,8 @@ import {useNavigate} from "@solidjs/router";
 import {BookingModal} from "@components/modal/BookingModal";
 import {ReviewBookingModal, ViewReviewModal} from "@components/modal/ReviewModal";
 import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
+import {UploadProofModal, ViewProofModal} from "@components/modal/ProofModal.tsx";
+
 
 type CardProps = {
     booking: Booking;
@@ -26,12 +28,16 @@ const BookingCard: Component<CardProps> = (props) => {
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
     const [reviewOpen, setReviewOpen] = createSignal(false);
     const [viewReviewOpen, setViewReviewOpen] = createSignal(false);
+    const [uploadProofOpen, setUploadProofOpen] = createSignal(false);
+    const [viewProofOpen, setViewProofOpen] = createSignal(false);
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
             setModalIsOpen(false);
             setReviewOpen(false);
             setViewReviewOpen(false);
+            setUploadProofOpen(false);
+            setViewProofOpen(false);
         }
     };
 
@@ -56,14 +62,18 @@ const BookingCard: Component<CardProps> = (props) => {
                 setModalIsOpen(false)
                 setReviewOpen(false)
                 setViewReviewOpen(false)
+                setUploadProofOpen(false)
+                setViewProofOpen(false)
             },
 
             openViewProofModal: () => {
-
+                ctx.closeCurrentModal();
+                setViewProofOpen(true);
             },
 
             openUploadProofModal: () => {
-
+                ctx.closeCurrentModal();
+                setUploadProofOpen(true);
             },
 
             openViewReviewModal: () => {
@@ -189,6 +199,17 @@ const BookingCard: Component<CardProps> = (props) => {
                 bookingId={props.booking.id}
                 open={viewReviewOpen()}
                 onClose={() => setViewReviewOpen(false)}
+            />
+            <UploadProofModal
+                bookingId={props.booking.id}
+                open={uploadProofOpen()}
+                onClose={() => setUploadProofOpen(false)}
+            />
+
+            <ViewProofModal
+                proofUrl={props.booking.proofOfPayment}
+                open={viewProofOpen()}
+                onClose={() => setViewProofOpen(false)}
             />
 
         </>
