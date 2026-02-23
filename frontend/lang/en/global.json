@@ -82,6 +82,75 @@
       "rejectBooking": "Reject booking",
       "finishBooking": "Finish booking",
       "rejectedBooking": "The booking was rejected"
+    },
+    "editVehicle": {
+      "errors": {
+        "plateRegex": "Invalid license plate format (e.g., ABC123 or AB123CD)",
+        "volume": "Volume must be between 1 and 100 m³",
+        "rate": "Hourly rate must be between $100 and $100,000",
+        "descriptionLength": "Description cannot exceed 255 characters",
+        "vehicleAccess": "Could not access the vehicle or it is unavailable",
+        "update": "Error updating vehicle",
+        "vehicleNotFound": "Requested vehicle does not exist.",
+        "availabilityFetch": "Failed to get availability.",
+        "selectImageFirst": "Please select an image first.",
+        "invalidFileType": "File must be JPG or PNG.",
+        "imageFormat": "Image format is invalid or file is too large.",
+        "imageUpload": "Error uploading image",
+        "availabilityAccess": "Could not access vehicle availability",
+        "availabilityUpdate": "Error updating availability",
+        "verifyShifts": "Please verify the entered shifts."
+      },
+      "success": {
+        "update": "Vehicle successfully updated!",
+        "imageUpdate": "Vehicle photo successfully updated!",
+        "availabilityUpdate": "Availability successfully updated!"
+      },
+      "title": "Edit Vehicle",
+      "subtitle": "Update your transport's information, photo, and availability.",
+      "loading": {
+        "vehicle": "Loading vehicle data...",
+        "fileUpload": "Loading file upload..."
+      },
+      "generalData": "General Data",
+      "labels": {
+        "plate": "License Plate (e.g., AB123CD)",
+        "rate": "Hourly Rate ($)",
+        "volume": "Volume (m³)",
+        "description": "Description",
+        "uploadImage": "Upload image",
+        "addZone": "Add new zone"
+      },
+      "buttons": {
+        "saving": "Saving...",
+        "saveChanges": "Save Changes",
+        "uploadingPhoto": "Uploading photo...",
+        "savePhoto": "Save Photo",
+        "add": "Add",
+        "saveAvailability": "Save Availability"
+      },
+      "photoSection": "Vehicle Photo",
+      "workZones": "Work Zones",
+      "placeholders": {
+        "searchNeighborhood": "Search neighborhood..."
+      },
+      "noZonesAssigned": "No zones assigned. Add at least one.",
+      "availableSchedules": "Available Schedules",
+      "table": {
+        "day": "Day",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      },
+      "days": {
+        "MONDAY": "Monday",
+        "TUESDAY": "Tuesday",
+        "WEDNESDAY": "Wednesday",
+        "THURSDAY": "Thursday",
+        "FRIDAY": "Friday",
+        "SATURDAY": "Saturday",
+        "SUNDAY": "Sunday"
+      }
     }
   },
   "password": "Password",

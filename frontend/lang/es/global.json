@@ -82,6 +82,75 @@
       "rejectBooking": "Rechazar reserva",
       "finishBooking": "Terminar reserva",
       "rejectedBooking": "La reserva fue rechazada"
+    },
+    "editVehicle": {
+      "errors": {
+        "plateRegex": "El formato de la patente es inválido (Ej: ABC123 o AB123CD)",
+        "volume": "El volumen debe estar entre 1 y 100 m³",
+        "rate": "El precio por hora debe estar entre $100 y $100.000",
+        "descriptionLength": "La descripción no puede superar los 255 caracteres",
+        "vehicleAccess": "No se pudo acceder al vehículo o no está disponible",
+        "update": "Error al actualizar el vehículo",
+        "vehicleNotFound": "El vehículo solicitado no existe.",
+        "availabilityFetch": "Error al obtener la disponibilidad.",
+        "selectImageFirst": "Por favor, selecciona una imagen primero.",
+        "invalidFileType": "El archivo debe ser JPG o PNG.",
+        "imageFormat": "El formato de la imagen no es válido o es demasiado grande.",
+        "imageUpload": "Error al subir la imagen",
+        "availabilityAccess": "No se pudo acceder a la disponibilidad del vehículo",
+        "availabilityUpdate": "Error al actualizar la disponibilidad",
+        "verifyShifts": "Por favor, verificá los turnos ingresados."
+      },
+      "success": {
+        "update": "¡Vehículo actualizado con éxito!",
+        "imageUpdate": "¡Foto del vehículo actualizada con éxito!",
+        "availabilityUpdate": "¡Disponibilidad actualizada con éxito!"
+      },
+      "title": "Editar Vehículo",
+      "subtitle": "Actualizá la información, foto y disponibilidad de tu transporte.",
+      "loading": {
+        "vehicle": "Cargando datos del vehículo...",
+        "fileUpload": "Cargando subida de archivos..."
+      },
+      "generalData": "Datos Generales",
+      "labels": {
+        "plate": "Patente (Ej: AB123CD)",
+        "rate": "Precio por hora ($)",
+        "volume": "Volumen (m³)",
+        "description": "Descripción",
+        "uploadImage": "Subir imagen",
+        "addZone": "Añadir nueva zona"
+      },
+      "buttons": {
+        "saving": "Guardando...",
+        "saveChanges": "Guardar Cambios",
+        "uploadingPhoto": "Subiendo foto...",
+        "savePhoto": "Guardar Foto",
+        "add": "Añadir",
+        "saveAvailability": "Guardar Disponibilidad"
+      },
+      "photoSection": "Foto del Vehículo",
+      "workZones": "Zonas de Trabajo",
+      "placeholders": {
+        "searchNeighborhood": "Buscar barrio..."
+      },
+      "noZonesAssigned": "No hay zonas asignadas. Añadí al menos una.",
+      "availableSchedules": "Horarios Disponibles",
+      "table": {
+        "day": "Día",
+        "morning": "Mañana",
+        "afternoon": "Tarde",
+        "evening": "Noche"
+      },
+      "days": {
+        "MONDAY": "Lunes",
+        "TUESDAY": "Martes",
+        "WEDNESDAY": "Miércoles",
+        "THURSDAY": "Jueves",
+        "FRIDAY": "Viernes",
+        "SATURDAY": "Sábado",
+        "SUNDAY": "Domingo"
+      }
     }
   },
   "password": "Contraseña",

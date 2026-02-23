@@ -1,15 +1,13 @@
 import { action, createAsync, query, redirect, useParams, useSubmission } from "@solidjs/router";
-import {Show, Suspense, createMemo, createEffect, For, createSignal} from "solid-js";
+import { Show, Suspense, createMemo, createEffect, For, createSignal } from "solid-js";
 import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
 import { useToast } from "solid-notifications";
-import {ApiError, Availability, UpdateVehicle, Zone} from "../api/types";
+import { ApiError, Availability, UpdateVehicle, Zone } from "../api/types";
 import { Api } from "../app-context/api";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
 import Combobox from "@components/inputs/Combobox.tsx";
-
-
 
 export const editVehicleAction = action(
     async (api: Api, driverId: number, vehicleId: number, t: any, toaster: any, formData: FormData) => {
@@ -23,7 +21,7 @@ export const editVehicleAction = action(
         if (plateNumber) {
             const plateRegex = /^([a-zA-Z]{3}[0-9]{3}|[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})$/;
             if (!plateRegex.test(plateNumber)) {
-                fieldErrors["plateNumber"] = ["El formato de la patente es inválido (Ej: ABC123 o AB123CD)"];
+                fieldErrors["plateNumber"] = [t("global.page.editVehicle.errors.plateRegex")];
             }
         }
 
@@ -31,19 +29,19 @@ export const editVehicleAction = action(
         if (volumeM3Str) {
             volumeM3 = parseFloat(volumeM3Str);
             if (volumeM3 < 1 || volumeM3 > 100) {
-                fieldErrors["volumeM3"] = ["El volumen debe estar entre 1 y 100 m³"];
+                fieldErrors["volumeM3"] = [t("global.page.editVehicle.errors.volume")];
             }
         }
         let hourlyRate: number | undefined;
         if (hourlyRateStr) {
             hourlyRate = parseFloat(hourlyRateStr);
             if (hourlyRate < 100 || hourlyRate > 100000) {
-                fieldErrors["hourlyRate"] = ["El precio por hora debe estar entre $100 y $100.000"];
+                fieldErrors["hourlyRate"] = [t("global.page.editVehicle.errors.rate")];
             }
         }
 
         if (description && description.length > 255) {
-            fieldErrors["description"] = ["La descripción no puede superar los 255 caracteres"];
+            fieldErrors["description"] = [t("global.page.editVehicle.errors.descriptionLength")];
         }
 
         if (Object.keys(fieldErrors).length > 0) {
@@ -75,28 +73,26 @@ export const editVehicleAction = action(
                 return { ok: false, resp: apiErrors };
             }
             if (response.status === 403 || response.status === 404) {
-                toaster.notify("No se pudo acceder al vehículo o no está disponible", { type: "error" });
+                toaster.notify(t("global.page.editVehicle.errors.vehicleAccess"), { type: "error" });
                 return { ok: false, resp: {} };
             }
-            throw new Error("Error al actualizar el vehículo");
+            throw new Error(t("global.page.editVehicle.errors.update"));
         }
 
-        toaster.notify("¡Vehículo actualizado con éxito!", { type: "success" });
+        toaster.notify(t("global.page.editVehicle.success.update"), { type: "success" });
         return { ok: true, resp: await response.json() };
     },
     "edit-vehicle-action"
 );
 
-
-
-
 const vehicleQuery = query((vehicleId: number) => {
     const [appState] = useAppState();
     const toaster = useToast();
+    const t = useTranslator();
 
     const vehicle = useApi().getVehicle(appState.user!.id, vehicleId);
     if (!vehicle) {
-        toaster.notify("Request vehicle does not exist.", { type: "error" });
+        toaster.notify(t("global.page.editVehicle.errors.vehicleNotFound"), { type: "error" });
         return redirect("/driver/vehicles");
     }
     return vehicle;
@@ -108,10 +104,11 @@ type AvailabilityWithZones = Availability & {
 
 const availabilityQuery = query(async (url: string): Promise<AvailabilityWithZones | Response> => {
     const toaster = useToast();
+    const t = useTranslator();
     const availability = await useApi().getVehicleAvailability(url);
 
     if (!availability) {
-        toaster.notify("Failed to get availability.", { type: "error" });
+        toaster.notify(t("global.page.editVehicle.errors.availabilityFetch"), { type: "error" });
         return redirect("/driver/vehicles");
     }
 
@@ -128,9 +125,6 @@ const zonesQuery = query(() => {
     return useApi().getZones();
 }, "zones");
 
-
-
-
 function VehicleSection(props: { vehicleId: number }) {
     const vehicle = createAsync(() => vehicleQuery(props.vehicleId));
     const zones = createAsync(() => zonesQuery());
@@ -146,19 +140,17 @@ function VehicleSection(props: { vehicleId: number }) {
     return (
         <div class="mx-auto max-w-4xl p-4 md:p-8 space-y-8">
             <div class="mb-6">
-                <h1 class="text-3xl font-bold text-on-surface dark:text-on-surface-dark">Editar Vehículo</h1>
-                <p class="text-on-surface/70 dark:text-on-surface-dark/70">Actualizá la información, foto y disponibilidad de tu transporte.</p>
+                <h1 class="text-3xl font-bold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.title")}</h1>
+                <p class="text-on-surface/70 dark:text-on-surface-dark/70">{t("global.page.editVehicle.subtitle")}</p>
             </div>
 
-            <Suspense fallback={<div class="animate-pulse">Cargando datos del vehículo...</div>}>
+            <Suspense fallback={<div class="animate-pulse">{t("global.page.editVehicle.loading.vehicle")}</div>}>
                 <Show when={vehicle.latest}>
                     {(v) => (
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-
                             <div class="lg:col-span-2 space-y-6">
                                 <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
-                                    <h3 class="mb-4 text-xl font-semibold text-on-surface dark:text-on-surface-dark">Datos Generales</h3>
+                                    <h3 class="mb-4 text-xl font-semibold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.generalData")}</h3>
 
                                     <form
                                         action={editVehicleAction.with(api, appState.user!.id, props.vehicleId, t, toaster)}
@@ -168,7 +160,7 @@ function VehicleSection(props: { vehicleId: number }) {
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <TextInput
                                                 name="plateNumber"
-                                                label="Patente (Ej: AB123CD)"
+                                                label={t("global.page.editVehicle.labels.plate")}
                                                 value={v().plateNumber}
                                                 error={errors()?.["plateNumber"]}
                                                 disabled={submission.pending}
@@ -176,11 +168,10 @@ function VehicleSection(props: { vehicleId: number }) {
                                             <TextInput
                                                 name="hourlyRate"
                                                 type="number"
-                                                label="Precio por hora ($)"
+                                                label={t("global.page.editVehicle.labels.rate")}
                                                 value={v().hourlyRate?.toString()}
                                                 error={errors()?.["hourlyRate"]}
                                                 disabled={submission.pending}
-                                                // Atributos HTML para ayudar a la validación nativa (opcional)
                                                 min="100" max="100000" step="0.01"
                                             />
                                         </div>
@@ -188,7 +179,7 @@ function VehicleSection(props: { vehicleId: number }) {
                                         <TextInput
                                             name="volumeM3"
                                             type="number"
-                                            label="Volumen (m³)"
+                                            label={t("global.page.editVehicle.labels.volume")}
                                             value={v().volumeM3?.toString()}
                                             error={errors()?.["volumeM3"]}
                                             disabled={submission.pending}
@@ -196,7 +187,7 @@ function VehicleSection(props: { vehicleId: number }) {
                                         />
 
                                         <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-                                            <label class="w-fit pl-0.5 text-sm">Descripción</label>
+                                            <label class="w-fit pl-0.5 text-sm">{t("global.page.editVehicle.labels.description")}</label>
                                             <textarea
                                                 name="description"
                                                 rows="3"
@@ -215,27 +206,24 @@ function VehicleSection(props: { vehicleId: number }) {
                                             <Button
                                                 type="submit"
                                                 category="primary"
-                                                text={submission.pending ? "Guardando..." : "Guardar Cambios"}
+                                                text={submission.pending ? t("global.page.editVehicle.buttons.saving") : t("global.page.editVehicle.buttons.saveChanges")}
                                                 disabled={submission.pending}
                                             />
                                         </div>
                                     </form>
                                 </div>
 
-
                                 <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
                                     <AvailabilitySection vehicleId={props.vehicleId} url={v().availability} zones={zones()} />
                                 </div>
                             </div>
 
-
                             <div class="lg:col-span-1 space-y-6">
                                 <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
-                                    <h3 class="mb-4 text-xl font-semibold text-on-surface dark:text-on-surface-dark">Foto del Vehículo</h3>
+                                    <h3 class="mb-4 text-xl font-semibold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.photoSection")}</h3>
                                     <PictureSection pictureUrl={v().picture} hasPicture={v().hasPicture} />
                                 </div>
                             </div>
-
                         </div>
                     )}
                 </Show>
@@ -245,35 +233,31 @@ function VehicleSection(props: { vehicleId: number }) {
 }
 
 export const editVehiclePictureAction = action(
-    async (api: Api, pictureUrl: string, toaster: any, formData: FormData) => {
-
+    async (api: Api, pictureUrl: string, toaster: any, t: any, formData: FormData) => {
         const file = formData.get("picture");
 
-
         if (!(file instanceof File) || file.size === 0) {
-            toaster.notify("Por favor, selecciona una imagen primero.", { type: "warning" });
+            toaster.notify(t("global.page.editVehicle.errors.selectImageFirst"), { type: "warning" });
             return { ok: false };
         }
-
 
         const allowedTypes = ["image/jpeg", "image/png"];
         if (!allowedTypes.includes(file.type)) {
-            toaster.notify("El archivo debe ser JPG o PNG.", { type: "error" });
+            toaster.notify(t("global.page.editVehicle.errors.invalidFileType"), { type: "error" });
             return { ok: false };
         }
-
 
         const response = await api.putVehicleImage(pictureUrl, file);
 
         if (!response.ok) {
             if (response.status === 400 || response.status === 415) {
-                toaster.notify("El formato de la imagen no es válido o es demasiado grande.", { type: "error" });
+                toaster.notify(t("global.page.editVehicle.errors.imageFormat"), { type: "error" });
                 return { ok: false };
             }
-            throw new Error("Error al subir la imagen");
+            throw new Error(t("global.page.editVehicle.errors.imageUpload"));
         }
 
-        toaster.notify("¡Foto del vehículo actualizada con éxito!", { type: "success" });
+        toaster.notify(t("global.page.editVehicle.success.imageUpdate"), { type: "success" });
         return { ok: true };
     },
     "edit-vehicle-picture-action"
@@ -282,19 +266,20 @@ export const editVehiclePictureAction = action(
 function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
     const api = useApi();
     const toaster = useToast();
+    const t = useTranslator();
     const submission = useSubmission(editVehiclePictureAction);
 
     return (
         <form
-            action={editVehiclePictureAction.with(api, props.pictureUrl, toaster)}
+            action={editVehiclePictureAction.with(api, props.pictureUrl, toaster, t)}
             method="post"
             enctype="multipart/form-data"
             class="flex flex-col gap-4"
         >
-            <Suspense fallback={<div class="animate-pulse bg-surface p-12 rounded-radius text-center">Cargando subida de archivos...</div>}>
+            <Suspense fallback={<div class="animate-pulse bg-surface p-12 rounded-radius text-center">{t("global.page.editVehicle.loading.fileUpload")}</div>}>
                 <FileInputDragDrop
                     name="picture"
-                    label="Subir imagen"
+                    label={t("global.page.editVehicle.labels.uploadImage")}
                     fileTypes={["PNG", "JPEG"]}
                     maxSize={10}
                     maxSizeUnit={"MB"}
@@ -307,7 +292,7 @@ function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
                 <Button
                     type="submit"
                     category="primary"
-                    text={submission.pending ? "Subiendo foto..." : "Guardar Foto"}
+                    text={submission.pending ? t("global.page.editVehicle.buttons.uploadingPhoto") : t("global.page.editVehicle.buttons.savePhoto")}
                     disabled={submission.pending}
                 />
             </div>
@@ -316,9 +301,7 @@ function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
 }
 
 export const editAvailabilityAction = action(
-    async (api: Api, driverId: number, vehicleId: number, toaster: any, formData: FormData) => {
-
-
+    async (api: Api, driverId: number, vehicleId: number, toaster: any, t: any, formData: FormData) => {
         const zones_uri = formData.getAll("zones") as string[];
         const zones = zones_uri.map(z => Number(z.split("/").pop()));
         const timeSlotStrings = formData.getAll("timeSlots") as string[];
@@ -347,33 +330,30 @@ export const editAvailabilityAction = action(
                 return { ok: false, resp: apiErrors };
             }
             if (response.status === 403 || response.status === 404) {
-                toaster.notify("No se pudo acceder a la disponibilidad del vehículo", { type: "error" });
+                toaster.notify(t("global.page.editVehicle.errors.availabilityAccess"), { type: "error" });
                 return { ok: false, resp: {} };
             }
-            throw new Error("Error al actualizar la disponibilidad");
+            throw new Error(t("global.page.editVehicle.errors.availabilityUpdate"));
         }
 
-        toaster.notify("¡Disponibilidad actualizada con éxito!", { type: "success" });
+        toaster.notify(t("global.page.editVehicle.success.availabilityUpdate"), { type: "success" });
         return { ok: true, resp: await response.json() };
     },
     "edit-availability-action"
 );
-
-
 
 function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zone[] | undefined }) {
     const availability = createAsync(() => availabilityQuery(props.url));
     const [appState] = useAppState();
     const api = useApi();
     const toaster = useToast();
+    const t = useTranslator();
 
     const submission = useSubmission(editAvailabilityAction);
     const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
 
-
     const [selectedZoneIds, setSelectedZoneIds] = createSignal<number[]>([]);
     const [zoneToAdd, setZoneToAdd] = createSignal<number | undefined>();
-
 
     let isInitialized = false;
     createEffect(() => {
@@ -388,7 +368,7 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
         const id = zoneToAdd();
         if (id && !selectedZoneIds().includes(id)) {
             setSelectedZoneIds([...selectedZoneIds(), id]);
-            setZoneToAdd(undefined); // Limpia el combobox
+            setZoneToAdd(undefined);
         }
     };
 
@@ -415,36 +395,34 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
 
     return (
         <form
-            action={editAvailabilityAction.with(api, appState.user!.id, props.vehicleId, toaster)}
+            action={editAvailabilityAction.with(api, appState.user!.id, props.vehicleId, toaster, t)}
             method="post"
             class="space-y-8"
         >
-
             <div>
-                <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">Zonas de Trabajo</h3>
+                <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.workZones")}</h3>
 
                 <div class="mb-4 flex items-end gap-2">
                     <div class="flex-1">
                         <Combobox
                             name="zoneSelect"
-                            label="Añadir nueva zona"
+                            label={t("global.page.editVehicle.labels.addZone")}
                             options={availableZoneOptions()}
                             value={zoneToAdd()}
                             onChange={(val: any) => setZoneToAdd(Number(val))}
-                            placeholder="Buscar barrio..."
+                            placeholder={t("global.page.editVehicle.placeholders.searchNeighborhood")}
                         />
                     </div>
-                    <Button type="button" category="secondary" text="Añadir" onClick={handleAddZone} />
+                    <Button type="button" category="secondary" text={t("global.page.editVehicle.buttons.add")} onClick={handleAddZone} />
                 </div>
 
                 <Show
                     when={selectedZoneIds().length > 0}
-                    fallback={<p class="text-sm text-on-surface/50">No hay zonas asignadas. Añadí al menos una.</p>}
+                    fallback={<p class="text-sm text-on-surface/50">{t("global.page.editVehicle.noZonesAssigned")}</p>}
                 >
                     <ul class="flex flex-wrap gap-2 mt-2">
                         <For each={selectedZoneIds()}>
                             {(id) => {
-
                                 const zone = props.zones?.find(z => z.id === id);
 
                                 return zone ? (
@@ -472,28 +450,26 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
 
             <hr class="border-outline dark:border-outline-dark" />
 
-
             <div>
-                <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">Horarios Disponibles</h3>
+                <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.availableSchedules")}</h3>
                 <div class="overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
                     <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                         <thead class="bg-surface-alt dark:bg-surface-dark-alt">
                         <tr class="border-b border-outline dark:border-outline-dark">
-                            <th class="py-2 px-4 font-medium">Día</th>
-                            <th class="py-2 px-4 font-medium text-center">Mañana</th>
-                            <th class="py-2 px-4 font-medium text-center">Tarde</th>
-                            <th class="py-2 px-4 font-medium text-center">Noche</th>
+                            <th class="py-2 px-4 font-medium">{t("global.page.editVehicle.table.day")}</th>
+                            <th class="py-2 px-4 font-medium text-center">{t("global.page.editVehicle.table.morning")}</th>
+                            <th class="py-2 px-4 font-medium text-center">{t("global.page.editVehicle.table.afternoon")}</th>
+                            <th class="py-2 px-4 font-medium text-center">{t("global.page.editVehicle.table.evening")}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <For each={DAYS}>
                             {(day) => (
                                 <tr class="border-b border-outline/50 dark:border-outline-dark/50 last:border-0 hover:bg-surface-alt/50 dark:hover:bg-surface-dark-alt/50">
-                                    <td class="py-3 px-4 capitalize font-medium">{day.toLowerCase()}</td>
+                                    <td class="py-3 px-4 capitalize font-medium">{t(`global.page.editVehicle.days.${day}`)}</td>
                                     <For each={SHIFTS}>
                                         {(shift) => (
                                             <td class="py-3 px-4 text-center">
-
                                                 <input
                                                     type="checkbox"
                                                     name="timeSlots"
@@ -511,7 +487,7 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
                     </table>
                 </div>
                 <Show when={errors()?.["shift"] || errors()?.["day"]}>
-                    <small class="text-danger dark:text-red-400 mt-2 block">• Por favor, verificá los turnos ingresados.</small>
+                    <small class="text-danger dark:text-red-400 mt-2 block">• {t("global.page.editVehicle.errors.verifyShifts")}</small>
                 </Show>
             </div>
 
@@ -519,16 +495,13 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
                 <Button
                     type="submit"
                     category="primary"
-                    text={submission.pending ? "Guardando..." : "Guardar Disponibilidad"}
+                    text={submission.pending ? t("global.page.editVehicle.buttons.saving") : t("global.page.editVehicle.buttons.saveAvailability")}
                     disabled={submission.pending}
                 />
             </div>
         </form>
     );
 }
-
-
-
 
 export default function VehicleEdit() {
     const params = useParams();
