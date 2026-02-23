@@ -8,7 +8,8 @@ import {
   Message,
   Review,
   UpdateClient,
-  UpdateDriver, UpdateVehicle,
+  UpdateDriver,
+  UpdateVehicle,
   Vehicle,
   Zone,
 } from "@/api/types";
@@ -64,7 +65,6 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       // await sleep(1000);
       const res = await fetch(request);
 
-
       if (res.status === 401) {
         // NOTE: we could get here for example if the user altered the jwt to change the expiration time.
         console.log("Invalid credentials. Session reset");
@@ -114,7 +114,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       else return null;
     },
 
-    async getClientByUri(clientURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Client | null> {
+    async getClientByUri(clientURI: string, opts: VisibilityOpts = { visibility: "public" }): Promise<Client | null> {
       const id = extractNumericIdFromEndOfPath(clientURI);
       if (id === null) return null;
       return this.getClient(id, opts);
@@ -133,43 +133,43 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       else return null;
     },
 
-    async getDriverByUri(driverURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Driver | null> {
+    async getDriverByUri(driverURI: string, opts: VisibilityOpts = { visibility: "public" }): Promise<Driver | null> {
       const id = extractNumericIdFromEndOfPath(driverURI);
       if (id === null) return null;
       return this.getDriver(id, opts);
     },
 
     async registerClient(
-        data: { username: string; email: string; password: string; zoneId?: number },
-        lang: string
+      data: { username: string; email: string; password: string; zoneId?: number },
+      lang: string
     ): Promise<Response> {
       const url = new URL("clients", API_ROOT);
       return await fetch(
-          new Request(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": MediaTypesV1.clientCreate,
-              "Accept-Language": lang,
-            },
-            body: JSON.stringify(data),
-          })
+        new Request(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": MediaTypesV1.clientCreate,
+            "Accept-Language": lang,
+          },
+          body: JSON.stringify(data),
+        })
       );
     },
 
     async registerDriver(
-        data: { username: string; email: string; password: string; description: string },
-        lang: string
+      data: { username: string; email: string; password: string; description: string },
+      lang: string
     ): Promise<Response> {
       const url = new URL("drivers", API_ROOT);
       return await fetch(
-          new Request(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": MediaTypesV1.driverCreate,
-              "Accept-Language": lang,
-            },
-            body: JSON.stringify(data),
-          })
+        new Request(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": MediaTypesV1.driverCreate,
+            "Accept-Language": lang,
+          },
+          body: JSON.stringify(data),
+        })
       );
     },
 
@@ -333,8 +333,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getVehicleByUri(vehicleURI: string): Promise<Vehicle | null> {
-      const segments = new URL(vehicleURI).pathname
-          .split("/")
+      const segments = new URL(vehicleURI).pathname.split("/");
 
       const vehicleId = Number(segments[segments.length - 1]);
       const driverId = Number(segments[segments.length - 3]);
@@ -346,7 +345,10 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return this.getVehicle(driverId, vehicleId);
     },
 
-    async createVehicle(driverId: number, data: { plateNumber: string; volumeM3: number; hourlyRate: number; description: string }): Promise<Response> {
+    async createVehicle(
+      driverId: number,
+      data: { plateNumber: string; volumeM3: number; hourlyRate: number; description: string }
+    ): Promise<Response> {
       const url = new URL(`drivers/${driverId}/vehicles`, API_ROOT);
       const req = new Request(url, {
         method: "POST",
@@ -358,7 +360,6 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return await this.authFetch(req);
     },
 
-
     async updateVehicle(driverId: number, vehicleId: number, data: UpdateVehicle): Promise<Response> {
       const url = new URL(`drivers/${driverId}/vehicles/${vehicleId}`, API_ROOT);
       const req = new Request(url, {
@@ -369,10 +370,8 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         body: JSON.stringify(data),
       });
 
-
       return await this.authFetch(req);
     },
-
 
     async putVehicleImage(url: string, file: File): Promise<Response> {
       const req = new Request(url, {
@@ -386,10 +385,10 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async updateVehicleAvailability(
-        driverId: number,
-        vehicleId: number,
-        payload: { zones: number[], timeSlots: { day: string, shift: string }[] }
-    ): Promise<Response>{
+      driverId: number,
+      vehicleId: number,
+      payload: { zones: number[]; timeSlots: { day: string; shift: string }[] }
+    ): Promise<Response> {
       const url = new URL(`drivers/${driverId}/vehicles/${vehicleId}/availability`, API_ROOT);
       const req = new Request(url, {
         method: "PATCH",
@@ -399,11 +398,14 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         body: JSON.stringify(payload),
       });
 
-
       return await this.authFetch(req);
     },
 
-    async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number } | null> {
+    async getMessages(
+      driverId: number,
+      clientId: number,
+      page: number = 1
+    ): Promise<{ messages: Message[]; maxPages: number } | null> {
       const req = apiRequest("messages", {
         headers: { Accept: MediaTypesV1.messageList },
         queryParams: { driverId: String(driverId), clientId: String(clientId), page: String(page) },
@@ -451,7 +453,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
 
     async updateBookingState(bookingId: number, state: BookingState): Promise<Response> {
       const payload = {
-        state: state.toUpperCase()
+        state: state.toUpperCase(),
       };
       const url = new URL(`bookings/${bookingId}`, API_ROOT);
       const req = new Request(url, {
@@ -467,7 +469,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
 
     async getReview(bookingId: number): Promise<Review | null> {
       const req = apiRequest(`bookings/${bookingId}/review`);
-      const res = await this.authFetch(req)
+      const res = await this.authFetch(req);
       if (res.ok) return res.json();
       else return null;
     },
@@ -476,7 +478,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const payload = {
         rating: rating,
         comments: comments,
-        booking: `api/bookings/${bookingId}`
+        booking: `api/bookings/${bookingId}`,
       };
       const url = new URL(`bookings/${bookingId}/review`, API_ROOT);
       const req = new Request(url, {
