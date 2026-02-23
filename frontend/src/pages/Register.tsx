@@ -168,7 +168,13 @@ export default function Register() {
                 setFieldErrors({ confirmedPassword: [t("global.error.passwordMismatch") as string] });
                 return;
             }
-            navigate("/login", { replace: true });
+
+            await api.basicAuth(username(), password());
+
+            if (!appState.session) throw new Error(t("global.loginError") as string);
+
+            const redirect = `/${appState.user?.type ?? type()}`;
+            navigate(redirect, { replace: true });
         } catch (err) {
             console.error(err);
             if (err instanceof Error) setGeneralErrors([err.message]);
