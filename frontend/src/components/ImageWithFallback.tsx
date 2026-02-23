@@ -25,7 +25,6 @@ type ImageProps = {
 const ImageWithFallback: Component<ImageProps> = (props) => {
   const blobSrc = createAsync(() =>
     imageQuery(props.src, props.fallbackSrc, props.skipSrc).then((blob) => {
-      if (!blob) throw new Error("No blob!!!!");
       return URL.createObjectURL(blob);
     })
   );

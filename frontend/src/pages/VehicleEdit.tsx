@@ -1,8 +1,8 @@
-import {createAsync, query, redirect, useParams} from "@solidjs/router";
-import {Suspense, createMemo} from "solid-js";
-import {useApi, useAppState} from "../app-context/AppContext";
-import {useToast} from "solid-notifications";
-import {Availability, Zone} from "../api/types";
+import { createAsync, query, redirect, useParams } from "@solidjs/router";
+import { Show, Suspense, createMemo } from "solid-js";
+import { useApi, useAppState } from "../app-context/AppContext";
+import { useToast } from "solid-notifications";
+import { Availability, Zone } from "../api/types";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 
 // NOTE: the page is separated in so many sections because solid sucks and using a `createAsync`
@@ -62,22 +62,53 @@ function VehicleSection(props: { vehicleId: number }) {
     const vehicle = createAsync(() => vehicleQuery(props.vehicleId));
     const zones = createAsync(() => zonesQuery());
 
-    return (
-        <div>
-            <div>
-                <FileInputDragDrop label="Vehicle Image" fileTypes={["PNG", "JPEG"]} maxSize={500} maxSizeUnit={"KB"}/>
-                <h3>Vehicle</h3>
-                <Suspense fallback="Loading vehicle...">
-                    <p>{JSON.stringify(vehicle.latest)}</p>
-                    {vehicle.latest && <AvailabilitySection url={vehicle.latest!.availability} zones={zones.latest}/>}
-                </Suspense>
-            </div>
-            <div>
-                <h3>All zones</h3>
-                <Suspense fallback="Loading zones...">{JSON.stringify(zones.latest)}</Suspense>
-            </div>
-        </div>
-    );
+  return (
+    <div>
+      <div>
+        <h3>Vehicle</h3>
+        <Suspense fallback="Loading vehicle...">
+          <p>{JSON.stringify(vehicle.latest)}</p>
+          <Show when={vehicle.latest}>
+            <PictureSection pictureUrl={vehicle.latest!.picture} hasPicture={vehicle.latest!.hasPicture} />
+            <AvailabilitySection url={vehicle.latest!.availability} zones={zones.latest} />
+          </Show>
+        </Suspense>
+      </div>
+      <div>
+        <h3>All zones</h3>
+        <Suspense fallback="Loading zones...">{JSON.stringify(zones.latest)}</Suspense>
+      </div>
+    </div>
+  );
+}
+
+function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
+  return (
+    <Suspense fallback="Loading file drag n drop...">
+      <FileInputDragDrop
+        label="Vehicle Image"
+        fileTypes={["PNG", "JPEG", "PDF"]}
+        maxSize={500}
+        maxSizeUnit={"KB"}
+        putEndpoint={props.pictureUrl}
+        currentValue={props.hasPicture ? { url: props.pictureUrl } : undefined}
+      />
+    </Suspense>
+  );
+  // return (
+  //   <Show when={vehicle.latest}>
+  //     {(v) => (
+  //       <FileInputDragDrop
+  //         label="Vehicle Image"
+  //         fileTypes={["PNG", "JPEG", "PDF"]}
+  //         maxSize={500}
+  //         maxSizeUnit={"KB"}
+  //         putEndpoint={props.pictureUrl}
+  //         currentValue={props.hasPicture ? { url: props.pictureUrl } : undefined}
+  //       />
+  //     )}
+  //   </Show>
+  // );
 }
 
 function AvailabilitySection(props: { url: string; zones: Record<number, Zone> | undefined }) {
