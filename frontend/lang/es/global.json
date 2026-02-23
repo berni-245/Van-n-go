@@ -20,6 +20,43 @@
   "loadingSession": "Cargando sesión...",
   "name": "Español",
   "page": {
+    "bookingCreate": {
+      "title": "Solicitar Reserva",
+      "subtitle": "Seleccioná una fecha y turno en el calendario para ver los vehículos disponibles.",
+      "months": {
+        "JANUARY": "Enero", "FEBRUARY": "Febrero", "MARCH": "Marzo", "APRIL": "Abril", "MAY": "Mayo", "JUNE": "Junio", "JULY": "Julio", "AUGUST": "Agosto", "SEPTEMBER": "Septiembre", "OCTOBER": "Octubre", "NOVEMBER": "Noviembre", "DECEMBER": "Diciembre"
+      },
+      "weekDays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+      "shifts": {
+        "MORNING": "Mañana", "AFTERNOON": "Tarde", "EVENING": "Noche"
+      },
+      "availableVehicles": "Vehículos disponibles para el",
+      "selectShift": "Seleccionar turno",
+      "vehicleDetails": {
+        "plate": "Patente",
+        "rate": "Precio/hr",
+        "volume": "Volumen"
+      },
+      "confirmation": {
+        "title": "Completar Reserva",
+        "origin": "Zona de Origen",
+        "destination": "Zona de Destino",
+        "description": "Descripción del trabajo",
+        "submit": "Enviar Solicitud",
+        "submitting": "Enviando..."
+      },
+      "errors": {
+        "originRequired": "Seleccioná la zona de origen",
+        "destinationRequired": "Seleccioná la zona de destino",
+        "descriptionLength": "La descripción debe tener entre 5 y 500 caracteres",
+        "fetchFailed": "Error al obtener la disponibilidad",
+        "bookingFailed": "Hubo un error al crear la reserva",
+        "conflict": "El vehículo ya no está disponible en este horario",
+        "dateRequired": "La fecha es obligatoria y debe ser futura"
+      },
+      "success": "¡Reserva solicitada con éxito!",
+      "emptyMonth": "Buscando próximo mes disponible..."
+    },
     "home": {
       "callToAction": "¡Empecemos!",
       "greeting": "¿Estás buscando un flete? ¿O prefieres postularte como uno? Llegaste al lugar correcto. Encuentra el servicio de fletes perfecto para ti.",

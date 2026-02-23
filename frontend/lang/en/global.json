@@ -20,6 +20,43 @@
   "loadingSession": "Loading session...",
   "name": "English",
   "page": {
+    "bookingCreate": {
+      "title": "Request Booking",
+      "subtitle": "Select a date and shift on the calendar to see available vehicles.",
+      "months": {
+        "JANUARY": "January", "FEBRUARY": "February", "MARCH": "March", "APRIL": "April", "MAY": "May", "JUNE": "June", "JULY": "July", "AUGUST": "August", "SEPTEMBER": "September", "OCTOBER": "October", "NOVEMBER": "November", "DECEMBER": "December"
+      },
+      "weekDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "shifts": {
+        "MORNING": "Morning", "AFTERNOON": "Afternoon", "EVENING": "Evening"
+      },
+      "availableVehicles": "Vehicles available on",
+      "selectShift": "Select shift",
+      "vehicleDetails": {
+        "plate": "Plate",
+        "rate": "Rate/hr",
+        "volume": "Volume"
+      },
+      "confirmation": {
+        "title": "Complete Booking",
+        "origin": "Origin Zone",
+        "destination": "Destination Zone",
+        "description": "Job description",
+        "submit": "Submit Request",
+        "submitting": "Submitting..."
+      },
+      "errors": {
+        "originRequired": "Select the origin zone",
+        "destinationRequired": "Select the destination zone",
+        "descriptionLength": "Description must be between 5 and 500 characters",
+        "fetchFailed": "Error fetching availability",
+        "bookingFailed": "There was an error creating the booking",
+        "conflict": "The vehicle is no longer available at this time",
+        "dateRequired": "Date is required and must be in the future"
+      },
+      "success": "Booking requested successfully!",
+      "emptyMonth": "Searching for next available month..."
+    },
     "home": {
       "callToAction": "Let's start!",
       "greeting": "Are you looking for a Hauler? Or would you prefer to apply as one? You've come to the right place. Find the perfect freight service for you.",

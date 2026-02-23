@@ -11,6 +11,7 @@ import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
 import Profile from "@/pages/Profile";
 import {lazy} from "solid-js";
 import VehicleCreate from "@/pages/CreateVehicle.tsx";
+import BookingCreate from "@/pages/BookingCreate.tsx";
 
 const root = document.getElementById("root");
 
@@ -77,6 +78,7 @@ render(
             <Route path="/bookings" component={Bookings}/>
             <Route path="/chat" component={Chat} />
             <Route path="/profile" component={Profile}/>
+            <Route path={"/bookings/:driverId/new"} component={BookingCreate}/>
           </Route>
           <Route path="**" component={Error404} />
         </Router>

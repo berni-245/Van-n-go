@@ -31,7 +31,7 @@ export interface LocationState {
 
 const MediaTypesV1 = createMediaTypes("v1");
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+//const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface VisibilityOpts {
   visibility?: "public" | "all";
@@ -64,7 +64,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
 
       // await sleep(1000);
       const res = await fetch(request);
-
+      console.log(`API request: ${request.method} ${request.url} - Status: ${res.status}`);
       if (res.status === 401) {
         // NOTE: we could get here for example if the user altered the jwt to change the expiration time.
         console.log("Invalid credentials. Session reset");
@@ -320,16 +320,15 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     async getVehicleAvailability(url: string): Promise<Availability | null> {
       const req = apiRequest(url, { headers: { Accept: MediaTypesV1.availability } });
       const res = await this.authFetch(req);
-      // WARNING: as I'm asking directly for the url here I could potentially get a valid url
-      // but for another endpoint. In that case the response could be okay but the parsed json
-      // wouldn't be an `Availability`.
-      // Although now that I think about it specifying the `Accept`ed media type should cause
-      // a failed reponse in that case.
-      if (res.ok) return res.json();
-      else {
-        console.error(`getVehicleAvailability ${url} error:`, res);
-        return null;
-      }
+
+      console.log("availability status:", res.status);
+
+      const text = await res.text();
+      console.log("availability raw response:", text);
+
+      if (!res.ok) return null;
+
+      return JSON.parse(text);
     },
 
     async getVehicleByUri(vehicleURI: string): Promise<Vehicle | null> {
@@ -356,6 +355,30 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
           "Content-Type": MediaTypesV1.vehicleCreate,
         },
         body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
+
+    async getDriverVehicles(driverId: number): Promise<any[]> {
+      const res = await this.authFetch(`${API_ROOT}drivers/${driverId}/vehicles`);
+      if (!res.ok) return [];
+      return await res.json();
+    },
+
+    async getBookedTimes(driverId: number, vehicleId: number, month: string, year: number): Promise<{date: string, shift: string}[]> {
+      const res = await this.authFetch(`${API_ROOT}/drivers/${driverId}/vehicles/${vehicleId}/booked-times?month=${month}&year=${year}`);
+      if (!res.ok) return [];
+      return await res.json();
+    },
+
+    async createBooking(payload: any): Promise<Response> {
+      const url = new URL(`bookings`, API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.bookingCreate,
+        },
+        body: JSON.stringify(payload),
       });
       return await this.authFetch(req);
     },

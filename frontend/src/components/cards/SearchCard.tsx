@@ -1,4 +1,5 @@
 import { Show } from "solid-js";
+import { A } from "@solidjs/router";
 import { Driver } from "@/api/types";
 import ImageWithFallback from "@/components/ImageWithFallback";
 
@@ -13,7 +14,7 @@ export default function SearchCard(props: SearchCardProps) {
 
     return (
         <li class="driver-card-wrapper">
-            <a href="#" class="driver-card">
+            <A href={`/client/bookings/${driver.id}/new`} class="driver-card">
                 <div class="flex items-center gap-4 p-4">
                     <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-outline dark:border-outline-dark">
                         <ImageWithFallback
@@ -40,7 +41,7 @@ export default function SearchCard(props: SearchCardProps) {
                         {driver.description}
                     </p>
                 </Show>
-            </a>
+            </A>
         </li>
     );
 }
