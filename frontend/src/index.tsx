@@ -6,7 +6,6 @@ import App from "@/App";
 import {Router, Route, Navigate} from "@solidjs/router";
 import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
 import {AppContextProvider} from "@/app-context/AppContext";
-import {worker} from "@/api-mock/browser";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
 import Profile from "@/pages/Profile";
@@ -31,15 +30,6 @@ if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   );
 }
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== "development") return;
-
-  // `worker.start()` returns a Promise that resolves
-  // once the Service Worker is up and ready to intercept requests.
-  return worker.start();
-}
-
-// await enableMocking();
 
 const filters = {
   vehicleId: /^\d+$/,

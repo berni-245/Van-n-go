@@ -100,7 +100,7 @@ export function EditProfilePicForm() {
                     label={t("global.generic.word.chooseFile")} //  usar t("generic.phrase.choose.file")
                     name="file"
                     helperText={t("global.user.editUser.uploadPicture")}
-                    error={errors()["file"]}
+                    error={errors()?.["file"]}
                 />
             </Modal.Dialog.Body>
 

@@ -40,13 +40,13 @@ const TextInput: Component<InputProps> = (props) => {
 
 
           <Show when={props.error}>
-              <div className="flex flex-col gap-0.5">
+              <div class="flex flex-col gap-0.5">
                   <Show
                       when={Array.isArray(props.error)}
-                      fallback={<small className="pl-0.5 text-danger">{props.error}</small>}
+                      fallback={<small class="pl-0.5 text-danger">{props.error}</small>}
                   >
                       <For each={props.error as string[]}>
-                          {(err) => <small className="pl-0.5 text-danger">• {err}</small>}
+                          {(err) => <small class="pl-0.5 text-danger">• {err}</small>}
                       </For>
                   </Show>
               </div>

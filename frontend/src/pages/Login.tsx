@@ -1,4 +1,4 @@
-import { API_ROOT, LocationState } from "@/app-context/api";
+import { LocationState } from "@/app-context/api";
 import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import PasswordInput from "@/components/inputs/PasswordInput";
