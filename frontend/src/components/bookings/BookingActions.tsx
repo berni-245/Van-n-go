@@ -69,7 +69,6 @@ export const bookingActions: Record<
                         onClick={() => {
                             api.updateBookingState(booking.id, BookingState.Canceled)
                             // TODO manage errors
-                            closeCurrentModal()
                             refreshBookings(BookingState.Canceled)
                         }}
                     >
@@ -137,13 +136,12 @@ export const bookingActions: Record<
     },
 
     client: {
-        PENDING: (booking, {api, t, closeCurrentModal, refreshBookings}) => (
+        PENDING: (booking, {api, t, refreshBookings}) => (
             <>
                 <PrimaryButton
                     onClick={() => {
                         api.updateBookingState(booking.id, BookingState.Accepted)
                         // TODO manage errors
-                        closeCurrentModal()
                         refreshBookings(BookingState.Accepted)
                     }}
                 >
@@ -153,7 +151,6 @@ export const bookingActions: Record<
                     onClick={() => {
                         api.updateBookingState(booking.id, BookingState.Rejected)
                         // TODO manage errors
-                        closeCurrentModal()
                         refreshBookings(BookingState.Rejected)
                     }}
                 >
@@ -178,7 +175,6 @@ export const bookingActions: Record<
                             onClick={() => {
                                 api.updateBookingState(booking.id, BookingState.Finished)
                                 // TODO manage errors
-                                closeCurrentModal()
                                 refreshBookings(BookingState.Finished)
                             }}
                         >
@@ -200,7 +196,6 @@ export const bookingActions: Record<
                     onClick={() => {
                         api.updateBookingState(booking.id, BookingState.Canceled)
                         // TODO manage errors
-                        closeCurrentModal()
                         refreshBookings(BookingState.Canceled)
                     }}
                 >

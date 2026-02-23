@@ -1,12 +1,13 @@
 import {Component, createSignal, onCleanup, onMount} from "solid-js";
 import {BsChatDots, BsJournalText} from "solid-icons/bs";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
-import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
+import {Booking, BookingState, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {useNavigate} from "@solidjs/router";
 import {BookingModal} from "@components/modal/BookingModal";
 import {ReviewBookingModal} from "@components/modal/ReviewModal";
 import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
+import {useNavigate} from "@solidjs/router";
 
 type CardProps = {
     booking: Booking;
@@ -20,6 +21,7 @@ type CardProps = {
 const BookingCard: Component<CardProps> = (props) => {
     const t = useTranslator();
     const api = useApi();
+    const navigate = useNavigate()
     const [appState] = useAppState();
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
@@ -68,8 +70,9 @@ const BookingCard: Component<CardProps> = (props) => {
                 setReviewOpen(true)
             },
 
-            refreshBookings: () => {
-
+            refreshBookings: (newStateTab: BookingState) => {
+                ctx.closeCurrentModal()
+                navigate(`?state=${newStateTab}&page=1`, {replace: true})
             }
         };
 
