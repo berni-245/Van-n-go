@@ -16,6 +16,8 @@
     "SPANISH": "Español"
   },
   "login": "Iniciar sesión",
+  "loginError": "Credenciales inválidas. Por favor, inténtalo de nuevo.",
+  "loadingSession": "Cargando sesión...",
   "name": "Español",
   "page": {
     "home": {

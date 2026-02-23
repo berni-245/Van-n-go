@@ -16,6 +16,8 @@
     "SPANISH": "Spanish"
   },
   "login": "Log in",
+  "loginError": "Invalid credentials. Please try again.",
+  "loadingSession": "Loading session...",
   "name": "English",
   "page": {
     "home": {
