@@ -54,6 +54,9 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         }
       }
 
+      const currentLocale = appState.preferences.locale || "es";
+      request.headers.set("Accept-Language", currentLocale);
+      request.headers.set("Accept-Language", currentLocale);
 
       const res = await fetch(request);
 
