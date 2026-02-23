@@ -1,8 +1,7 @@
 import {createSignal, For, Suspense} from "solid-js";
 import {createAsync, query} from "@solidjs/router";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
-import BookingCardDriver from "@components/cards/BookingCardDriver";
-import BookingCardClient from "@components/cards/BookingCardClient";
+import BookingCard from "@components/cards/BookingCard";
 import VehicleGridSkeleton from "@components/skeletons/VehicleGridSkeleton";
 import Pagination from "@components/Pagination";
 import {Title} from "@solidjs/meta";
@@ -101,17 +100,19 @@ export default function Bookings() {
                         <For each={bookingItems()}>
                             {({booking, targetUser, vehicle, originZone, destinationZone}) =>
                                 isDriver ? (
-                                    <BookingCardClient
+                                    <BookingCard
                                         booking={booking}
-                                        client={targetUser as Client}
+                                        user={targetUser as Client}
+                                        userType="client"
                                         vehicle={vehicle}
                                         originZone={originZone}
                                         destinationZone={destinationZone}
                                     />
                                 ) : (
-                                    <BookingCardDriver
+                                    <BookingCard
                                         booking={booking}
-                                        driver={targetUser as Driver}
+                                        user={targetUser as Driver}
+                                        userType={"driver"}
                                         vehicle={vehicle}
                                         originZone={originZone}
                                         destinationZone={destinationZone}

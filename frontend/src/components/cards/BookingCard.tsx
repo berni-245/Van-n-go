@@ -1,19 +1,20 @@
 import {Component, createSignal, onCleanup, onMount} from "solid-js";
 import {BsChatDots, BsJournalText} from "solid-icons/bs";
 import {useAppState, useTranslator} from "@/app-context/AppContext";
-import {Booking, Driver, Vehicle, Zone} from "@/api/types";
+import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {BookingModal} from "@components/modal/BookingModal";
 
 type CardProps = {
     booking: Booking;
-    driver: Driver;
+    user: Driver | Client;
+    userType: "driver" | "client";
     vehicle: Vehicle;
     originZone: Zone;
     destinationZone: Zone;
 };
 
-const BookingCardDriver: Component<CardProps> = (props) => {
+const BookingCard: Component<CardProps> = (props) => {
     const t = useTranslator();
     const [appState] = useAppState();
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
@@ -48,7 +49,7 @@ const BookingCardDriver: Component<CardProps> = (props) => {
                     )}
                   </span>
                         <span class="text-sm font-semibold">
-                    {props.driver.username}
+                    {props.user.username}
                   </span>
                     </div>
 
@@ -56,9 +57,9 @@ const BookingCardDriver: Component<CardProps> = (props) => {
                         <ImageWithFallback
                             class="h-full w-full object-cover transition group-hover:scale-105"
                             alt={t("global.sr.vehiclePicture")}
-                            src={props.driver.profilePic}
+                            src={props.user.profilePic}
                             fallbackSrc="/images/blank-user.jpg"
-                            skipSrc={!props.driver.hasProfilePic}
+                            skipSrc={!props.user.hasProfilePic}
                         />
                     </div>
                 </div>
@@ -100,8 +101,8 @@ const BookingCardDriver: Component<CardProps> = (props) => {
 
             <BookingModal
                 booking={props.booking}
-                targetUser={props.driver}
-                targetUserType={"client"}
+                targetUser={props.user}
+                targetUserType={props.userType}
                 vehicle={props.vehicle}
                 originZone={props.originZone}
                 destinationZone={props.destinationZone}
@@ -129,4 +130,4 @@ const BookingCardDriver: Component<CardProps> = (props) => {
     );
 };
 
-export default BookingCardDriver;
+export default BookingCard;
