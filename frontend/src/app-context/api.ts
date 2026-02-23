@@ -56,7 +56,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         }
       }
 
-      await sleep(2000);
+
       const res = await fetch(request);
 
       if (res.status === 401) {
