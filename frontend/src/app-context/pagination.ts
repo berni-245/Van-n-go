@@ -10,7 +10,7 @@ export type PageInfo = Record<RequiredRel, PageLinkHeader> & Partial<Record<Opti
 
 export interface PaginatedResource<T> {
     data: T[];
-    pages: PageInfo;
+    pages: PageInfo | null;
 }
 
 interface PageLinkHeader {
@@ -22,15 +22,15 @@ interface PageLinkHeader {
 function parsePageLinkHeader(link: string): PageLinkHeader | null {
     const parts = link.split("; ");
     if (parts.length !== 2) return null;
-    const url = parts[0].match(/<(.*)>/)?.[1];
-    if (!url) return null;
+    const urlStr = parts[0].match(/<(.*)>/)?.[1];
+    if (!urlStr) return null;
     const rel = parts[1].match(/"(.*)"/)?.[1];
     if (!rel || !REL_SET.has(rel)) return null;
-    const pageStr = parts[0].match(/\?page=(\d+)/)?.[1];
+    const pageStr = new URL(urlStr).searchParams.get('page')
     if (!pageStr) return null;
     const page = parseInt(pageStr);
     if (!Number.isInteger(page)) return null;
-    return {url, pageNumber: page, rel: rel as Rel};
+    return {url: urlStr, pageNumber: page, rel: rel as Rel};
 }
 
 export function parsePageInfo(res: Response): PageInfo | null {

@@ -25,7 +25,7 @@ export function createInfiniteScroll<T>(fetcher: (page: number) => Promise<Pagin
     const io = new IntersectionObserver((entries) => {
         if (entries.length === 0) return;
         const entry = entries[0];
-        const nextPage = contents.latest?.pages.next?.pageNumber;
+        const nextPage = contents.latest?.pages?.next?.pageNumber;
         if (entry.isIntersecting && !contents.loading && nextPage) {
             setPage(nextPage);
         }

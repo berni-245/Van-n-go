@@ -75,6 +75,7 @@
 :root {
   /* Solid Notifications */
   --sn-progress-bar-height: 3px;
+
 }
 
 @layer base {

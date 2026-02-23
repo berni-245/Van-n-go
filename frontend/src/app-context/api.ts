@@ -30,6 +30,8 @@ export interface LocationState {
 
 const MediaTypesV1 = createMediaTypes("v1");
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 interface VisibilityOpts {
   visibility?: "public" | "all";
 }
@@ -59,6 +61,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       request.headers.set("Accept-Language", currentLocale);
       request.headers.set("Accept-Language", currentLocale);
 
+      // await sleep(1000);
       const res = await fetch(request);
 
 
@@ -427,13 +430,23 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return res.json() as Promise<Message>;
     },
 
-    async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {
+    // async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {
+    //   const req = apiRequest('bookings',
+    //       {queryParams: {userId: userId.toString(), state: state.toUpperCase(), page: page.toString()}});
+    //   const res = await this.authFetch(req)
+    //   if (res.ok) return res.json();
+    //   else return [];
+    // },
+    async getBookings(userId: number, state: BookingState, page: number = 1): Promise<PaginatedResource<Booking>> {
       const req = apiRequest("bookings", {
         queryParams: { userId: userId.toString(), state: state.toUpperCase(), page: page.toString() },
       });
       const res = await this.authFetch(req);
-      if (res.ok) return res.json();
-      else return [];
+      if (res.ok) {
+        const pages = parsePageInfo(res)!;
+        const data = (await res.json()) as Booking[];
+        return { data, pages };
+      } else return { data: [], pages: null };
     },
 
     async updateBookingState(bookingId: number, state: BookingState): Promise<Response> {
