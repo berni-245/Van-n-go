@@ -106,7 +106,7 @@ public class BookingJpaDao implements BookingDao {
                         select b.id
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where v.driver_id = :driverId and b.state = :state
-                        order by b.date
+                        order by b.date desc
                         """)
                 .setParameter("driverId", driver.getId())
                 .setParameter("state", state.toString())
@@ -114,7 +114,7 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+        return em.createQuery("from Booking where id in (:bookingIds) order by date desc", Booking.class)
                 .setParameter("bookingIds", nativeQueryList)
                 .getResultList();
     }
@@ -136,7 +136,7 @@ public class BookingJpaDao implements BookingDao {
         var nativeQueryList = em.createNativeQuery("""
                         select b.id
                         from booking b where b.client_id = :clientId and b.state = :state
-                        order by b.date
+                        order by b.date desc
                         """)
                 .setParameter("clientId", client.getId())
                 .setParameter("state", state.toString())
@@ -144,7 +144,7 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+        return em.createQuery("from Booking where id in (:bookingIds) order by date desc", Booking.class)
                 .setParameter("bookingIds", nativeQueryList)
                 .getResultList();
     }
