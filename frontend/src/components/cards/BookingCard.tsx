@@ -4,11 +4,12 @@ import {useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {BookingModal} from "@components/modal/BookingModal";
+import {bookingActions} from "@components/bookings/BookingActions";
 
 type CardProps = {
     booking: Booking;
-    user: Driver | Client;
-    userType: "driver" | "client";
+    cardUser: Driver | Client;
+    cardUserType: "driver" | "client";
     vehicle: Vehicle;
     originZone: Zone;
     destinationZone: Zone;
@@ -36,6 +37,15 @@ const BookingCard: Component<CardProps> = (props) => {
         }).format(new Date(date));
     }
 
+    function renderModalFooter() {
+        const action =
+            bookingActions[props.cardUserType]?.[
+                props.booking.state as keyof typeof bookingActions[typeof props.cardUserType]
+                ];
+
+        return action ? action(props.booking) : null;
+    }
+
     return (
         <>
             <article
@@ -49,7 +59,7 @@ const BookingCard: Component<CardProps> = (props) => {
                     )}
                   </span>
                         <span class="text-sm font-semibold">
-                    {props.user.username}
+                    {props.cardUser.username}
                   </span>
                     </div>
 
@@ -57,9 +67,9 @@ const BookingCard: Component<CardProps> = (props) => {
                         <ImageWithFallback
                             class="h-full w-full object-cover transition group-hover:scale-105"
                             alt={t("global.sr.vehiclePicture")}
-                            src={props.user.profilePic}
+                            src={props.cardUser.profilePic}
                             fallbackSrc="/images/blank-user.jpg"
-                            skipSrc={!props.user.hasProfilePic}
+                            skipSrc={!props.cardUser.hasProfilePic}
                         />
                     </div>
                 </div>
@@ -101,8 +111,8 @@ const BookingCard: Component<CardProps> = (props) => {
 
             <BookingModal
                 booking={props.booking}
-                targetUser={props.user}
-                targetUserType={props.userType}
+                targetUser={props.cardUser}
+                targetUserType={props.cardUserType}
                 vehicle={props.vehicle}
                 originZone={props.originZone}
                 destinationZone={props.destinationZone}
@@ -114,16 +124,7 @@ const BookingCard: Component<CardProps> = (props) => {
                 onClose={() => setModalIsOpen(false)}
             >
                 <div class="flex justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={() => setModalIsOpen(false)}
-                        class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
-                    >
-                        <BsJournalText class="text-lg"/>
-                        <span class="hidden sm:inline">
-              {"Botón template"}
-            </span>
-                    </button>
+                    {renderModalFooter()}
                 </div>
             </BookingModal>
         </>

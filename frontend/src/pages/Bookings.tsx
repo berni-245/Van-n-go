@@ -18,7 +18,7 @@ type BookingWithTarget = {
 };
 
 const BOOKING_TABS = [
-    BookingState.Pending, BookingState.Accepted, BookingState.Rejected, BookingState.Finished, BookingState.Canceled
+    BookingState.Pending, BookingState.Accepted, BookingState.Finished, BookingState.Rejected, BookingState.Canceled
 ] as const;
 
 const bookingsQuery = query(async (state: BookingState): Promise<BookingWithTarget[]> => {
@@ -45,7 +45,7 @@ const bookingsQuery = query(async (state: BookingState): Promise<BookingWithTarg
 
 export default function Bookings() {
     const [appState] = useAppState();
-    const isDriver = appState.user!.type === "driver";
+    const isAuthUserDriver = appState.user!.type === "driver";
     const t = useTranslator()
 
     const [selectedState, setSelectedState] = createSignal<BookingState>(BookingState.Pending);
@@ -99,11 +99,11 @@ export default function Bookings() {
                     <div class="mt-6 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                         <For each={bookingItems()}>
                             {({booking, targetUser, vehicle, originZone, destinationZone}) =>
-                                isDriver ? (
+                                isAuthUserDriver ? (
                                     <BookingCard
                                         booking={booking}
-                                        user={targetUser as Client}
-                                        userType="client"
+                                        cardUser={targetUser as Client}
+                                        cardUserType={"client"}
                                         vehicle={vehicle}
                                         originZone={originZone}
                                         destinationZone={destinationZone}
@@ -111,8 +111,8 @@ export default function Bookings() {
                                 ) : (
                                     <BookingCard
                                         booking={booking}
-                                        user={targetUser as Driver}
-                                        userType={"driver"}
+                                        cardUser={targetUser as Driver}
+                                        cardUserType={"driver"}
                                         vehicle={vehicle}
                                         originZone={originZone}
                                         destinationZone={destinationZone}
