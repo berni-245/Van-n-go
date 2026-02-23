@@ -22,7 +22,7 @@ import { useLocation, useNavigate } from "@solidjs/router";
 import { PaginatedResource, parsePageInfo } from "./pagination";
 
 // export const API_ROOT = `${window.location.protocol}//${window.location.host}/api/`;
-export const API_ROOT = `http://${window.location.hostname}:8080/api/`;
+export const API_ROOT = `http://pawserver.it.itba.edu.ar/paw-2024b-01/api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {

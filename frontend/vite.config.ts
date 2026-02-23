@@ -17,9 +17,7 @@ export default defineConfig({
     solidPlugin(),
     tailwindcss(),
   ],
-  server: {
-    port: 3000,
-  },
+  base: '/paw-2024b-01',
   build: {
     target: "esnext",
   },
