@@ -64,7 +64,6 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
 
       // await sleep(1000);
       const res = await fetch(request);
-      console.log(`API request: ${request.method} ${request.url} - Status: ${res.status}`);
       if (res.status === 401) {
         // NOTE: we could get here for example if the user altered the jwt to change the expiration time.
         console.log("Invalid credentials. Session reset");
