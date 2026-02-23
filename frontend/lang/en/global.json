@@ -118,7 +118,29 @@
       "acceptBooking": "Accept booking",
       "rejectBooking": "Reject booking",
       "finishBooking": "Finish booking",
-      "rejectedBooking": "The booking was rejected"
+      "rejectedBooking": "The booking was rejected",
+      "empty": {
+        "pending": {
+          "title": "No pending bookings",
+          "subtitle": "Requested Bookings will appear here."
+        },
+        "accepted": {
+          "title": "No accepted bookings",
+          "subtitle": "Confirmed bookings will show up here."
+        },
+        "finished": {
+          "title": "No finished bookings",
+          "subtitle": "Completed trips will be recorded here."
+        },
+        "rejected": {
+          "title": "No rejected bookings",
+          "subtitle": "Declined bookings will appear here."
+        },
+        "canceled": {
+          "title": "No canceled bookings",
+          "subtitle": "Bookings canceled by either party will show up here."
+        }
+      }
     },
     "editVehicle": {
       "errors": {

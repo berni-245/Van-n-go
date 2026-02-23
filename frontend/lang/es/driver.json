@@ -10,5 +10,12 @@
       "best_rating": "Mejor puntaje",
       "least_price": "Menor precio"
     }
+  },
+  "vehicles": {
+    "title": "Mis vehículos",
+    "empty": {
+      "title": "Todavía no tenés vehículos",
+      "subtitle": "Agregá tu primer vehículo para empezar a recibir reservas."
+    }
   }
 }

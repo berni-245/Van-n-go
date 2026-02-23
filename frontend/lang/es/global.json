@@ -118,7 +118,29 @@
       "acceptBooking": "Aceptar reserva",
       "rejectBooking": "Rechazar reserva",
       "finishBooking": "Terminar reserva",
-      "rejectedBooking": "La reserva fue rechazada"
+      "rejectedBooking": "La reserva fue rechazada",
+      "empty": {
+        "pending": {
+          "title": "No hay reservas pendientes",
+          "subtitle": "Las reservas solicitadas aparecerán aquí."
+        },
+        "accepted": {
+          "title": "No hay reservas aceptadas",
+          "subtitle": "Las reservas confirmadas se mostrarán aquí."
+        },
+        "finished": {
+          "title": "No hay reservas finalizadas",
+          "subtitle": "Los viajes completados quedarán registrados aquí."
+        },
+        "rejected": {
+          "title": "No hay reservas rechazadas",
+          "subtitle": "Las reservas rechazadas aparecerán aquí."
+        },
+        "canceled": {
+          "title": "No hay reservas canceladas",
+          "subtitle": "Las reservas canceladas se mostrarán aquí."
+        }
+      }
     },
     "editVehicle": {
       "errors": {
