@@ -242,7 +242,7 @@ function DriverCard(props: { driver: Driver }) {
                 <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-outline dark:border-outline-dark">
                     <ImageWithFallback
                         src={driver.profilePic}
-                        fallbackSrc="/images/defaultUserPfp.png"
+                        fallbackSrc="/images/default-user.png"
                         skipSrc={!driver.hasProfilePic}
                         class="h-full w-full object-cover"
                         alt={driver.username}
