@@ -1,6 +1,6 @@
 import {JSX} from "solid-js";
 import {Booking} from "@/api/types";
-import {useTranslator} from "@/app-context/AppContext.tsx";
+import {useApi, useTranslator} from "@/app-context/AppContext.tsx";
 
 export type UserInBookingRole = "driver" | "client";
 export type BookingState =
@@ -10,7 +10,20 @@ export type BookingState =
     | "REJECTED"
     | "CANCELED";
 
-export type BookingActionRenderer = (booking: Booking) => JSX.Element;
+export type BookingActionContext = {
+    api: ReturnType<typeof useApi>
+    t: ReturnType<typeof useTranslator>;
+    closeCurrentModal: () => void;
+
+    openUploadProofModal: (booking: Booking) => void;
+    openViewProofModal: (booking: Booking) => void;
+    openUploadReviewModal: (booking: Booking) => void;
+    openViewReviewModal: (booking: Booking) => void;
+
+    refreshBookings?: (newState: BookingState) => void;
+};
+
+export type BookingActionRenderer = (booking: Booking, ctx: BookingActionContext) => JSX.Element;
 
 const PrimaryButton = (props: JSX.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button
@@ -40,16 +53,15 @@ const InfoText = (props: { children: JSX.Element }) => (
   </span>
 );
 
-const t = useTranslator()
-
 export const bookingActions: Record<
     UserInBookingRole,
     Partial<Record<BookingState, BookingActionRenderer>>
 > = {
     driver: {
-        PENDING: () => <InfoText>{t("global.page.bookings.waitingReply")}</InfoText>,
+        PENDING: (_, {t}) =>
+            <InfoText>{t("global.page.bookings.waitingReply")}</InfoText>,
 
-        ACCEPTED: (booking) =>
+        ACCEPTED: (booking, {api, t, closeCurrentModal, openViewProofModal, openUploadProofModal, refreshBookings}) =>
             booking.proofOfPayment ? (
                 <PrimaryButton>{t("global.page.bookings.viewProofOfPayment")}</PrimaryButton>
             ) : (
@@ -59,7 +71,7 @@ export const bookingActions: Record<
                 </>
             ),
 
-        FINISHED: (booking) => (
+        FINISHED: (booking, {api, t, closeCurrentModal, openViewProofModal, openViewReviewModal, openUploadReviewModal, refreshBookings}) => (
             booking.review ? (
                 <>
                     <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
@@ -73,22 +85,23 @@ export const bookingActions: Record<
             )
         ),
 
-        REJECTED: () => (
+        REJECTED: (_, {t}) => (
             <InfoText>{t("global.page.bookings.rejectedBookingByDriver")}</InfoText>
         ),
 
-        CANCELED: () => <InfoText>{t("global.page.bookings.canceledBooking")}</InfoText>,
+        CANCELED: (_, {t}) =>
+            <InfoText>{t("global.page.bookings.canceledBooking")}</InfoText>,
     },
 
     client: {
-        PENDING: () => (
+        PENDING: (booking, {api, t, refreshBookings}) => (
             <>
                 <PrimaryButton>{t("global.page.bookings.acceptBooking")}</PrimaryButton>
                 <SecondaryButton>{t("global.page.bookings.rejectBooking")}</SecondaryButton>
             </>
         ),
 
-        ACCEPTED: (booking) =>
+        ACCEPTED: (booking,{api, t, closeCurrentModal, openViewProofModal, refreshBookings}) =>
             booking.hasProofOfPayment ? (
                 new Date(booking.date) <= new Date(Date.now()) ? (
                     <>
@@ -102,7 +115,7 @@ export const bookingActions: Record<
                 <SecondaryButton>{t("global.page.bookings.cancelBooking")}</SecondaryButton>
             ),
 
-        FINISHED: (booking) => (
+        FINISHED: (booking, {api, t, closeCurrentModal, openViewProofModal, openViewReviewModal, refreshBookings}) => (
             booking.review ? (  // todo cambiar por hasReview, necesita cambiar en bookingDTO también
             <>
                 <SecondaryButton>{t("global.page.bookings.viewProofOfPayment")}</SecondaryButton>
@@ -113,10 +126,11 @@ export const bookingActions: Record<
             )
         ),
 
-        REJECTED: () => (
+        REJECTED: (_, {t}) => (
             <InfoText>{t("global.page.bookings.rejectedBooking")}</InfoText>
         ),
 
-        CANCELED: () => <InfoText>{t("global.page.bookings.canceledBooking")}</InfoText>,
+        CANCELED: (_, {t}) =>
+            <InfoText>{t("global.page.bookings.canceledBooking")}</InfoText>,
     },
 };

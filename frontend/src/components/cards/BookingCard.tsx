@@ -1,10 +1,10 @@
 import {Component, createSignal, onCleanup, onMount} from "solid-js";
 import {BsChatDots, BsJournalText} from "solid-icons/bs";
-import {useAppState, useTranslator} from "@/app-context/AppContext";
+import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
 import {BookingModal} from "@components/modal/BookingModal";
-import {bookingActions} from "@components/bookings/BookingActions";
+import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
 
 type CardProps = {
     booking: Booking;
@@ -38,12 +38,33 @@ const BookingCard: Component<CardProps> = (props) => {
     }
 
     function renderModalFooter() {
+        const api = useApi();
+        const t = useTranslator();
+
+        const ctx: BookingActionContext = {
+            api,
+            t,
+            closeCurrentModal: () => setModalIsOpen(false),
+
+            openUploadProofModal: (booking) => {
+
+            },
+
+            openViewReviewModal: (booking) => {
+
+            },
+
+            openViewProofModal: (booking) => {
+
+            },
+        };
+
         const action =
             bookingActions[props.cardUserType]?.[
                 props.booking.state as keyof typeof bookingActions[typeof props.cardUserType]
                 ];
 
-        return action ? action(props.booking) : null;
+        return action ? action(props.booking, ctx) : null;
     }
 
     return (
