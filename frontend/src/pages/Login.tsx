@@ -80,12 +80,14 @@ export default function Login() {
 
 
                     <TextInput
+                        class="mx-auto"
                         label={t("global.username")}
                         value={username()}
                         onInput={(e) => setUsername(e.currentTarget.value)}
                     />
 
                     <PasswordInput
+                        class="mx-auto"
                         label={t("global.password")}
                         value={password()}
                         onInput={(e) => setPassword(e.currentTarget.value)}
