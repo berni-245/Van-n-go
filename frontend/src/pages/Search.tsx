@@ -10,7 +10,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 
 const SIZES = ["SMALL", "MEDIUM", "LARGE"] as const;
 const DAYS  = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"] as const;
-const SORT_ORDERS = ["ALPHABETICAL", "RATING", "PRICE"] as const;
+const SORT_ORDERS = ["ALPHABETICAL", "BEST_RATING", "LEAST_PRICE"] as const;
 
 export default function Search() {
     const t   = useTranslator();

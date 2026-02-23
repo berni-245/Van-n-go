@@ -8,7 +8,7 @@ import { createMediaType as createMediaTypes } from "../api/media-types";
 import { useLocation, useNavigate } from "@solidjs/router";
 
 // export const API_ROOT = `${window.location.protocol}//${window.location.host}/webapp/api/`;
-export const API_ROOT = `http://${window.location.hostname}:8080/webapp/api/`;
+export const API_ROOT = `http://${window.location.hostname}:8080/api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {
