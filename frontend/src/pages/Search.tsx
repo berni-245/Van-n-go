@@ -26,6 +26,7 @@ export default function Search() {
     const [sortOrder,  setSortOrder]  = createSignal("ALPHABETICAL");
     const [page,       setPage]       = createSignal(1);
 
+    const [zoneError, setZoneError] = createSignal<string | null>(null);
     const [submitted, setSubmitted] = createSignal<DriverSearchParams | null>(null);
 
     const results = createAsync(async () => {
@@ -36,6 +37,17 @@ export default function Search() {
 
     const handleSubmit = (e: SubmitEvent) => {
         e.preventDefault();
+
+        if (!zoneQuery().trim()) {
+            setZoneError(t("global.error.validation.NotBlank") as string);
+            return;
+        }
+        if (zoneId() === null) {
+            setZoneError(t("global.error.validation.InvalidZone") as string);
+            return;
+        }
+
+        setZoneError(null);
         setPage(1);
         setSubmitted(buildParams(1));
     };
@@ -76,11 +88,7 @@ export default function Search() {
                                 value={zoneQuery()}
                                 onInput={setZoneQuery}
                                 onSelect={setZoneId}
-                                error={
-                                    zoneQuery().trim() !== "" && zoneId() === null
-                                        ? (t("client.search.zoneInvalid" as any) as string)
-                                        : null
-                                }
+                                error={zoneError()}
                             />
                         </div>
 
