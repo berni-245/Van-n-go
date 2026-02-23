@@ -130,10 +130,14 @@ export function BookingModal(props: BookingModalProps) {
                         </div>
 
                     </div>
-                    {/* FOOTER (variable) */}
                     <div
-                        class="border-t border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20">
-                        {props.children}
+                        class="border-t border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20"
+                    >
+                        <div
+                            class="grid auto-cols-fr grid-flow-col gap-3"
+                        >
+                            {props.children}
+                        </div>
                     </div>
                 </div>
             </div>

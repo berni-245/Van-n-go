@@ -91,7 +91,19 @@
       "vehicleInformation": "Assigned vehicle information",
       "plate": "License plate",
       "description": "Description",
-      "hourlyRate": "Price per hour"
+      "hourlyRate": "Price per hour",
+      "waitingReply": "Waiting for reply from driver",
+      "viewProofOfPayment": "View proof of payment",
+      "cancelBooking": "Cancel booking",
+      "uploadProofOfPayment": "Upload proof of payment",
+      "viewReview": "View review",
+      "leaveReview": "Leave a review",
+      "rejectedBookingByDriver": "The booking was rejected by the driver",
+      "canceledBooking": "The booking was canceled",
+      "acceptBooking": "Accept booking",
+      "rejectBooking": "Reject booking",
+      "finishBooking": "Finish booking",
+      "rejectedBooking": "The booking was rejected"
     }
   },
   "password": "Password",
