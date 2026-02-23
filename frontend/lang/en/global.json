@@ -151,6 +151,35 @@
         "SATURDAY": "Saturday",
         "SUNDAY": "Sunday"
       }
+    },
+    "createVehicle": {
+      "title": "Create Vehicle",
+      "subtitle": "Add a new transport to your fleet. You will be able to upload photos and set availability later.",
+      "generalData": "General Data",
+      "labels": {
+        "plate": "License Plate (e.g., AB123CD)",
+        "rate": "Hourly Rate ($)",
+        "volume": "Volume (m³)",
+        "description": "Description"
+      },
+      "buttons": {
+        "creating": "Creating...",
+        "create": "Create Vehicle",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "required": "This field is required",
+        "plateRegex": "Invalid license plate format (e.g., ABC123 or AB123CD)",
+        "volume": "Volume must be between 1 and 100 m³",
+        "rate": "Hourly rate must be between $100 and $100,000",
+        "descriptionLength": "Description cannot exceed 255 characters",
+        "limitReached": "You have reached the maximum vehicle limit",
+        "access": "Could not create the vehicle",
+        "create": "Error creating vehicle"
+      },
+      "success": {
+        "create": "Vehicle successfully created!"
+      }
     }
   },
   "password": "Password",

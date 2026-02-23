@@ -4,7 +4,6 @@ import {Sidebar} from "@components/sidebar/Sidebar";
 import {
   FaSolidAdd,
   FaSolidBook,
-  FaSolidGear,
   FaSolidListDots,
   FaSolidSearch,
   FaSolidTruck,
@@ -42,7 +41,7 @@ const App: Component<{ children: JSX.Element }> = (props) => {
                 icon={<FaSolidListDots size={20} />}
               />
               <Sidebar.Item
-                href={`/driver/vehicle/new`}
+                href={`/driver/vehicles/new`}
                 text={t("global.page.vehicles.sidebar.newVehicle")}
                 icon={<FaSolidAdd size={20} />}
               />

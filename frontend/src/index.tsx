@@ -10,6 +10,7 @@ import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
 import Profile from "@/pages/Profile";
 import {lazy} from "solid-js";
+import VehicleCreate from "@/pages/CreateVehicle.tsx";
 
 const root = document.getElementById("root");
 
@@ -65,6 +66,8 @@ render(
             <Route path="/vehicles" component={Vehicles} />
             <Route path="/chat" component={Chat} />
             <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
+            <Route path="/vehicles/new" component={VehicleCreate}/>
+            <Route path="/bookings" component={Bookings}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/profile" component={Profile}/>
           </Route>

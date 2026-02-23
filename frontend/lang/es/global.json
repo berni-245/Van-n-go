@@ -151,6 +151,35 @@
         "SATURDAY": "Sábado",
         "SUNDAY": "Domingo"
       }
+    },
+    "createVehicle": {
+      "title": "Crear Vehículo",
+      "subtitle": "Añadí un nuevo transporte a tu flota. Podrás subir fotos y configurar su disponibilidad más adelante.",
+      "generalData": "Datos Generales",
+      "labels": {
+        "plate": "Patente (Ej: AB123CD)",
+        "rate": "Precio por hora ($)",
+        "volume": "Volumen (m³)",
+        "description": "Descripción"
+      },
+      "buttons": {
+        "creating": "Creando...",
+        "create": "Crear Vehículo",
+        "cancel": "Cancelar"
+      },
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "plateRegex": "El formato de la patente es inválido (Ej: ABC123 o AB123CD)",
+        "volume": "El volumen debe estar entre 1 y 100 m³",
+        "rate": "El precio por hora debe estar entre $100 y $100.000",
+        "descriptionLength": "La descripción no puede superar los 255 caracteres",
+        "limitReached": "Has alcanzado el límite de vehículos permitidos",
+        "access": "No se pudo crear el vehículo",
+        "create": "Error al crear el vehículo"
+      },
+      "success": {
+        "create": "¡Vehículo creado con éxito!"
+      }
     }
   },
   "password": "Contraseña",

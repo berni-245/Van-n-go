@@ -343,7 +343,17 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return this.getVehicle(driverId, vehicleId);
     },
 
-
+    async createVehicle(driverId: number, data: { plateNumber: string; volumeM3: number; hourlyRate: number; description: string }): Promise<Response> {
+      const url = new URL(`drivers/${driverId}/vehicles`, API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.vehicleCreate,
+        },
+        body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
 
 
     async updateVehicle(driverId: number, vehicleId: number, data: UpdateVehicle): Promise<Response> {
