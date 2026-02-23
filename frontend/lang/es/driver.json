@@ -1,0 +1,14 @@
+{
+  "search": {
+    "title": "Buscar un flete",
+    "sortOrder": "Ordenar por",
+    "maxPrice": "Precio máximo",
+    "minRating": "Puntaje mínimo (1–5)",
+    "noResults": "No se encontraron fletes para tu búsqueda.",
+    "order": {
+      "alphabetical": "Alfabético",
+      "best_rating": "Mejor puntaje",
+      "least_price": "Menor precio"
+    }
+  }
+}

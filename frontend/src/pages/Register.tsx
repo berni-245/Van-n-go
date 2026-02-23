@@ -38,7 +38,7 @@ export default function Register() {
         setErrors([]);
 
         if (password() !== confirmedPassword()) {
-            setErrors(["Passwords do not match"]);
+            setErrors([t("global.error.passwordMismatch") as string]);
             return;
         }
 
@@ -82,7 +82,7 @@ export default function Register() {
         } catch (err) {
             console.error(err);
             if (err instanceof Error) setErrors([err.message]);
-            else setErrors(["Unknown error"]);
+            else setErrors([t("global.error.unknown") as string]);
         } finally {
             setLoading(false);
         }
@@ -101,7 +101,7 @@ export default function Register() {
                             class="mb-4"
                         />
                         <TextInput
-                            label={t("global.email")}
+                            label={t("global.generic.word.email")}
                             value={email()}
                             onInput={(e) => setEmail(e.currentTarget.value)}
                             class="mb-4"
@@ -134,7 +134,7 @@ export default function Register() {
 
                         {type() === "driver" && (
                             <TextInput
-                                label="Description"
+                                label={t("global.generic.word.description") as string}
                                 value={description()}
                                 onInput={(e) => setDescription(e.currentTarget.value)}
                                 class="mb-4"
@@ -153,7 +153,7 @@ export default function Register() {
                             type="submit"
                             disabled={loading()}
                             category="info"
-                            text={loading() ? "Registering…" : "Register"}
+                            text={loading() ? t("global.registering") as string : t("global.register") as string}
                         />
                     </form>
 

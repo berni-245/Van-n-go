@@ -1,0 +1,6 @@
+{
+  "search": {
+    "selectZone": "Zone",
+    "zoneInvalid": "Please select a zone from the list"
+  }
+}

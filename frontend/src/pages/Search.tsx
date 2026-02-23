@@ -87,16 +87,16 @@ export default function Search() {
                         {/* Size */}
                         <div>
                             <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
-                                {t("generic.word.size" as any)}
+                                {t("global.generic.word.size" as any)}
                             </label>
                             <select
                                 class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={size()}
                                 onInput={(e) => setSize(e.currentTarget.value)}
                             >
-                                <option value="">{t("generic.word.any" as any)}</option>
+                                <option value="">{t("global.generic.word.any" as any)}</option>
                                 <For each={SIZES}>
-                                    {(s) => <option value={s}>{t(`generic.word.${s.toLowerCase()}` as any)}</option>}
+                                    {(s) => <option value={s}>{t(`global.generic.word.${s.toLowerCase()}` as any)}</option>}
                                 </For>
                             </select>
                         </div>
@@ -104,14 +104,14 @@ export default function Search() {
                         {/* Weekday */}
                         <div>
                             <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
-                                {t("generic.word.weekday" as any)}
+                                {t("global.generic.word.weekday" as any)}
                             </label>
                             <select
                                 class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={weekDay()}
                                 onInput={(e) => setWeekDay(e.currentTarget.value)}
                             >
-                                <option value="">{t("generic.word.any" as any)}</option>
+                                <option value="">{t("global.generic.word.any" as any)}</option>
                                 <For each={DAYS}>
                                     {(d) => <option value={d}>{t(`day.${d.toLowerCase()}` as any)}</option>}
                                 </For>
@@ -169,13 +169,13 @@ export default function Search() {
 
                         {/* Submit */}
                         <div class="flex items-end sm:col-span-2 lg:col-span-3">
-                            <Button type="submit" category="primary" text={t("components.availability.Search" as any) as string} />
+                            <Button type="submit" category="primary" text={t("global.components.availability.Search" as any) as string} />
                         </div>
                     </form>
                 </div>
 
                 {/* ── Results ── */}
-                <Suspense fallback={<p class="text-center text-on-surface dark:text-on-surface-dark">Loading…</p>}>
+                <Suspense fallback={<p class="text-center text-on-surface dark:text-on-surface-dark">{t("global.sr.loading" as any)}…</p>}>
                     <Show when={results()}>
                         {(data) => (
                             <>

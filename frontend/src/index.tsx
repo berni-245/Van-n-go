@@ -1,17 +1,16 @@
 /* @refresh reload */
 import "solid-devtools";
 import "@/App.css";
-import { render } from "solid-js/web";
+import {render} from "solid-js/web";
 import App from "@/App";
-import { Router, Route, Navigate } from "@solidjs/router";
-import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { AppContextProvider } from "@/app-context/AppContext";
-import { worker } from "@/api-mock/browser";
+import {Router, Route, Navigate} from "@solidjs/router";
+import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
+import {AppContextProvider} from "@/app-context/AppContext";
+import {worker} from "@/api-mock/browser";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import {AnonRoute, ClientRoute, DriverRoute} from "./components/ProtectedRoute";
-import { lazy } from "solid-js";
-import Search from "@/pages/Search.tsx";
-import Register from "@/pages/Register.tsx";
+import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
+import Profile from "@/pages/Profile";
+import {lazy} from "solid-js";
 
 const root = document.getElementById("root");
 
@@ -22,10 +21,15 @@ const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
+const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
+const Bookings = lazy(() => import("@/pages/Bookings"))
+const Register = lazy(() => import ("@/pages/Register"))
+const Search = lazy(() => import("@/pages/Search"))
+
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
-      "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?"
+    "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?"
   );
 }
 
@@ -39,10 +43,9 @@ async function enableMocking() {
 
 // await enableMocking();
 
-// const filters = {
-//   driverId: /^\d+$/,
-//   vehicleId: /^\d+$/,
-// };
+const filters = {
+  vehicleId: /^\d+$/,
+};
 
 render(
   () => (
@@ -63,17 +66,23 @@ render(
           <Route path="/" component={AnonRoute}>
             <Route path="/" component={Home} />
             <Route path="/login" component={Login} />
-            <Route path="/register" component={Register}/>
+            <Route path="/register" component={Register} />
+            <Route path="/search" component={Search} />
             <Route path="/about" component={About} />
           </Route>
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
-            <Route path="/bookings" component={Vehicles} />
-            <Route path="/settings" component={Settings} />
+            <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
+            <Route path="/bookings" component={Bookings}/>
+            <Route path="/settings" component={Settings}/>
+            <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="/client" component={ClientRoute}>
-              <Route path="/search" component={Search} />
+            <Route path="/search" component={Search}/>
+            <Route path="/bookings" component={Bookings}/>
+            <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="**" component={Error404} />
         </Router>

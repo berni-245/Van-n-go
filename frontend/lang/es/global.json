@@ -1,9 +1,17 @@
 {
   "bookings": "Reservas",
+  "fileDragDrop": {
+    "browse": "Buscar archivo",
+    "orDragAndDrop": "o arrastrar aquí",
+    "fileTypeNotSupported": "Tipo de archivo no soportado",
+    "fileTooLarge": "Archivo muy grande",
+    "max": "Máximo"
+  },
   "find-freight": "Encuentra tu flete",
   "home": "Inicio",
   "language": {
     "label": "Idioma",
+    "preferredLanguage": "Idioma preferido",
     "ENGLISH": "Inglés",
     "SPANISH": "Español"
   },
@@ -37,13 +45,34 @@
       "rate": "Precio por hora",
       "title": "Mis vehículos",
       "volume": "Tamaño"
+    },
+    "bookings": {
+      "morningDateTime": "{{date}} por la mañana",
+      "afternoonDateTime": "{{date}} por la tarde",
+      "eveningDateTime": "{{date}} por la noche",
+      "travelZones": "Desde {{originNeighborhood}} hasta {{destinationNeighborhood}}",
+      "pending": "PENDIENTE",
+      "rejected": "RECHAZADA",
+      "accepted": "ACEPTADA",
+      "canceled": "CANCELADA",
+      "finished": "TERMINADA",
+      "details": "Detalles",
+      "detailsForTimeShift": "Detalles para reserva durante {{timeShift}}",
+      "chat": "Chat",
+      "vehiclePlateNumber": "Asignado al vehículo con patente {{plateNumber}}",
+      "client": "Cliente",
+      "driver": "Conductor",
+      "route": "Ruta",
+      "vehicleInformation": "Información del vehículo asignado",
+      "plate": "Patente",
+      "description": "Descripción",
+      "hourlyRate": "Precio por hora"
     }
   },
   "password": "Contraseña",
-  "confirmPassword": "Confirmar Contraseña",
-  "email": "Correo Electrónico",
   "register": "Registrarse",
   "settings": "Configuración",
+  "profile": "Perfil",
   "sr": {
     "closeSidebar": "Cerrar barra lateral",
     "loading": "Cargando",
@@ -64,20 +93,9 @@
   "components": {
     "header": {
       "profile": "Perfil"
-    }
-  },
-  "generic": {
-    "word": {
-      "email": "Correo",
-      "zone": "Zona",
-      "description": "Descripción",
-      "cbu": "CBU/CVU/Alias",
-      "edit": "Editar",
-      "cancel": "Cancelar",
-      "send": "Enviar",
-      "password": "Contraseña",
-      "chooseFile": "Elegir archivo",
-      "profilePicture": "Imagen de perfil"
+    },
+    "availability": {
+      "Search": "Buscar"
     }
   },
   "global": {
@@ -105,14 +123,44 @@
       "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB."
     }
   },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión",
+      "size": "Tamaño",
+      "any": "Cualquiera",
+      "weekday": "Día",
+      "small": "Chico",
+      "medium": "Mediano",
+      "large": "Grande"
+    }
+  },
   "error": {
     "imageUnsupportedMediaType": "El archivo no es una imagen válida",
-    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)"
+    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "unknown": "Ocurrió un error desconocido"
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",
   "vehicles": "Vehículos",
-  "userType.label": "Elija su tipo de usuario",
-  "userType.client": "Cliente",
-  "userType.driver": "Conductor"
+  "confirmPassword": "Confirmar contraseña",
+  "registering": "Registrando…",
+  "userType": {
+    "label": "Tipo de cuenta",
+    "client": "Cliente",
+    "driver": "Conductor"
+  },
+  "zone": {
+    "label": "Zona"
+  }
 }
