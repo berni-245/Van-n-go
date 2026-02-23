@@ -125,9 +125,9 @@ export interface UpdateDriver extends UpdateUser {
   description?: string;
 }
 
-export type Message = {
-  id: number;
-  message: string;
+export interface Message {
+  content: string;
+  timeSent: string;
   sentByDriver: boolean;
-  sentAt: string; // ISO datetime
-};
+  self: string;
+}
