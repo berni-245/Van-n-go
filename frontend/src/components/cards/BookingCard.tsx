@@ -3,6 +3,7 @@ import {BsChatDots, BsJournalText} from "solid-icons/bs";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
+import {useNavigate} from "@solidjs/router";
 import {BookingModal} from "@components/modal/BookingModal";
 import {ReviewBookingModal} from "@components/modal/ReviewModal";
 import {BookingActionContext, bookingActions} from "@components/bookings/BookingActions";
@@ -20,6 +21,7 @@ const BookingCard: Component<CardProps> = (props) => {
     const t = useTranslator();
     const api = useApi();
     const [appState] = useAppState();
+    const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = createSignal(false);
     const [reviewOpen, setReviewOpen] = createSignal(false);
 
@@ -79,6 +81,13 @@ const BookingCard: Component<CardProps> = (props) => {
         return action ? action(props.booking, ctx) : null;
     }
 
+    const handleChat = () => {
+        const isDriver = appState.user!.type === "driver";
+        const driverId = isDriver ? appState.user!.id : props.cardUser.id;
+        const clientId = isDriver ? props.cardUser.id : appState.user!.id;
+        navigate(`/${appState.user!.type}/chat?driverId=${driverId}&clientId=${clientId}`);
+    };
+
     return (
         <>
             <article
@@ -132,6 +141,7 @@ const BookingCard: Component<CardProps> = (props) => {
 
                     <button
                         type="button"
+                        onClick={handleChat}
                         class="inline-flex items-center justify-center gap-2 rounded-radius bg-primary px-4 py-3 text-sm font-medium text-on-primary transition hover:opacity-80 dark:bg-primary-dark dark:text-on-primary-dark"
                     >
                         <BsChatDots class="text-lg"/>
