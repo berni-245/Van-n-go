@@ -1,14 +1,25 @@
 import {TokenPayload} from "@/api/jwt";
-import {Booking, BookingState, Client, Driver, Vehicle, Zone} from "@/api/types";
+import {
+  Availability,
+  Booking,
+  BookingState,
+  Client,
+  Driver,
+  UpdateClient,
+  UpdateDriver,
+  Vehicle,
+  Zone
+} from "@/api/types";
 import {AppState} from "@/app-context/appState";
 import {jwtDecode} from "jwt-decode";
 import {SetStoreFunction} from "solid-js/store";
 import {clientToUserState, driverToUserState} from "./userState";
 import {createMediaType as createMediaTypes} from "../api/media-types";
 import {useLocation, useNavigate} from "@solidjs/router";
+import {PaginatedResource, parsePageInfo} from "./pagination";
 
-// export const API_ROOT = `${window.location.protocol}//${window.location.host}/webapp/api/`;
-export const API_ROOT = `http://${window.location.hostname}:8080/webapp/api/`;
+// export const API_ROOT = `${window.location.protocol}//${window.location.host}/api/`;
+export const API_ROOT = `http://${window.location.hostname}:8080/api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {
@@ -45,7 +56,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         }
       }
 
-      // await sleep(1000);
+      await sleep(2000);
       const res = await fetch(request);
 
       if (res.status === 401) {
@@ -140,25 +151,122 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
     },
 
-    async getVehicles(driverId: number, page: number = 1): Promise<Vehicle[]> {
+    async getVehicles(driverId: number, page: number = 1): Promise<PaginatedResource<Vehicle>> {
       const req = apiRequest(`drivers/${driverId}/vehicles`, { queryParams: { page: page.toString() } });
       const res = await this.authFetch(req);
-      if (res.ok) return res.json();
-      else {
-        console.log("getVehicles error:", res);
-        return [];
+      const pages = parsePageInfo(res)!;
+      if (res.ok) {
+        const vehicles: Vehicle[] = await res.json();
+        return {data: vehicles, pages};
+      } else {
+        console.error("getVehicles error:", res);
         // switch (res.status) {
-        //     case 400: toast('Invalid page number');
-        //     return [];
+        //   case 400:
+        //     toaster.notify("Invalid page number", { type: "error" });
+        //     break;
         // }
+        return {data: [], pages};
       }
     },
 
-    async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
-      const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`);
+    async getZones(): Promise<Zone[]> {
+      const res = await this.authFetch(`${API_ROOT}zones`);
+      return res.json();
+    },
+
+    async getZonesRecord(): Promise<Record<number, Zone>> {
+      const req = apiRequest("zones", {headers: {Accept: MediaTypesV1.zones}});
       const res = await this.authFetch(req);
-      if (res.ok) return res.json()
-      else return null;
+      const zones = (await res.json()) as Zone[];
+      const zoneEntries = zones.map((z) => [z.id, z] as [number, Zone]);
+      return Object.fromEntries(zoneEntries) as Record<number, Zone>;
+    },
+
+    async getZoneByUri(uri: string): Promise<Zone> {
+      // Como el HATEOAS ya te da la ruta correcta, se la pasamos directo al authFetch
+      const res = await this.authFetch(uri);
+
+      if (!res.ok) {
+        throw new Error("No se pudo obtener la zona");
+      }
+      return res.json();
+    },
+
+    async updateClientInfo(id: number, data: UpdateClient): Promise<Response> {
+      const url = new URL(`clients/${id}`, API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.clientUpdate,
+        },
+        body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
+
+    async updateDriverInfo(id: number, data: UpdateDriver): Promise<Response> {
+      const url = new URL(`drivers/${id}`, API_ROOT);
+
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.driverUpdate,
+        },
+        body: JSON.stringify(data),
+      });
+
+      return await this.authFetch(req);
+    },
+
+    async putClientProfilePicture(clientId: number, file: File): Promise<Response> {
+      const url = new URL(`clients/${clientId}/profile-picture`, API_ROOT);
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type, // image/png o image/jpeg
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
+    },
+
+    async putDriverProfilePicture(driverId: number, file: File): Promise<Response> {
+      const url = new URL(`drivers/${driverId}/profile-picture`, API_ROOT);
+      const req = new Request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type, // image/png o image/jpeg
+        },
+        body: file,
+      });
+      return await this.authFetch(req);
+    },
+
+    async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
+      const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`, {
+        headers: {Accept: MediaTypesV1.vehicle},
+      });
+      const res = await this.authFetch(req);
+      if (res.ok) return res.json();
+      else {
+        console.error(`getVehicle ${driverId}@${vehicleId} error:`, res);
+        return null;
+      }
+    },
+
+    async getVehicleAvailability(url: string): Promise<Availability | null> {
+      const req = apiRequest(url, {headers: {Accept: MediaTypesV1.availability}});
+      const res = await this.authFetch(req);
+      // WARNING: as I'm asking directly for the url here I could potentially get a valid url
+      // but for another endpoint. In that case the response could be okay but the parsed json
+      // wouldn't be an `Availability`.
+      // Although now that I think about it specifying the `Accept`ed media type should cause
+      // a failed reponse in that case.
+      if (res.ok) return res.json();
+      else {
+        console.error(`getVehicleAvailability ${url} error:`, res);
+        return null;
+      }
     },
 
     async getVehicleFromURI(vehicleURI: string): Promise<Vehicle | null> {
@@ -182,23 +290,6 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       if (res.ok) return res.json();
       else return [];
     },
-
-    async getZones(): Promise<Zone[]> {
-      const res = await this.authFetch(`${API_ROOT}/zones`);
-      return res.json();
-    },
-
-    async getZone(zoneId: number): Promise<Zone | null> {
-      const res = await this.authFetch(apiRequest(`zones/${zoneId}`))
-      if (res.ok) return res.json();
-      else return null;
-    },
-
-    async getZoneFromURI(zoneURI: string) {
-      const id = extractNumericIdFromEndOfPath(zoneURI);
-      if (id === null) return null;
-      return this.getZone(id);
-    }
   };
 }
 
@@ -208,6 +299,7 @@ interface ApiRequestOpts {
 }
 
 function apiRequest(path: string, opts?: ApiRequestOpts): Request {
+  path = path.replace(API_ROOT, "");
   if (path.startsWith("/")) throw new Error("`path` should be relative");
   const url = new URL(path, API_ROOT);
   if (opts?.queryParams) {

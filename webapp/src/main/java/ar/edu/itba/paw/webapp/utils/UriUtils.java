@@ -16,7 +16,7 @@ public class UriUtils {
         response.link(buildPageUri(uriInfo, 1), "first");
         response.link(buildPageUri(uriInfo, maxPages), "last");
 
-        if (requestedPage > 1)
+        if (1 < requestedPage && requestedPage <= maxPages + 1)
             response.link(buildPageUri(uriInfo, requestedPage - 1), "prev");
 
 

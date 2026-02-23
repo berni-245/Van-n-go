@@ -3,17 +3,13 @@ import "solid-devtools";
 import "@/App.css";
 import {render} from "solid-js/web";
 import App from "@/App";
-import {Navigate, Route, Router} from "@solidjs/router";
+import {Router, Route, Navigate} from "@solidjs/router";
 import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
 import {AppContextProvider} from "@/app-context/AppContext";
 import {worker} from "@/api-mock/browser";
-import DriverAvailability from "@/pages/DriverAvailability";
-import Settings from "@/pages/Settings";
-import Login from "@/pages/Login";
-import Vehicles from "@/pages/Vehicles";
-import Bookings from "@/pages/Bookings";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import {AnonRoute, DriverRoute} from "./components/ProtectedRoute";
+import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
+import Profile from "@/pages/Profile";
 import {lazy} from "solid-js";
 
 const root = document.getElementById("root");
@@ -22,6 +18,12 @@ const root = document.getElementById("root");
 const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
 const About = lazy(() => import("@/pages/About"));
+const Login = lazy(() => import("@/pages/Login"));
+const DriverAvailability = lazy(() => import("@/pages/DriverAvailability"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const Vehicles = lazy(() => import("@/pages/Vehicles"));
+const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
+const Bookings = lazy(() => import("@/pages/Bookings"))
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
@@ -39,10 +41,9 @@ async function enableMocking() {
 
 // await enableMocking();
 
-// const filters = {
-//   driverId: /^\d+$/,
-//   vehicleId: /^\d+$/,
-// };
+const filters = {
+  vehicleId: /^\d+$/,
+};
 
 render(
   () => (
@@ -69,8 +70,16 @@ render(
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
+            <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
+            <Route path="/bookings" component={Bookings}/>
+            <Route path="/settings" component={Settings}/>
+            <Route path="/profile" component={Profile}/>
+          </Route>
+          <Route path="/client" component={ClientRoute}>
+            <Route path="/search" component={DriverAvailability}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/settings" component={Settings} />
+            <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="**" component={Error404} />
         </Router>

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -203,6 +204,7 @@ public class DriverServiceImplTest {
         final Vehicle existingVehicle = spy(Vehicle.class);
         existingBooking.setState(BookingState.ACCEPTED);
         existingBooking.setVehicle(existingVehicle);
+        existingBooking.setDate(LocalDate.now().minusDays(1));
         when(existingBooking.getDriver()).thenReturn(existingDriver);
 
         when(bookingDao.getDriverBookingById(existingDriver, BOOKING_ID)).thenReturn(existingBooking);

@@ -1,12 +1,18 @@
-import { Component, For } from "solid-js";
+import {Component, For, Ref} from "solid-js";
 import ImgSkeleton from "./ImgSkeleton";
 
-const VehicleGridSkeleton: Component = () => {
+type Props = {
+    ref?: Ref<HTMLDivElement>;
+    class?: string;
+};
+
+const VehicleGridSkeleton: Component<Props> = (props) => {
   return (
-    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+      <div ref={props.ref} class={`grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 ${props.class ?? ""}`}>
       <For each={[1, 2, 3, 4, 5, 6]}>
         {() => (
-          <div class="bg-surface-alt dark:bg-surface-dark-alt">
+            <div
+                class="bg-surface-alt dark:bg-surface-dark-alt max-w-sm rounded-radius border border-outline dark:border-outline-dark">
             <div class="h-44 md:h-64 relative">
               <ImgSkeleton />
             </div>

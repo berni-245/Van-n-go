@@ -52,6 +52,12 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>frontend</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
@@ -170,6 +176,11 @@
                     <version>3.2.2</version>
                     <configuration>
                         <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                        <webResources>
+                            <resource>
+                                <directory>../frontend/dist</directory>
+                            </resource>
+                        </webResources>
                     </configuration>
                 </plugin>
                 <plugin>

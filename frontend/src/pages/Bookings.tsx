@@ -30,8 +30,8 @@ const bookingsQuery = query(async (state: BookingState): Promise<BookingWithTarg
         bookings.map(async (booking) => {
             const targetUser = await (isDriver ? api.getClientFromURI(booking.client) : api.getDriverFromURI(booking.driver));
             const vehicle = await api.getVehicleFromURI(booking.vehicle)
-            const originZone = await api.getZoneFromURI(booking.originZone)
-            const destinationZone = await api.getZoneFromURI(booking.destinationZone)
+            const originZone = await api.getZoneByUri(booking.originZone)
+            const destinationZone = await api.getZoneByUri(booking.destinationZone)
 
             if (!targetUser || !vehicle || !originZone || !destinationZone) throw new Error("BookingUser, vehicle, originZone and destinationZone should never be null");
 

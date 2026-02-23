@@ -55,7 +55,7 @@ public class BookingController {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
         int maxPages = userService.getBookingPages(user, state);
-        Pagination.validatePage(page, maxPages);
+        Pagination.validatePage(page);
         List<BookingDTO> bookings = userService.getBookings(user, state, page).stream().map(BookingDTO.mapper(uriInfo)).toList();
         Response.ResponseBuilder response = Response.ok(new GenericEntity<>(bookings) {
         });

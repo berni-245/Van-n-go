@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
 @Table(name = "image")
 @Entity
@@ -14,7 +15,7 @@ public class Image {
     @Column(name = "bin", nullable = false)
     private byte[] data;
 
-    @Column(name = "file_name", length = 255, nullable = false)
+    @Column(name = "file_name", nullable = false)
     private String fileName;
 
     @Column(name = "type")
@@ -57,5 +58,16 @@ public class Image {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Image image)) return false;
+        return id.equals(image.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(data);
     }
 }

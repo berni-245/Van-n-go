@@ -103,7 +103,7 @@ public class VehicleJpaDao implements VehicleDao {
     @SuppressWarnings("unchecked")
     private List<Integer> getIds(Driver d, Zone z, Size size, Double priceMax, DayOfWeek weekday, Integer offset, boolean mustHaveAvailability) {
         StringBuilder nativeSql = new StringBuilder("""
-                SELECT DISTINCT v.id
+                SELECT v.id
                 FROM vehicle v
                 LEFT JOIN vehicle_zone vz ON v.id = vz.vehicle_id
                 LEFT JOIN vehicle_availability a ON v.id = a.vehicle_id
@@ -121,6 +121,8 @@ public class VehicleJpaDao implements VehicleDao {
         } else if (mustHaveAvailability) {
             nativeSql.append(" AND a.id IS NOT NULL ");
         }
+        nativeSql.append(" GROUP BY v.id, v.plate_number");
+        nativeSql.append(" ORDER BY v.plate_number");
         Query nativeQuery = em.createNativeQuery(nativeSql.toString())
                 .setParameter("driverId", d.getId());
         if (z != null)

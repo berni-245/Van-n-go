@@ -1,11 +1,19 @@
 {
   "bookings": "Bookings",
+  "fileDragDrop": {
+    "browse": "Browse",
+    "orDragAndDrop": "or drag and drop here",
+    "fileTypeNotSupported": "File type not supported",
+    "fileTooLarge": "File too large",
+    "max": "Max"
+  },
   "find-freight": "Find your freight",
   "home": "Home",
   "language": {
     "label": "Language",
-    "english": "English",
-    "spanish": "Spanish"
+    "preferredLanguage": "Preferred language",
+    "ENGLISH": "English",
+    "SPANISH": "Spanish"
   },
   "login": "Log in",
   "name": "English",
@@ -64,6 +72,7 @@
   "password": "Password",
   "register": "Register",
   "settings": "Settings",
+  "profile": "Profile",
   "sr": {
     "closeSidebar": "Close sidebar",
     "loading": "Loading",
@@ -80,6 +89,55 @@
     "label": "Theme",
     "light": "Light",
     "dark": "Dark"
+  },
+  "components": {
+    "header": {
+      "profile": "Profile"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Language"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No description uploaded yet",
+      "noCbu": "No CBU uploaded yet"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No rating available"
+    }
+  },
+  "user": {
+    "editUser": {
+      "changePassword": "Change password",
+      "newPassword": "New password",
+      "oldPassword": "Old password",
+      "confirmNewPassword": "Confirm new password",
+      "uploadPicture": "Upload profile picture. Supported formats: jpg, jpeg, png. Max size: 10MB."
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Email",
+      "zone": "Zone",
+      "description": "Description",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "send": "Send",
+      "password": "Password",
+      "chooseFile": "Choose file",
+      "profilePicture": "Profile picture",
+      "logout": "Logout"
+    }
+  },
+  "error": {
+    "imageUnsupportedMediaType": "Unsupported media type. Please upload an image file (jpg, jpeg, png).",
+    "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB."
   },
   "title": "Van N' Go",
   "username": "Username",

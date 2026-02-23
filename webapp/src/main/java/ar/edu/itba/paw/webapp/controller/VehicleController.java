@@ -7,6 +7,7 @@ import ar.edu.itba.paw.services.DriverService;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
 import ar.edu.itba.paw.webapp.dto.vehicle.*;
+import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.util.EnumMap;
@@ -59,7 +57,7 @@ public class VehicleController {
                 driver, zoneId, size, maxPrice,
                 weekDay, mustHaveAvailability
         );
-        Pagination.validatePage(page, maxPages);
+        Pagination.validatePage(page);
         List<Vehicle> vehiclesFromModel = ds.getVehicles(
                 driver, zoneId, size, maxPrice,
                 weekDay, page, mustHaveAvailability
@@ -126,14 +124,14 @@ public class VehicleController {
     @GET
     @Path("{vehicleId}/picture")
     @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+    public Response getVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @Context Request request) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         Integer imageId = vehicle.getImgId();
         if (imageId != null) {
             Image picture = imageService.getImage(imageId);
             if (picture.getData() != null) {
-                return Response.ok(picture.getData()).type(picture.getType()).build();
+                return CacheControlUtils.setEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
             }
         }
         return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)

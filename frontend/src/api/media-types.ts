@@ -8,5 +8,9 @@ export function createMediaType(version: Version) {
     driverAll: `application/vnd.driver.${version}+json`,
     driverPublic: `application/vnd.publicDriver.${version}+json`,
     driverUpdate: `application/vnd.driverUpdate.${version}+json`,
+      vehicle: `application/vnd.vehicle.${version}+json`,
+      availability: `application/vnd.availability.${version}+json`,
+      zones: `application/vnd.zoneList.${version}+json`,
+      zone: `application/vnd.zone.${version}+json`,
   } as const;
 }

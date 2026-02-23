@@ -1,22 +1,18 @@
-import { Component, JSX, Show, splitProps } from "solid-js";
+import {Component, JSX, Show, splitProps, For} from "solid-js";
 import { HtmlIdFamily } from "@/components/htmlIds";
 
 type InputProps = {
   label?: string;
-  error?: string;
+    error?: string | string[];
 } & JSX.InputHTMLAttributes<HTMLInputElement>;
 
 const TextInput: Component<InputProps> = (props) => {
   const inputId = new HtmlIdFamily("input");
 
-  const [_, filteredProps] = splitProps(props, [
-    "label",
-    "error",
-    "class",
-  ]);
+    const [_, filteredProps] = splitProps(props, ["label", "error", "class"]);
 
   return (
-    <div class={"flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark " + props.class}>
+      <div class={`flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark ${props.class ?? ""}`}>
       <label
         for={inputId.id()}
         class="flex w-fit items-center gap-1 pl-0.5 text-sm"
@@ -41,9 +37,21 @@ const TextInput: Component<InputProps> = (props) => {
         classList={{ "border-danger": !!props.error }}
         {...filteredProps}
       />
-      <Show when={props.error}>
-        <small class="pl-0.5 text-danger">{props.error}</small>
-      </Show>
+
+
+          <Show when={props.error}>
+              <div className="flex flex-col gap-0.5">
+                  <Show
+                      when={Array.isArray(props.error)}
+                      fallback={<small className="pl-0.5 text-danger">{props.error}</small>}
+                  >
+                      <For each={props.error as string[]}>
+                          {(err) => <small className="pl-0.5 text-danger">• {err}</small>}
+                      </For>
+                  </Show>
+              </div>
+          </Show>
+
     </div>
   );
 };

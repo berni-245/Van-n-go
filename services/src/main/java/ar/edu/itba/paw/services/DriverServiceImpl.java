@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.*;
@@ -212,7 +213,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public void finishBooking(Driver driver, int bookingId) {
         Booking booking = bookingDao.getDriverBookingById(driver, bookingId);
-        if (!booking.getState().equals(BookingState.ACCEPTED)) {
+        if (!booking.getState().equals(BookingState.ACCEPTED) || LocalDate.now().isBefore(booking.getDate())) {
             throw new ForbiddenBookingStateOperationException();
         }
         bookingDao.finishBooking(booking);
