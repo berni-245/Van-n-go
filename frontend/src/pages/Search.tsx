@@ -4,9 +4,8 @@ import { Title } from "@solidjs/meta";
 import { useApi, useTranslator } from "@/app-context/AppContext";
 import ZoneInput from "@/components/inputs/ZoneInput";
 import Button from "@/components/Button";
-import { Driver } from "@/api/types";
 import { DriverSearchParams } from "@/app-context/api";
-import ImageWithFallback from "@/components/ImageWithFallback";
+import DriverCard from "@/components/cards/SearchCard";
 
 const SIZES = ["SMALL", "MEDIUM", "LARGE"] as const;
 const DAYS  = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"] as const;
@@ -74,12 +73,12 @@ export default function Search() {
             <section class="mx-auto w-full max-w-5xl px-4 py-8">
 
                 {/* ── Search form ── */}
-                <div class="mb-8 rounded-radius border border-outline bg-surface-alt p-6 shadow dark:border-outline-dark dark:bg-surface-dark-alt">
-                    <h1 class="mb-6 text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
+                <div class="mb-6 rounded-radius border border-outline bg-surface-alt px-4 py-3 shadow dark:border-outline-dark dark:bg-surface-dark-alt">
+                    <h1 class="mb-3 text-lg font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
                         {t("driver.search.title" as any)}
                     </h1>
 
-                    <form onSubmit={handleSubmit} class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <form onSubmit={handleSubmit} class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
 
                         {/* Zone */}
                         <div class="sm:col-span-2 lg:col-span-3">
@@ -94,11 +93,11 @@ export default function Search() {
 
                         {/* Size */}
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
+                            <label class="mb-0.5 block text-xs font-medium text-on-surface dark:text-on-surface-dark">
                                 {t("global.generic.word.size" as any)}
                             </label>
                             <select
-                                class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
+                                class="block w-full rounded-md border border-outline bg-surface px-2 py-1.5 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={size()}
                                 onInput={(e) => setSize(e.currentTarget.value)}
                             >
@@ -111,11 +110,11 @@ export default function Search() {
 
                         {/* Weekday */}
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
+                            <label class="mb-0.5 block text-xs font-medium text-on-surface dark:text-on-surface-dark">
                                 {t("global.generic.word.weekday" as any)}
                             </label>
                             <select
-                                class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
+                                class="block w-full rounded-md border border-outline bg-surface px-2 py-1.5 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={weekDay()}
                                 onInput={(e) => setWeekDay(e.currentTarget.value)}
                             >
@@ -128,11 +127,11 @@ export default function Search() {
 
                         {/* Sort order */}
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
+                            <label class="mb-0.5 block text-xs font-medium text-on-surface dark:text-on-surface-dark">
                                 {t("driver.search.sortOrder" as any)}
                             </label>
                             <select
-                                class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
+                                class="block w-full rounded-md border border-outline bg-surface px-2 py-1.5 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={sortOrder()}
                                 onInput={(e) => setSortOrder(e.currentTarget.value)}
                             >
@@ -144,7 +143,7 @@ export default function Search() {
 
                         {/* Max price */}
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
+                            <label class="mb-0.5 block text-xs font-medium text-on-surface dark:text-on-surface-dark">
                                 {t("driver.search.maxPrice" as any)}
                             </label>
                             <input
@@ -152,7 +151,7 @@ export default function Search() {
                                 min="1000"
                                 step="1000"
                                 placeholder="—"
-                                class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
+                                class="block w-full rounded-md border border-outline bg-surface px-2 py-1.5 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={maxPrice()}
                                 onInput={(e) => setMaxPrice(e.currentTarget.value)}
                             />
@@ -160,7 +159,7 @@ export default function Search() {
 
                         {/* Min rating */}
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-on-surface dark:text-on-surface-dark">
+                            <label class="mb-0.5 block text-xs font-medium text-on-surface dark:text-on-surface-dark">
                                 {t("driver.search.minRating" as any)}
                             </label>
                             <input
@@ -169,7 +168,7 @@ export default function Search() {
                                 max="5"
                                 step="1"
                                 placeholder="—"
-                                class="block w-full rounded-md border border-outline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
+                                class="block w-full rounded-md border border-outline bg-surface px-2 py-1.5 text-sm focus:outline-none focus:ring dark:border-outline-dark dark:bg-surface-dark"
                                 value={minRating()}
                                 onInput={(e) => setMinRating(e.currentTarget.value)}
                             />
@@ -229,41 +228,5 @@ export default function Search() {
 
             </section>
         </>
-    );
-}
-
-// ---- Driver result card ------------------------------------------------
-
-function DriverCard(props: { driver: Driver }) {
-    const { driver } = props;
-    return (
-        <li class="flex flex-col overflow-hidden rounded-radius border border-outline bg-surface-alt shadow-sm transition hover:shadow-md dark:border-outline-dark dark:bg-surface-dark-alt">
-            <div class="flex items-center gap-4 p-4">
-                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-outline dark:border-outline-dark">
-                    <ImageWithFallback
-                        src={driver.profilePic}
-                        fallbackSrc="/images/default-user.png"
-                        skipSrc={!driver.hasProfilePic}
-                        class="h-full w-full object-cover"
-                        alt={driver.username}
-                    />
-                </div>
-                <div class="min-w-0">
-                    <p class="truncate font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
-                        {driver.username}
-                    </p>
-                    <Show when={driver.rating != null}>
-                        <p class="text-sm text-on-surface dark:text-on-surface-dark">
-                            {"★".repeat(driver.rating!)} {"☆".repeat(5 - driver.rating!)}
-                        </p>
-                    </Show>
-                </div>
-            </div>
-            <Show when={driver.description}>
-                <p class="border-t border-outline px-4 py-3 text-sm text-on-surface dark:border-outline-dark dark:text-on-surface-dark line-clamp-3">
-                    {driver.description}
-                </p>
-            </Show>
-        </li>
     );
 }
