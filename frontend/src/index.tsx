@@ -18,7 +18,6 @@ const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
 const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
-const Settings = lazy(() => import("@/pages/Settings"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
 const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
 const Bookings = lazy(() => import("@/pages/Bookings"))
@@ -67,14 +66,12 @@ render(
             <Route path="/chat" component={Chat} />
             <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
             <Route path="/bookings" component={Bookings}/>
-            <Route path="/settings" component={Settings}/>
             <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="/client" component={ClientRoute}>
             <Route path="/search" component={Search}/>
             <Route path="/bookings" component={Bookings}/>
             <Route path="/chat" component={Chat} />
-            <Route path="/settings" component={Settings} />
             <Route path="/profile" component={Profile}/>
           </Route>
           <Route path="**" component={Error404} />

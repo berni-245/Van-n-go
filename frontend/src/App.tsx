@@ -28,7 +28,6 @@ const App: Component<{ children: JSX.Element }> = (props) => {
           <Match when={appState.user?.type === "client"}>
             <Sidebar.Item href="/client/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20}/>}/>
             <Sidebar.Item href="/client/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20}/>}/>
-            <Sidebar.Item href="/client/settings" text={t("global.settings")} icon={<FaSolidGear size={20}/>}/>
             <Sidebar.Item href="/client/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20}/>}/>
           </Match>
           <Match when={appState.user?.type === "driver"}>
@@ -50,7 +49,6 @@ const App: Component<{ children: JSX.Element }> = (props) => {
 
             </Sidebar.CollapsibleItem>
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
-            <Sidebar.Item href="/driver/settings" text={t("global.settings")} icon={<FaSolidGear size={20}/>}/>
             <Sidebar.Item href="/driver/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20}/>}/>
           </Match>
           <Match when={!appState.user}>
