@@ -137,36 +137,36 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async registerClient(
-      data: { username: string; email: string; password: string; zoneId?: number },
-      lang: string
+        data: { username: string; email: string; password: string; zoneId?: number },
+        lang: string
     ): Promise<Response> {
       const url = new URL("clients", API_ROOT);
       return await fetch(
-        new Request(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": MediaTypesV1.clientCreate,
-            "Accept-Language": lang,
-          },
-          body: JSON.stringify(data),
-        })
+          new Request(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": MediaTypesV1.clientCreate,
+              "Accept-Language": lang,
+            },
+            body: JSON.stringify(data),
+          })
       );
     },
 
     async registerDriver(
-      data: { username: string; email: string; password: string; description: string },
-      lang: string
+        data: { username: string; email: string; password: string; description: string },
+        lang: string
     ): Promise<Response> {
       const url = new URL("drivers", API_ROOT);
       return await fetch(
-        new Request(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": MediaTypesV1.driverCreate,
-            "Accept-Language": lang,
-          },
-          body: JSON.stringify(data),
-        })
+          new Request(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": MediaTypesV1.driverCreate,
+              "Accept-Language": lang,
+            },
+            body: JSON.stringify(data),
+          })
       );
     },
 
@@ -400,13 +400,13 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return await this.authFetch(req);
     },
 
-    async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number }> {
+    async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number } | null> {
       const req = apiRequest("messages", {
         headers: { Accept: MediaTypesV1.messageList },
         queryParams: { driverId: String(driverId), clientId: String(clientId), page: String(page) },
       });
       const res = await this.authFetch(req);
-      if (!res.ok) return { messages: [], maxPages: 1 };
+      if (!res.ok) return null;
       const messages = (await res.json()) as Message[];
       const maxPages = parseTotalPages(res.headers.get("Link"), page);
       return { messages, maxPages };
