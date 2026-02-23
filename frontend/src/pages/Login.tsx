@@ -66,7 +66,7 @@ export default function Login() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} class="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} class="flex flex-col gap-4 items-center">
 
 
                     <Show when={errors().length > 0}>
