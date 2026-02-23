@@ -1,4 +1,4 @@
-import {TokenPayload} from "@/api/jwt";
+import { TokenPayload } from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -9,15 +9,15 @@ import {
   UpdateClient,
   UpdateDriver,
   Vehicle,
-  Zone
+  Zone,
 } from "@/api/types";
-import {AppState} from "@/app-context/appState";
-import {jwtDecode} from "jwt-decode";
-import {SetStoreFunction} from "solid-js/store";
-import {clientToUserState, driverToUserState} from "./userState";
-import {createMediaType as createMediaTypes} from "../api/media-types";
-import {useLocation, useNavigate} from "@solidjs/router";
-import {PaginatedResource, parsePageInfo} from "./pagination";
+import { AppState } from "@/app-context/appState";
+import { jwtDecode } from "jwt-decode";
+import { SetStoreFunction } from "solid-js/store";
+import { clientToUserState, driverToUserState } from "./userState";
+import { createMediaType as createMediaTypes } from "../api/media-types";
+import { useLocation, useNavigate } from "@solidjs/router";
+import { PaginatedResource, parsePageInfo } from "./pagination";
 
 // export const API_ROOT = `${window.location.protocol}//${window.location.host}/api/`;
 export const API_ROOT = `http://${window.location.hostname}:8080/api/`;
@@ -135,39 +135,48 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return this.getDriver(id, opts);
     },
 
-
-    async registerClient(data: { username: string; email: string; password: string; zoneId?: number }, lang: string): Promise<Response> {
+    async registerClient(
+      data: { username: string; email: string; password: string; zoneId?: number },
+      lang: string
+    ): Promise<Response> {
       const url = new URL("clients", API_ROOT);
-      return await fetch(new Request(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": MediaTypesV1.clientCreate,
-          "Accept-Language": lang,
-        },
-        body: JSON.stringify(data),
-      }));
+      return await fetch(
+        new Request(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": MediaTypesV1.clientCreate,
+            "Accept-Language": lang,
+          },
+          body: JSON.stringify(data),
+        })
+      );
     },
 
-    async registerDriver(data: { username: string; email: string; password: string; description: string }, lang: string): Promise<Response> {
+    async registerDriver(
+      data: { username: string; email: string; password: string; description: string },
+      lang: string
+    ): Promise<Response> {
       const url = new URL("drivers", API_ROOT);
-      return await fetch(new Request(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": MediaTypesV1.driverCreate,
-          "Accept-Language": lang,
-        },
-        body: JSON.stringify(data),
-      }));
+      return await fetch(
+        new Request(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": MediaTypesV1.driverCreate,
+            "Accept-Language": lang,
+          },
+          body: JSON.stringify(data),
+        })
+      );
     },
 
     async searchDrivers(params: DriverSearchParams): Promise<{ drivers: Driver[]; maxPages: number }> {
       const queryParams: Record<string, string> = {};
       if (params.originZoneId != null) queryParams.originZoneId = String(params.originZoneId);
-      if (params.size)               queryParams.size          = params.size;
-      if (params.maxPrice   != null) queryParams.maxPrice      = String(params.maxPrice);
-      if (params.weekDay)            queryParams.weekDay       = params.weekDay;
-      if (params.minRating  != null) queryParams.minRating     = String(params.minRating);
-      if (params.sortOrder)          queryParams.sortOrder     = params.sortOrder;
+      if (params.size) queryParams.size = params.size;
+      if (params.maxPrice != null) queryParams.maxPrice = String(params.maxPrice);
+      if (params.weekDay) queryParams.weekDay = params.weekDay;
+      if (params.minRating != null) queryParams.minRating = String(params.minRating);
+      if (params.sortOrder) queryParams.sortOrder = params.sortOrder;
       queryParams.page = String(params.page ?? 1);
 
       const req = apiRequest("drivers", {
@@ -207,7 +216,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const pages = parsePageInfo(res)!;
       if (res.ok) {
         const vehicles: Vehicle[] = await res.json();
-        return {data: vehicles, pages};
+        return { data: vehicles, pages };
       } else {
         console.error("getVehicles error:", res);
         // switch (res.status) {
@@ -215,7 +224,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         //     toaster.notify("Invalid page number", { type: "error" });
         //     break;
         // }
-        return {data: [], pages};
+        return { data: [], pages };
       }
     },
 
@@ -225,7 +234,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getZonesRecord(): Promise<Record<number, Zone>> {
-      const req = apiRequest("zones", {headers: {Accept: MediaTypesV1.zones}});
+      const req = apiRequest("zones", { headers: { Accept: MediaTypesV1.zones } });
       const res = await this.authFetch(req);
       const zones = (await res.json()) as Zone[];
       const zoneEntries = zones.map((z) => [z.id, z] as [number, Zone]);
@@ -312,7 +321,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
 
     async getVehicle(driverId: number, vehicleId: number): Promise<Vehicle | null> {
       const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}`, {
-        headers: {Accept: MediaTypesV1.vehicle},
+        headers: { Accept: MediaTypesV1.vehicle },
       });
       const res = await this.authFetch(req);
       if (res.ok) return res.json();
@@ -323,7 +332,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getVehicleAvailability(url: string): Promise<Availability | null> {
-      const req = apiRequest(url, {headers: {Accept: MediaTypesV1.availability}});
+      const req = apiRequest(url, { headers: { Accept: MediaTypesV1.availability } });
       const res = await this.authFetch(req);
       // WARNING: as I'm asking directly for the url here I could potentially get a valid url
       // but for another endpoint. In that case the response could be okay but the parsed json
@@ -348,7 +357,16 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         throw new Error("URI does not contain valid driverId and vehicleId");
       }
 
-      return this.getVehicle(driverId, vehicleId)
+      return this.getVehicle(driverId, vehicleId);
+    },
+
+    async putVehiclePicture(url: string, file: File) {
+      const req = apiRequest(url, { method: "put", headers: { "Content-Type": file.type }, body: file });
+      const res = await this.authFetch(req);
+      if (!res.ok) {
+        // TODO: idk better error handling and at least localization.
+        throw new Error("Failed to put image");
+      }
     },
 
     async getMessages(driverId: number, clientId: number, page: number = 1): Promise<{ messages: Message[]; maxPages: number }> {
@@ -379,17 +397,17 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async getBookings(userId: number, state: BookingState, page: number = 1): Promise<Booking[]> {
-      const req = apiRequest('bookings',
-          {queryParams: {userId: userId.toString(), state: state.toUpperCase(), page: page.toString()}});
-      const res = await this.authFetch(req)
+      const req = apiRequest("bookings", {
+        queryParams: { userId: userId.toString(), state: state.toUpperCase(), page: page.toString() },
+      });
+      const res = await this.authFetch(req);
       if (res.ok) return res.json();
       else return [];
     },
   };
 }
 
-interface ApiRequestOpts {
-  headers?: HeadersInit;
+interface ApiRequestOpts extends RequestInit {
   queryParams?: Record<string, string>;
 }
 
@@ -402,7 +420,7 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
       url.searchParams.set(param, opts.queryParams[param]);
     }
   }
-  const req = new Request(url, { headers: opts?.headers });
+  const req = new Request(url, { ...opts });
   return req;
 }
 
@@ -411,7 +429,7 @@ function jwtExpired(payload: TokenPayload): boolean {
 }
 
 function extractNumericIdFromEndOfPath(uri: string): number | null {
-  const idStr = uri.replace(/\/+$/, '').split('/').pop();
+  const idStr = uri.replace(/\/+$/, "").split("/").pop();
   if (!idStr) return null;
 
   const id = Number(idStr);

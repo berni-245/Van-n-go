@@ -1,8 +1,7 @@
 import { createAsync, createAsyncStore, query, redirect, useParams } from "@solidjs/router";
+import { Suspense, createMemo } from "solid-js";
 import { useApi, useAppState } from "../app-context/AppContext";
-import { createMemo, Suspense } from "solid-js";
 import { useToast } from "solid-notifications";
-import { Zone } from "../api/types";
 
 const vehicleQuery = query(async (vehicleId: number) => {
   const api = useApi();
@@ -32,32 +31,30 @@ const vehicleQuery = query(async (vehicleId: number) => {
 
 const zonesQuery = query(() => useApi().getZones(), "zones-query");
 
-function VehicleZones(props: { zoneIds: number[]; zones: Record<number, Zone> }) {
-  const vehicleZones = createMemo(() =>
-    props.zoneIds.flatMap((id) => {
-      const zone = props.zones[id];
-      return zone ? [zone] : [];
-    })
-  );
-
-  return <p>{JSON.stringify(vehicleZones())}</p>;
-}
-
 export default function VehicleEdit() {
   const params = useParams();
   const vehicleId = parseInt(params.vehicleId);
 
   const v = createAsyncStore(() => vehicleQuery(vehicleId));
   const zones = createAsync(() => zonesQuery());
+  const vehicleZones = () => {
+    return v.latest?.zoneIds.flatMap((id) => {
+      const zone = zones.latest?.[id];
+      return zone ? [zone] : [];
+    });
+  };
 
   return (
     <>
-      <Suspense fallback="Loading availability...">
-        <h3>Availability</h3>
-        <p>{JSON.stringify(v.latest?.availability)}</p>
-
-        <h3>Vehicle Zones</h3>
-        {v.latest && zones.latest && <VehicleZones zoneIds={v.latest.zoneIds} zones={zones.latest} />}
+      <Suspense fallback="Loading vehicle...">
+        <h3>Vehicle</h3>
+        <p>{JSON.stringify(v.latest?.vehicle)}</p>
+        <Suspense fallback="Loading availability...">
+          <h3>Availability</h3>
+          <p>{JSON.stringify(v.latest?.availability)}</p>
+          <h3>Vehicle Zones</h3>
+          <p>{JSON.stringify(vehicleZones())}</p>
+        </Suspense>
       </Suspense>
       <Suspense fallback="Loading zones...">
         <h3>Zones</h3>

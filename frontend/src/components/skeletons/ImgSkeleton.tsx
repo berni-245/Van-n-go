@@ -1,20 +1,20 @@
-import {Component, splitProps} from "solid-js";
+import { Component, splitProps } from "solid-js";
 import { useTranslator } from "~/src/app-context/AppContext";
 
 type ImgSkeletonProps = {
-    circular?: boolean;
-    class?: string;
+  circular?: boolean;
+  class?: string;
 };
 
 const ImgSkeleton: Component<ImgSkeletonProps> = (props) => {
   const t = useTranslator();
-    const [local, others] = splitProps(props, ["circular", "class"]);
+  const [local, others] = splitProps(props, ["circular", "class"]);
 
   return (
-      <div
-          class={`relative overflow-hidden ${local.circular ? "rounded-full" : "rounded-md"} ${local.class ?? ""}`}
-          {...others}
-      >
+    <div
+      class={`w-full h-full relative overflow-hidden ${local.circular ? "rounded-full" : "rounded-md"} ${local.class ?? ""}`}
+      {...others}
+    >
       <div
         class="absolute inset-0 flex items-center justify-center
                bg-on-surface/30 motion-safe:animate-pulse
@@ -36,7 +36,7 @@ const ImgSkeleton: Component<ImgSkeletonProps> = (props) => {
         </svg>
       </div>
 
-          <span class="sr-only">{t("global.sr.loading")}</span>
+      <span class="sr-only">{t("global.sr.loading")}</span>
     </div>
   );
 };
