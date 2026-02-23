@@ -1,27 +1,5 @@
 {
-  "bookings":{
-    "myBookings": "My bookings",
-    "morningDateTime": "{{date}} in the morning",
-    "afternoonDateTime": "{{date}} in the afternoon",
-    "eveningDateTime": "{{date}} in the evening",
-    "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
-    "pending": "Pending",
-    "rejected": "Rejected",
-    "accepted": "Accepted",
-    "canceled": "Canceled",
-    "finished": "Finished",
-    "details": "Details",
-    "detailsForTimeShift": "Details for booking during {{timeShift}}",
-    "chat": "Chat",
-    "vehiclePlateNumber": "Assigned to vehicle with plate number {{plateNumber}}",
-    "client": "Client",
-    "driver": "Driver",
-    "route": "Route",
-    "vehicleInformation": "Assigned vehicle information",
-    "plate": "License plate",
-    "description": "Description",
-    "hourlyRate": "Price per hour"
-  },
+  "bookings": "Bookings",
   "fileDragDrop": {
     "browse": "Browse",
     "orDragAndDrop": "or drag and drop here",
@@ -204,7 +182,6 @@
       "unauthorizedReview": "You are not authorized to review this user"
     }
   },
-
   "reviewForm": {
     "title": "Leave your review here",
     "rating": "Rating",

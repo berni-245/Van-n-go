@@ -69,8 +69,6 @@
       "vehicleInformation": "Información del vehículo asignado",
       "plate": "Patente",
       "description": "Descripción",
-      "ratingRequired": "Calificación requerida",
-      "unauthorizedReview": "No estás autorizado para escribir una reseña para esta reserva",
       "hourlyRate": "Precio por hora",
       "waitingReply": "Esperando respuesta del conductor",
       "viewProofOfPayment": "Ver comprobante de pago",
@@ -180,8 +178,18 @@
       "Min": "El valor es demasiado pequeño",
       "Max": "El valor es demasiado grande",
       "Pattern": "Formato inválido",
-      "InvalidZone": "Por favor seleccioná una zona válida de la lista"
+      "InvalidZone": "Por favor seleccioná una zona válida de la lista",
+      "ratingRequired": "La puntuación es obligatoria",
+      "unauthorizedReview": "No estás autorizado a dejar una reseña a este usuario"
     }
+  },
+  "reviewForm": {
+    "title": "Deja tu reseña",
+    "rating": "Calificación",
+    "comment": "Comentario",
+    "submit": "Enviar reseña",
+    "yourComment": "Tu comentario (opcional)",
+    "ratingPlaceholder": "Escribe tu reseña aquí..."
   },
   "title": "Van N' Go",
   "username": "Nombre de Usuario",
@@ -196,13 +204,6 @@
   "zone": {
     "label": "Zona"
   },
-  "reviewForm": {
-    "title": "Deja tu reseña",
-    "rating": "Calificación",
-    "comment": "Comentario",
-    "submit": "Enviar reseña",
-    "yourComment": "Tu comentario (opcional)",
-    "ratingPlaceholder": "Escribe tu reseña aquí...",
   "chat": {
     "loadOlder": "Cargar mensajes viejos",
     "inputPlaceholder": "Escribe un mensaje…",
