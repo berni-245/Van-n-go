@@ -94,15 +94,15 @@ export default function Login() {
                     />
 
 
-                    <div class="mt-4">
-                        <Button
-                            type="submit"
-                            disabled={loading()}
-                            category="primary"
-                            text={loading() ? t("global.loadingSession") : t("global.login")}
-                            class="w-full"
-                        />
-                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={loading()}
+                      category="primary"
+                      text={loading() ? t("global.loadingSession") : t("global.login")}
+                      class="mt-4"
+                    />
+
                 </form>
 
 
