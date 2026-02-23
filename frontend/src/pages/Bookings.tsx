@@ -32,8 +32,8 @@ const bookingsQuery = query(async (state: BookingState): Promise<BookingWithTarg
 
     return Promise.all(
         bookings.map(async (booking) => {
-            const targetUser = await (isDriver ? api.getClientFromURI(booking.client) : api.getDriverFromURI(booking.driver));
-            const vehicle = await api.getVehicleFromURI(booking.vehicle)
+            const targetUser = await (isDriver ? api.getClientByUri(booking.client) : api.getDriverByUri(booking.driver));
+            const vehicle = await api.getVehicleByUri(booking.vehicle)
             const originZone = await api.getZoneByUri(booking.originZone)
             const destinationZone = await api.getZoneByUri(booking.destinationZone)
 
@@ -50,17 +50,10 @@ export default function Bookings() {
     const t = useTranslator()
 
     const [selectedState, setSelectedState] = createSignal<BookingState>(BookingState.Pending);
-    const cache = new Map<BookingState, BookingWithTarget[]>();
 
     const bookingItems = createAsync(async () => {
         const state = selectedState();
-        if (cache.has(state)) {
-            return cache.get(state)!;
-        }
-
-        const result = await bookingsQuery(state);
-        cache.set(state, result);
-        return result;
+        return bookingsQuery(state);
     });
 
     return (

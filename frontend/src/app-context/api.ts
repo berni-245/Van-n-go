@@ -108,7 +108,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       else return null;
     },
 
-    async getClientFromURI(clientURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Client | null> {
+    async getClientByUri(clientURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Client | null> {
       const id = extractNumericIdFromEndOfPath(clientURI);
       if (id === null) return null;
       return this.getClient(id, opts);
@@ -127,7 +127,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       else return null;
     },
 
-    async getDriverFromURI(driverURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Driver | null> {
+    async getDriverByUri(driverURI: string, opts: VisibilityOpts = {visibility: "public"}): Promise<Driver | null> {
       const id = extractNumericIdFromEndOfPath(driverURI);
       if (id === null) return null;
       return this.getDriver(id, opts);
@@ -317,7 +317,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       }
     },
 
-    async getVehicleFromURI(vehicleURI: string): Promise<Vehicle | null> {
+    async getVehicleByUri(vehicleURI: string): Promise<Vehicle | null> {
       const segments = new URL(vehicleURI).pathname
           .split("/")
 
