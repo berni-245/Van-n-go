@@ -226,6 +226,7 @@ const FilePreview: Component<{ a?: string; file: File | undefined; dragOver: boo
         </Show>
       </Suspense>
 
+      {/* FIX: Idk what this is. It also has a repeated `when` condition for separate `Show` components. */}
       <Suspense fallback={<p>Loading preview...</p>}>
         <Show when={url() && !isImage()}>
           <div class="mt-3 flex justify-center" classList={{ "pointer-events-none": props.dragOver }}>

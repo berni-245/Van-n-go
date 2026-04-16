@@ -1,5 +1,6 @@
 import { Component, For } from "solid-js";
 import { useTranslator } from "../app-context/AppContext";
+import { A } from "@solidjs/router";
 
 type PaginationProps = {
   totalPages: number;
@@ -21,7 +22,7 @@ const Pagination: Component<PaginationProps> = (props) => {
     <nav aria-label={t("global.sr.pagination")}>
       <ul class="flex shrink-0 items-center gap-2 text-sm font-medium">
         <li>
-          <a
+          <A
             href="#"
             class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
             aria-label={t("global.sr.previousPage")}
@@ -40,19 +41,19 @@ const Pagination: Component<PaginationProps> = (props) => {
               />
             </svg>
             Previous
-          </a>
+          </A>
         </li>
 
         <For each={Array.from({ length: props.totalPages }, (_, index) => index + 1)}>
           {(page) => (
             <li>
-              <a
+              <A
                 href={pageHref(page)}
                 class="flex size-6 items-center justify-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
                 aria-label={t("global.sr.page", { number: page })}
               >
                 {page}
-              </a>
+              </A>
             </li>
           )}
         </For>
@@ -91,7 +92,7 @@ const Pagination: Component<PaginationProps> = (props) => {
         {/* </li> */}
 
         <li>
-          <a
+          <A
             href="#"
             class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
             aria-label={t("global.sr.nextPage")}
@@ -110,7 +111,7 @@ const Pagination: Component<PaginationProps> = (props) => {
                 clip-rule="evenodd"
               />
             </svg>
-          </a>
+          </A>
         </li>
       </ul>
     </nav>

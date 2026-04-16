@@ -49,6 +49,7 @@ render(
         <Link rel="icon" type="image/svg+xml" href="/Logo.svg" />
         <Title>Van N' Go</Title>
         <Router
+          base="/paw-2024b-01"
           root={(props) => (
             <AppContextProvider>
               <App>{props.children}</App>

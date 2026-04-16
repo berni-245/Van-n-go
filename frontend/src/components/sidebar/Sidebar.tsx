@@ -1,6 +1,7 @@
 import { children, Component, createSignal, JSX, ParentComponent, Show } from "solid-js";
 import { useTranslator } from "@/app-context/AppContext";
 import { CollapsibleItem, Item } from "./Item";
+import { A } from "@solidjs/router";
 
 const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
   const t = useTranslator();
@@ -35,10 +36,10 @@ const SidebarRoot: ParentComponent<{ logo: JSX.Element }> = (props) => {
         aria-label="sidebar navigation"
       >
         {/* <!-- logo  --> */}
-        <a href="/" class="ml-2 mb-12 w-fit text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
+        <A href="/" class="ml-2 mb-12 w-fit text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
           {resolvedLogo()}
           <span class="sr-only">{t("global.home")}</span>
-        </a>
+        </A>
 
         {/* <!-- sidebar links  --> */}
         <div class="w-full flex flex-col gap-2 overflow-y-auto pb-6">{resolvedChildren()}</div>

@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import PasswordInput from "@/components/inputs/PasswordInput";
 import TextInput from "@/components/inputs/TextInput";
 import {Title} from "@solidjs/meta";
-import {createAsync, useLocation, useNavigate} from "@solidjs/router";
+import {A, createAsync, useLocation, useNavigate} from "@solidjs/router";
 import {createSignal,  Show} from "solid-js";
 
 export default function Login() {
@@ -108,12 +108,12 @@ export default function Login() {
 
                 <div class="mt-6 text-center text-sm text-on-surface dark:text-on-surface-dark">
                     ¿No tenés una cuenta?{" "}
-                    <a
+                    <A
                         href="/register"
                         class="font-semibold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-primary-dark dark:focus-visible:outline-primary-dark"
                     >
                         {t("global.register")}
-                    </a>
+                    </A>
                 </div>
 
             </div>
