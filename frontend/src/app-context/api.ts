@@ -1,4 +1,4 @@
-import { TokenPayload } from "@/api/jwt";
+import {TokenPayload} from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -13,16 +13,16 @@ import {
   Vehicle,
   Zone,
 } from "@/api/types";
-import { AppState } from "@/app-context/appState";
-import { jwtDecode } from "jwt-decode";
-import { SetStoreFunction } from "solid-js/store";
-import { clientToUserState, driverToUserState } from "./userState";
-import { createMediaType as createMediaTypes } from "../api/media-types";
-import { useLocation, useNavigate } from "@solidjs/router";
-import { PaginatedResource, parsePageInfo } from "./pagination";
+import {AppState} from "@/app-context/appState";
+import {jwtDecode} from "jwt-decode";
+import {SetStoreFunction} from "solid-js/store";
+import {clientToUserState, driverToUserState} from "./userState";
+import {createMediaType as createMediaTypes} from "../api/media-types";
+import {useLocation, useNavigate} from "@solidjs/router";
+import {PaginatedResource, parsePageInfo} from "./pagination";
 
-// export const API_ROOT = `${window.location.protocol}//${window.location.host}/api/`;
-export const API_ROOT = `http://pawserver.it.itba.edu.ar/paw-2024b-01/api/`;
+// export const API_ROOT = `http://pawserver.it.itba.edu.ar/paw-2024b-01/api/`;
+export const API_ROOT = `http://${window.location.host}/paw-2024b-01/api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {
