@@ -32,8 +32,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private DriverService ds;
 
-    private final String REFRESH_HEADER_NAME = "vango-refresh-token";
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -44,30 +42,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         String token = header.split(" ")[1];
 
-        tryAuthenticateFromToken(token);
+        tryAuthenticateFromToken(token, response);
         chain.doFilter(request, response);
     }
 
-    private void tryAuthenticateFromToken(String token) {
-        Claims claims;
-        try {
-            claims = jwtTokenUtil.getPayloadFromToken(token);
-        } catch (Exception e) {
-            return;
-        }
+    private void tryAuthenticateFromToken(String token, HttpServletResponse response) {
+        Claims claims = jwtTokenUtil.getPayloadFromToken(token);
         String type = (String) claims.get("type");
         int id = (Integer) claims.get("id");
         boolean mustRefresh = claims.get("tokenType").equals(JwtTokenType.REFRESH.getType());
-        final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        PawUserDetails userDetails = getUserDetails(type, id, authorities);
+
+        PawUserDetails userDetails = getUserDetails(type, id);
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                userDetails, null, authorities
+                userDetails, null, userDetails.getAuthorities()
         );
-        if (mustRefresh) auth.setDetails("REFRESH");
+        if (mustRefresh) jwtTokenUtil.addTokensToResponse(userDetails, response);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    private PawUserDetails getUserDetails(String type, int id, Collection<SimpleGrantedAuthority> authorities) {
+    private PawUserDetails getUserDetails(String type, int id) {
+        final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if (type.equals("client")) {
             Client c = cs.findById(id);
             authorities.add(new SimpleGrantedAuthority(UserRole.CLIENT.role()));
