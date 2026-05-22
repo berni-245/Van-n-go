@@ -8,8 +8,10 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import javax.xml.bind.annotation.XmlTransient;
 
 @ValidPasswordChange
+@XmlTransient
 public abstract class UpdateUserDTO {
 
     @Length(min = 5, max = 20, message = "{Size.username}")

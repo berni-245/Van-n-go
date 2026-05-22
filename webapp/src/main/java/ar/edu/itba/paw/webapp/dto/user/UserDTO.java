@@ -6,8 +6,10 @@ import ar.edu.itba.paw.models.User;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlTransient;
 import java.net.URI;
 
+@XmlTransient
 public abstract class UserDTO {
 
     private int id;

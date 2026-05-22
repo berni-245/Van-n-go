@@ -8,7 +8,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlTransient
 public abstract class CreateUserDTO {
     @Length(min = 5, max = 20, message = "{Size.username}")
     @Pattern(regexp = "^[a-zA-Z]\\w*$", message = "{Pattern.username}")
