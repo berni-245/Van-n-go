@@ -25,6 +25,14 @@ public class CacheControlUtils {
         return setMaxTimeToResponse(responseBuilder, SHORT_MAX_CACHE_TIME);
     }
 
+    public static Response setNoCacheResponse(final Response.ResponseBuilder responseBuilder) {
+        final CacheControl cacheControl = new CacheControl();
+        cacheControl.setNoCache(true);
+        cacheControl.setNoStore(true);
+        cacheControl.setMustRevalidate(true);
+        return responseBuilder.cacheControl(cacheControl).build();
+    }
+
     public static Response setEtagToResponse(final Response.ResponseBuilder responseBuilder, Request request, int resourceHash) {
         CacheControl cacheControl = new CacheControl();
         cacheControl.setMaxAge(MAX_CONDITIONAL_CACHE_TIME);
