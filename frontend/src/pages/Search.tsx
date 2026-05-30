@@ -1,38 +1,85 @@
 import { createSignal, For, Show, Suspense } from "solid-js";
-import { createAsync } from "@solidjs/router";
+import { createAsync, useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
 import { useApi, useTranslator } from "@/app-context/AppContext";
 import ZoneInput from "@/components/inputs/ZoneInput";
 import Button from "@/components/Button";
-import { DriverSearchParams } from "@/app-context/api";
 import DriverCard from "@/components/cards/SearchCard";
 
-const SIZES = ["SMALL", "MEDIUM", "LARGE"] as const;
-const DAYS  = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"] as const;
+const SIZES       = ["SMALL", "MEDIUM", "LARGE"] as const;
+const DAYS        = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"] as const;
 const SORT_ORDERS = ["ALPHABETICAL", "BEST_RATING", "LEAST_PRICE"] as const;
 
 export default function Search() {
-    const t   = useTranslator();
-    const api = useApi();
+    const t        = useTranslator();
+    const api      = useApi();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    // form state
-    const [zoneQuery,  setZoneQuery]  = createSignal("");
-    const [zoneId,     setZoneId]     = createSignal<number | null>(null);
-    const [size,       setSize]       = createSignal("");
-    const [maxPrice,   setMaxPrice]   = createSignal("");
-    const [weekDay,    setWeekDay]    = createSignal("");
-    const [minRating,  setMinRating]  = createSignal("");
-    const [sortOrder,  setSortOrder]  = createSignal("ALPHABETICAL");
-    const [page,       setPage]       = createSignal(1);
+    // URL is the single source of truth for search state.
+    // searchParams is a reactive store — reads inside createAsync are tracked.
+    const [searchParams] = useSearchParams<{
+        zoneQuery?: string;
+        zoneId?:    string;
+        size?:      string;
+        maxPrice?:  string;
+        weekDay?:   string;
+        minRating?: string;
+        sortOrder?: string;
+        page?:      string;
+    }>();
 
-    const [zoneError, setZoneError] = createSignal<string | null>(null);
-    const [submitted, setSubmitted] = createSignal<DriverSearchParams | null>(null);
+    // Local signals drive the form controls only.
+    // They are initialised from the URL so the form is pre-filled when the
+    // user navigates back from BookingCreate (or shares/bookmarks the URL).
+    const [zoneQuery,  setZoneQuery]  = createSignal(searchParams.zoneQuery  ?? "");
+    const [zoneId,     setZoneId]     = createSignal<number | null>(
+        searchParams.zoneId ? Number(searchParams.zoneId) : null,
+    );
+    const [size,       setSize]       = createSignal(searchParams.size       ?? "");
+    const [maxPrice,   setMaxPrice]   = createSignal(searchParams.maxPrice   ?? "");
+    const [weekDay,    setWeekDay]    = createSignal(searchParams.weekDay    ?? "");
+    const [minRating,  setMinRating]  = createSignal(searchParams.minRating  ?? "");
+    const [sortOrder,  setSortOrder]  = createSignal(searchParams.sortOrder  ?? "ALPHABETICAL");
+    const [zoneError,  setZoneError]  = createSignal<string | null>(null);
 
+    // Derived current page from URL (no separate signal)
+    const page = () => (searchParams.page ? Number(searchParams.page) : 1);
+
+    // Results are driven entirely by URL params.
+    // Every navigate() call below triggers a re-run automatically.
     const results = createAsync(async () => {
-        const params = submitted();
-        if (!params) return null;
-        return api.searchDrivers(params);
+        if (!searchParams.zoneId) return null;
+        return api.searchDrivers({
+            originZoneId: Number(searchParams.zoneId),
+            size:         searchParams.size      || undefined,
+            maxPrice:     searchParams.maxPrice  ? Number(searchParams.maxPrice)  : undefined,
+            weekDay:      searchParams.weekDay   || undefined,
+            minRating:    searchParams.minRating ? Number(searchParams.minRating) : undefined,
+            sortOrder:    searchParams.sortOrder || undefined,
+            page:         page(),
+        });
     });
+
+    // Build a search URL string from the given params map.
+    // Undefined / empty values are omitted so the URL stays clean.
+    const buildSearchUrl = (overrides: Record<string, string | undefined>) => {
+        const sp = new URLSearchParams();
+        const merged: Record<string, string | undefined> = {
+            zoneQuery: zoneQuery(),
+            zoneId:    zoneId() !== null ? String(zoneId()) : undefined,
+            size:      size()      || undefined,
+            maxPrice:  maxPrice()  || undefined,
+            weekDay:   weekDay()   || undefined,
+            minRating: minRating() || undefined,
+            sortOrder: sortOrder() || undefined,
+            ...overrides,
+        };
+        Object.entries(merged).forEach(([k, v]) => {
+            if (v !== undefined && v !== "") sp.set(k, v);
+        });
+        return `${location.pathname}?${sp.toString()}`;
+    };
 
     const handleSubmit = (e: SubmitEvent) => {
         e.preventDefault();
@@ -47,24 +94,19 @@ export default function Search() {
         }
 
         setZoneError(null);
-        setPage(1);
-        setSubmitted(buildParams(1));
+        // navigate() (not setSearchParams) guarantees a new browser history entry,
+        // so the user can hit Back and return to a previous search state.
+        navigate(buildSearchUrl({ page: "1" }));
     };
-
-    const buildParams = (p: number): DriverSearchParams => ({
-        originZoneId: zoneId(),
-        size:         size()      || undefined,
-        maxPrice:     maxPrice()  ? Number(maxPrice())  : undefined,
-        weekDay:      weekDay()   || undefined,
-        minRating:    minRating() ? Number(minRating()) : undefined,
-        sortOrder:    sortOrder() || undefined,
-        page:         p,
-    });
 
     const goToPage = (p: number) => {
-        setPage(p);
-        setSubmitted(buildParams(p));
+        // Each page turn also pushes its own history entry.
+        navigate(buildSearchUrl({ page: String(p) }));
     };
+
+    // The URL that BookingCreate will use for its "Back to results" button.
+    // Encode the full current search URL so it survives as a query param.
+    const currentSearchUrl = () => location.pathname + location.search;
 
     return (
         <>
@@ -176,7 +218,11 @@ export default function Search() {
 
                         {/* Submit */}
                         <div class="flex items-end sm:col-span-2 lg:col-span-3">
-                            <Button type="submit" category="primary" text={t("global.components.availability.Search" as any) as string} />
+                            <Button
+                                type="submit"
+                                category="primary"
+                                text={t("global.components.availability.Search" as any) as string}
+                            />
                         </div>
                     </form>
                 </div>
@@ -196,7 +242,16 @@ export default function Search() {
                                 >
                                     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                         <For each={data().drivers}>
-                                            {(driver) => <DriverCard driver={driver} />}
+                                            {(driver) => (
+                                                // Pass the current search URL so BookingCreate can render
+                                                // a "Back to results" button that returns here exactly.
+                                                // If your SearchCard accepts a `from` prop, pass it directly.
+                                                // Otherwise, use the navigate approach shown in BookingCreate.
+                                                <DriverCard
+                                                    driver={driver}
+                                                    from={encodeURIComponent(currentSearchUrl())}
+                                                />
+                                            )}
                                         </For>
                                     </ul>
 
@@ -210,8 +265,8 @@ export default function Search() {
                                                 onClick={() => goToPage(page() - 1)}
                                             />
                                             <span class="text-sm text-on-surface dark:text-on-surface-dark">
-                        {page()} / {data().maxPages}
-                      </span>
+                                                {page()} / {data().maxPages}
+                                            </span>
                                             <Button
                                                 category="secondary"
                                                 text="→"
