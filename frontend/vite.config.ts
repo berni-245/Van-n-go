@@ -4,6 +4,8 @@ import devtools from "solid-devtools/vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+const BASE = "/paw-2024b-01/";
+
 export default defineConfig({
   plugins: [
     devtools({
@@ -17,8 +19,16 @@ export default defineConfig({
     solidPlugin(),
     tailwindcss(),
   ],
-  base: '/paw-2024b-01',
+  base: BASE,
   build: {
     target: "esnext",
+  },
+  server: {
+    proxy: {
+      [`${BASE}api`]: {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+    },
   },
 });

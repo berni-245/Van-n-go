@@ -3,13 +3,19 @@ import { ParentComponent } from "solid-js";
 import { useAppState } from "@/app-context/AppContext";
 import { UserType } from "@/api/jwt";
 
+const routerBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function stripBase(path: string): string {
+  return path.startsWith(routerBase) ? path.slice(routerBase.length) : path;
+}
+
 const ProtectedRoute: ParentComponent<{ userType: UserType }> = (props) => {
   const [appState] = useAppState();
   const location = useLocation();
 
   if (appState.user?.type !== props.userType) {
     console.log(`No '${props.userType}' detected for protected route, redirecting to '/login'`);
-    return <Navigate href="/login" state={{ from: location.pathname }} />;
+    return <Navigate href="/login" state={{ from: stripBase(location.pathname) }} />;
   }
 
   return <>{props.children}</>;

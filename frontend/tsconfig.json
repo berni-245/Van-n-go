@@ -25,8 +25,8 @@
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./src/*"],
-        "@components/*": ["./src/components/*"]
-    },
-    "include": ["src", "lang"]
-  }
+      "@components/*": ["./src/components/*"]
+    }
+  },
+  "include": ["src", "lang"]
 }

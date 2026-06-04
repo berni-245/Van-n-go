@@ -1,4 +1,4 @@
-import {TokenPayload} from "@/api/jwt";
+import { TokenPayload } from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -13,16 +13,15 @@ import {
   Vehicle,
   Zone,
 } from "@/api/types";
-import {AppState} from "@/app-context/appState";
-import {jwtDecode} from "jwt-decode";
-import {SetStoreFunction} from "solid-js/store";
-import {clientToUserState, driverToUserState} from "./userState";
-import {createMediaType as createMediaTypes} from "../api/media-types";
-import {useLocation, useNavigate} from "@solidjs/router";
-import {PaginatedResource, parsePageInfo} from "./pagination";
+import { AppState } from "@/app-context/appState";
+import { jwtDecode } from "jwt-decode";
+import { SetStoreFunction } from "solid-js/store";
+import { clientToUserState, driverToUserState } from "./userState";
+import { createMediaType as createMediaTypes } from "../api/media-types";
+import { useLocation, useNavigate } from "@solidjs/router";
+import { PaginatedResource, parsePageInfo } from "./pagination";
 
-// export const API_ROOT = `http://pawserver.it.itba.edu.ar/paw-2024b-01/api/`;
-export const API_ROOT = `http://${window.location.host}/paw-2024b-01/api/`;
+export const API_ROOT = `${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {
@@ -364,8 +363,15 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       return await res.json();
     },
 
-    async getBookedTimes(driverId: number, vehicleId: number, month: string, year: number): Promise<{date: string, shift: string}[]> {
-      const res = await this.authFetch(`${API_ROOT}/drivers/${driverId}/vehicles/${vehicleId}/booked-times?month=${month}&year=${year}`);
+    async getBookedTimes(
+      driverId: number,
+      vehicleId: number,
+      month: string,
+      year: number
+    ): Promise<{ date: string; shift: string }[]> {
+      const res = await this.authFetch(
+        `${API_ROOT}/drivers/${driverId}/vehicles/${vehicleId}/booked-times?month=${month}&year=${year}`
+      );
       if (!res.ok) return [];
       return await res.json();
     },
@@ -533,16 +539,16 @@ interface ApiRequestOpts extends RequestInit {
 }
 
 function apiRequest(path: string, opts?: ApiRequestOpts): Request {
-  path = path.replace(API_ROOT, "");
   if (path.startsWith("/")) throw new Error("`path` should be relative");
-  const url = new URL(path, API_ROOT);
+
+  let url = `${API_ROOT}${path}`;
+
   if (opts?.queryParams) {
-    for (const param in opts.queryParams) {
-      url.searchParams.set(param, opts.queryParams[param]);
-    }
+    const params = new URLSearchParams(opts.queryParams);
+    url += `?${params}`;
   }
-  const req = new Request(url, { ...opts });
-  return req;
+
+  return new Request(url, opts);
 }
 
 function jwtExpired(payload: TokenPayload): boolean {

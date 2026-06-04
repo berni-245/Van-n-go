@@ -1,15 +1,15 @@
 /* @refresh reload */
 import "solid-devtools";
 import "@/App.css";
-import {render} from "solid-js/web";
+import { render } from "solid-js/web";
 import App from "@/App";
-import {Router, Route, Navigate} from "@solidjs/router";
-import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
-import {AppContextProvider} from "@/app-context/AppContext";
+import { Router, Route, Navigate } from "@solidjs/router";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
+import { AppContextProvider } from "@/app-context/AppContext";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import {AnonRoute, DriverRoute, ClientRoute} from "./components/ProtectedRoute";
+import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
 import Profile from "@/pages/Profile";
-import {lazy} from "solid-js";
+import { lazy } from "solid-js";
 import VehicleCreate from "@/pages/CreateVehicle.tsx";
 import BookingCreate from "@/pages/BookingCreate.tsx";
 
@@ -22,18 +22,16 @@ const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
 const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
-const Bookings = lazy(() => import("@/pages/Bookings"))
-const Register = lazy(() => import ("@/pages/Register"))
-const Search = lazy(() => import("@/pages/Search"))
-const Chat= lazy(() => import("@/pages/Chat"))
-
+const Bookings = lazy(() => import("@/pages/Bookings"));
+const Register = lazy(() => import("@/pages/Register"));
+const Search = lazy(() => import("@/pages/Search"));
+const Chat = lazy(() => import("@/pages/Chat"));
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
     "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?"
   );
 }
-
 
 const filters = {
   vehicleId: /^\d+$/,
@@ -49,7 +47,7 @@ render(
         <Link rel="icon" type="image/svg+xml" href="/Logo.svg" />
         <Title>Van N' Go</Title>
         <Router
-          base="/paw-2024b-01"
+          base={import.meta.env.BASE_URL}
           root={(props) => (
             <AppContextProvider>
               <App>{props.children}</App>
@@ -67,19 +65,19 @@ render(
             <Route path="/" component={() => <Navigate href="vehicles" />} />
             <Route path="/vehicles" component={Vehicles} />
             <Route path="/chat" component={Chat} />
-            <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters}/>
-            <Route path="/vehicles/new" component={VehicleCreate}/>
-            <Route path="/bookings" component={Bookings}/>
-            <Route path="/bookings" component={Bookings}/>
-            <Route path="/profile" component={Profile}/>
+            <Route path="/vehicles/:vehicleId" component={VehicleEdit} matchFilters={filters} />
+            <Route path="/vehicles/new" component={VehicleCreate} />
+            <Route path="/bookings" component={Bookings} />
+            <Route path="/bookings" component={Bookings} />
+            <Route path="/profile" component={Profile} />
           </Route>
           <Route path="/client" component={ClientRoute}>
             <Route path="/" component={() => <Navigate href="search" />} />
-            <Route path="/search" component={Search}/>
-            <Route path="/bookings" component={Bookings}/>
+            <Route path="/search" component={Search} />
+            <Route path="/bookings" component={Bookings} />
             <Route path="/chat" component={Chat} />
-            <Route path="/profile" component={Profile}/>
-            <Route path={"/bookings/:driverId/new"} component={BookingCreate}/>
+            <Route path="/profile" component={Profile} />
+            <Route path={"/bookings/:driverId/new"} component={BookingCreate} />
           </Route>
           <Route path="**" component={Error404} />
         </Router>
