@@ -58,7 +58,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>index</servlet-name>
-        <jsp-file>/index.html</jsp-file>
+        <jsp-file>/WEB-INF/spa.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>index</servlet-name>
