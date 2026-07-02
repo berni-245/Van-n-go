@@ -13,12 +13,31 @@ const SORT_ORDERS = ["ALPHABETICAL", "BEST_RATING", "LEAST_PRICE"] as const;
 export default function Search() {
     const t        = useTranslator();
     const api      = useApi();
-    const navigate = useNavigate();
     const location = useLocation();
+    const navigate = useNavigate();
 
-    // URL is the single source of truth for search state.
-    // searchParams is a reactive store — reads inside createAsync are tracked.
-    const [searchParams] = useSearchParams<{
+    const stripBase = (pathname: string) => {
+        const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+        return base && pathname.startsWith(base)
+            ? pathname.slice(base.length) || "/"
+            : pathname;
+    };
+
+    const applySearchParams = (params: Record<string, string | undefined>) => {
+        const qs = new URLSearchParams();
+        for (const [key,value] of Object.entries(params)) {
+            if(value !== undefined && value !== null && value !== "") {
+                qs.set(key,value);
+            }
+        }
+        const query = qs.toString();
+        const path  = stripBase(location.pathname);
+        navigate(query ? `${path}?${query}` : path, {
+            scroll: false,
+        });
+    };
+
+    const [searchParams, setSearchParams] = useSearchParams<{
         zoneQuery?: string;
         zoneId?:    string;
         size?:      string;
@@ -29,9 +48,6 @@ export default function Search() {
         page?:      string;
     }>();
 
-    // Local signals drive the form controls only.
-    // They are initialised from the URL so the form is pre-filled when the
-    // user navigates back from BookingCreate (or shares/bookmarks the URL).
     const [zoneQuery,  setZoneQuery]  = createSignal(searchParams.zoneQuery  ?? "");
     const [zoneId,     setZoneId]     = createSignal<number | null>(
         searchParams.zoneId ? Number(searchParams.zoneId) : null,
@@ -43,11 +59,8 @@ export default function Search() {
     const [sortOrder,  setSortOrder]  = createSignal(searchParams.sortOrder  ?? "ALPHABETICAL");
     const [zoneError,  setZoneError]  = createSignal<string | null>(null);
 
-    // Derived current page from URL (no separate signal)
     const page = () => (searchParams.page ? Number(searchParams.page) : 1);
 
-    // Results are driven entirely by URL params.
-    // Every navigate() call below triggers a re-run automatically.
     const results = createAsync(async () => {
         if (!searchParams.zoneId) return null;
         return api.searchDrivers({
@@ -60,26 +73,6 @@ export default function Search() {
             page:         page(),
         });
     });
-
-    // Build a search URL string from the given params map.
-    // Undefined / empty values are omitted so the URL stays clean.
-    const buildSearchUrl = (overrides: Record<string, string | undefined>) => {
-        const sp = new URLSearchParams();
-        const merged: Record<string, string | undefined> = {
-            zoneQuery: zoneQuery(),
-            zoneId:    zoneId() !== null ? String(zoneId()) : undefined,
-            size:      size()      || undefined,
-            maxPrice:  maxPrice()  || undefined,
-            weekDay:   weekDay()   || undefined,
-            minRating: minRating() || undefined,
-            sortOrder: sortOrder() || undefined,
-            ...overrides,
-        };
-        Object.entries(merged).forEach(([k, v]) => {
-            if (v !== undefined && v !== "") sp.set(k, v);
-        });
-        return `${location.pathname}?${sp.toString()}`;
-    };
 
     const handleSubmit = (e: SubmitEvent) => {
         e.preventDefault();
@@ -94,19 +87,25 @@ export default function Search() {
         }
 
         setZoneError(null);
-        // navigate() (not setSearchParams) guarantees a new browser history entry,
-        // so the user can hit Back and return to a previous search state.
-        navigate(buildSearchUrl({ page: "1" }));
+        applySearchParams({
+            zoneQuery: zoneQuery(),
+            zoneId:    zoneId() !== null ? String(zoneId()) : undefined,
+            size:      size()      || undefined,
+            maxPrice:  maxPrice()  || undefined,
+            weekDay:   weekDay()   || undefined,
+            minRating: minRating() || undefined,
+            sortOrder: sortOrder() || undefined,
+            page:      "1",
+        });
     };
 
     const goToPage = (p: number) => {
-        // Each page turn also pushes its own history entry.
-        navigate(buildSearchUrl({ page: String(p) }));
+        applySearchParams({ page: String(p) });
     };
 
-    // The URL that BookingCreate will use for its "Back to results" button.
-    // Encode the full current search URL so it survives as a query param.
-    const currentSearchUrl = () => location.pathname + location.search;
+    const currentSearchUrl = () => {
+        return stripBase(location.pathname) + location.search;
+    };
 
     return (
         <>
