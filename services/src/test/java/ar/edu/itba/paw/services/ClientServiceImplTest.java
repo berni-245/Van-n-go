@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
 import ar.edu.itba.paw.exceptions.ForbiddenClientCancelBookingException;
+import ar.edu.itba.paw.exceptions.ReviewAlreadySentException;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.BookingDao;
 import org.junit.Test;
@@ -25,6 +27,8 @@ public class ClientServiceImplTest {
     private ClientServiceImpl clientService;
 
     private static final Integer BOOKING_ID = 1;
+    private static final Integer RATING = 5;
+    private static final String REVIEW = "Great service";
 
     @Test
     public void testCancelBooking() {
@@ -60,6 +64,31 @@ public class ClientServiceImplTest {
         when(bookingDao.getClientBookingById(existingClient, BOOKING_ID)).thenReturn(existingBooking);
 
         clientService.cancelBooking(existingClient, BOOKING_ID);
+
+        fail();
+    }
+
+    @Test(expected = ReviewAlreadySentException.class)
+    public void testSetBookingRatingAndReviewAlreadySent() {
+        final Booking existingBooking = spy(Booking.class);
+        final Client existingClient = spy(Client.class);
+        existingBooking.setState(BookingState.FINISHED);
+        existingBooking.setRating(4); // Already has a rating, so it will throw an exception
+
+        when(bookingDao.getClientBookingById(existingClient, BOOKING_ID)).thenReturn(existingBooking);
+        clientService.setBookingRatingAndReview(existingClient, BOOKING_ID, RATING, REVIEW);
+
+        fail();
+    }
+
+    @Test(expected = ForbiddenBookingStateOperationException.class)
+    public void testSetBookingRatingAndReviewForbiddenState() {
+        final Booking existingBooking = spy(Booking.class);
+        final Client existingClient = spy(Client.class);
+        existingBooking.setState(BookingState.ACCEPTED); // Since not FINISHED, it will throw an exception
+
+        when(bookingDao.getClientBookingById(existingClient, BOOKING_ID)).thenReturn(existingBooking);
+        clientService.setBookingRatingAndReview(existingClient, BOOKING_ID, RATING, REVIEW);
 
         fail();
     }

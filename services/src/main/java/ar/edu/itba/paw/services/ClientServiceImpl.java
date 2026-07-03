@@ -108,6 +108,9 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
         Booking b = getBookingById(user, bookingId);
         if (b.getRating() != null)
             throw new ReviewAlreadySentException();
+        if (!b.getState().equals(BookingState.FINISHED))
+            throw new ForbiddenBookingStateOperationException();
+
         bookingDao.setRatingAndReview(b, rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
     }
