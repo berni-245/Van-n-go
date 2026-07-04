@@ -3,12 +3,16 @@ import ImgSkeleton from "@components/skeletons/ImgSkeleton";
 import {createAsync, query} from "@solidjs/router";
 import {useApi} from "../app-context/AppContext";
 
+function resolveAssetUrl(path: string): string {
+  return path.startsWith("/") ? `${import.meta.env.BASE_URL}${path.slice(1)}` : path;
+}
+
 const imageQuery = query(async (src: string | undefined, fallbackSrc: string) => {
   if (src) {
     const res = await useApi().authFetch(src);
     if (res.ok) return res.blob();
   }
-  const fallback = await fetch(fallbackSrc);
+  const fallback = await fetch(resolveAssetUrl(fallbackSrc));
   if (!fallback.ok) throw new Error(`Failed to fetch default image '${fallbackSrc}'`);
   return fallback.blob();
 }, "image-blob-with-fallback");

@@ -1,6 +1,6 @@
-import { useTranslator } from "@/app-context/AppContext";
+import {useTranslator} from "@/app-context/AppContext";
 import Button from "../components/Button";
-import { FaSolidPeopleGroup, FaSolidSearch, FaSolidTruck } from "solid-icons/fa";
+import {FaSolidPeopleGroup, FaSolidSearch, FaSolidTruck} from "solid-icons/fa";
 
 export default function Home() {
   const t = useTranslator();
@@ -10,7 +10,7 @@ export default function Home() {
       <div class="relative overflow-hidden px-4 py-5 my-5 text-center">
         <img
           class="absolute top-0 left-0 w-full h-full object-cover object-center brightness-75 blur-sm"
-          src="/images/welcome-picture.webp"
+          src={`${import.meta.env.BASE_URL}images/welcome-picture.webp`}
           alt="Background"
         />
         <div class="relative text-white">
