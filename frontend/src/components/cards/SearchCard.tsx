@@ -1,6 +1,6 @@
-import { Show } from "solid-js";
-import { A } from "@solidjs/router";
-import { Driver } from "@/api/types";
+import {Show} from "solid-js";
+import {A} from "@solidjs/router";
+import {Driver} from "@/api/types";
 import ImageWithFallback from "@/components/ImageWithFallback";
 
 import "./SearchCard.css";
@@ -20,7 +20,6 @@ export default function SearchCard(props: SearchCardProps) {
                         <ImageWithFallback
                             src={driver.profilePic}
                             fallbackSrc="/images/default-user.png"
-                            skipSrc={!driver.hasProfilePic}
                             class="h-full w-full object-cover"
                             alt={driver.username}
                         />

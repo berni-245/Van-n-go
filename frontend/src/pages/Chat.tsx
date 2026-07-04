@@ -1,9 +1,9 @@
-import { createSignal, For, Show, onMount } from "solid-js";
-import { useSearchParams, useNavigate } from "@solidjs/router";
-import { Title } from "@solidjs/meta";
-import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
+import {createSignal, For, onMount, Show} from "solid-js";
+import {useNavigate, useSearchParams} from "@solidjs/router";
+import {Title} from "@solidjs/meta";
+import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import ImageWithFallback from "@/components/ImageWithFallback";
-import { Message } from "@/api/types";
+import {Message} from "@/api/types";
 
 export default function Chat() {
     const t = useTranslator();
@@ -25,7 +25,6 @@ export default function Chat() {
 
     const [otherName, setOtherName] = createSignal("");
     const [otherPfp, setOtherPfp] = createSignal<string | undefined>(undefined);
-    const [otherHasPfp, setOtherHasPfp] = createSignal(false);
 
     let messagesEndRef: HTMLDivElement | undefined;
 
@@ -65,14 +64,12 @@ export default function Chat() {
             if (client) {
                 setOtherName(client.username);
                 setOtherPfp(client.profilePic);
-                setOtherHasPfp(client.hasProfilePic ?? false);
             }
         } else {
             const driver = await api.getDriver(driverId(), { visibility: "public" });
             if (driver) {
                 setOtherName(driver.username);
                 setOtherPfp(driver.profilePic);
-                setOtherHasPfp(driver.hasProfilePic ?? false);
             }
         }
     };
@@ -148,7 +145,6 @@ export default function Chat() {
                         <ImageWithFallback
                             src={otherPfp()}
                             fallbackSrc="/images/default-user.png"
-                            skipSrc={!otherHasPfp()}
                             class="h-full w-full object-cover"
                             alt={otherName()}
                         />
@@ -206,7 +202,6 @@ export default function Chat() {
                                                         <ImageWithFallback
                                                             src={otherPfp()}
                                                             fallbackSrc="/images/default-user.png"
-                                                            skipSrc={!otherHasPfp()}
                                                             class="h-full w-full object-cover"
                                                             alt={otherName()}
                                                         />

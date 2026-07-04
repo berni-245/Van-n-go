@@ -1,4 +1,4 @@
-import {createAsync, query, action, useSubmission} from "@solidjs/router";
+import {action, createAsync, query, useSubmission} from "@solidjs/router";
 import {createEffect, Match, Show, Suspense, Switch} from "solid-js";
 import {Title} from "@solidjs/meta";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
@@ -72,7 +72,6 @@ export default function Profile() {
                                                     <ImageWithFallback
                                                         src={user().profilePic}
                                                         fallbackSrc="/images/default-user.png"
-                                                        skipSrc={!user().hasProfilePic}
                                                         class="h-full w-full object-cover transition-all duration-200 group-hover:brightness-75"
                                                         alt="Profile Picture"
                                                     />

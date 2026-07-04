@@ -1,4 +1,4 @@
-import {Component, createSignal, onCleanup, onMount} from "solid-js";
+import {Component, createResource, createSignal, onCleanup, onMount} from "solid-js";
 import {BsChatDots, BsJournalText} from "solid-icons/bs";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import {Booking, BookingState, Client, Driver, Vehicle, Zone} from "@/api/types";
@@ -31,6 +31,16 @@ const BookingCard: Component<CardProps> = (props) => {
     const [uploadProofOpen, setUploadProofOpen] = createSignal(false);
     const [viewProofOpen, setViewProofOpen] = createSignal(false);
 
+    const proofBranchingStates = [BookingState.Accepted, BookingState.Finished];
+    const [proofOfPaymentExists] = createResource(
+        () => (modalIsOpen() && proofBranchingStates.includes(props.booking.state) ? props.booking.id : false),
+        (id) => api.hasProofOfPayment(id)
+    );
+    const [reviewExists] = createResource(
+        () => (modalIsOpen() && props.booking.state === BookingState.Finished ? props.booking.id : false),
+        (id) => api.hasReview(id)
+    );
+
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
             setModalIsOpen(false);
@@ -55,9 +65,18 @@ const BookingCard: Component<CardProps> = (props) => {
     }
 
     function renderModalFooter() {
+        if (props.booking.state === BookingState.Accepted && proofOfPaymentExists.loading) {
+            return <span class="col-span-full text-center text-sm text-on-surface-weak dark:text-on-surface-dark-weak">{t("global.sr.loading")}</span>;
+        }
+        if (props.booking.state === BookingState.Finished && (proofOfPaymentExists.loading || reviewExists.loading)) {
+            return <span class="col-span-full text-center text-sm text-on-surface-weak dark:text-on-surface-dark-weak">{t("global.sr.loading")}</span>;
+        }
+
         const ctx: BookingActionContext = {
             api,
             t,
+            proofOfPaymentExists: proofOfPaymentExists() ?? false,
+            reviewExists: reviewExists() ?? false,
             closeCurrentModal: () => {
                 setModalIsOpen(false)
                 setReviewOpen(false)
@@ -130,7 +149,6 @@ const BookingCard: Component<CardProps> = (props) => {
                             alt={t("global.sr.vehiclePicture")}
                             src={props.cardUser.profilePic}
                             fallbackSrc="/images/blank-user.jpg"
-                            skipSrc={!props.cardUser.hasProfilePic}
                         />
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { TokenPayload } from "@/api/jwt";
+import {TokenPayload} from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -13,13 +13,13 @@ import {
   Vehicle,
   Zone,
 } from "@/api/types";
-import { AppState } from "@/app-context/appState";
-import { jwtDecode } from "jwt-decode";
-import { SetStoreFunction } from "solid-js/store";
-import { clientToUserState, driverToUserState } from "./userState";
-import { createMediaType as createMediaTypes } from "../api/media-types";
-import { useLocation, useNavigate } from "@solidjs/router";
-import { PaginatedResource, parsePageInfo } from "./pagination";
+import {AppState} from "@/app-context/appState";
+import {jwtDecode} from "jwt-decode";
+import {SetStoreFunction} from "solid-js/store";
+import {clientToUserState, driverToUserState} from "./userState";
+import {createMediaType as createMediaTypes} from "../api/media-types";
+import {useLocation, useNavigate} from "@solidjs/router";
+import {PaginatedResource, parsePageInfo} from "./pagination";
 
 export const API_ROOT = `${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
@@ -500,6 +500,16 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       const res = await this.authFetch(req);
       if (res.ok) return res.json();
       else return null;
+    },
+
+    async hasReview(bookingId: number): Promise<boolean> {
+      return (await this.getReview(bookingId)) !== null;
+    },
+
+    async hasProofOfPayment(bookingId: number): Promise<boolean> {
+      const req = apiRequest(`bookings/${bookingId}/proof-of-payment`);
+      const res = await this.authFetch(req);
+      return res.ok;
     },
 
     async postReview(bookingId: number, rating: number, comments: string): Promise<Response> {

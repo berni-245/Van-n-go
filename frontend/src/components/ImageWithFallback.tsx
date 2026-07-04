@@ -1,30 +1,26 @@
-import { JSX, Component, Suspense, splitProps } from "solid-js";
+import {Component, JSX, splitProps, Suspense} from "solid-js";
 import ImgSkeleton from "@components/skeletons/ImgSkeleton";
-import { createAsync, query } from "@solidjs/router";
-import { useApi } from "../app-context/AppContext";
+import {createAsync, query} from "@solidjs/router";
+import {useApi} from "../app-context/AppContext";
 
-const imageQuery = query(async (src: string, fallbackSrc: string, skipSrc?: boolean) => {
-  let res: Response;
-  if (skipSrc) res = await fetch(fallbackSrc);
-  else {
-    res = await useApi().authFetch(src);
-    if (!res.ok) {
-      res = await fetch(fallbackSrc);
-      if (!res.ok) throw new Error(`Failed to fetch default image '${fallbackSrc}'`);
-    }
+const imageQuery = query(async (src: string | undefined, fallbackSrc: string) => {
+  if (src) {
+    const res = await useApi().authFetch(src);
+    if (res.ok) return res.blob();
   }
-  return res.blob();
+  const fallback = await fetch(fallbackSrc);
+  if (!fallback.ok) throw new Error(`Failed to fetch default image '${fallbackSrc}'`);
+  return fallback.blob();
 }, "image-blob-with-fallback");
 
 type ImageProps = {
-  src: string;
+  src?: string;
   fallbackSrc: string;
-  skipSrc?: boolean;
 } & JSX.ImgHTMLAttributes<HTMLImageElement>;
 
 const ImageWithFallback: Component<ImageProps> = (props) => {
   const blobSrc = createAsync(() =>
-    imageQuery(props.src, props.fallbackSrc, props.skipSrc).then((blob) => {
+    imageQuery(props.src, props.fallbackSrc).then((blob) => {
       return URL.createObjectURL(blob);
     })
   );

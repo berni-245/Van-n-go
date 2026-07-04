@@ -1,9 +1,9 @@
 import {Component, Ref} from "solid-js";
-import { HtmlIdFamily } from "@components/htmlIds";
-import { useTranslator } from "@/app-context/AppContext";
-import { Vehicle } from "@/api/types";
+import {HtmlIdFamily} from "@components/htmlIds";
+import {useTranslator} from "@/app-context/AppContext";
+import {Vehicle} from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
-import { A } from "@solidjs/router";
+import {A} from "@solidjs/router";
 
 type CardProps = {
   vehicle: Vehicle;
@@ -23,7 +23,6 @@ const VehicleCard: Component<CardProps> = (props) => {
             alt={t("global.sr.vehiclePicture")}
             src={props.vehicle.picture}
             fallbackSrc="/images/default-vehicle.png"
-            skipSrc={!props.vehicle.hasPicture}
           />
         </div>
         <div class="flex flex-col gap-4 p-6">

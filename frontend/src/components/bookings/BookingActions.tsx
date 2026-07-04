@@ -9,6 +9,9 @@ export type BookingActionContext = {
     t: ReturnType<typeof useTranslator>;
     closeCurrentModal: () => void;
 
+    proofOfPaymentExists: boolean;
+    reviewExists: boolean;
+
     openUploadProofModal: () => void;
     openViewProofModal: () => void;
     openUploadReviewModal: () => void;
@@ -54,8 +57,8 @@ export const bookingActions: Record<
         PENDING: (_, {t}) =>
             <InfoText>{t("global.page.bookings.waitingReply")}</InfoText>,
 
-        ACCEPTED: (booking, {api, t, closeCurrentModal, openViewProofModal, openUploadProofModal, refreshBookings}) =>
-            booking.proofOfPayment ? (
+        ACCEPTED: (booking, {api, t, closeCurrentModal, openViewProofModal, openUploadProofModal, refreshBookings, proofOfPaymentExists}) =>
+            proofOfPaymentExists ? (
                 <PrimaryButton
                     onClick={() => {
                         openViewProofModal()
@@ -85,9 +88,9 @@ export const bookingActions: Record<
                 </>
             ),
 
-        FINISHED: (booking, {t, closeCurrentModal, openViewProofModal, openViewReviewModal, openUploadReviewModal}) => (
-            booking.review ? (
-                <>
+        FINISHED: (_, {t, closeCurrentModal, openViewProofModal, openViewReviewModal, openUploadReviewModal, proofOfPaymentExists, reviewExists}) => (
+            <>
+                {proofOfPaymentExists && (
                     <SecondaryButton
                         onClick={() => {
                             closeCurrentModal()
@@ -96,6 +99,8 @@ export const bookingActions: Record<
                     >
                         {t("global.page.bookings.viewProofOfPayment")}
                     </SecondaryButton>
+                )}
+                {reviewExists ? (
                     <PrimaryButton
                         onClick={() => {
                             closeCurrentModal()
@@ -104,27 +109,17 @@ export const bookingActions: Record<
                     >
                         {t("global.page.bookings.viewReview")}
                     </PrimaryButton>
-                </>
                 ) : (
-            <>
-                <SecondaryButton
-                    onClick={() => {
-                        closeCurrentModal()
-                        openViewProofModal()
-                    }}
-                >
-                    {t("global.page.bookings.viewProofOfPayment")}
-                </SecondaryButton>
-                <PrimaryButton
-                    onClick={() => {
-                        closeCurrentModal()
-                        openUploadReviewModal()
-                    }}
-                >
-                    {t("global.page.bookings.leaveReview")}
-                </PrimaryButton>
+                    <PrimaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openUploadReviewModal()
+                        }}
+                    >
+                        {t("global.page.bookings.leaveReview")}
+                    </PrimaryButton>
+                )}
             </>
-            )
         ),
 
         REJECTED: (_, {t}) => (
@@ -159,8 +154,8 @@ export const bookingActions: Record<
             </>
         ),
 
-        ACCEPTED: (booking,{api, t, closeCurrentModal, openViewProofModal, refreshBookings}) =>
-            booking.hasProofOfPayment ? (
+        ACCEPTED: (booking,{api, t, closeCurrentModal, openViewProofModal, refreshBookings, proofOfPaymentExists}) =>
+            proofOfPaymentExists ? (
                 new Date(booking.date) <= new Date(Date.now()) ? (
                     <>
                         <SecondaryButton
@@ -203,36 +198,29 @@ export const bookingActions: Record<
                 </SecondaryButton>
             ),
 
-        FINISHED: (booking, {t, closeCurrentModal, openViewProofModal, openViewReviewModal}) => (
-            booking.review ? (  // todo cambiar por hasReview, necesita cambiar en bookingDTO también
+        FINISHED: (_, {t, closeCurrentModal, openViewProofModal, openViewReviewModal, proofOfPaymentExists, reviewExists}) => (
             <>
-                <SecondaryButton
-                    onClick={() => {
-                        closeCurrentModal()
-                        openViewProofModal()
-                    }}
-                >
-                    {t("global.page.bookings.viewProofOfPayment")}
-                </SecondaryButton>
-                <SecondaryButton
-                    onClick={() => {
-                        closeCurrentModal()
-                        openViewReviewModal()
-                    }}
-                >
-                    {t("global.page.bookings.viewReview")}
-                </SecondaryButton>
+                {proofOfPaymentExists && (
+                    <SecondaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openViewProofModal()
+                        }}
+                    >
+                        {t("global.page.bookings.viewProofOfPayment")}
+                    </SecondaryButton>
+                )}
+                {reviewExists && (
+                    <SecondaryButton
+                        onClick={() => {
+                            closeCurrentModal()
+                            openViewReviewModal()
+                        }}
+                    >
+                        {t("global.page.bookings.viewReview")}
+                    </SecondaryButton>
+                )}
             </>
-            ) : (
-                <SecondaryButton
-                    onClick={() => {
-                        closeCurrentModal()
-                        openViewProofModal()
-                    }}
-                >
-                    {t("global.page.bookings.viewProofOfPayment")}
-                </SecondaryButton>
-            )
         ),
 
         REJECTED: (_, {t}) => (

@@ -106,7 +106,7 @@ public class BookingController {
     public Response getReview(@PathParam("bookingId") int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         if (b.getRating() == null)
-            Response.status(Response.Status.NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).build();
         return Response.ok(BookingReviewDTO.fromBooking(uriInfo, b)).build();
     }
 

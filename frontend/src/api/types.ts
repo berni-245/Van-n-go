@@ -15,7 +15,6 @@ interface BaseUser {
   email: string;
   preferredLanguage: Language;
   profilePic: string;
-  hasProfilePic: boolean;
   self: string;
   pendingBookings: string;
   acceptedBookings: string;
@@ -43,7 +42,6 @@ export interface Vehicle {
   description: string;
   self: string;
   picture: string;
-  hasPicture: boolean;
   driver: string;
   availability: string;
   bookedTimes: string;
@@ -58,7 +56,6 @@ export interface Booking {
   originZone: string;
   destinationZone: string;
   proofOfPayment: string;
-  hasProofOfPayment: boolean;
   state: BookingState;
   date: string;
   jobDescription: string;

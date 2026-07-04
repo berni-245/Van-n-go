@@ -1,9 +1,9 @@
-import { action, createAsync, query, redirect, useParams, useSubmission } from "@solidjs/router";
-import { Show, Suspense, createMemo, createEffect, For, createSignal } from "solid-js";
-import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
-import { useToast } from "solid-notifications";
-import { ApiError, Availability, UpdateVehicle, Zone } from "../api/types";
-import { Api } from "../app-context/api";
+import {action, createAsync, query, redirect, useParams, useSubmission} from "@solidjs/router";
+import {createEffect, createMemo, createSignal, For, Show, Suspense} from "solid-js";
+import {useApi, useAppState, useTranslator} from "../app-context/AppContext";
+import {useToast} from "solid-notifications";
+import {ApiError, Availability, UpdateVehicle, Zone} from "../api/types";
+import {Api} from "../app-context/api";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
@@ -221,7 +221,7 @@ function VehicleSection(props: { vehicleId: number }) {
                             <div class="lg:col-span-1 space-y-6">
                                 <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
                                     <h3 class="mb-4 text-xl font-semibold text-on-surface dark:text-on-surface-dark">{t("global.page.editVehicle.photoSection")}</h3>
-                                    <PictureSection pictureUrl={v().picture} hasPicture={v().hasPicture} />
+                                    <PictureSection pictureUrl={v().picture} />
                                 </div>
                             </div>
                         </div>
@@ -263,7 +263,7 @@ export const editVehiclePictureAction = action(
     "edit-vehicle-picture-action"
 );
 
-function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
+function PictureSection(props: { pictureUrl: string }) {
     const api = useApi();
     const toaster = useToast();
     const t = useTranslator();
@@ -284,7 +284,7 @@ function PictureSection(props: { pictureUrl: string; hasPicture: boolean }) {
                     maxSize={10}
                     maxSizeUnit={"MB"}
                     putEndpoint={props.pictureUrl}
-                    currentValue={props.hasPicture ? { url: props.pictureUrl } : undefined}
+                    currentValue={{ url: props.pictureUrl }}
                 />
             </Suspense>
 

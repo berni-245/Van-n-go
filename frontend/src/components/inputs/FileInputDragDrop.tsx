@@ -1,7 +1,7 @@
-import { Component, createEffect, createSignal, JSX, onCleanup, Show, Suspense } from "solid-js";
-import { HtmlIdFamily } from "../htmlIds";
-import { useApi, useTranslator } from "~/src/app-context/AppContext";
-import { createAsync, query } from "@solidjs/router";
+import {Component, createEffect, createSignal, JSX, onCleanup, Show, Suspense} from "solid-js";
+import {HtmlIdFamily} from "../htmlIds";
+import {useApi, useTranslator} from "~/src/app-context/AppContext";
+import {createAsync, query} from "@solidjs/router";
 import ImgSkeleton from "../skeletons/ImgSkeleton";
 
 type SizeUnits = "B" | "KB" | "MB" | "GB" | "TB";
@@ -38,6 +38,7 @@ const FileInputDragDrop: Component<Props> = (props) => {
   const remoteFile = createAsync(async () => {
     if (props.currentValue) {
       const blob = await currenFilePreviewBlobQuery(props.currentValue.url);
+      if (!blob) return undefined;
       return new File([blob], props.currentValue.label || "", { type: blob.type });
     }
   });
@@ -244,11 +245,8 @@ const FilePreview: Component<{ a?: string; file: File | undefined; dragOver: boo
 
 const currenFilePreviewBlobQuery = query(async (src: string) => {
   const res = await useApi().authFetch(src);
-  if (!res.ok) {
-    // TODO: better error handling.
-    throw new Error(`Failed to fetch default image '${src}'`);
-  }
+  if (!res.ok) return null;
   return res.blob();
-}, "image-blob-with-fallback");
+}, "current-file-preview-blob");
 
 

@@ -42,7 +42,8 @@ public class BookingDTO {
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
         bookingDTO.proofOfPayment = bookingTemplate.clone().path("proof-of-payment").build();
         bookingDTO.hasProofOfPayment = booking.getPop() != null;
-        bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
+//        bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
+        bookingDTO.review = bookingTemplate.clone().path("review").build();
         bookingDTO.jobDescription = booking.getJobDescription();
         bookingDTO.date = booking.getDate().toString();
         bookingDTO.shiftPeriod = booking.getShiftPeriod();
