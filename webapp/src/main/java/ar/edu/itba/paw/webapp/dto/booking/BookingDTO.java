@@ -40,7 +40,7 @@ public class BookingDTO {
         bookingDTO.driver = driverTemplate.clone().build();
         bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
-        bookingDTO.proofOfPayment = booking.getPop() != null ? bookingTemplate.clone().path("proof-of-payment").build() : null;
+        bookingDTO.proofOfPayment = bookingTemplate.clone().path("proof-of-payment").build();
         bookingDTO.hasProofOfPayment = booking.getPop() != null;
         bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
         bookingDTO.jobDescription = booking.getJobDescription();
