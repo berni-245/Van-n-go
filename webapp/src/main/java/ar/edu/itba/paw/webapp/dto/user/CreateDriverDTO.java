@@ -11,7 +11,7 @@ public class CreateDriverDTO extends CreateUserDTO {
     private String description;
 
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{Pattern.driver.cbu}")
-    @Length(max = 32)
+    @Length(min = 6, max = 32, message = "{Length.driver.cbu}")
     private String cbu;
 
     public String getDescription() {
