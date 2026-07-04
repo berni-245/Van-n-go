@@ -19,7 +19,7 @@ public class CreateDriverDTO extends CreateUserDTO {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 
     public String getCbu() {

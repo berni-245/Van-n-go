@@ -11,7 +11,6 @@ public class UpdateDriverDTO extends UpdateUserDTO {
     private String cbu;
 
     @Length(min = 5, max = 255, message = "{Length.driver.description}")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{Pattern.driver.description}")
     private String description;
 
     public UpdateDriverDTO() {
@@ -39,7 +38,7 @@ public class UpdateDriverDTO extends UpdateUserDTO {
     public String getDescriptionOr(String other) {
         if (description == null)
             return other;
-        return description;
+        return description.trim();
     }
 
     public void setDescription(String description) {
