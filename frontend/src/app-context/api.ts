@@ -21,7 +21,7 @@ import {createMediaType as createMediaTypes} from "../api/media-types";
 import {useLocation, useNavigate} from "@solidjs/router";
 import {PaginatedResource, parsePageInfo} from "./pagination";
 
-export const API_ROOT = `${import.meta.env.BASE_URL}api/`;
+export const API_ROOT = `${window.location.origin}${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
 
 export interface LocationState {
