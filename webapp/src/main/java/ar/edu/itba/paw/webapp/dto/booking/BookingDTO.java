@@ -19,7 +19,6 @@ public class BookingDTO {
     private URI originZone;
     private URI destinationZone;
     private URI proofOfPayment;
-    private boolean hasProofOfPayment;
     private String jobDescription;
     private String date;
     private ShiftPeriod shiftPeriod;
@@ -41,8 +40,6 @@ public class BookingDTO {
         bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
         bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
         bookingDTO.proofOfPayment = bookingTemplate.clone().path("proof-of-payment").build();
-        bookingDTO.hasProofOfPayment = booking.getPop() != null;
-//        bookingDTO.review = booking.getReview() != null ? bookingTemplate.clone().path("review").build() : null;
         bookingDTO.review = bookingTemplate.clone().path("review").build();
         bookingDTO.jobDescription = booking.getJobDescription();
         bookingDTO.date = booking.getDate().toString();
@@ -109,14 +106,6 @@ public class BookingDTO {
 
     public void setProofOfPayment(URI proofOfPayment) {
         this.proofOfPayment = proofOfPayment;
-    }
-
-    public boolean getHasProofOfPayment() {
-        return hasProofOfPayment;
-    }
-
-    public void setHasProofOfPayment(boolean hasProofOfPayment) {
-        this.hasProofOfPayment = hasProofOfPayment;
     }
 
     public String getJobDescription() {

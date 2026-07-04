@@ -15,7 +15,6 @@ public class VehicleDTO {
     private String description;
     private URI driver;
     private URI picture;
-    private boolean hasPicture;
     private URI self;
     private URI availability;
     private URI bookedTimes;
@@ -41,7 +40,6 @@ public class VehicleDTO {
         dto.driver = baseDriverURI.clone().build();
         dto.self = baseVehicleURI.clone().build();
         dto.picture = baseVehicleURI.clone().path("picture").build();
-        dto.hasPicture = vehicle.getImgId() != null;
         dto.availability = baseVehicleURI.clone().path("availability").build();
         dto.bookedTimes = baseVehicleURI.clone().path("booked-times").build();
 
@@ -86,14 +84,6 @@ public class VehicleDTO {
 
     public void setPicture(URI picture) {
         this.picture = picture;
-    }
-
-    public boolean getHasPicture() {
-        return hasPicture;
-    }
-
-    public void setHasPicture(boolean hasPicture) {
-        this.hasPicture = hasPicture;
     }
 
     public double getHourlyRate() {
