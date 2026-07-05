@@ -52,4 +52,9 @@ public class PasswordTokenImpl implements PasswordTokenService {
     private static String generateToken() {
         return UUID.randomUUID().toString().substring(0, MAX_TOKEN_LENGTH);
     }
+
+
+
+
+
 }

@@ -13,4 +13,6 @@ public interface PasswordTokenDao {
     Optional<PasswordToken> getTokenByUser(User user);
 
     void deleteToken(PasswordToken token);
+
+    void deleteExpiredTokens();
 }
