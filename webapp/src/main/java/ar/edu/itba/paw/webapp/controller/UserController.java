@@ -25,6 +25,7 @@ public class UserController {
     private PasswordTokenService passwordTokenService;
 
     @POST
+    @Path("/token")
     @Consumes(value = {CustomMediaType.MAIL})
     public Response createPasswordToken(@Valid final MailDTO mailDTO) {
         passwordTokenService.createPasswordToken(mailDTO.getMail());
