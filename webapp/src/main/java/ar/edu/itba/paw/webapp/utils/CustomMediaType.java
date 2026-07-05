@@ -29,5 +29,6 @@ public class CustomMediaType {
     public static final String BOOKED_TIMES = "application/vnd.bookedTimes.v1+json";
     public static final String ZONE_LIST = "application/vnd.zoneList.v1+json";
     public static final String ZONE = "application/vnd.zone.v1+json";
+    public static final String MAIL = "application/vnd.mail.v1+json";
 
 }

@@ -102,10 +102,10 @@ public class MailServiceImpl implements MailService {
         message.setContent(multi);
     }
 
-    private Context getContext(Locale locale){
+    private Context getContext(Locale locale) {
         Context context = new Context(locale);
         String stylesheet = mailProperties.getProperty("base.prod.url") + "css/bootstrap.min.css";
-        context.setVariable("stylesheet",stylesheet);
+        context.setVariable("stylesheet", stylesheet);
         return context;
     }
 
@@ -116,7 +116,7 @@ public class MailServiceImpl implements MailService {
         Message message = getMessage();
         Context context = getContext(locale);
         context.setVariable("userName", userName);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "login");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "login");
         String mailBodyProcessed = templateEngine.process("welcomeMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -136,7 +136,7 @@ public class MailServiceImpl implements MailService {
         Context context = getContext(locale);
         context.setVariable("date", date);
         context.setVariable("driverName", driverName);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "client/bookings");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "client/bookings");
         String mailBodyProcessed = templateEngine.process("acceptedBooking", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
@@ -156,7 +156,7 @@ public class MailServiceImpl implements MailService {
         Context context = getContext(locale);
         context.setVariable("date", date);
         context.setVariable("driverName", driverName);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "client/search");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "client/search");
         String mailBodyProcessed = templateEngine.process("rejectedBooking", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
@@ -175,7 +175,7 @@ public class MailServiceImpl implements MailService {
         Message message = getMessage();
         Context context = getContext(locale);
         context.setVariable("driverName", userName);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "driver/vehicles");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "driver/vehicles");
         String mailBodyProcessed = templateEngine.process("welcomeDriverMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -214,7 +214,7 @@ public class MailServiceImpl implements MailService {
         Context context = getContext(locale);
         context.setVariable("date", date);
         context.setVariable("driverName", driverUsername);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "client/search");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "client/search");
         String mailBodyProcessed = templateEngine.process("driverCanceledBookingMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(clientMail));
@@ -234,7 +234,7 @@ public class MailServiceImpl implements MailService {
         Context context = getContext(locale);
         context.setVariable("date", date);
         context.setVariable("clientName", clientUsername);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "driver/bookings?activeTab=CANCELED");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "driver/bookings?activeTab=CANCELED");
         String mailBodyProcessed = templateEngine.process("clientCanceledBookingMail", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
@@ -251,7 +251,7 @@ public class MailServiceImpl implements MailService {
     private void sendClientRequestedServiceMail(String clientMail, Map<String, Object> contextParams, Locale locale) {
         Context context = getContext(locale);
         context.setVariables(contextParams);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "client/bookings");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "client/bookings");
         Message message = getMessage();
         try {
             String mailBodyProcessed = templateEngine.process("clientRequestedServiceMail", context);
@@ -268,7 +268,7 @@ public class MailServiceImpl implements MailService {
     private void sendDriverRequestedMail(String driverMail, Map<String, Object> contextParams, Locale locale) {
         Context context = getContext(locale);
         context.setVariables(contextParams);
-        context.setVariable("actionUrl",mailProperties.getProperty("base.prod.url") + "driver/bookings");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "driver/bookings");
         Message message = getMessage();
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(driverMail));
@@ -311,7 +311,7 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendReceivedPop(String clientName, String driverMail, LocalDate date, Locale locale){
+    public void sendReceivedPop(String clientName, String driverMail, LocalDate date, Locale locale) {
         Message message = getMessage();
         Context context = new Context(locale);
         context.setVariable("clientName", clientName);
@@ -330,4 +330,26 @@ public class MailServiceImpl implements MailService {
         LOGGER.info("Sent uploaded pop mail to {}", driverMail);
 
     }
+
+    @Async
+    @Override
+    public void sendPasswordToken(String userMail, String userName, String token, Locale locale) {// TODO: finish
+        Message message = getMessage();
+        Context context = getContext(locale);
+        context.setVariable("userName", userName);
+        context.setVariable("token", token);
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "users/token");
+        String mailBodyProcessed = templateEngine.process("passwordRecovery", context);
+        try {
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(userMail));
+            message.setSubject(messageSource.getMessage("subject.passwordRecover", new Object[]{userName}, locale));
+            setMailContent(message, mailBodyProcessed);
+            sendMail(message);
+        } catch (Exception e) {
+            LOGGER.error("Error sending password recovery mail to  {} with mail {}", userName, userMail);
+        }
+        LOGGER.info("Sent token mail to {}", userMail);
+
+    }
+
 }
