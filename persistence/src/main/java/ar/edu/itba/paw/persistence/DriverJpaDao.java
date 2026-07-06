@@ -40,6 +40,18 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         return Optional.of(list.getFirst());
     }
 
+    @Override
+    public Optional<Driver> findByMail(String mail) {
+        final TypedQuery<Driver> query = em.createQuery(
+                "from Driver as d where d.mail = :mail",
+                Driver.class
+        );
+        query.setParameter("mail", mail);
+        final List<Driver> list = query.getResultList();
+        if (list.isEmpty()) return Optional.empty();
+        return Optional.of(list.getFirst());
+    }
+
     private List<Integer> getSearchResultIds(
             Zone zone, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, Integer offset

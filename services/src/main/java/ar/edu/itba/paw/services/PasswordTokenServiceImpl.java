@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
 
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.PasswordTokenDao;
 import org.slf4j.Logger;
@@ -20,17 +22,15 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordTokenServiceImpl.class);
 
     private final PasswordTokenDao passwordTokenDao;
-    private final GeneralUserService generalUserService;
     private final MailService mailService;
     private final ClientService clientService;
     private final DriverService driverService;
 
 
     @Autowired
-    public PasswordTokenServiceImpl(PasswordTokenDao passwordTokenDao, GeneralUserService generalUserService, MailService mailService,
+    public PasswordTokenServiceImpl(PasswordTokenDao passwordTokenDao, MailService mailService,
                                     ClientService clientService, DriverService driverService) {
         this.passwordTokenDao = passwordTokenDao;
-        this.generalUserService = generalUserService;
         this.mailService = mailService;
         this.clientService = clientService;
         this.driverService = driverService;
@@ -39,9 +39,8 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
     @Transactional
     @Override
     public void createPasswordToken(String mail) {
-        Optional<User> posibleUser = generalUserService.findByMail(mail);
-        if (posibleUser.isPresent()) {
-            User user = posibleUser.get();
+        User user = getUserByMail(mail);
+        if (user != null) {
             String token = generateToken();
             passwordTokenDao.createToken(user, token);
             mailService.sendPasswordToken(mail, user.getUsername(), token, user.getLanguage().getLocale());
@@ -67,24 +66,32 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
     @Override
     @Transactional
     public boolean UpdatePassword(String mail, String password, String token){
-        Optional<User> posibleUser = generalUserService.findByMail(mail);
-        if(posibleUser.isEmpty()) return false;
-        User user = posibleUser.get();
-        if(isValidUserToken(user, token)){
+        User user = getUserByMail(mail);
+        if(user != null && isValidUserToken(user, token)){
             getServiceForUser(user).updatePassword(user, password);
             deleteUserToken(user);
             LOGGER.info("Password updated for user {}", user.getUsername());
             return true;
         }
-        LOGGER.info("Invalid token for user {}", user.getUsername());
+        LOGGER.info("Invalid token");
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends User> UserService<T> getServiceForUser(T user) {
         if (user.isDriver())
             return (UserService<T>) driverService;
         else
             return (UserService<T>) clientService;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends User> T getUserByMail(String mail){
+        Optional<Client> posibleClient = clientService.findByMail(mail);
+        if(posibleClient.isPresent()) return (T) posibleClient.get();
+        Optional<Driver> posibleDriver = driverService.findByMail(mail);
+        return (T) posibleDriver.orElse(null);
+
     }
 
 

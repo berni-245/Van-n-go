@@ -16,6 +16,8 @@ public interface UserService<T extends User> extends UserBookingService<T> {
 
     Optional<T> findByUsername(String username);
 
+    Optional<T> findByMail(String mail);
+
     void editProfile(User user, String username, String mail, Language language);
 
     void updatePassword(User user, String password);

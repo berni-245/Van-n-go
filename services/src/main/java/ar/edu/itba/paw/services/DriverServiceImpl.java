@@ -62,6 +62,12 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         return driverDao.findByUsername(username);
     }
 
+    @Transactional
+    @Override
+    public Optional<Driver> findByMail(String mail){
+        return driverDao.findByMail(mail);
+    }
+
     @Override
     public Booking getBookingById(Driver user, int id) {
         return bookingDao.getDriverBookingById(user, id);

@@ -58,6 +58,12 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
         return clientDao.findByUsername(username);
     }
 
+    @Transactional
+    @Override
+    public Optional<Client> findByMail(String mail){
+        return clientDao.findByMail(mail);
+    }
+
     @Override
     public Booking getBookingById(Client user, int id) {
         return bookingDao.getClientBookingById(user, id);

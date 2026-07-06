@@ -12,6 +12,8 @@ public interface UserDao<T extends User> {
 
     T findById(int id);
 
+    Optional<T> findByMail(String mail);
+
     Optional<T> findByUsername(String username);
 
     void editProfile(User user, String username, String mail, Language language);

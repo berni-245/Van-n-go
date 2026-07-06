@@ -34,6 +34,19 @@ public class ClientJpaDao extends UserJpaDao<Client> implements ClientDao {
     }
 
     @Override
+    public Optional<Client> findByMail(String mail) {
+        final TypedQuery<Client> query = em.createQuery(
+                "from Client as c where c.mail = :mail",
+                Client.class
+        );
+        query.setParameter("mail", mail);
+        final List<Client> list = query.getResultList();
+        if (list.isEmpty()) return Optional.empty();
+        return Optional.of(list.getFirst());
+    }
+
+
+    @Override
     public Client findById(int id) {
         Client c = em.find(Client.class, id);
         if (c == null) throw new UserNotFoundException();

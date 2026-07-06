@@ -1,9 +1,0 @@
-package ar.edu.itba.paw.persistence;
-
-import ar.edu.itba.paw.models.User;
-
-import java.util.Optional;
-
-public interface GeneralUserDao {
-    Optional<User> findByMail(String mail);
-}
