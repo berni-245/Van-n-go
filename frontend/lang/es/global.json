@@ -317,7 +317,8 @@
       "small": "Chico",
       "medium": "Mediano",
       "large": "Grande",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "back": "Volver"
     }
   },
   "error": {
@@ -387,5 +388,26 @@
       "fetchFailed": "Error al cargar el comprobante."
     },
     "loadingView": "Cargando comprobante..."
+  },
+  "forgotPasswordLink": "¿No recordás tu contraseña?",
+  "forgotPassword": {
+    "title": "Recuperar contraseña",
+    "subtitle": "Ingresá tu correo electrónico para recibir un token de recuperación.",
+    "email": "Correo electrónico",
+    "sendToken": "Enviar token",
+    "tokenSentSuccess": "Si el correo ingresado corresponde a un usuario registrado, se enviará un token a la casilla indicada.",
+    "tokenSentError": "Error al solicitar el token. Por favor verificá el correo.",
+    "goToRecovery": "Ir a restablecer contraseña"
+  },
+  "recoverPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresá el token que recibiste y tu nueva contraseña.",
+    "email": "Correo electrónico",
+    "token": "Token de seguridad",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "resetButton": "Restablecer contraseña",
+    "success": "Contraseña restablecida exitosamente.",
+    "error": "Error al restablecer la contraseña. Verificá que el token sea correcto y no haya expirado."
   }
 }

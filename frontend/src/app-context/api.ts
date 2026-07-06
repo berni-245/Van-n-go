@@ -12,6 +12,9 @@ import {
   UpdateVehicle,
   Vehicle,
   Zone,
+  RecoverPassword,
+  RequestPasswordToken,
+  UpdateUserPassword,
 } from "@/api/types";
 import {AppState} from "@/app-context/appState";
 import {jwtDecode} from "jwt-decode";
@@ -538,6 +541,43 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
           "Content-Type": file.type,
         },
         body: file,
+      });
+      return await this.authFetch(req);
+    },
+
+    async requestPasswordToken(data: RequestPasswordToken): Promise<Response> {
+      const url = new URL("users/token", API_ROOT);
+      const req = new Request(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": MediaTypesV1.mail,
+        },
+        body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
+
+    async updateUserPasswordWithToken(data: RecoverPassword): Promise<Response> {
+      const url = new URL("users/password", API_ROOT);
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.passwordToken,
+        },
+        body: JSON.stringify(data),
+      });
+      return await this.authFetch(req);
+    },
+
+    async updateUserPassword(id: number, data: UpdateUserPassword): Promise<Response> {
+      const url = new URL("users/password", API_ROOT);
+      url.searchParams.set("id", id.toString());
+      const req = new Request(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": MediaTypesV1.passwordChange,
+        },
+        body: JSON.stringify(data),
       });
       return await this.authFetch(req);
     },

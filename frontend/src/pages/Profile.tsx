@@ -4,7 +4,7 @@ import {Title} from "@solidjs/meta";
 import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import ImageWithFallback from "@/components/ImageWithFallback";
-import {ApiError, Client, Driver, UpdateClient, UpdateDriver} from "@/api/types";
+import {ApiError, Client, Driver, UpdateClient, UpdateDriver, UpdateUserPassword} from "@/api/types";
 import ClientProfileInfo from "@/components/profile/ClientProfileInfo";
 import DriverProfileInfo from "@/components/profile/DriverProfileInfo";
 import {Modal} from "@/components/modal/Modal";
@@ -318,7 +318,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
 }
 
 
-export const changePasswordAction = action(async (api: Api, userId: number, userType: string, t, toaster, formData: FormData) => {
+export const changePasswordAction = action(async (api: Api, userId: number, _userType: string, t, toaster, formData: FormData) => {
     let response: Response;
     let password = formData.get("password") as string;
     let oldPassword = formData.get("oldPassword") as string;
@@ -328,20 +328,11 @@ export const changePasswordAction = action(async (api: Api, userId: number, user
         return {ok: false, resp: {confirmPassword: ["Passwords do not match"]}};
     }
 
-    if (userType === "client") {
-        const clientData: UpdateClient = {
-            password: password,
-            oldPassword: oldPassword,
-        };
-        response = await api.updateClientInfo(userId, clientData);
-    } else {
-        const driverData: UpdateDriver = {
-            password: password,
-            oldPassword: oldPassword,
-        };
-        response = await api.updateDriverInfo(userId, driverData);
-    }
-
+    const passwordData: UpdateUserPassword = {
+        password: password,
+        oldPassword: oldPassword,
+    };
+    response = await api.updateUserPassword(userId, passwordData);
 
     if (!response.ok) {
         if (response.status === 400) {
@@ -362,7 +353,7 @@ export const changePasswordAction = action(async (api: Api, userId: number, user
     }
 
     toaster.notify(t("global.user.editUser.updatePasswordSuccess"), {type: "success"});
-    return {ok: true, resp: await response.json()};
+    return {ok: true, resp: response.status === 204 ? null : await response.json()};
 }, "change-password-action");
 
 

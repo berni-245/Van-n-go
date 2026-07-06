@@ -26,6 +26,8 @@ const Bookings = lazy(() => import("@/pages/Bookings"));
 const Register = lazy(() => import("@/pages/Register"));
 const Search = lazy(() => import("@/pages/Search"));
 const Chat = lazy(() => import("@/pages/Chat"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const RecoverPassword = lazy(() => import("@/pages/RecoverPassword"));
 
 if (!root || (import.meta.env.DEV && !(root instanceof HTMLElement))) {
   throw new Error(
@@ -60,6 +62,8 @@ render(
             <Route path="/register" component={Register} />
             <Route path="/search" component={Search} />
             <Route path="/about" component={About} />
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/recover-password" component={RecoverPassword} />
           </Route>
           <Route path="/driver" component={DriverRoute}>
             <Route path="/" component={() => <Navigate href="vehicles" />} />

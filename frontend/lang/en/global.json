@@ -316,7 +316,8 @@
       "small": "Small",
       "medium": "Medium",
       "large": "Large",
-      "close": "Close"
+      "close": "Close",
+      "back": "Back"
     }
   },
   "error": {
@@ -386,5 +387,26 @@
       "fetchFailed": "Error loading proof of payment."
     },
     "loadingView": "Loading proof..."
+  },
+  "forgotPasswordLink": "Forgot your password?",
+  "forgotPassword": {
+    "title": "Recover password",
+    "subtitle": "Enter your email to receive a recovery token.",
+    "email": "Email address",
+    "sendToken": "Send token",
+    "tokenSentSuccess": "If the entered email corresponds to a registered user, a token will be sent to the indicated inbox.",
+    "tokenSentError": "Error requesting token. Please verify your email.",
+    "goToRecovery": "Go to reset password"
+  },
+  "recoverPassword": {
+    "title": "Reset password",
+    "subtitle": "Enter the token you received and your new password.",
+    "email": "Email address",
+    "token": "Security token",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "resetButton": "Reset password",
+    "success": "Password reset successfully.",
+    "error": "Error resetting password. Check that the token is correct and hasn't expired."
   }
 }

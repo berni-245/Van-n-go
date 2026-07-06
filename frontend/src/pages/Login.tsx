@@ -93,6 +93,15 @@ export default function Login() {
                         onInput={(e) => setPassword(e.currentTarget.value)}
                     />
 
+                    <div class="w-full max-w-xs text-right">
+                        <A
+                            href="/forgot-password"
+                            class="text-xs font-semibold text-primary hover:underline dark:text-primary-dark"
+                        >
+                            {t("global.forgotPasswordLink")}
+                        </A>
+                    </div>
+
 
 
                     <Button

@@ -143,3 +143,18 @@ export interface UpdateVehicle {
     hourlyRate?: number;
     description?: string;
 }
+
+export interface RequestPasswordToken {
+  mail: string;
+}
+
+export interface RecoverPassword {
+  mail: string;
+  token: string;
+  password?: string;
+}
+
+export interface UpdateUserPassword {
+  oldPassword?: string;
+  password?: string;
+}
