@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Pattern;
 
 @ValidPasswordChange
-public class UpdateUserPassword {
+public class UpdateUserPasswordDTO {
 
     @Length(min = 8, max = 32)
     private String oldPassword;
@@ -15,7 +15,7 @@ public class UpdateUserPassword {
     @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
     private String password;
 
-    public UpdateUserPassword() {
+    public UpdateUserPasswordDTO() {
     }
 
     public String getOldPassword() {

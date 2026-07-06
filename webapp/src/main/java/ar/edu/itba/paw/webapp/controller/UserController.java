@@ -62,7 +62,7 @@ public class UserController {
     @Path("/password")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {CustomMediaType.PASSWORD_CHANGE})
-    public Response updateUserPassword(@QueryParam("id") final int id, @Valid final UpdateUserPassword dto) {
+    public Response updateUserPassword(@QueryParam("id") final int id, @Valid final UpdateUserPasswordDTO dto) {
         User user = getAuthUser();
         UserService<User> userService = getServiceForUser(user);
         if (dto.getPassword() != null && dto.getOldPassword() != null) {

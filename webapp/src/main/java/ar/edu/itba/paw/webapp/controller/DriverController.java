@@ -101,9 +101,6 @@ public class DriverController {
                 dto.getDescriptionOr(d.getDescription()), dto.getCbuOr(d.getCbu()),
                 dto.getPreferredLanguageOr(d.getLanguage().name())
         );
-        if (dto.getPassword() != null && dto.getOldPassword() != null) {
-            ds.updatePassword(d, dto.getPassword());
-        }
         return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
 

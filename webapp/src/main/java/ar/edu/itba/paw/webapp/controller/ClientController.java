@@ -73,9 +73,6 @@ public class ClientController {
         clientService.editProfile(
                 c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
                 dto.getZoneIdOr(c.getZone().getId()), dto.getPreferredLanguageOr(c.getLanguage().name()));
-        if (dto.getPassword() != null && dto.getOldPassword() != null) {
-            clientService.updatePassword(c, dto.getPassword());
-        }
         return Response.ok(ClientDTO.fromClient(uriInfo, c)).build();
     }
 
