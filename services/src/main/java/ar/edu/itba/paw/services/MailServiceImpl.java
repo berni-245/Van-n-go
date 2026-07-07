@@ -294,8 +294,10 @@ public class MailServiceImpl implements MailService {
         context.setVariable("dateReceived", timeReceived.format(dateFormatter.withLocale(locale)));
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         context.setVariable("timeReceived", timeReceived.format(timeFormatter));
-        String chatPath = "";
         String userPath = recipient.isDriver() ? "driver" : "client";
+        int driverId = recipient.isDriver() ? recipient.getId() : sender.getId();
+        int clientId = recipient.isDriver() ? sender.getId() : recipient.getId();
+        String chatPath = "/chat?driverId=" + driverId + "&clientId=" + clientId;
         context.setVariable("seeChatUrl", mailProperties.getProperty("base.prod.url") + userPath + chatPath);
         String mailBodyProcessed = templateEngine.process("receivedMessageMail", context);
         try {
