@@ -39,7 +39,7 @@ public interface BookingDao {
 
     void cancelBooking(Booking booking);
 
-    void checkPending();
+    void rejectOldPendingBookings();
 
     boolean existsBookingBetween(Client client, Driver driver);
 

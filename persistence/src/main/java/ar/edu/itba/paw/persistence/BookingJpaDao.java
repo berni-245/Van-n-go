@@ -4,6 +4,7 @@ import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -69,9 +70,10 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    @Scheduled(cron = "0 0 6,19,20 * * ?")
-    public void checkPending() {
-        List<ShiftPeriod> shifts = ShiftPeriod.getActualAndPreviousShiftPeriod(LocalTime.now());
+    @Transactional
+    @Scheduled(cron = "0 0 0,12,19 * * ?")
+    public void rejectOldPendingBookings() {
+        List<ShiftPeriod> shifts = ShiftPeriod.getEndedShiftPeriods(LocalTime.now());
         TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b " +
                 "FROM Booking b WHERE b.state = :state and ( b.date < current_date or (b.date = current_date and b.shiftPeriod IN :shifts ) ) ", Booking.class);
         bookingQuery.setParameter("state", BookingState.PENDING);

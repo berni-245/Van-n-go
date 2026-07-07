@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.PasswordToken;
 import ar.edu.itba.paw.models.User;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,6 +51,7 @@ public class PasswordTokenJpaDao implements PasswordTokenDao {
     }
 
     @Override
+    @Transactional
     @Scheduled(cron = "@midnight")
     public void deleteExpiredTokens() {
         em.createQuery("DELETE FROM PasswordToken pt WHERE pt.expiryDate < :now")

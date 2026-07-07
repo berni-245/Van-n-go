@@ -26,7 +26,7 @@ public enum ShiftPeriod {
         return finalHour;
     }
 
-    public static List<ShiftPeriod> getActualAndPreviousShiftPeriod(LocalTime time) {
+    public static List<ShiftPeriod> getEndedShiftPeriods(LocalTime time) {
         int hour = time.getHour();
 
         List<ShiftPeriod> expired = new ArrayList<>();
