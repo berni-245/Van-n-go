@@ -23,6 +23,7 @@ import {clientToUserState, driverToUserState} from "./userState";
 import {createMediaType as createMediaTypes} from "../api/media-types";
 import {useLocation, useNavigate} from "@solidjs/router";
 import {PaginatedResource, parsePageInfo} from "./pagination";
+import {stripBase} from "@/utils/routing";
 
 export const API_ROOT = `${window.location.origin}${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
@@ -54,7 +55,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
           request.headers.set("Authorization", `Bearer ${appState.session.token.refresh}`);
         } else {
           console.log("Expired tokens. Session reset");
-          this.logout("/login", location.pathname);
+          this.logout("/login", stripBase(location.pathname));
           // TODO: maybe add a toast telling user the session has expired? Not sure if this is the
           // right place to add it tho...
         }
@@ -372,9 +373,10 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       month: string,
       year: number
     ): Promise<{ date: string; shift: string }[]> {
-      const res = await this.authFetch(
-        `${API_ROOT}/drivers/${driverId}/vehicles/${vehicleId}/booked-times?month=${month}&year=${year}`
-      );
+      const req = apiRequest(`drivers/${driverId}/vehicles/${vehicleId}/booked-times`, {
+        queryParams: { month, year: String(year) },
+      });
+      const res = await this.authFetch(req);
       if (!res.ok) return [];
       return await res.json();
     },
@@ -589,13 +591,19 @@ interface ApiRequestOpts extends RequestInit {
 }
 
 function apiRequest(path: string, opts?: ApiRequestOpts): Request {
-  if (path.startsWith("/")) throw new Error("`path` should be relative");
+  // `path` may be a relative API path (e.g. "drivers/1") or a fully-qualified HATEOAS
+  // URI returned by the API (e.g. "http://host/paw-2024b-01/api/..."). `new URL(path,
+  // API_ROOT)` handles both: an absolute URI ignores the base, a relative one resolves
+  // against API_ROOT. A leading "/" is rejected because it would resolve against the
+  // origin root and silently drop the "/paw-2024b-01/api/" base path.
+  if (path.startsWith("/")) throw new Error("`path` must be a relative API path or an absolute URI");
 
-  let url = `${API_ROOT}${path}`;
+  const url = new URL(path, API_ROOT);
 
   if (opts?.queryParams) {
-    const params = new URLSearchParams(opts.queryParams);
-    url += `?${params}`;
+    for (const [key, value] of Object.entries(opts.queryParams)) {
+      url.searchParams.set(key, value);
+    }
   }
 
   return new Request(url, opts);

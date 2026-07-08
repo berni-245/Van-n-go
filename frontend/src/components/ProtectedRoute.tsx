@@ -2,12 +2,7 @@ import { Navigate, useLocation } from "@solidjs/router";
 import { ParentComponent } from "solid-js";
 import { useAppState } from "@/app-context/AppContext";
 import { UserType } from "@/api/jwt";
-
-const routerBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-
-function stripBase(path: string): string {
-  return path.startsWith(routerBase) ? path.slice(routerBase.length) : path;
-}
+import { stripBase } from "@/utils/routing";
 
 const ProtectedRoute: ParentComponent<{ userType: UserType }> = (props) => {
   const [appState] = useAppState();
