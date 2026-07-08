@@ -11,10 +11,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Repository
 public class PasswordTokenJpaDao implements PasswordTokenDao {
+
+    private static final String TIME_ZONE = "America/Argentina/Buenos_Aires";
 
     @PersistenceContext
     private EntityManager em;
@@ -52,10 +55,10 @@ public class PasswordTokenJpaDao implements PasswordTokenDao {
 
     @Override
     @Transactional
-    @Scheduled(cron = "@midnight")
+    @Scheduled(cron = "@midnight", zone = TIME_ZONE)
     public void deleteExpiredTokens() {
         em.createQuery("DELETE FROM PasswordToken pt WHERE pt.expiryDate < :now")
-                .setParameter("now", LocalDateTime.now())
+                .setParameter("now", LocalDateTime.now(ZoneId.of(TIME_ZONE)))
                 .executeUpdate();
     }
 }

@@ -13,10 +13,13 @@ import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.List;
 
 @Repository
 public class BookingJpaDao implements BookingDao {
+    private static final String TIME_ZONE = "America/Argentina/Buenos_Aires";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -71,12 +74,16 @@ public class BookingJpaDao implements BookingDao {
 
     @Override
     @Transactional
-    @Scheduled(cron = "0 0 0,12,19 * * ?")
+    @Scheduled(cron = "0 0 0,12,19 * * ?", zone = TIME_ZONE)
     public void rejectOldPendingBookings() {
-        List<ShiftPeriod> shifts = ShiftPeriod.getEndedShiftPeriods(LocalTime.now());
+        LocalDate today = LocalDate.now(ZoneId.of(TIME_ZONE));
+        List<ShiftPeriod> shifts = ShiftPeriod.getEndedShiftPeriods(LocalTime.now(ZoneId.of(TIME_ZONE)));
         TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b " +
-                "FROM Booking b WHERE b.state = :state and ( b.date < current_date or (b.date = current_date and b.shiftPeriod IN :shifts ) ) ", Booking.class);
+                "FROM Booking b WHERE b.state = :state and " +
+                "( b.date < :today or (b.date = :today and b.shiftPeriod IN :shifts ) ) ", Booking.class
+        );
         bookingQuery.setParameter("state", BookingState.PENDING);
+        bookingQuery.setParameter("today", today);
         bookingQuery.setParameter("shifts", shifts);
         List<Booking> bookings = bookingQuery.getResultList();
         for (Booking booking : bookings) {
