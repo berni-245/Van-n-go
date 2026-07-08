@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const BASE = "/paw-2024b-01/";
+const API_TARGET = "http://localhost:8080";
 
 export default defineConfig({
   plugins: [
@@ -26,8 +27,13 @@ export default defineConfig({
   server: {
     proxy: {
       [`${BASE}api`]: {
-        target: "http://localhost:8080",
+        target: API_TARGET,
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq) => {
+            proxyReq.setHeader("origin", API_TARGET);
+          });
+        },
       },
     },
   },
