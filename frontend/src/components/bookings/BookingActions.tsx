@@ -156,7 +156,9 @@ export const bookingActions: Record<
 
         ACCEPTED: (booking,{api, t, closeCurrentModal, openViewProofModal, refreshBookings, proofOfPaymentExists}) =>
             proofOfPaymentExists ? (
-                new Date(booking.date) <= new Date(Date.now()) ? (
+                booking.date <= new Intl.DateTimeFormat("en-CA", {
+                    year: "numeric", month: "2-digit", day: "2-digit"
+                }).format(new Date()) ? (
                     <>
                         <SecondaryButton
                             onClick={() => {

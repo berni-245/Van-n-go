@@ -60,7 +60,8 @@ const BookingCard: Component<CardProps> = (props) => {
         return new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "short",
-            year: "numeric"
+            year: "numeric",
+            timeZone: "UTC"
         }).format(new Date(date));
     }
 
