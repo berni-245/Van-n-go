@@ -165,7 +165,13 @@ export default function Register() {
 
             if (!appState.session) throw new Error(t("global.loginError") as string);
 
-            const redirect = `/${appState.user?.type ?? type()}`;
+            // basicAuth only stores the session tokens. `getUser` will save the user in the
+            // `appState`.
+            // FIXME: this makes a technically unnecessary request since the post already returned the
+            // user info. See if it's worth it to make use of the post response and avoid this call.
+            await api.getUser();
+
+            const redirect = `/${appState.user?.type}`;
             navigate(redirect, { replace: true });
         } catch (err) {
             console.error(err);
