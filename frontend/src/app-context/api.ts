@@ -1,4 +1,4 @@
-import {TokenPayload} from "@/api/jwt";
+import {TokenPayload, UserType} from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -214,6 +214,13 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
         const userState = driverToUserState(user);
         setAppState("user", userState);
       }
+    },
+
+    setUser(user: Client | Driver, type: UserType): void {
+      setAppState(
+        "user",
+        type === "client" ? clientToUserState(user as Client) : driverToUserState(user as Driver)
+      );
     },
 
     async getVehicles(driverId: number, page: number = 1): Promise<PaginatedResource<Vehicle>> {
