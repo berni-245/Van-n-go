@@ -4,8 +4,9 @@ import Button from "@/components/Button";
 import PasswordInput from "@/components/inputs/PasswordInput";
 import TextInput from "@/components/inputs/TextInput";
 import {Title} from "@solidjs/meta";
-import {A, createAsync, useLocation, useNavigate} from "@solidjs/router";
+import {A, useLocation, useNavigate} from "@solidjs/router";
 import {createSignal,  Show} from "solid-js";
+import {useToast} from "solid-notifications";
 
 export default function Login() {
     const t = useTranslator();
@@ -13,21 +14,13 @@ export default function Login() {
     const api = useApi();
     const navigate = useNavigate();
     const location = useLocation<LocationState>();
+    const toaster = useToast();
 
     const [loading, setLoading] = createSignal(false);
     const [errors, setErrors] = createSignal<string[]>([]);
 
     const [username, setUsername] = createSignal("");
     const [password, setPassword] = createSignal("");
-
-    createAsync(async () => {
-        await useApi().getUser();
-
-        if (appState.user) {
-            const redirect = location.state?.from || `/${appState.user.type}`;
-            navigate(redirect, {replace: true});
-        }
-    });
 
     const handleSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
@@ -39,6 +32,13 @@ export default function Login() {
 
             if (!appState.session) throw new Error();
 
+            await api.getUser();
+            if (appState.user) {
+                const redirect = location.state?.from || `/${appState.user.type}`;
+                navigate(redirect, { replace: true });
+            } else {
+                toaster.notify(t("global.error.unknown"), { type: "error" });
+            }
         } catch (e) {
             console.error(e);
             setErrors((prev) => [...prev, "global.loginError"]);
