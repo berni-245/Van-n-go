@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +39,20 @@ public class BasicAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        Credentials credentials = decodeCredentials(encoded);
-        Authentication auth = authenticate(credentials);
-        jwtTokenUtil.addTokensToResponse((PawUserDetails) auth.getPrincipal(), response);
+        try {
+            Credentials credentials = decodeCredentials(encoded);
+            Authentication auth = authenticate(credentials);
+            jwtTokenUtil.addTokensToResponse((PawUserDetails) auth.getPrincipal(), response);
 
-        chain.doFilter(request, response);
+            chain.doFilter(request, response);
+        } catch (UnauthorizedException e) {
+            sendUnauthorizedError(response);
+        }
+    }
+
+    private void sendUnauthorizedError(HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(CustomMediaType.ERROR);
     }
 
     private String extractBasicHeader(HttpServletRequest request) {
@@ -80,5 +91,6 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         return auth;
     }
 
-    private record Credentials(String username, String password) {}
+    private record Credentials(String username, String password) {
+    }
 }
