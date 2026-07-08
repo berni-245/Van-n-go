@@ -26,7 +26,7 @@ export default function RecoverPassword() {
         if (!email() || !token() || !password() || !confirmPassword()) return;
 
         if (password() !== confirmPassword()) {
-            setError("global.user.editUser.passwordMismatch");
+            setError("global.error.passwordMismatch");
             return;
         }
 
