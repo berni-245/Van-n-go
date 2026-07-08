@@ -1,6 +1,7 @@
 import { createSignal, For, Show, Suspense } from "solid-js";
 import { createAsync, useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
+import { stripBase } from "@/utils/routing";
 import { useApi, useTranslator } from "@/app-context/AppContext";
 import ZoneInput from "@/components/inputs/ZoneInput";
 import Button from "@/components/Button";
@@ -15,13 +16,6 @@ export default function Search() {
     const api      = useApi();
     const location = useLocation();
     const navigate = useNavigate();
-
-    const stripBase = (pathname: string) => {
-        const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-        return base && pathname.startsWith(base)
-            ? pathname.slice(base.length) || "/"
-            : pathname;
-    };
 
     const applySearchParams = (params: Record<string, string | undefined>) => {
         const qs = new URLSearchParams();

@@ -8,6 +8,7 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { AppContextProvider } from "@/app-context/AppContext";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
 import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
+import { ROUTER_BASE } from "@/utils/routing";
 import Profile from "@/pages/Profile";
 import { lazy } from "solid-js";
 import VehicleCreate from "@/pages/CreateVehicle.tsx";
@@ -49,7 +50,7 @@ render(
         <Link rel="icon" type="image/svg+xml" href="/Logo.svg" />
         <Title>Van N' Go</Title>
         <Router
-          base={import.meta.env.BASE_URL}
+          base={ROUTER_BASE}
           root={(props) => (
             <AppContextProvider>
               <App>{props.children}</App>
