@@ -1,10 +1,11 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
 import PasswordInput from "@/components/inputs/PasswordInput";
 import ZoneInput from "@components/inputs/ZoneInput.tsx";
-import { useNavigate } from "@solidjs/router";
+import Select from "@/components/Select";
+import { useNavigate, A } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
 
 const UserRoles = [
@@ -21,15 +22,6 @@ type ApiValidationError = {
 };
 
 type FieldErrors = Partial<Record<string, string[]>>;
-
-function FieldError(props: { errors: FieldErrors; field: string }) {
-    const msgs = () => props.errors[props.field];
-    return (
-        <For each={msgs()}>
-            {(msg) => <p class="mt-1 mb-2 text-sm text-red-500">{msg}</p>}
-        </For>
-    );
-}
 
 export default function Register() {
     const t = useTranslator();
@@ -185,92 +177,120 @@ export default function Register() {
     };
 
     return (
-        <>
-            <Title>Register - Van N' go</Title>
-            <div class="min-h-screen flex items-center justify-center p-4">
-                <div class="w-full max-w-lg bg-white dark:bg-gray-900 shadow-md rounded-lg p-6 sm:p-8 mx-2">
-                    <form onSubmit={handleSubmit}>
-                        <TextInput
-                            label={t("global.username")}
-                            value={username()}
-                            onInput={(e) => setUsername(e.currentTarget.value)}
-                            class="mb-1"
-                        />
-                        <FieldError errors={fieldErrors()} field="username" />
+        <div class="flex min-h-svh items-center justify-center bg-surface p-4 dark:bg-surface-dark">
+            <Title>Register - Van N' Go</Title>
 
-                        <TextInput
-                            label={t("global.generic.word.email")}
-                            value={email()}
-                            onInput={(e) => setEmail(e.currentTarget.value)}
-                            class="mb-1"
-                        />
-                        <FieldError errors={fieldErrors()} field="email" />
+            <div
+                class="w-full max-w-md rounded-2xl border border-outline bg-surface-alt p-8 shadow-xl dark:border-outline-dark dark:bg-surface-dark-alt">
 
-                        <PasswordInput
-                            label={t("global.password")}
-                            value={password()}
-                            onInput={(e) => setPassword(e.currentTarget.value)}
-                            class="mb-1"
-                        />
-                        <FieldError errors={fieldErrors()} field="password" />
-
-                        <PasswordInput
-                            label={t("global.confirmPassword")}
-                            value={confirmedPassword()}
-                            onInput={(e) => setConfirmedPassword(e.currentTarget.value)}
-                            class="mb-1"
-                        />
-                        <FieldError errors={fieldErrors()} field="confirmedPassword" />
-
-                        <label>{t("global.userType.label")}</label>
-                        <select
-                            value={type()}
-                            onInput={(e) => setType(e.currentTarget.value as RoleEntry["value"])}
-                            class="mb-4 block w-full"
-                        >
-                            <For each={UserRoles}>
-                                {(r: RoleEntry) => (
-                                    <option value={r.value}>{String(t(r.labelKey as any))}</option>
-                                )}
-                            </For>
-                        </select>
-
-                        {type() === "driver" && (
-                            <>
-                                <TextInput
-                                    label={t("global.generic.word.description") as string}
-                                    value={description()}
-                                    onInput={(e) => setDescription(e.currentTarget.value)}
-                                    class="mb-1"
-                                />
-                                <FieldError errors={fieldErrors()} field="description" />
-                            </>
-                        )}
-                        {type() === "client" && (
-                            <>
-                                <ZoneInput
-                                    label={t("global.zone.label" as any)}
-                                    value={zoneQuery()}
-                                    onInput={(v) => setZoneQuery(v)}
-                                    onSelect={(id: number | null) => setZoneId(id)}
-                                />
-                                <FieldError errors={fieldErrors()} field="zoneId" />
-                            </>
-                        )}
-
-                        <Button
-                            type="submit"
-                            disabled={loading()}
-                            category="info"
-                            text={loading() ? t("global.registering") as string : t("global.register") as string}
-                        />
-                    </form>
-
-                    <For each={generalErrors()}>
-                        {(error) => <p class="mt-3 text-red-600">{error}</p>}
-                    </For>
+                <div class="mb-8 text-center">
+                    <h1 class="text-3xl font-bold tracking-tight text-on-surface dark:text-on-surface-dark">
+                        {t("global.register")}
+                    </h1>
+                    <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">
+                        Crea una cuenta para continuar
+                    </p>
                 </div>
+
+                <form onSubmit={handleSubmit} class="flex flex-col gap-4 items-center w-full">
+
+                    <Show when={generalErrors().length > 0}>
+                        <div
+                            class="w-full max-w-xs rounded-radius border border-danger/50 bg-danger/10 p-3 text-sm text-danger dark:border-red-400/50 dark:bg-red-400/10 dark:text-red-400">
+                            <For each={generalErrors()}>
+                                {(error) => <p>• {error}</p>}
+                            </For>
+                        </div>
+                    </Show>
+
+                    <TextInput
+                        class="mx-auto"
+                        label={t("global.username")}
+                        value={username()}
+                        onInput={(e) => setUsername(e.currentTarget.value)}
+                        error={fieldErrors().username}
+                    />
+
+                    <TextInput
+                        class="mx-auto"
+                        label={t("global.generic.word.email")}
+                        value={email()}
+                        onInput={(e) => setEmail(e.currentTarget.value)}
+                        error={fieldErrors().email}
+                    />
+
+                    <PasswordInput
+                        class="mx-auto"
+                        label={t("global.password")}
+                        value={password()}
+                        onInput={(e) => setPassword(e.currentTarget.value)}
+                        error={fieldErrors().password}
+                    />
+
+                    <PasswordInput
+                        class="mx-auto"
+                        label={t("global.confirmPassword")}
+                        value={confirmedPassword()}
+                        onInput={(e) => setConfirmedPassword(e.currentTarget.value)}
+                        error={fieldErrors().confirmedPassword}
+                    />
+
+                    <Select
+                        label={t("global.userType.label") as string}
+                        value={type()}
+                        onInput={(e) => setType(e.currentTarget.value as RoleEntry["value"])}
+                    >
+                        <For each={UserRoles}>
+                            {(r: RoleEntry) => (
+                                <option class="bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" value={r.value}>
+                                    {String(t(r.labelKey as any))}
+                                </option>
+                            )}
+                        </For>
+                    </Select>
+
+                    {type() === "driver" && (
+                        <TextInput
+                            class="mx-auto"
+                            label={t("global.generic.word.description") as string}
+                            value={description()}
+                            onInput={(e) => setDescription(e.currentTarget.value)}
+                            error={fieldErrors().description}
+                        />
+                    )}
+
+                    {type() === "client" && (
+                        <div class="w-full flex justify-center">
+                            <ZoneInput
+                                label={t("global.zone.label" as any) as string}
+                                value={zoneQuery()}
+                                onInput={(v) => setZoneQuery(v)}
+                                onSelect={(id: number | null) => setZoneId(id)}
+                                error={fieldErrors().zoneId?.[0] || null}
+                            />
+                        </div>
+                    )}
+
+                    <Button
+                        type="submit"
+                        disabled={loading()}
+                        category="primary"
+                        text={loading() ? (t("global.registering") as string) : (t("global.register") as string)}
+                        class="mt-4"
+                    />
+                </form>
+
+                <div class="mt-6 text-center text-sm text-on-surface dark:text-on-surface-dark">
+                    ¿Ya tenés una cuenta?{" "}
+                    <A
+                        href="/login"
+                        class="font-semibold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-primary-dark dark:focus-visible:outline-primary-dark"
+                    >
+                        {t("global.login")}
+                    </A>
+                </div>
+
             </div>
-        </>
+        </div>
     );
 }
