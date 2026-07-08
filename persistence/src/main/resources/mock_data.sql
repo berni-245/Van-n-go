@@ -60,13 +60,19 @@ values (1, 'Palermo'),
        (49, 'Vélez Sarsfield')
 on conflict do nothing;
 
-insert into zone (country_id, province_id, neighborhood_id)
-values (1, 2, 3),
-       (1, 1, 1),
-       (1, 1, 2)
+insert into zone (id, country_id, province_id, neighborhood_id)
+values
+    (1, 1, 2, 3),
+    (2, 1, 1, 1),
+    (3, 1, 1, 2)
 on conflict do nothing;
-insert into zone (country_id, province_id, neighborhood_id)
-select 1, 1, id
-from neighborhood
-where id > 3
-  and id <= 49;
+
+insert into zone (id, country_id, province_id, neighborhood_id)
+select
+    (row_number() over ()) + 3 as id,
+    1,
+    1,
+    n.id
+from neighborhood n
+where n.id > 3
+  and n.id <= 49;
