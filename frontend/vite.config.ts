@@ -28,12 +28,7 @@ export default defineConfig({
     proxy: {
       [`${BASE}api`]: {
         target: API_TARGET,
-        changeOrigin: true,
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq) => {
-            proxyReq.setHeader("origin", API_TARGET);
-          });
-        },
+        changeOrigin: false,
       },
     },
   },
