@@ -94,7 +94,16 @@ export default function Search() {
     };
 
     const goToPage = (p: number) => {
-        applySearchParams({ page: String(p) });
+        applySearchParams({
+            zoneQuery: zoneQuery(),
+            zoneId:    zoneId() !== null ? String(zoneId()) : undefined,
+            size:      size()      || undefined,
+            maxPrice:  maxPrice()  || undefined,
+            weekDay:   weekDay()   || undefined,
+            minRating: minRating() || undefined,
+            sortOrder: sortOrder() || undefined,
+            page:      String(p),
+        });
     };
 
     const currentSearchUrl = () => {
