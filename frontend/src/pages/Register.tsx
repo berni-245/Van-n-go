@@ -210,6 +210,7 @@ export default function Register() {
 
                     <TextInput
                         class="mx-auto"
+                        name="username"
                         label={t("global.username")}
                         value={username()}
                         onInput={(e) => setUsername(e.currentTarget.value)}
@@ -218,6 +219,7 @@ export default function Register() {
 
                     <TextInput
                         class="mx-auto"
+                        name="email"
                         label={t("global.generic.word.email")}
                         value={email()}
                         onInput={(e) => setEmail(e.currentTarget.value)}
@@ -234,6 +236,7 @@ export default function Register() {
 
                     <PasswordInput
                         class="mx-auto"
+                        name="confirmedPassword"
                         label={t("global.confirmPassword")}
                         value={confirmedPassword()}
                         onInput={(e) => setConfirmedPassword(e.currentTarget.value)}
@@ -257,6 +260,7 @@ export default function Register() {
                     {type() === "driver" && (
                         <TextInput
                             class="mx-auto"
+                            name="description"
                             label={t("global.generic.word.description") as string}
                             value={description()}
                             onInput={(e) => setDescription(e.currentTarget.value)}

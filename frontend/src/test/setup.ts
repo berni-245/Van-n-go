@@ -12,7 +12,14 @@ import { server } from "./msw/server";
 setGlobalOrigin("http://localhost:3000");
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+  server.resetHandlers();
+  // AppContextProvider persists session/user/preferences to localStorage
+  // (see appState.ts's saveState effect) and initialState() reads it back
+  // on the next mount. Without this, a test that logs a user in leaks that
+  // session into whichever test runs next in the same file.
+  localStorage.clear();
+});
 afterAll(() => server.close());
 
 // jsdom/happy-dom doesn't implement matchMedia; appState.ts reads it to
