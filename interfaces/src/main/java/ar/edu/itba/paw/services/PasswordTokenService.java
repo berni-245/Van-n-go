@@ -9,6 +9,6 @@ public interface PasswordTokenService {
 
     void deleteUserToken(User mail);
 
-    boolean UpdatePassword(String mail, String password, String token);
+    boolean UpdatePassword(Integer id, String mail, String password, String token);
 
 }

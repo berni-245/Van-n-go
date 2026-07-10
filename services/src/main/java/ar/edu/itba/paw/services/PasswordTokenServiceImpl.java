@@ -43,7 +43,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
         if (user != null) {
             String token = generateToken();
             passwordTokenDao.createToken(user, token);
-            mailService.sendPasswordToken(mail, user.getUsername(), token, user.getLanguage().getLocale());
+            mailService.sendPasswordToken(mail, user.getUsername(), user.getId(), token, user.getLanguage().getLocale());
         }
     }
 
@@ -65,15 +65,15 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
 
     @Override
     @Transactional
-    public boolean UpdatePassword(String mail, String password, String token){
+    public boolean UpdatePassword(Integer id, String mail, String password, String token){
         User user = getUserByMail(mail);
-        if(user != null && isValidUserToken(user, token)){
+        if(user != null && isValidUserToken(user, token) && user.getId().equals(id)){
             getServiceForUser(user).updatePassword(user, password);
             deleteUserToken(user);
             LOGGER.info("Password updated for user {}", user.getUsername());
             return true;
         }
-        LOGGER.info("Invalid token");
+        LOGGER.info("Invalid or ID");
         return false;
     }
 

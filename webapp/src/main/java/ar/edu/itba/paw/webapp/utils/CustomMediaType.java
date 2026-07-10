@@ -29,7 +29,7 @@ public class CustomMediaType {
     public static final String BOOKED_TIMES = "application/vnd.bookedTimes.v1+json";
     public static final String ZONE_LIST = "application/vnd.zoneList.v1+json";
     public static final String ZONE = "application/vnd.zone.v1+json";
-    public static final String MAIL = "application/vnd.mail.v1+json";
+    public static final String RECOVERY = "application/vnd.recovery.v1+json";
     public static final String PASSWORD_TOKEN = "application/vnd.passwordToken.v1+json";
     public static final String PASSWORD_CHANGE = "application/vnd.passwordChange.v1+json";
 

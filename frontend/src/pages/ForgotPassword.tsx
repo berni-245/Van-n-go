@@ -63,14 +63,6 @@ export default function ForgotPassword() {
                 <Show when={success()}>
                     <div class="mb-6 rounded-radius border border-outline bg-surface-alt/50 p-4 text-sm text-on-surface/90 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:text-on-surface-dark/90">
                         <p class="font-medium">{t("global.forgotPassword.tokenSentSuccess" as any) as string}</p>
-                        <div class="mt-4 flex justify-center">
-                            <A
-                                href="/recover-password"
-                                class="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/95 transition-colors dark:bg-primary-dark"
-                            >
-                                {t("global.forgotPassword.goToRecovery" as any) as string}
-                            </A>
-                        </div>
                     </div>
                 </Show>
 

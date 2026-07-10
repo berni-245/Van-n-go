@@ -335,12 +335,12 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendPasswordToken(String userMail, String userName, String token, Locale locale) {// TODO: finish
+    public void sendPasswordToken(String userMail, String userName, Integer userId, String token, Locale locale) {
         Message message = getMessage();
         Context context = getContext(locale);
         context.setVariable("userName", userName);
         context.setVariable("token", token);
-        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "users/token");
+        context.setVariable("actionUrl", mailProperties.getProperty("base.prod.url") + "recover-password?id=" + userId);
         String mailBodyProcessed = templateEngine.process("passwordRecovery", context);
         try {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(userMail));

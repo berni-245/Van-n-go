@@ -554,19 +554,19 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async requestPasswordToken(data: RequestPasswordToken): Promise<Response> {
-      const url = new URL("users/token", API_ROOT);
+      const url = new URL("users", API_ROOT);
       const req = new Request(url, {
         method: "POST",
         headers: {
-          "Content-Type": MediaTypesV1.mail,
+          "Content-Type": MediaTypesV1.recovery,
         },
         body: JSON.stringify(data),
       });
       return await this.authFetch(req);
     },
 
-    async updateUserPasswordWithToken(data: RecoverPassword): Promise<Response> {
-      const url = new URL("users/password", API_ROOT);
+    async updateUserPasswordWithToken(id: string | number, data: RecoverPassword): Promise<Response> {
+      const url = new URL(`users/${id}/password`, API_ROOT);
       const req = new Request(url, {
         method: "PATCH",
         headers: {
@@ -578,8 +578,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     },
 
     async updateUserPassword(id: number, data: UpdateUserPassword): Promise<Response> {
-      const url = new URL("users/password", API_ROOT);
-      url.searchParams.set("id", id.toString());
+      const url = new URL(`users/${id}/password`, API_ROOT);
       const req = new Request(url, {
         method: "PATCH",
         headers: {

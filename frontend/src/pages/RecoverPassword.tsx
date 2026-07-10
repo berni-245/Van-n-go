@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
 import PasswordInput from "@/components/inputs/PasswordInput";
 import {Title} from "@solidjs/meta";
-import {A, useNavigate} from "@solidjs/router";
+import {A, useNavigate, useSearchParams} from "@solidjs/router";
 import {createSignal, Show} from "solid-js";
 import {useToast} from "solid-notifications";
 
@@ -12,6 +12,7 @@ export default function RecoverPassword() {
     const api = useApi();
     const toaster = useToast();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const [email, setEmail] = createSignal("");
     const [token, setToken] = createSignal("");
@@ -30,11 +31,17 @@ export default function RecoverPassword() {
             return;
         }
 
+        const id = Array.isArray(searchParams.id) ? searchParams.id[0] : searchParams.id;
+        if (!id) {
+            setError("global.generic.error.unknown");
+            return;
+        }
+
         try {
             setLoading(true);
             setError("");
 
-            const res = await api.updateUserPasswordWithToken({
+            const res = await api.updateUserPasswordWithToken(id, {
                 mail: email(),
                 token: token().trim(),
                 password: password()

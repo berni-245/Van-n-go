@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 
+
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.PawUserDetails;
@@ -35,34 +36,28 @@ public class UserController {
     @Autowired
     private DriverService driverService;
 
-
     @POST
-    @Path("/token")
-    @Consumes(value = {CustomMediaType.MAIL})
+    @Consumes(value = {CustomMediaType.RECOVERY})
     public Response createPasswordToken(@Valid final MailDTO mailDTO) {
         passwordTokenService.createPasswordToken(mailDTO.getMail());
         return Response.ok().build();
     }
 
-    @PATCH
-    @Path("/password")
+    @PATCH //PATCH con recovery token
+    @Path("/{id}/password")
     @Consumes(value = {CustomMediaType.PASSWORD_TOKEN})
-    public Response validatePasswordToken(@Valid final RecoverPasswordDTO recoverPasswordDTO){
-        if(passwordTokenService.UpdatePassword(recoverPasswordDTO.getMail(), recoverPasswordDTO.getPassword(), recoverPasswordDTO.getToken())){
+    public Response validatePasswordToken(@Valid final RecoverPasswordDTO recoverPasswordDTO, @PathParam("id") Integer id){
+        if(passwordTokenService.UpdatePassword(id, recoverPasswordDTO.getMail(), recoverPasswordDTO.getPassword(), recoverPasswordDTO.getToken())){
             return Response.noContent().build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    // fijarse de hacer otro PATCH a /password pero con el otro mediatype y la anotation de auth (fijarse si content negociation es valido en este caso paara rest)
-    // despues intentar sacar el general User Service y ver de quedarme con client y driver para consistencia
-    // agregar al UserDao el findByMail
-
-    @PATCH
-    @Path("/password")
+    @PATCH  //PATCH con user autenticado
+    @Path("/{id}/password")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {CustomMediaType.PASSWORD_CHANGE})
-    public Response updateUserPassword(@QueryParam("id") final int id, @Valid final UpdateUserPasswordDTO dto) {
+    public Response updateUserPassword(@Valid final UpdateUserPasswordDTO dto, @PathParam("id") String id) {
         User user = getAuthUser();
         UserService<User> userService = getServiceForUser(user);
         if (dto.getPassword() != null && dto.getOldPassword() != null) {

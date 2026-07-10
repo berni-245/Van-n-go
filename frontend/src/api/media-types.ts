@@ -24,7 +24,7 @@ export function createMediaType(version: Version) {
     availabilityUpdate: "application/vnd.availabilityUpdate.v1+json",
     vehicleCreate: "application/vnd.vehicleCreate.v1+json",
     bookingCreate: "application/vnd.bookingCreate.v1+json",
-    mail: `application/vnd.mail.${version}+json`,
+    recovery: `application/vnd.recovery.${version}+json`,
     passwordToken: `application/vnd.passwordToken.${version}+json`,
     passwordChange: `application/vnd.passwordChange.${version}+json`
   } as const;

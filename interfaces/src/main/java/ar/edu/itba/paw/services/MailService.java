@@ -32,5 +32,5 @@ public interface MailService {
 
     void sendReceivedPop(String clientName, String driverMail, LocalDate date, Locale locale);
 
-    void sendPasswordToken(String userMail, String userName, String token, Locale locale);
+    void sendPasswordToken(String userMail, String userName, Integer userId, String token, Locale locale);
 }
