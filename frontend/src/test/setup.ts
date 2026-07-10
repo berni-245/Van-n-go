@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { afterAll, afterEach, beforeAll } from "vitest";
 import { setGlobalOrigin } from "undici";
+import { query } from "@solidjs/router";
 import { server } from "./msw/server";
 
 // The app makes relative-URL requests (e.g. new Request("/api/drivers?...")).
@@ -19,6 +20,13 @@ afterEach(() => {
   // on the next mount. Without this, a test that logs a user in leaks that
   // session into whichever test runs next in the same file.
   localStorage.clear();
+  // query() (used by Bookings/BookingCreate/Vehicles/Profile/VehicleEdit for
+  // data loading) caches responses in a module-level map keyed by arguments,
+  // independent of any component's lifecycle. Without clearing it, a test
+  // that populates the cache for a given set of arguments (e.g. the default
+  // "PENDING page 1" bookings query) can serve stale data to a later test
+  // that uses the same arguments but mocks a different response.
+  query.clear();
 });
 afterAll(() => server.close());
 

@@ -1,5 +1,5 @@
 import { action, createAsync, query, useNavigate, useParams, useSubmission } from "@solidjs/router";
-import { createEffect, createMemo, createResource, createSignal, For, Show, Suspense } from "solid-js";
+import { createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense } from "solid-js";
 import { useApi, useTranslator } from "../app-context/AppContext";
 import { useToast } from "solid-notifications";
 import { ApiError, Availability, Zone } from "../api/types";
@@ -343,30 +343,27 @@ export default function BookingCreate() {
             </div>
 
             <div class="grid grid-cols-7 gap-1">
-              <For each={calendarDays()}>
+              <Index each={calendarDays()}>
                 {(day) => (
                   <div class="aspect-square p-0.5">
-                    <Show when={day}>
+                    <Show when={day()}>
                       <button
-                        onClick={() => handleDayClick(day)}
-                        disabled={day?.disabled}
+                        onClick={() => handleDayClick(day())}
+                        disabled={day()?.disabled}
                         class="w-full h-full flex items-center justify-center rounded-full text-sm transition-colors"
                         classList={{
-                          "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark":
-                            selectedDateStr() === day.dateStr,
-                          "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark":
-                            !day.disabled && selectedDateStr() !== day.dateStr,
-                          "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day.disabled,
-                          "border border-primary dark:border-primary-dark":
-                            day.isToday && selectedDateStr() !== day.dateStr,
+                          "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark": selectedDateStr() === day().dateStr,
+                          "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark": !day().disabled && selectedDateStr() !== day().dateStr,
+                          "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day().disabled,
+                          "border border-primary dark:border-primary-dark": day().isToday && selectedDateStr() !== day().dateStr
                         }}
                       >
-                        {day.num}
+                        {day().num}
                       </button>
                     </Show>
                   </div>
                 )}
-              </For>
+              </Index>
             </div>
           </div>
 

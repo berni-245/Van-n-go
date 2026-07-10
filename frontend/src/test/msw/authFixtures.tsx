@@ -92,3 +92,36 @@ export function clientResponse(client: Client) {
 export function driverUserResponse(driver: Driver) {
   return http.get(DRIVER_ENDPOINT, () => HttpResponse.json(driver));
 }
+
+/**
+ * Seeds `localStorage` with an already-logged-in session, the same shape
+ * AppContextProvider persists (see appState.ts). Use this for pages that
+ * require appState.user to already be set (Bookings, BookingCreate,
+ * Vehicles, Profile, ...) instead of driving the full login flow first.
+ * Must be called before renderRoute().
+ */
+export function seedLoggedInUser(
+  userType: "client" | "driver",
+  overrides: { id?: number; username?: string; email?: string; language?: string; profilePic?: string } = {},
+) {
+  const id = overrides.id ?? 1;
+  const authPayload = tokenPayload(userType, id, "auth");
+  const refreshPayload = tokenPayload(userType, id, "refresh");
+
+  const state = {
+    session: {
+      token: { auth: makeJwt(authPayload), refresh: makeJwt(refreshPayload) },
+      payload: { auth: authPayload, refresh: refreshPayload },
+    },
+    user: {
+      id,
+      type: userType,
+      username: overrides.username ?? (userType === "client" ? "maria_client" : "juan_driver"),
+      email: overrides.email ?? "user@example.com",
+      language: overrides.language ?? "SPANISH",
+      profilePic: overrides.profilePic ?? "",
+    },
+    preferences: { theme: "light", locale: "en" },
+  };
+  localStorage.setItem("appState", JSON.stringify(state));
+}
