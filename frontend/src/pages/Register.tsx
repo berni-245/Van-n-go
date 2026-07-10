@@ -7,7 +7,7 @@ import ZoneInput from "@components/inputs/ZoneInput.tsx";
 import Select from "@/components/Select";
 import { useNavigate, A } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
-
+import type { Client, Driver } from "@/api/types";
 
 const UserRoles = [
     { key: "CLIENT", value: "client", labelKey: "global.userType.client" },
@@ -162,15 +162,17 @@ export default function Register() {
                 return;
             }
 
+            const createdUser = (await res.json()) as Client | Driver;
+
             await api.basicAuth(username(), password());
 
             if (!appState.session) throw new Error(t("global.loginError") as string);
 
-            await api.getUser();
+            // `basicAuth` only stores the session tokens in the `appState`, after successful
+            // login we update the state manually with the post request's response data.
+            api.setUser(createdUser, type());
 
-            if (!appState.user) throw new Error(t("global.loginError") as string);
-
-            const redirect = `/${appState.user.type}`;
+            const redirect = `/${appState.user?.type}`;
             navigate(redirect, { replace: true });
         } catch (err) {
             console.error(err);

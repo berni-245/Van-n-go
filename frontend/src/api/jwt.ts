@@ -4,8 +4,8 @@ export type UserType = z.infer<typeof UserTypeSchema>;
 export type TokenType = z.infer<typeof TokenTypeSchema>;
 export type TokenPayload = z.infer<typeof TokenPayloadSchema>;
 
-const UserTypeSchema = z.enum(["client", "driver"]);
-const TokenTypeSchema = z.enum(["auth", "refresh"]);
+const UserTypeSchema = z.literal(["client", "driver"]);
+const TokenTypeSchema = z.literal(["auth", "refresh"]);
 
 export const TokenPayloadSchema = z.object({
   type: UserTypeSchema,
