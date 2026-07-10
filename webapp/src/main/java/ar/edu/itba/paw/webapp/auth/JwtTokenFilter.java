@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,8 +43,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         String token = header.split(" ")[1];
-
-        tryAuthenticateFromToken(token, response);
+        try {
+            tryAuthenticateFromToken(token, response);
+        }catch (UnauthorizedException e){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(CustomMediaType.ERROR);
+        }
         chain.doFilter(request, response);
     }
 
