@@ -75,3 +75,12 @@ if (!globalThis.IntersectionObserver) {
   } as unknown as typeof IntersectionObserver;
 }
 
+// jsdom's own URL.createObjectURL/revokeObjectURL exist but the blob: URLs
+// they produce aren't resolvable by jsdom's <img> resource loading —
+// observed silently falling back to fetching the document root instead.
+// ImageWithFallback.tsx (used by Profile, and likely other pages with
+// pictures) calls these on every render, so override them unconditionally
+// with a self-contained data URI, which never triggers a network fetch.
+const ONE_PIXEL_GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+URL.createObjectURL = () => ONE_PIXEL_GIF;
+URL.revokeObjectURL = () => {};
