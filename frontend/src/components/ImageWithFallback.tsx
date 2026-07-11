@@ -1,7 +1,7 @@
-import {Component, JSX, splitProps, Suspense} from "solid-js";
+import { Component, JSX, splitProps, Suspense } from "solid-js";
 import ImgSkeleton from "@components/skeletons/ImgSkeleton";
-import {createAsync, query} from "@solidjs/router";
-import {useApi} from "../app-context/AppContext";
+import { createAsync, query } from "@solidjs/router";
+import { useApi } from "../app-context/AppContext";
 
 function resolveAssetUrl(path: string): string {
   return path.startsWith("/") ? `${import.meta.env.BASE_URL}${path.slice(1)}` : path;
@@ -42,7 +42,7 @@ const ImageWithFallback: Component<ImageProps> = (props) => {
 
   return (
     <div class="relative h-full w-full">
-      <Suspense fallback={<ImgSkeleton class={props.class}/>}>
+      <Suspense fallback={<ImgSkeleton class={props.class} />}>
         <img src={blobSrc()} class={props.class} alt={props.alt} onLoad={handleOnload} {...filteredProps} />
       </Suspense>
     </div>

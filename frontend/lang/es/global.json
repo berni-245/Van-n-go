@@ -24,11 +24,24 @@
       "title": "Solicitar Reserva",
       "subtitle": "Seleccioná una fecha y turno en el calendario para ver los vehículos disponibles.",
       "months": {
-        "JANUARY": "Enero", "FEBRUARY": "Febrero", "MARCH": "Marzo", "APRIL": "Abril", "MAY": "Mayo", "JUNE": "Junio", "JULY": "Julio", "AUGUST": "Agosto", "SEPTEMBER": "Septiembre", "OCTOBER": "Octubre", "NOVEMBER": "Noviembre", "DECEMBER": "Diciembre"
+        "JANUARY": "Enero",
+        "FEBRUARY": "Febrero",
+        "MARCH": "Marzo",
+        "APRIL": "Abril",
+        "MAY": "Mayo",
+        "JUNE": "Junio",
+        "JULY": "Julio",
+        "AUGUST": "Agosto",
+        "SEPTEMBER": "Septiembre",
+        "OCTOBER": "Octubre",
+        "NOVEMBER": "Noviembre",
+        "DECEMBER": "Diciembre"
       },
       "weekDays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
       "shifts": {
-        "MORNING": "Mañana", "AFTERNOON": "Tarde", "EVENING": "Noche"
+        "MORNING": "Mañana",
+        "AFTERNOON": "Tarde",
+        "EVENING": "Noche"
       },
       "availableVehicles": "Vehículos disponibles para el",
       "selectShift": "Seleccionar turno",

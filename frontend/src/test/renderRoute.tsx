@@ -45,7 +45,7 @@ export function renderRoute(
   route: string,
   initialUrl: string,
   component: Component,
-  extraRoutes: { path: string; component: Component }[] = [],
+  extraRoutes: { path: string; component: Component }[] = []
 ) {
   const history = createMemoryHistory();
   history.set({ value: initialUrl });

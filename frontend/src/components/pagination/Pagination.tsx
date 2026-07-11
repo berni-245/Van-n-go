@@ -77,7 +77,8 @@ export default function Pagination<T>(props: PaginationProps<T>) {
                   onClick={() => setParams({ page: pageNr })}
                   class="flex size-6 items-center justify-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
                   classList={{
-                    "bg-primary font-bold text-on-primary dark:bg-primary-dark dark:text-on-primary-dark": pageNr === page(),
+                    "bg-primary font-bold text-on-primary dark:bg-primary-dark dark:text-on-primary-dark":
+                      pageNr === page(),
                   }}
                   aria-label="page 1"
                 >

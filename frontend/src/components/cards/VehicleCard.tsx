@@ -1,9 +1,9 @@
-import {Component, Ref} from "solid-js";
-import {HtmlIdFamily} from "@components/htmlIds";
-import {useTranslator} from "@/app-context/AppContext";
-import {Vehicle} from "@/api/types";
+import { Component, Ref } from "solid-js";
+import { HtmlIdFamily } from "@components/htmlIds";
+import { useTranslator } from "@/app-context/AppContext";
+import { Vehicle } from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
-import {A} from "@solidjs/router";
+import { A } from "@solidjs/router";
 
 type CardProps = {
   vehicle: Vehicle;
@@ -15,7 +15,7 @@ const VehicleCard: Component<CardProps> = (props) => {
   const cardId = new HtmlIdFamily("card");
 
   return (
-      <A ref={props.ref} href={props.vehicle.id.toString()}>
+    <A ref={props.ref} href={props.vehicle.id.toString()}>
       <article class="group flex rounded-radius max-w-sm flex-col overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
         <div class="h-44 md:h-64 overflow-hidden">
           <ImageWithFallback

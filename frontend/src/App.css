@@ -75,7 +75,6 @@
 :root {
   /* Solid Notifications */
   --sn-progress-bar-height: 3px;
-
 }
 
 @layer base {
@@ -111,7 +110,7 @@
   }
 
   a {
-    @apply font-medium text-primary underline-offset-2 hover:underline focus:underline focus:outline-hidden dark:text-primary-dark
+    @apply font-medium text-primary underline-offset-2 hover:underline focus:underline focus:outline-hidden dark:text-primary-dark;
   }
 }
 

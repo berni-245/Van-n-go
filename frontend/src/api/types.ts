@@ -79,7 +79,7 @@ export enum BookingState {
 
 export enum ShiftPeriod {
   Morning = "MORNING",
-  Afternoon = "AFTERNOON"
+  Afternoon = "AFTERNOON",
 }
 
 export type WeekDay = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
@@ -136,12 +136,11 @@ export interface Message {
   self: string;
 }
 
-
 export interface UpdateVehicle {
-    plateNumber?: string;
-    volumeM3?: number;
-    hourlyRate?: number;
-    description?: string;
+  plateNumber?: string;
+  volumeM3?: number;
+  hourlyRate?: number;
+  description?: string;
 }
 
 export interface RequestPasswordToken {
@@ -157,4 +156,4 @@ export interface RecoverPassword {
 export interface UpdateUserPassword {
   oldPassword?: string;
   password?: string;
-}
+}

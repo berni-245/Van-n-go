@@ -9,46 +9,46 @@ type OptionalRel = Exclude<Rel, RequiredRel>;
 export type PageInfo = Record<RequiredRel, PageLinkHeader> & Partial<Record<OptionalRel, PageLinkHeader>>;
 
 export interface PaginatedResource<T> {
-    data: T[];
-    pages: PageInfo | null;
+  data: T[];
+  pages: PageInfo | null;
 }
 
 interface PageLinkHeader {
-    url: string;
-    pageNumber: number;
-    rel: Rel;
+  url: string;
+  pageNumber: number;
+  rel: Rel;
 }
 
 function parsePageLinkHeader(link: string): PageLinkHeader | null {
-    const parts = link.split("; ");
-    if (parts.length !== 2) return null;
-    const urlStr = parts[0].match(/<(.*)>/)?.[1];
-    if (!urlStr) return null;
-    const rel = parts[1].match(/"(.*)"/)?.[1];
-    if (!rel || !REL_SET.has(rel)) return null;
-    const pageStr = new URL(urlStr).searchParams.get('page')
-    if (!pageStr) return null;
-    const page = parseInt(pageStr);
-    if (!Number.isInteger(page)) return null;
-    return {url: urlStr, pageNumber: page, rel: rel as Rel};
+  const parts = link.split("; ");
+  if (parts.length !== 2) return null;
+  const urlStr = parts[0].match(/<(.*)>/)?.[1];
+  if (!urlStr) return null;
+  const rel = parts[1].match(/"(.*)"/)?.[1];
+  if (!rel || !REL_SET.has(rel)) return null;
+  const pageStr = new URL(urlStr).searchParams.get("page");
+  if (!pageStr) return null;
+  const page = parseInt(pageStr);
+  if (!Number.isInteger(page)) return null;
+  return { url: urlStr, pageNumber: page, rel: rel as Rel };
 }
 
 export function parsePageInfo(res: Response): PageInfo | null {
-    const linkHeader = res.headers.get("link");
-    if (!linkHeader) return null;
+  const linkHeader = res.headers.get("link");
+  if (!linkHeader) return null;
 
-    const result: Partial<Record<Rel, PageLinkHeader>> = {};
+  const result: Partial<Record<Rel, PageLinkHeader>> = {};
 
-    for (const link of linkHeader.split(", ")) {
-        const page = parsePageLinkHeader(link);
-        if (page) {
-            result[page.rel] = page;
-        }
+  for (const link of linkHeader.split(", ")) {
+    const page = parsePageLinkHeader(link);
+    if (page) {
+      result[page.rel] = page;
     }
+  }
 
-    if (!result.first || !result.last) {
-        return null;
-    }
+  if (!result.first || !result.last) {
+    return null;
+  }
 
-    return result as PageInfo;
+  return result as PageInfo;
 }

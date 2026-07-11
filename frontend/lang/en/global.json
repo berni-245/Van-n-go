@@ -24,11 +24,24 @@
       "title": "Request Booking",
       "subtitle": "Select a date and shift on the calendar to see available vehicles.",
       "months": {
-        "JANUARY": "January", "FEBRUARY": "February", "MARCH": "March", "APRIL": "April", "MAY": "May", "JUNE": "June", "JULY": "July", "AUGUST": "August", "SEPTEMBER": "September", "OCTOBER": "October", "NOVEMBER": "November", "DECEMBER": "December"
+        "JANUARY": "January",
+        "FEBRUARY": "February",
+        "MARCH": "March",
+        "APRIL": "April",
+        "MAY": "May",
+        "JUNE": "June",
+        "JULY": "July",
+        "AUGUST": "August",
+        "SEPTEMBER": "September",
+        "OCTOBER": "October",
+        "NOVEMBER": "November",
+        "DECEMBER": "December"
       },
       "weekDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       "shifts": {
-        "MORNING": "Morning", "AFTERNOON": "Afternoon", "EVENING": "Evening"
+        "MORNING": "Morning",
+        "AFTERNOON": "Afternoon",
+        "EVENING": "Evening"
       },
       "availableVehicles": "Vehicles available on",
       "selectShift": "Select shift",
@@ -347,7 +360,7 @@
     "comment": "Comment",
     "submit": "Send review",
     "yourComment": "Your comment (optional)",
-    "ratingPlaceholder":"Write your review here..."
+    "ratingPlaceholder": "Write your review here..."
   },
   "title": "Van N' Go",
   "username": "Username",

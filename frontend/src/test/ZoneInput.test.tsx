@@ -106,7 +106,7 @@ test("does not refetch zones after the first successful load", async () => {
     http.get(ZONES_ENDPOINT, () => {
       requestCount++;
       return HttpResponse.json([palermoSoho, palermoHollywood]);
-    }),
+    })
   );
   renderHarness();
 

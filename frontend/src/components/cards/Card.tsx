@@ -32,11 +32,7 @@ const Card: Component<CardProps> = (props) => {
               aria-hidden="true"
               class="size-5"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -54,7 +50,7 @@ const Card: Component<CardProps> = (props) => {
           <p id="tripDescription" class="text-pretty mb-2">
             {props.description}
           </p>
-          <Button category="primary" text={props.buttonText} onClick={props.onButtonClick}/>
+          <Button category="primary" text={props.buttonText} onClick={props.onButtonClick} />
         </div>
       </article>
     </>

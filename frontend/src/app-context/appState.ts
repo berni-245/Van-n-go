@@ -44,7 +44,7 @@ export function getSavedState(): AppState | null {
 
 export const saveState = (state: AppState) => {
   localStorage.setItem("appState", JSON.stringify(state));
-}
+};
 
 export function initialState(): AppState {
   const saved = getSavedState();

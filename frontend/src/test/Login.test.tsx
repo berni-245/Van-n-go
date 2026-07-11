@@ -53,15 +53,10 @@ test("redirects back to the page the user came from, if one was provided", async
   // `<Navigate href="/login" state={{ from: "..." }} />`. Starting the test
   // there (rather than pre-seeding history) is what makes location.state
   // reach Login for real.
-  renderRoute(
-    "/intercepted",
-    "/intercepted",
-    () => <Navigate href="/login" state={{ from: "/vehicles" }} />,
-    [
-      { path: "/login", component: Login },
-      { path: "/vehicles", component: () => <p>vehicles-stub</p> },
-    ],
-  );
+  renderRoute("/intercepted", "/intercepted", () => <Navigate href="/login" state={{ from: "/vehicles" }} />, [
+    { path: "/login", component: Login },
+    { path: "/vehicles", component: () => <p>vehicles-stub</p> },
+  ]);
   await submitLoginForm();
 
   expect(await screen.findByText("vehicles-stub")).toBeInTheDocument();
@@ -82,7 +77,10 @@ test("shows an error and stays on the page when credentials are rejected", async
 });
 
 test("does not navigate if fetching the profile after a successful login fails", async () => {
-  server.use(authSuccessResponse("client", 5), http.get(CLIENT_ENDPOINT, () => new HttpResponse(null, { status: 500 })));
+  server.use(
+    authSuccessResponse("client", 5),
+    http.get(CLIENT_ENDPOINT, () => new HttpResponse(null, { status: 500 }))
+  );
 
   renderRoute("/login", "/login", Login, [{ path: "/client", component: () => <p>client-dashboard-stub</p> }]);
   await submitLoginForm();

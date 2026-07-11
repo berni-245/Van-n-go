@@ -10,7 +10,6 @@ type StarsProps = {
 const Stars: Component<StarsProps> = (props) => {
   const [rating, setRating] = createSignal(props.initialValue || 0);
 
-
   const stars = [1, 2, 3, 4, 5];
 
   return (
@@ -36,7 +35,6 @@ const Stars: Component<StarsProps> = (props) => {
                 onChange={() => setRating(star)}
               />
 
-
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -58,16 +56,13 @@ const Stars: Component<StarsProps> = (props) => {
         </For>
       </div>
 
-
       <Show when={props.error}>
         <div class="flex flex-col gap-0.5">
           <Show
             when={Array.isArray(props.error)}
             fallback={<small class="pl-0.5 text-danger">{props.error as string}</small>}
           >
-            <For each={props.error as string[]}>
-              {(err) => <small class="pl-0.5 text-danger">• {err}</small>}
-            </For>
+            <For each={props.error as string[]}>{(err) => <small class="pl-0.5 text-danger">• {err}</small>}</For>
           </Show>
         </div>
       </Show>

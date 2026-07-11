@@ -1,6 +1,6 @@
-import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
-import {AppLayout} from "@components/AppLayout.tsx";
-import {Sidebar} from "@components/sidebar/Sidebar";
+import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
+import { AppLayout } from "@components/AppLayout.tsx";
+import { Sidebar } from "@components/sidebar/Sidebar";
 import {
   FaSolidAdd,
   FaSolidBook,
@@ -10,24 +10,23 @@ import {
   FaSolidUserAlt,
   FaSolidUserPlus,
 } from "solid-icons/fa";
-import {FiLogIn, FiLogOut} from "solid-icons/fi";
-import {type Component, JSX, Match, Show, Suspense, Switch} from "solid-js";
-import {Logo} from "@/assets/Logo";
+import { FiLogIn, FiLogOut } from "solid-icons/fi";
+import { type Component, JSX, Match, Show, Suspense, Switch } from "solid-js";
+import { Logo } from "@/assets/Logo";
 
 const App: Component<{ children: JSX.Element }> = (props) => {
   const [appState, _] = useAppState();
   const t = useTranslator();
   const api = useApi();
 
-
   return (
     <AppLayout>
       <Sidebar logo={<Logo />}>
         <Switch>
           <Match when={appState.user?.type === "client"}>
-            <Sidebar.Item href="/client/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20}/>}/>
-            <Sidebar.Item href="/client/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20}/>}/>
-            <Sidebar.Item href="/client/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20}/>}/>
+            <Sidebar.Item href="/client/search" text={t("global.find-freight")} icon={<FaSolidSearch size={20} />} />
+            <Sidebar.Item href="/client/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
+            <Sidebar.Item href="/client/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20} />} />
           </Match>
           <Match when={appState.user?.type === "driver"}>
             <Sidebar.CollapsibleItem
@@ -45,10 +44,9 @@ const App: Component<{ children: JSX.Element }> = (props) => {
                 text={t("global.page.vehicles.sidebar.newVehicle")}
                 icon={<FaSolidAdd size={20} />}
               />
-
             </Sidebar.CollapsibleItem>
             <Sidebar.Item href="/driver/bookings" text={t("global.bookings")} icon={<FaSolidBook size={20} />} />
-            <Sidebar.Item href="/driver/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20}/>}/>
+            <Sidebar.Item href="/driver/profile" text={t("global.profile")} icon={<FaSolidUserAlt size={20} />} />
           </Match>
           <Match when={!appState.user}>
             <Sidebar.Item href="/login" text={t("global.login")} icon={<FiLogIn size={20} />} />
@@ -58,10 +56,10 @@ const App: Component<{ children: JSX.Element }> = (props) => {
         <Show when={appState.user}>
           <div class="mt-auto pt-4">
             <Sidebar.Item
-                onClick={() => api.logout("/login")}
-                href="/login"
-                text={t("global.generic.word.logout")}
-                icon={<FiLogOut size={20}/>}
+              onClick={() => api.logout("/login")}
+              href="/login"
+              text={t("global.generic.word.logout")}
+              icon={<FiLogOut size={20} />}
             />
           </div>
         </Show>

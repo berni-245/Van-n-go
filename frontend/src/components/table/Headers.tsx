@@ -15,7 +15,7 @@ export const TableHeaders: ParentComponent = (props) => {
 
   const resolvedChildren = children(() => props.children);
 
-  const checkId = new HtmlIdFamily('check-all');
+  const checkId = new HtmlIdFamily("check-all");
 
   return (
     <thead class="border-b border-outline bg-surface-alt text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">

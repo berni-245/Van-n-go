@@ -14,10 +14,7 @@ const user = userEvent.setup();
 const SEARCH_URL = "/search?zoneQuery=Palermo&zoneId=5";
 
 test("renders each driver returned by the API", async () => {
-  const drivers = [
-    makeDriver({ id: 1, username: "juan_perez" }),
-    makeDriver({ id: 2, username: "maria_gomez" }),
-  ];
+  const drivers = [makeDriver({ id: 1, username: "juan_perez" }), makeDriver({ id: 2, username: "maria_gomez" })];
   server.use(driversResponse(drivers));
 
   renderRoute("/search", SEARCH_URL, Search);
@@ -50,7 +47,7 @@ test("shows pagination and requests the next page on click", async () => {
     driversByPage({
       1: [makeDriver({ id: 1, username: "page_one_driver" })],
       2: [makeDriver({ id: 2, username: "page_two_driver" })],
-    }),
+    })
   );
 
   renderRoute("/search", SEARCH_URL + "&page=1", Search);

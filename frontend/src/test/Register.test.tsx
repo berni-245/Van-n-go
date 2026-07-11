@@ -4,7 +4,13 @@ import { http, HttpResponse } from "msw";
 import { server } from "@/test/msw/server";
 import { renderRoute } from "@/test/renderRoute";
 import { zonesResponse, makeZone } from "@/test/msw/zoneFixtures";
-import { authSuccessResponse, clientResponse, makeClient, driverUserResponse, makeDriverUser } from "@/test/msw/authFixtures";
+import {
+  authSuccessResponse,
+  clientResponse,
+  makeClient,
+  driverUserResponse,
+  makeDriverUser,
+} from "@/test/msw/authFixtures";
 import Register from "@/pages/Register";
 
 const user = userEvent.setup();
@@ -59,7 +65,7 @@ test("registers a new client and redirects to their dashboard", async () => {
     zonesResponse([PALERMO]),
     http.post("*/api/clients", () => new HttpResponse(null, { status: 201 })),
     authSuccessResponse("client", 9),
-    clientResponse(makeClient({ id: 9 })),
+    clientResponse(makeClient({ id: 9 }))
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/client", component: () => <p>client-dashboard-stub</p> }]);
@@ -75,7 +81,7 @@ test("registers a new driver (no zone required) and redirects to their dashboard
   server.use(
     http.post("*/api/drivers", () => new HttpResponse(null, { status: 201 })),
     authSuccessResponse("driver", 4),
-    driverUserResponse(makeDriverUser({ id: 4 })),
+    driverUserResponse(makeDriverUser({ id: 4 }))
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/driver", component: () => <p>driver-dashboard-stub</p> }]);
@@ -104,9 +110,9 @@ test("shows a field-level error returned by the API next to the relevant field",
             description: "That email is already registered.",
           },
         ],
-        { status: 400 },
-      ),
-    ),
+        { status: 400 }
+      )
+    )
   );
 
   renderRoute("/register", "/register", Register);
@@ -123,10 +129,7 @@ test("shows a field-level error returned by the API next to the relevant field",
 test("shows a general error banner for a non-validation API error", async () => {
   server.use(
     zonesResponse([PALERMO]),
-    http.post(
-      "*/api/clients",
-      () => HttpResponse.json({ message: "Something broke upstream." }, { status: 500 }),
-    ),
+    http.post("*/api/clients", () => HttpResponse.json({ message: "Something broke upstream." }, { status: 500 }))
   );
 
   renderRoute("/register", "/register", Register);

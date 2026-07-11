@@ -1,7 +1,7 @@
-import {Component, createEffect, createSignal, JSX, onCleanup, Show, Suspense} from "solid-js";
-import {HtmlIdFamily} from "../htmlIds";
-import {useApi, useTranslator} from "~/src/app-context/AppContext";
-import {createAsync, query} from "@solidjs/router";
+import { Component, createEffect, createSignal, JSX, onCleanup, Show, Suspense } from "solid-js";
+import { HtmlIdFamily } from "../htmlIds";
+import { useApi, useTranslator } from "~/src/app-context/AppContext";
+import { createAsync, query } from "@solidjs/router";
 import ImgSkeleton from "../skeletons/ImgSkeleton";
 
 type SizeUnits = "B" | "KB" | "MB" | "GB" | "TB";
@@ -20,20 +20,20 @@ type Props = {
 };
 
 const SizeMultiplier: Record<SizeUnits, number> = {
-    B: 1,
-    KB: 2 ** 10,
-    MB: 2 ** 20,
-    GB: 2 ** 30,
-    TB: 2 ** 40,
+  B: 1,
+  KB: 2 ** 10,
+  MB: 2 ** 20,
+  GB: 2 ** 30,
+  TB: 2 ** 40,
 } as const;
 
 const FileInputDragDrop: Component<Props> = (props) => {
-    const t = useTranslator();
-    const idFam = new HtmlIdFamily("file-input");
+  const t = useTranslator();
+  const idFam = new HtmlIdFamily("file-input");
 
-    let inputRef!: HTMLInputElement;
+  let inputRef!: HTMLInputElement;
 
-    const maxSizeBytes = props.maxSize * SizeMultiplier[props.maxSizeUnit];
+  const maxSizeBytes = props.maxSize * SizeMultiplier[props.maxSizeUnit];
 
   const remoteFile = createAsync(async () => {
     if (props.currentValue) {
@@ -52,32 +52,32 @@ const FileInputDragDrop: Component<Props> = (props) => {
     inputRef.files = null;
   };
 
-    const processFile = (file: File | undefined) => {
-        if (!file) return;
+  const processFile = (file: File | undefined) => {
+    if (!file) return;
 
-        setDropped(true);
-        setDragOver(false);
-        setError(null);
+    setDropped(true);
+    setDragOver(false);
+    setError(null);
 
-        const fileTypes = props.fileTypes.map((ft) => ft.toLowerCase());
-        const fileType = file.type.split("/").pop()!.toLowerCase();
-        if (!fileTypes.includes(fileType)) {
-            rejectFile(t("global.fileDragDrop.fileTypeNotSupported"));
-            return;
-        }
+    const fileTypes = props.fileTypes.map((ft) => ft.toLowerCase());
+    const fileType = file.type.split("/").pop()!.toLowerCase();
+    if (!fileTypes.includes(fileType)) {
+      rejectFile(t("global.fileDragDrop.fileTypeNotSupported"));
+      return;
+    }
 
-        if (file.size > maxSizeBytes) {
-            rejectFile(t("global.fileDragDrop.fileTooLarge"));
-            return;
-        }
+    if (file.size > maxSizeBytes) {
+      rejectFile(t("global.fileDragDrop.fileTooLarge"));
+      return;
+    }
 
     setLocalFile(file);
   };
 
-    const preventDefaultBehavior: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
+  const preventDefaultBehavior: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   const [dropped, setDropped] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
@@ -90,28 +90,28 @@ const FileInputDragDrop: Component<Props> = (props) => {
     }
   };
 
-    const [dragOver, setDragOver] = createSignal(false);
-    const handleEnter: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
-        preventDefaultBehavior(e);
-        setDragOver(true);
-        console.log("enter");
-    };
-    const handleLeave: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
-        preventDefaultBehavior(e);
-        setDragOver(false);
-        console.log("leave");
-    };
+  const [dragOver, setDragOver] = createSignal(false);
+  const handleEnter: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
+    preventDefaultBehavior(e);
+    setDragOver(true);
+    console.log("enter");
+  };
+  const handleLeave: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
+    preventDefaultBehavior(e);
+    setDragOver(false);
+    console.log("leave");
+  };
 
-    return (
-        <div class="flex w-full max-w-xl text-center flex-col gap-1">
+  return (
+    <div class="flex w-full max-w-xl text-center flex-col gap-1">
       <span
-          class="w-fit pl-0.5 text-sm transition-all duration-200 ease-out"
-          classList={{
-              "text-on-surface dark:text-on-surface-dark": !dropped() && !error(),
-              "scale-110": dragOver(),
-              "text-success scale-105": dropped() && !dragOver() && !error(),
-              "text-danger scale-105": dropped() && !dragOver() && !!error(),
-          }}
+        class="w-fit pl-0.5 text-sm transition-all duration-200 ease-out"
+        classList={{
+          "text-on-surface dark:text-on-surface-dark": !dropped() && !error(),
+          "scale-110": dragOver(),
+          "text-success scale-105": dropped() && !dragOver() && !error(),
+          "text-danger scale-105": dropped() && !dragOver() && !!error(),
+        }}
       >
         {props.label}
       </span>
@@ -238,7 +238,6 @@ const FilePreview: Component<{ a?: string; file: File | undefined; dragOver: boo
           </div>
         </Show>
       </Suspense>
-
     </>
   );
 };
@@ -248,5 +247,3 @@ const currenFilePreviewBlobQuery = query(async (src: string) => {
   if (!res.ok) return null;
   return res.blob();
 }, "current-file-preview-blob");
-
-

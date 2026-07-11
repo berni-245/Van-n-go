@@ -8,7 +8,9 @@ type BadgeProps = {
 const Badge: ParentComponent<BadgeProps> = (props) => {
   const resolvedChildren = children(() => props.children);
   return (
-    <span class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category || "alternate"]} ${props.class}`}>{resolvedChildren()}</span>
+    <span class={`${BASE_CLASSES} ${TYPE_CLASSES[props.category || "alternate"]} ${props.class}`}>
+      {resolvedChildren()}
+    </span>
   );
 };
 
@@ -29,4 +31,3 @@ const TYPE_CLASSES: Record<ColorCategories, string> = {
   warning: "border-warning bg-warning text-on-warning dark:border-warning dark:bg-warning dark:text-on-warning",
   success: "border-success bg-success text-on-success dark:border-success dark:bg-success dark:text-on-success",
 };
-

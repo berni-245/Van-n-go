@@ -22,7 +22,7 @@ const Toggle: Component<ToggleProps> = (props) => {
     props.onToggle?.(nextState, e);
   };
 
-  const toggleId = new HtmlIdFamily('toggle');
+  const toggleId = new HtmlIdFamily("toggle");
 
   return (
     <label for={toggleId.id()} class="inline-flex items-center gap-3">

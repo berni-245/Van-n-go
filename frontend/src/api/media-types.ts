@@ -11,10 +11,10 @@ export function createMediaType(version: Version) {
     driverCreate: `application/vnd.driverCreate.${version}+json`,
     driverPublic: `application/vnd.publicDriver.${version}+json`,
     driverUpdate: `application/vnd.driverUpdate.${version}+json`,
-      vehicle: `application/vnd.vehicle.${version}+json`,
-      availability: `application/vnd.availability.${version}+json`,
-      zones: `application/vnd.zoneList.${version}+json`,
-      zone: `application/vnd.zone.${version}+json`,
+    vehicle: `application/vnd.vehicle.${version}+json`,
+    availability: `application/vnd.availability.${version}+json`,
+    zones: `application/vnd.zoneList.${version}+json`,
+    zone: `application/vnd.zone.${version}+json`,
     bookingReview: `application/vnd.bookingReview.${version}+json`,
     bookingUpdateState: `application/vnd.bookingUpdateState.${version}+json`,
     messageList: `application/vnd.messageList.${version}+json`,
@@ -26,6 +26,6 @@ export function createMediaType(version: Version) {
     bookingCreate: "application/vnd.bookingCreate.v1+json",
     recovery: `application/vnd.recovery.${version}+json`,
     passwordToken: `application/vnd.passwordToken.${version}+json`,
-    passwordChange: `application/vnd.passwordChange.${version}+json`
+    passwordChange: `application/vnd.passwordChange.${version}+json`,
   } as const;
 }

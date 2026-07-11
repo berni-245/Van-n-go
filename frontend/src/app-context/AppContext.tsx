@@ -1,11 +1,11 @@
 import * as i18n from "@solid-primitives/i18n";
 import { Meta, Title } from "@solidjs/meta";
-import {createContext, createEffect, createResource, ParentComponent, useContext} from "solid-js";
+import { createContext, createEffect, createResource, ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 import { AppState, initialState, saveState } from "./appState";
 import { Dictionary, en_flat_dict, fetchDictionary } from "./locale";
 import { Api, initializeApi } from "./api";
-import {Toaster, ToastProvider} from "solid-notifications";
+import { Toaster, ToastProvider } from "solid-notifications";
 
 const AppStateContext = createContext<[AppState, SetStoreFunction<AppState>]>();
 const I18nContext = createContext<i18n.Translator<Dictionary>>();
@@ -63,38 +63,38 @@ export const AppContextProvider: ParentComponent = (props) => {
   const api = initializeApi(appState, setAppState);
 
   return (
-      <AppStateContext.Provider value={[appState, setAppState]}>
-        <I18nContext.Provider value={t}>
-          <ApiContext.Provider value={api}>
-            <ToastProvider
-                theme={appState.preferences.theme}
-                positionY="bottom"
-                class={({type}) => {
-                  const classes = "flex w-full items-center gap-2.5 p-4 border rounded-radius ";
-                  switch (type) {
-                    case "success":
-                      return classes + "bg-success/10 border-success";
-                    case "error":
-                      return classes + "bg-danger/10 border-danger";
-                    case "warning":
-                      return classes + "bg-warning/10 border-warning";
-                    case "info":
-                      return classes + "bg-info/10 border-info";
-                    case "loading":
-                      return classes;
-                    case "default":
-                      return classes;
-                  }
-                }}
-                wrapperClass="bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark"
-            >
+    <AppStateContext.Provider value={[appState, setAppState]}>
+      <I18nContext.Provider value={t}>
+        <ApiContext.Provider value={api}>
+          <ToastProvider
+            theme={appState.preferences.theme}
+            positionY="bottom"
+            class={({ type }) => {
+              const classes = "flex w-full items-center gap-2.5 p-4 border rounded-radius ";
+              switch (type) {
+                case "success":
+                  return classes + "bg-success/10 border-success";
+                case "error":
+                  return classes + "bg-danger/10 border-danger";
+                case "warning":
+                  return classes + "bg-warning/10 border-warning";
+                case "info":
+                  return classes + "bg-info/10 border-info";
+                case "loading":
+                  return classes;
+                case "default":
+                  return classes;
+              }
+            }}
+            wrapperClass="bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark"
+          >
             <Title>{t("global.title")}</Title>
             <Meta name="lang" content={appState.preferences.locale} />
-              <Toaster/>
+            <Toaster />
             <div>{props.children}</div>
-            </ToastProvider>
-          </ApiContext.Provider>
-        </I18nContext.Provider>
-      </AppStateContext.Provider>
+          </ToastProvider>
+        </ApiContext.Provider>
+      </I18nContext.Provider>
+    </AppStateContext.Provider>
   );
 };

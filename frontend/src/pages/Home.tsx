@@ -1,6 +1,6 @@
-import {useTranslator} from "@/app-context/AppContext";
+import { useTranslator } from "@/app-context/AppContext";
 import Button from "../components/Button";
-import {FaSolidPeopleGroup, FaSolidSearch, FaSolidTruck} from "solid-icons/fa";
+import { FaSolidPeopleGroup, FaSolidSearch, FaSolidTruck } from "solid-icons/fa";
 
 export default function Home() {
   const t = useTranslator();
@@ -25,11 +25,15 @@ export default function Home() {
         <div class="mx-auto max-w-7xl px-4">
           <div class="grid gap-8 text-center lg:grid-cols-3">
             <div>
-              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">{t("global.page.home.aboutUs.title")}</h2>
+              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">
+                {t("global.page.home.aboutUs.title")}
+              </h2>
               <p class="text-lg">{t("global.page.home.aboutUs.description")}</p>
             </div>
             <div>
-              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">{t("global.page.home.services.title")}</h2>
+              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">
+                {t("global.page.home.services.title")}
+              </h2>
               <ul class="space-y-2 text-lg">
                 <li class="flex items-center justify-center gap-4">
                   <i>
@@ -52,9 +56,11 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">{t("global.page.home.clientOpinion.title")}</h2>
+              <h2 class="mb-4 text-4xl font-semibold dark:text-on-surface-dark-strong">
+                {t("global.page.home.clientOpinion.title")}
+              </h2>
               <p class="text-lg mb-4">"{t("global.page.home.clientOpinion.description")}"</p>
-                <footer class="text-sm text-on-surface dark:text-on-surface-dark opacity-50 before:content-['—_']">
+              <footer class="text-sm text-on-surface dark:text-on-surface-dark opacity-50 before:content-['—_']">
                 Belon Tusk, <cite title="Source Title">Space X</cite>
               </footer>
             </div>

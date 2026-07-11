@@ -7,50 +7,50 @@ import { Title } from "@solidjs/meta";
 import InfiniteScroll from "../components/pagination/InfiniteScroll";
 
 const vehiclesQuery = query((page: number) => {
-    const api = useApi();
-    const [appState] = useAppState();
+  const api = useApi();
+  const [appState] = useAppState();
 
-    return api.getVehicles(appState.user!.id, page);
+  return api.getVehicles(appState.user!.id, page);
 }, "vehicles");
 
 export default function Vehicles() {
-    const t = useTranslator();
+  const t = useTranslator();
 
-    return (
-        <>
-            <Title>Vehicles - Van N' Go</Title>
-            <section class="mx-auto w-full max-w-7xl px-4 py-8">
-                <div class="mb-6 flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
-                        {t("driver.vehicles.title" as any)}
-                    </h2>
+  return (
+    <>
+      <Title>Vehicles - Van N' Go</Title>
+      <section class="mx-auto w-full max-w-7xl px-4 py-8">
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-on-surface-strong dark:text-on-surface-dark-strong">
+            {t("driver.vehicles.title" as any)}
+          </h2>
+        </div>
+
+        <Suspense fallback={<VehicleGridSkeleton />}>
+          <InfiniteScroll fetcher={vehiclesQuery}>
+            {(vehicles) => (
+              <Show
+                when={vehicles().length > 0}
+                fallback={
+                  <div class="flex flex-col items-center justify-center gap-3 py-24 text-center">
+                    <span class="text-5xl">🚐</span>
+                    <p class="text-lg font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
+                      {t("driver.vehicles.empty.title" as any)}
+                    </p>
+                    <p class="max-w-sm text-sm text-on-surface dark:text-on-surface-dark">
+                      {t("driver.vehicles.empty.subtitle" as any)}
+                    </p>
+                  </div>
+                }
+              >
+                <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+                  <For each={vehicles()}>{(v) => <VehicleCard vehicle={v} />}</For>
                 </div>
-
-                <Suspense fallback={<VehicleGridSkeleton />}>
-                    <InfiniteScroll fetcher={vehiclesQuery}>
-                        {(vehicles) => (
-                            <Show
-                                when={vehicles().length > 0}
-                                fallback={
-                                    <div class="flex flex-col items-center justify-center gap-3 py-24 text-center">
-                                        <span class="text-5xl">🚐</span>
-                                        <p class="text-lg font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
-                                            {t("driver.vehicles.empty.title" as any)}
-                                        </p>
-                                        <p class="max-w-sm text-sm text-on-surface dark:text-on-surface-dark">
-                                            {t("driver.vehicles.empty.subtitle" as any)}
-                                        </p>
-                                    </div>
-                                }
-                            >
-                                <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-                                    <For each={vehicles()}>{(v) => <VehicleCard vehicle={v} />}</For>
-                                </div>
-                            </Show>
-                        )}
-                    </InfiniteScroll>
-                </Suspense>
-            </section>
-        </>
-    );
+              </Show>
+            )}
+          </InfiniteScroll>
+        </Suspense>
+      </section>
+    </>
+  );
 }
