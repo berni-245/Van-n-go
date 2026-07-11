@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.user;
 
 import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -34,9 +35,7 @@ public class DriverDTO extends UserDTO {
         dto.setRating(driver.getRating());
         dto.setCbu(driver.getCbu());
         dto.setDescription(driver.getDescription());
-        dto.vehicles = uriInfo.getBaseUriBuilder()
-                .path("drivers").path(String.valueOf(driver.getId()))
-                .path("vehicles").build();
+        dto.vehicles = UriUtils.driverVehiclesUri(uriInfo, driver.getId()).build();
         return dto;
     }
 

@@ -25,7 +25,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Locale;
 
-@Path("/api/drivers")
+@Path(UriUtils.DRIVERS_URL)
 @Component
 public class DriverController {
 
@@ -51,7 +51,7 @@ public class DriverController {
             @QueryParam("weekDay") DayOfWeek weekDay,
             @QueryParam("minRating") Integer minRating,
             @QueryParam("sortOrder") @DefaultValue("ALPHABETICAL") SearchOrder order,
-            @QueryParam("page") @DefaultValue("1") int page
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page
     ) {
         int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
         Pagination.validatePage(page);
@@ -75,7 +75,7 @@ public class DriverController {
     @GET
     @Path("/{id}")
     @Produces(value = {CustomMediaType.PUBLIC_DRIVER})
-    public Response getPublicDriverInfoById(@PathParam("id") int id) {
+    public Response getPublicDriverInfoById(@PathParam(UriUtils.ID_PARAM) int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromPublicDriverInfo(uriInfo, driver)).build();
     }
@@ -84,7 +84,7 @@ public class DriverController {
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces(value = {CustomMediaType.DRIVER})
-    public Response getDriverById(@PathParam("id") int id) {
+    public Response getDriverById(@PathParam(UriUtils.ID_PARAM) int id) {
         Driver driver = ds.findById(id);
         return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
     }
@@ -94,7 +94,7 @@ public class DriverController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {CustomMediaType.DRIVER_UPDATE})
     @Produces(value = {CustomMediaType.DRIVER})
-    public Response updateDriverById(@PathParam("id") int id, @Valid final UpdateDriverDTO dto) {
+    public Response updateDriverById(@PathParam(UriUtils.ID_PARAM) int id, @Valid final UpdateDriverDTO dto) {
         Driver d = ds.findById(id);
         ds.editProfile(
                 d, dto.getUsernameOr(d.getUsername()), dto.getEmailOr(d.getMail()),
@@ -107,7 +107,7 @@ public class DriverController {
     @GET
     @Path("/{id}/profile-picture")
     @Produces(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getProfilePicture(@PathParam("id") final int id, @Context Request request) {
+    public Response getProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @Context Request request) {
         Driver driver = ds.findById(id);
         Integer imageId = driver.getPfp();
         if (imageId != null) {
@@ -124,7 +124,7 @@ public class DriverController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
+    public Response uploadProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(id);
         imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp", type);

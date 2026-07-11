@@ -12,6 +12,7 @@ import ar.edu.itba.paw.webapp.dto.user.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
 import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,10 +21,13 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.Locale;
 
-@Path("/api/clients")
+@Path(UriUtils.CLIENTS_URL)
 @Component
 public class ClientController {
 
@@ -48,7 +52,7 @@ public class ClientController {
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
     @Produces(value = {CustomMediaType.PUBLIC_CLIENT})
-    public Response getPublicClientInfoById(@PathParam("id") final int id) {
+    public Response getPublicClientInfoById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();
     }
@@ -57,7 +61,7 @@ public class ClientController {
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Produces(value = {CustomMediaType.CLIENT})
-    public Response getClientById(@PathParam("id") final int id) {
+    public Response getClientById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Client client = clientService.findById(id);
         return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
@@ -68,7 +72,7 @@ public class ClientController {
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {CustomMediaType.CLIENT_UPDATE})
     @Produces(value = {CustomMediaType.CLIENT})
-    public Response updateClient(@PathParam("id") final int id, @Valid final UpdateClientDTO dto) {
+    public Response updateClient(@PathParam(UriUtils.ID_PARAM) final int id, @Valid final UpdateClientDTO dto) {
         Client c = clientService.findById(id);
         clientService.editProfile(
                 c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
@@ -80,7 +84,7 @@ public class ClientController {
     @Path("/{clientId}/profile-picture")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
     @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getProfilePicture(@PathParam("clientId") final int id, @Context Request request) {
+    public Response getProfilePicture(@PathParam(UriUtils.CLIENT_ID_PARAM) final int id, @Context Request request) {
         Client client = clientService.findById(id);
         Integer imageId = client.getPfp();
         if(imageId != null){
@@ -97,7 +101,7 @@ public class ClientController {
     @Path("/{id}/profile-picture")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response uploadProfilePicture(@PathParam("id") final int id, @ValidImage byte[] imageData,
+    public Response uploadProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Client client = clientService.findById(id);
         imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp", type);

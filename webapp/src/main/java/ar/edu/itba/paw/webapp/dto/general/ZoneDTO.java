@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.general;
 
 import ar.edu.itba.paw.models.Zone;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -33,11 +34,7 @@ public class ZoneDTO {
         NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
         neighborhoodDTO.setName(zone.getNeighborhoodName());
         dto.setNeighborhood(neighborhoodDTO);
-        dto.setSelf(uriInfo.getBaseUriBuilder()
-                .path("api")
-                .path("zones")
-                .path(String.valueOf(zone.getId()))
-                .build());
+        dto.setSelf(UriUtils.zoneUri(uriInfo, zone.getId()).build());
         return dto;
     }
     public URI getSelf() {

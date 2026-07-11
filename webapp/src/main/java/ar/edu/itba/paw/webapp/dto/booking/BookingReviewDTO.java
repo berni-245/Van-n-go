@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.booking;
 
 import ar.edu.itba.paw.models.Booking;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -14,7 +15,7 @@ public class BookingReviewDTO {
         BookingReviewDTO dto = new BookingReviewDTO();
         dto.rating = booking.getRating();
         dto.comments = booking.getReview();
-        dto.booking = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId())).build();
+        dto.booking = UriUtils.bookingUri(uriInfo, booking.getId()).build();
         return dto;
     }
 

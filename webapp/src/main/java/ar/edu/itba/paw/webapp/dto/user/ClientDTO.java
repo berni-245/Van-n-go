@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.user;
 
 import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -19,7 +20,7 @@ public class ClientDTO extends UserDTO {
     public static ClientDTO fromClient(UriInfo uriInfo, Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setAllInfoFromUser(uriInfo, client);
-        clientDTO.zone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(client.getZone().getId())).build();
+        clientDTO.zone = UriUtils.zoneUri(uriInfo, client.getZone().getId()).build();
         return clientDTO;
     }
 

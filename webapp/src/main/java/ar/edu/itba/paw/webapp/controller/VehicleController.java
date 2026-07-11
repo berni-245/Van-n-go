@@ -25,7 +25,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-@Path("/api/drivers/{driverId}/vehicles")
+@Path(UriUtils.VEHICLES_URL)
 @Component
 public class VehicleController {
 
@@ -44,12 +44,12 @@ public class VehicleController {
     @GET
     @Produces(value = {CustomMediaType.VEHICLE_LIST})
     public Response getVehicles(
-            @PathParam("driverId") int driverId,
+            @PathParam(UriUtils.DRIVER_ID_PARAM) int driverId,
             @QueryParam("zoneId") Integer zoneId,
             @QueryParam("size") Size size,
             @QueryParam("maxPrice") Double maxPrice,
             @QueryParam("weekDay") DayOfWeek weekDay,
-            @QueryParam("page") @DefaultValue("1") int page,
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page,
             @QueryParam("mustHaveAvailability") @DefaultValue("false") boolean mustHaveAvailability
     ) {
         Driver driver = ds.findById(driverId);
@@ -72,7 +72,7 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Consumes(value = {CustomMediaType.VEHICLE_CREATE})
     @Produces(value = {CustomMediaType.VEHICLE})
-    public Response createVehicle(@PathParam("driverId") int driverId, @Valid final CreateVehicleDTO dto) {
+    public Response createVehicle(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @Valid final CreateVehicleDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.addVehicle(
                 driver, dto.getPlateNumber(), dto.getVolumeM3(),
@@ -85,7 +85,7 @@ public class VehicleController {
     @GET
     @Path("{vehicleId}")
     @Produces(value = {CustomMediaType.VEHICLE})
-    public Response getVehicleById(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+    public Response getVehicleById(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         return Response.ok(VehicleDTO.fromVehicle(uriInfo, vehicle)).build();
@@ -97,8 +97,8 @@ public class VehicleController {
     @Produces(value = {CustomMediaType.VEHICLE})
     @Consumes(value = {CustomMediaType.VEHICLE_UPDATE})
     public Response updateVehicle(
-            @PathParam("driverId") int driverId,
-            @PathParam("vehicleId") int vehicleId,
+            @PathParam(UriUtils.DRIVER_ID_PARAM) int driverId,
+            @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId,
             @Valid UpdateVehicleDTO dto
     ) {
         Driver driver = ds.findById(driverId);
@@ -113,7 +113,7 @@ public class VehicleController {
     @DELETE
     @Path("{vehicleId}")
     @PreAuthorize("@authService.isAuthUser(#driverId)")
-    public Response deleteVehicle(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+    public Response deleteVehicle(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         ds.deleteVehicle(vehicle);
@@ -124,7 +124,7 @@ public class VehicleController {
     @GET
     @Path("{vehicleId}/picture")
     @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @Context Request request) {
+    public Response getVehiclePicture(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId, @Context Request request) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         Integer imageId = vehicle.getImgId();
@@ -143,7 +143,7 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     @Consumes({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response uploadVehiclePicture(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId, @ValidImage byte[] imageData,
+    public Response uploadVehiclePicture(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId, @ValidImage byte[] imageData,
                                          @HeaderParam("Content-Type") String type) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -154,7 +154,7 @@ public class VehicleController {
     @GET
     @Path("{vehicleId}/availability")
     @Produces(value = {CustomMediaType.AVAILABILITY})
-    public Response listAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId) {
+    public Response listAvailability(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId) {
         Driver driver = ds.findById(driverId);
         Vehicle vehicle = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
         List<Availability> availabilitiesTimes = vehicle.getAvailability();
@@ -168,7 +168,7 @@ public class VehicleController {
     @PreAuthorize("@authService.isAuthUser(#driverId)")
     @Consumes(value = {CustomMediaType.AVAILABILITY_UPDATE})
     @Produces(value = {CustomMediaType.AVAILABILITY})
-    public Response updateAvailability(@PathParam("driverId") int driverId, @PathParam("vehicleId") int vehicleId,
+    public Response updateAvailability(@PathParam(UriUtils.DRIVER_ID_PARAM) int driverId, @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId,
                                        @Valid UpdateAvailabilityDTO dto) {
         Driver driver = ds.findById(driverId);
         Vehicle v = ds.findVehicleById(driver, vehicleId).orElseThrow(VehicleNotFoundException::new);
@@ -179,9 +179,8 @@ public class VehicleController {
         );
         ds.updateAvailability(v, dto.getZones(), getMapDayTimeSlots(dto));
         AvailabilityDTO availabilityDTO = new AvailabilityDTO();
-        availabilityDTO.setZones(dto.getZones().stream().map(id -> uriInfo
-                .getBaseUriBuilder().path("api").path("zones")
-                .path(String.valueOf(id)).build()).toList()
+        availabilityDTO.setZones(dto.getZones().stream()
+                .map(id -> UriUtils.zoneUri(uriInfo, id).build()).toList()
         );
         availabilityDTO.setTimeSlots(dto.getTimeSlots());
         return Response.ok(availabilityDTO).build();
@@ -199,8 +198,8 @@ public class VehicleController {
     @Path("{vehicleId}/booked-times")
     @Produces(value = {CustomMediaType.BOOKED_TIMES})
     public Response listBookedTimes(
-            @PathParam("driverId") int driverId,
-            @PathParam("vehicleId") int vehicleId,
+            @PathParam(UriUtils.DRIVER_ID_PARAM) int driverId,
+            @PathParam(UriUtils.VEHICLE_ID_PARAM) int vehicleId,
             @QueryParam("year") Integer year,
             @QueryParam("month") Month month
     ) {

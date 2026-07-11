@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Path("/api/messages")
+@Path(UriUtils.MESSAGES_URL)
 @Component
 public class MessageController {
     @Context
@@ -45,9 +45,9 @@ public class MessageController {
     @PreAuthorize("@authService.isValidConversation(#driverId, #clientId)")
     @Produces(value = {CustomMediaType.MESSAGE_LIST})
     public Response listMessages(
-            @QueryParam("driverId") Integer driverId,
-            @QueryParam("clientId") Integer clientId,
-            @QueryParam("page") @DefaultValue("1") int page
+            @QueryParam(UriUtils.DRIVER_ID_PARAM) Integer driverId,
+            @QueryParam(UriUtils.CLIENT_ID_PARAM) Integer clientId,
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page
     ) {
         Client client = clientService.findById(clientId);
         Driver driver = driverService.findById(driverId);
@@ -97,7 +97,7 @@ public class MessageController {
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserInConversation(#id)")
     @Produces(value = {CustomMediaType.MESSAGE})
-    public Response getMessageById(@PathParam("id") final int id) {
+    public Response getMessageById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Message message = messageService.getMessageById(id);
         return Response.ok(MessageDTO.fromMessage(uriInfo, message)).build();
     }

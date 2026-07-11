@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.webapp.dto.general.RootDTO;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -11,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/api")
+@Path(UriUtils.API_BASE_URI)
 @Component
 public class RootController {
 

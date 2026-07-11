@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.vehicle;
 
 import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -30,18 +31,13 @@ public class VehicleDTO {
         dto.setVolumeM3(vehicle.getVolume());
         dto.setHourlyRate(vehicle.getHourlyRate());
         dto.setDescription(vehicle.getDescription());
-        UriBuilder baseDriverURI = uriInfo.getBaseUriBuilder()
-                .path("api")
-                .path("drivers")
-                .path(String.valueOf(vehicle.getDriver().getId()));
-        UriBuilder baseVehicleURI = baseDriverURI.clone()
-                .path("vehicles")
-                .path(String.valueOf(vehicle.getId()));
+        UriBuilder baseDriverURI = UriUtils.driverUri(uriInfo, vehicle.getDriver().getId());
+        UriBuilder baseVehicleURI = UriUtils.vehicleUri(uriInfo, vehicle.getDriver().getId(), vehicle.getId());
         dto.driver = baseDriverURI.clone().build();
         dto.self = baseVehicleURI.clone().build();
-        dto.picture = baseVehicleURI.clone().path("picture").build();
-        dto.availability = baseVehicleURI.clone().path("availability").build();
-        dto.bookedTimes = baseVehicleURI.clone().path("booked-times").build();
+        dto.picture = baseVehicleURI.clone().path(UriUtils.PICTURE).build();
+        dto.availability = baseVehicleURI.clone().path(UriUtils.AVAILABILITY).build();
+        dto.bookedTimes = baseVehicleURI.clone().path(UriUtils.BOOKED_TIMES).build();
 
         return dto;
     }

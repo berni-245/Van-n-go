@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dto.booking;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -32,23 +33,20 @@ public class BookingDTO {
     public static BookingDTO fromBooking(UriInfo uriInfo, Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.id = booking.getId();
-        UriBuilder bookingTemplate = uriInfo.getBaseUriBuilder().path("api").path("bookings").path(String.valueOf(booking.getId()));
+        UriBuilder bookingTemplate = UriUtils.bookingUri(uriInfo, booking.getId());
         bookingDTO.self = bookingTemplate.clone().build();
-        bookingDTO.client = uriInfo.getBaseUriBuilder().path("api").path("clients").path(String.valueOf(booking.getClient().getId())).build();
-        UriBuilder driverTemplate = uriInfo.getBaseUriBuilder().path("api").path("drivers").path(String.valueOf(booking.getDriver().getId()));
-        bookingDTO.driver = driverTemplate.clone().build();
-        bookingDTO.vehicle = driverTemplate.clone().path("vehicles").path(String.valueOf(booking.getVehicle().getId())).build();
-        bookingDTO.originZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getOriginZone().getId())).build();
-        bookingDTO.proofOfPayment = bookingTemplate.clone().path("proof-of-payment").build();
-        bookingDTO.review = bookingTemplate.clone().path("review").build();
+        bookingDTO.client = UriUtils.clientUri(uriInfo, booking.getClient().getId()).build();
+        bookingDTO.driver = UriUtils.driverUri(uriInfo, booking.getDriver().getId()).build();
+        bookingDTO.vehicle = UriUtils.vehicleUri(uriInfo, booking.getDriver().getId(), booking.getVehicle().getId()).build();
+        bookingDTO.originZone = UriUtils.zoneUri(uriInfo, booking.getOriginZone().getId()).build();
+        bookingDTO.destinationZone = UriUtils.zoneUri(uriInfo, booking.getDestinationZone().getId()).build();
+        bookingDTO.proofOfPayment = bookingTemplate.clone().path(UriUtils.PROOF_OF_PAYMENT).build();
+        bookingDTO.review = bookingTemplate.clone().path(UriUtils.REVIEW).build();
         bookingDTO.jobDescription = booking.getJobDescription();
         bookingDTO.date = booking.getDate().toString();
         bookingDTO.shiftPeriod = booking.getShiftPeriod();
         bookingDTO.state = booking.getState();
 
-        if (booking.getDestinationZone() != null) {
-            bookingDTO.destinationZone = uriInfo.getBaseUriBuilder().path("api").path("zones").path(String.valueOf(booking.getDestinationZone().getId())).build();
-        }
         return bookingDTO;
     }
 

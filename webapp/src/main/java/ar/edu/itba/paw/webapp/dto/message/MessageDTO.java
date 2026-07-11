@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.message;
 
 import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -25,23 +26,14 @@ public class MessageDTO {
         dto.setContent(message.getContent());
         dto.setSentByDriver(message.isSentByDriver());
         dto.setTimeSent(message.getTimeSent());
-        dto.setSelf(uriInfo.getBaseUriBuilder()
-                .path("api").path("messages")
-                .path(String.valueOf(message.getId()))
-                .build());
+        dto.setSelf(UriUtils.messageUri(uriInfo, message.getId()).build());
         return dto;
     }
 
     public static MessageDTO fromMessage(UriInfo uriInfo, Message message) {
         MessageDTO dto = getContentFromMessage(uriInfo, message);
-        dto.setDriver(uriInfo.getBaseUriBuilder()
-                .path("api").path("drivers")
-                .path(String.valueOf(message.getDriver().getId()))
-                .build());
-        dto.setClient(uriInfo.getBaseUriBuilder()
-                .path("api").path("clients")
-                .path(String.valueOf(message.getClient().getId()))
-                .build());
+        dto.setDriver(UriUtils.driverUri(uriInfo, message.getDriver().getId()).build());
+        dto.setClient(UriUtils.clientUri(uriInfo, message.getClient().getId()).build());
         return dto;
     }
 

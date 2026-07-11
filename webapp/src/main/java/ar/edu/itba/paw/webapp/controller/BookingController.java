@@ -28,7 +28,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
-@Path("/api/bookings")
+@Path(UriUtils.BOOKINGS_URL)
 @Component
 public class BookingController {
 
@@ -48,9 +48,9 @@ public class BookingController {
     @PreAuthorize("@authService.isAuthUser(#userId)")
     @Produces(value = {CustomMediaType.BOOKING_LIST})
     public <T extends User> Response listBookings(
-            @QueryParam("userId") Integer userId,
-            @QueryParam("state") BookingState state,
-            @QueryParam("page") @DefaultValue("1") int page
+            @QueryParam(UriUtils.USER_ID_PARAM) Integer userId,
+            @QueryParam(UriUtils.STATE_PARAM) BookingState state,
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page
     ) {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
@@ -83,7 +83,7 @@ public class BookingController {
     @GET
     @Path("/{bookingId}")
     @Produces(value = {CustomMediaType.BOOKING})
-    public Response getBookingById(@PathParam("bookingId") int bookingId) {
+    public Response getBookingById(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         return Response.ok(BookingDTO.fromBooking(uriInfo, b)).build();
     }
@@ -92,7 +92,7 @@ public class BookingController {
     @Path("/{bookingId}")
     @Consumes(value = {CustomMediaType.BOOKING_UPDATE_STATE})
     @Produces(value = {CustomMediaType.BOOKING})
-    public <T extends User> Response updateBookingState(@PathParam("bookingId") int bookingId, @Valid UpdateBookingStateDTO dto) {
+    public <T extends User> Response updateBookingState(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId, @Valid UpdateBookingStateDTO dto) {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
         Booking b = userService.getBookingById(user, bookingId);
@@ -103,7 +103,7 @@ public class BookingController {
     @GET
     @Path("/{bookingId}/review")
     @Produces(value = {CustomMediaType.BOOKING_REVIEW})
-    public Response getReview(@PathParam("bookingId") int bookingId) {
+    public Response getReview(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         if (b.getRating() == null)
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -115,7 +115,7 @@ public class BookingController {
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {CustomMediaType.BOOKING_REVIEW})
     @Produces(value = {CustomMediaType.BOOKING_REVIEW})
-    public Response updateBookingReview(@PathParam("bookingId") int bookingId, @Valid CreateBookingReviewDTO dto) {
+    public Response updateBookingReview(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId, @Valid CreateBookingReviewDTO dto) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         clientService.setBookingRatingAndReview(b.getClient(), b.getId(), dto.getRating(), dto.getComments());
         return Response.ok(BookingReviewDTO.fromBooking(uriInfo, b)).build();
@@ -124,7 +124,7 @@ public class BookingController {
     @GET
     @Path("/{bookingId}/proof-of-payment")
     @Produces(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response getBookingProofOfPayment(@PathParam("bookingId") int bookingId) {
+    public Response getBookingProofOfPayment(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         Integer popId = b.getPop();
         if (popId == null)
@@ -139,7 +139,7 @@ public class BookingController {
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @Consumes(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     @Produces(value = {MediaType.APPLICATION_PDF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Response uploadBookingProofOfPayment(@PathParam("bookingId") int bookingId, @ValidFile byte[] proofOfPayment,
+    public Response uploadBookingProofOfPayment(@PathParam(UriUtils.BOOKING_ID_PARAM) int bookingId, @ValidFile byte[] proofOfPayment,
                                                 @HeaderParam("Content-Type") String contentType) {
         Booking b = getBookingIfAuthUserOwnsIt(bookingId);
         imageService.uploadPop(b.getClient(), proofOfPayment, "booking_%d_pop".formatted(bookingId), bookingId, contentType);

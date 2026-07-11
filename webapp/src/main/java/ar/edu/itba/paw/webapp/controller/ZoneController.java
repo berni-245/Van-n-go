@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.ZoneService;
 import ar.edu.itba.paw.webapp.dto.general.ZoneDTO;
 import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Path("/api/zones")
+@Path(UriUtils.ZONES_URL)
 @Component
 public class ZoneController {
 
@@ -40,7 +41,7 @@ public class ZoneController {
     @GET
     @Path("/{id}")
     @Produces(value = {CustomMediaType.ZONE})
-    public Response getZoneById(@PathParam("id") final int id) {
+    public Response getZoneById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Zone zone = zoneService.getZone(id).orElseThrow(ZoneNotFoundException::new);
         return CacheControlUtils.setLongMaxTimeToResponse(Response.ok(ZoneDTO.fromZone(uriInfo, zone)));
     }

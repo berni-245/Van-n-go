@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dto.user;
 import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Language;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -28,23 +29,21 @@ public abstract class UserDTO {
     protected void setPublicInfoFromUser(UriInfo uriInfo, User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        UriBuilder userIdEndpointTemplate = uriInfo.getBaseUriBuilder().path("api").path(user.getType() + "s").path(String.valueOf(user.getId()));
+        UriBuilder userIdEndpointTemplate = UriUtils.userUri(uriInfo, user.getType(), user.getId());
         this.self = userIdEndpointTemplate.clone().build();
-        this.profilePic = userIdEndpointTemplate.clone().path("profile-picture").build();
+        this.profilePic = userIdEndpointTemplate.clone().path(UriUtils.PROFILE_PICTURE).build();
     }
 
     protected void setAllInfoFromUser(UriInfo uriInfo, User user) {
         setPublicInfoFromUser(uriInfo, user);
         this.email = user.getMail();
         this.preferredLanguage = user.getLanguage();
-        UriBuilder bookingTemplate = uriInfo
-                .getBaseUriBuilder().path("api").path("bookings")
-                .queryParam("userId", user.getId());
-        this.pendingBookings = bookingTemplate.clone().queryParam("status", BookingState.PENDING.name()).build();
-        this.acceptedBookings = bookingTemplate.clone().queryParam("status", BookingState.ACCEPTED.name()).build();
-        this.finishedBookings = bookingTemplate.clone().queryParam("status", BookingState.FINISHED.name()).build();
-        this.rejectedBookings = bookingTemplate.clone().queryParam("status", BookingState.REJECTED.name()).build();
-        this.canceledBookings = bookingTemplate.clone().queryParam("status", BookingState.CANCELED.name()).build();
+        UriBuilder bookingTemplate = UriUtils.bookingsForUser(uriInfo, user.getId());
+        this.pendingBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.PENDING.name()).build();
+        this.acceptedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.ACCEPTED.name()).build();
+        this.finishedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.FINISHED.name()).build();
+        this.rejectedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.REJECTED.name()).build();
+        this.canceledBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.CANCELED.name()).build();
     }
 
     public int getId() { return id; }
