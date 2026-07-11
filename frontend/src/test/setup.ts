@@ -46,3 +46,12 @@ if (!window.matchMedia) {
       dispatchEvent: () => false,
     }) as MediaQueryList;
 }
+
+// jsdom doesn't implement scrollIntoView at all (unlike scrollTo, which it
+// stubs with just a "not implemented" warning) — it's simply undefined, so
+// any component that calls it (e.g. Chat.tsx scrolling to the latest
+// message) throws a real TypeError in tests.
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
+

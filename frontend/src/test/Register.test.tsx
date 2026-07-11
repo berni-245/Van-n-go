@@ -4,13 +4,7 @@ import { http, HttpResponse } from "msw";
 import { server } from "@/test/msw/server";
 import { renderRoute } from "@/test/renderRoute";
 import { zonesResponse, makeZone } from "@/test/msw/zoneFixtures";
-import {
-  authSuccessResponse,
-  clientResponse,
-  makeClient,
-  driverUserResponse,
-  makeDriverUser,
-} from "@/test/msw/authFixtures";
+import { authSuccessResponse, makeClient, makeDriverUser } from "@/test/msw/authFixtures";
 import Register from "@/pages/Register";
 
 const user = userEvent.setup();
@@ -63,9 +57,11 @@ async function pickZone() {
 test("registers a new client and redirects to their dashboard", async () => {
   server.use(
     zonesResponse([PALERMO]),
-    http.post("*/api/clients", () => new HttpResponse(null, { status: 201 })),
+    // Register.tsx now reads the created user straight off this response
+    // body (via api.setUser) instead of re-fetching it afterward, so it
+    // needs to actually be a Client, not an empty 201.
+    http.post("*/api/clients", () => HttpResponse.json(makeClient({ id: 9 }), { status: 201 })),
     authSuccessResponse("client", 9),
-    clientResponse(makeClient({ id: 9 }))
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/client", component: () => <p>client-dashboard-stub</p> }]);
@@ -79,9 +75,8 @@ test("registers a new client and redirects to their dashboard", async () => {
 
 test("registers a new driver (no zone required) and redirects to their dashboard", async () => {
   server.use(
-    http.post("*/api/drivers", () => new HttpResponse(null, { status: 201 })),
+    http.post("*/api/drivers", () => HttpResponse.json(makeDriverUser({ id: 4 }), { status: 201 })),
     authSuccessResponse("driver", 4),
-    driverUserResponse(makeDriverUser({ id: 4 }))
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/driver", component: () => <p>driver-dashboard-stub</p> }]);
