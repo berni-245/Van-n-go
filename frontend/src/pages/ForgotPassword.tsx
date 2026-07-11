@@ -1,10 +1,10 @@
-import { useApi, useTranslator } from "@/app-context/AppContext";
+import {useApi, useTranslator} from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
-import { Title } from "@solidjs/meta";
-import { A } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
-import { useToast } from "solid-notifications";
+import {Title} from "@solidjs/meta";
+import {A} from "@solidjs/router";
+import {createSignal, Show} from "solid-js";
+import {useToast} from "solid-notifications";
 
 export default function ForgotPassword() {
   const t = useTranslator();
@@ -31,7 +31,7 @@ export default function ForgotPassword() {
         if (res.status === 400 || res.status === 404) {
           setError("global.forgotPassword.tokenSentError");
         } else {
-          setError("global.generic.error.unknown");
+          setError("global.error.unknown");
         }
         return;
       }
@@ -40,7 +40,7 @@ export default function ForgotPassword() {
       toaster.notify(t("global.forgotPassword.tokenSentSuccess" as any) as string, { type: "info" });
     } catch (e) {
       console.error(e);
-      setError("global.generic.error.unknown");
+      setError("global.error.unknown");
     } finally {
       setLoading(false);
     }
@@ -76,6 +76,7 @@ export default function ForgotPassword() {
           <form onSubmit={handleSubmit} class="flex flex-col gap-6 items-center">
             <TextInput
               class="mx-auto"
+              name="email"
               label={t("global.forgotPassword.email" as any) as string}
               value={email()}
               onInput={(e) => setEmail(e.currentTarget.value)}
