@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from "@solidjs/router";
-import { ParentComponent } from "solid-js";
+import { ParentComponent, Show } from "solid-js";
 import { useAppState } from "@/app-context/AppContext";
 import { UserType } from "@/api/jwt";
 import { stripBase } from "@/utils/routing";
@@ -8,12 +8,20 @@ const ProtectedRoute: ParentComponent<{ userType: UserType }> = (props) => {
   const [appState] = useAppState();
   const location = useLocation();
 
-  if (appState.user?.type !== props.userType) {
-    console.log(`No '${props.userType}' detected for protected route, redirecting to '/login'`);
-    return <Navigate href="/login" state={{ from: stripBase(location.pathname) }} />;
-  }
-
-  return <>{props.children}</>;
+  return (
+    <Show
+      when={appState.user?.type === props.userType}
+      fallback={
+        appState.user ? (
+          <Navigate href={`/${appState.user.type}`} />
+        ) : (
+          <Navigate href="/login" state={{ from: stripBase(location.pathname) }} />
+        )
+      }
+    >
+      {props.children}
+    </Show>
+  );
 };
 
 export const DriverRoute: ParentComponent = (props) => {
@@ -27,10 +35,9 @@ export const ClientRoute: ParentComponent = (props) => {
 export const AnonRoute: ParentComponent = (props) => {
   const [appState] = useAppState();
 
-  if (appState.user) {
-    console.log(`Logged user detected for anon route, redirecting to '/${appState.user.type}'`);
-    return <Navigate href={`/${appState.user.type}`} />;
-  }
-
-  return <>{props.children}</>;
+  return (
+    <Show when={!appState.user} fallback={<Navigate href={`/${appState.user!.type}`} />}>
+      {props.children}
+    </Show>
+  );
 };
