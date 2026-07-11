@@ -1,11 +1,11 @@
-import { useApi, useTranslator } from "@/app-context/AppContext";
+import {useApi, useTranslator} from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
 import PasswordInput from "@/components/inputs/PasswordInput";
-import { Title } from "@solidjs/meta";
-import { A, useNavigate, useSearchParams } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
-import { useToast } from "solid-notifications";
+import {Title} from "@solidjs/meta";
+import {A, useNavigate, useSearchParams} from "@solidjs/router";
+import {createSignal, Show} from "solid-js";
+import {useToast} from "solid-notifications";
 
 export default function RecoverPassword() {
   const t = useTranslator();
@@ -33,7 +33,7 @@ export default function RecoverPassword() {
 
     const id = Array.isArray(searchParams.id) ? searchParams.id[0] : searchParams.id;
     if (!id) {
-      setError("global.generic.error.unknown");
+      setError("global.error.unknown");
       return;
     }
 
@@ -51,7 +51,7 @@ export default function RecoverPassword() {
         if (res.status === 400) {
           setError("global.recoverPassword.error");
         } else {
-          setError("global.generic.error.unknown");
+          setError("global.error.unknown");
         }
         return;
       }
@@ -60,7 +60,7 @@ export default function RecoverPassword() {
       navigate("/login");
     } catch (e) {
       console.error(e);
-      setError("global.generic.error.unknown");
+      setError("global.error.unknown");
     } finally {
       setLoading(false);
     }
@@ -89,6 +89,7 @@ export default function RecoverPassword() {
         <form onSubmit={handleSubmit} class="flex flex-col gap-4 items-center">
           <TextInput
             class="mx-auto"
+            name="email"
             label={t("global.recoverPassword.email" as any) as string}
             value={email()}
             onInput={(e) => setEmail(e.currentTarget.value)}
@@ -99,6 +100,7 @@ export default function RecoverPassword() {
 
           <TextInput
             class="mx-auto"
+            name="token"
             label={t("global.recoverPassword.token" as any) as string}
             value={token()}
             onInput={(e) => setToken(e.currentTarget.value)}
@@ -110,6 +112,7 @@ export default function RecoverPassword() {
 
           <PasswordInput
             class="mx-auto"
+            name="password"
             label={t("global.recoverPassword.newPassword" as any) as string}
             value={password()}
             onInput={(e) => setPassword(e.currentTarget.value)}
@@ -119,6 +122,7 @@ export default function RecoverPassword() {
 
           <PasswordInput
             class="mx-auto"
+            name="confirmPassword"
             label={t("global.recoverPassword.confirmPassword" as any) as string}
             value={confirmPassword()}
             onInput={(e) => setConfirmPassword(e.currentTarget.value)}
