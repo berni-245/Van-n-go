@@ -109,19 +109,29 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                 zone, size, priceMax, weekday, rating, order, offset
         );
         if (driverIds.isEmpty()) return Collections.emptyList();
-        StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d JOIN MinimalPrice mp ON mp.driverId = d.id WHERE d.id IN :driverIds");
+        StringBuilder driverQuery = new StringBuilder("""
+                    SELECT au.id AS id, au.username AS username, au.mail AS mail, au.password AS password,
+                           au.pfp AS pfp, au.language AS language, au.creation_time AS creation_time,
+                           d.description AS description, d.rating AS rating, d.cbu AS cbu
+                    FROM driver d
+                    JOIN app_user au ON au.id = d.id
+                    JOIN minimal_price m ON m.driver_id = d.id
+                    WHERE d.id IN (:driverIds)
+                """);
         if (order != null) {
             switch (order) {
-                case LEAST_PRICE -> driverQuery.append(" ORDER BY mp.min");
+                case LEAST_PRICE -> driverQuery.append(" ORDER BY m.min");
                 case BEST_RATING -> driverQuery.append(" ORDER BY d.rating DESC");
-                case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
+                case ALPHABETICAL -> driverQuery.append(" ORDER BY au.username");
             }
         }
 
-        TypedQuery<Driver> finalQuery = em.createQuery(driverQuery.toString(), Driver.class);
+        Query finalQuery = em.createNativeQuery(driverQuery.toString(), Driver.class);
         finalQuery.setParameter("driverIds", driverIds);
 
-        return finalQuery.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Driver> drivers = finalQuery.getResultList();
+        return drivers;
     }
 
     @Override

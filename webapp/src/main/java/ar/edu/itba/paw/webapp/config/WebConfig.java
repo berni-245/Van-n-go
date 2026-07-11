@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -35,6 +36,9 @@ import java.util.Properties;
 public class WebConfig {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
+
+    @Value("classpath:minimal_price_view.sql")
+    private Resource minimalPriceView;
 
     @Bean
     public MessageSource messageSource() {
@@ -71,6 +75,17 @@ public class WebConfig {
         ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
 //        dbp.addScript(schemaSql);
         return dbp;
+    }
+
+    @Bean
+    @DependsOn("entityManagerFactory")
+    public DataSourceInitializer minimalPriceViewInitializer(final DataSource ds) {
+        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(minimalPriceView);
+        final DataSourceInitializer dsi = new DataSourceInitializer();
+        dsi.setDataSource(ds);
+        dsi.setDatabasePopulator(populator);
+        return dsi;
     }
 
     @Bean
