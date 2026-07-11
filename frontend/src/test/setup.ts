@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest";
-import { afterAll, afterEach, beforeAll } from "vitest";
-import { setGlobalOrigin } from "undici";
-import { query } from "@solidjs/router";
-import { server } from "./msw/server";
+import {afterAll, afterEach, beforeAll} from "vitest";
+import {setGlobalOrigin} from "undici";
+import {query} from "@solidjs/router";
+import {server} from "./msw/server";
 
 // The app makes relative-URL requests (e.g. new Request("/api/drivers?...")).
 // Real browsers resolve those against the current page; Node's native
@@ -53,5 +53,25 @@ if (!window.matchMedia) {
 // message) throws a real TypeError in tests.
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
+}
+
+// jsdom doesn't implement IntersectionObserver, which createInfiniteScroll.ts
+// (used by InfiniteScroll, e.g. on the Vehicles page) instantiates on mount.
+// A no-op stub is enough for tests: the observer only *advances* to the next
+// page when the loader scrolls into view, so leaving it inert means the
+// component just loads its first page and renders that — exactly the state
+// these tests assert on.
+if (!globalThis.IntersectionObserver) {
+  globalThis.IntersectionObserver = class {
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly thresholds: ReadonlyArray<number> = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+  } as unknown as typeof IntersectionObserver;
 }
 

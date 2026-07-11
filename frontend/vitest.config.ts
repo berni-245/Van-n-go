@@ -26,6 +26,12 @@ export default mergeConfig(
       globals: true,
       setupFiles: ["./src/test/setup.ts"],
       css: true,
+      // The heavier integration tests (e.g. BookingCreate: calendar polling +
+      // two comboboxes + typing a full jobDescription via userEvent + an action
+      // submit + navigation) run close to the 5s default. Under the parallel
+      // load of the full suite that's enough to flake into a timeout even
+      // though nothing is actually stuck, so give every test more headroom.
+      testTimeout: 15000,
       exclude: ["**/node_modules/**", "**/dist/**", "**/target/**"],
     },
     // vite-plugin-solid needs to resolve solid-js's browser/dev build
