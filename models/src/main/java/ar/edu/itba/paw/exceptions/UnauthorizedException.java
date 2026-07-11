@@ -6,6 +6,6 @@ public class UnauthorizedException extends RuntimeException {
     }
 
     public UnauthorizedException() {
-        super("Login in is needed using valid credentials for basic authentication or token authentication");
+        super("Login is needed using valid credentials for basic authentication or token authentication");
     }
 }
