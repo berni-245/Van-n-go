@@ -55,7 +55,7 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
           request.headers.set("Authorization", `Bearer ${appState.session.token.refresh}`);
         } else {
           console.log("Expired tokens. Session reset");
-          this.logout("/login", stripBase(location.pathname));
+          this.logout("/login", location.pathname);
           // TODO: maybe add a toast telling user the session has expired? Not sure if this is the
           // right place to add it tho...
         }
@@ -67,9 +67,11 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
       // await sleep(1000);
       const res = await fetch(request);
       if (res.status === 401) {
-        // NOTE: we could get here for example if the user altered the jwt to change the expiration time.
-        console.log("Invalid credentials. Session reset");
-        this.logout("/login", stripBase(location.pathname));
+        if (appState.session) {
+          // NOTE: e.g. the user altered the jwt to change the expiration time.
+          console.log("Invalid credentials. Session reset");
+          this.logout("/login", location.pathname);
+        }
       } else {
         const authToken = res.headers.get("vango-auth-token");
         const refreshToken = res.headers.get("vango-refresh-token");
@@ -99,7 +101,10 @@ export function initializeApi(appState: AppState, setAppState: SetStoreFunction<
     async logout(redirect: string, from?: string) {
       setAppState("session", null);
       setAppState("user", null);
-      navigate(redirect, { state: from ? { from } : undefined });
+      // `from` is stored and later used as a navigation target, which must be base-relative
+      // (the router re-adds the base). Strip it here so callers can pass a raw
+      // location.pathname without producing a duplicated base (e.g. /base/base/login).
+      navigate(redirect, { state: from ? { from: stripBase(from) } : undefined });
     },
 
     async getClient(id: number, opts: VisibilityOpts): Promise<Client | null> {
