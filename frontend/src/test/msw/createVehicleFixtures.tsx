@@ -1,5 +1,5 @@
-import {http, HttpResponse} from "msw";
-import type {ApiError} from "@/api/types";
+import { http, HttpResponse } from "msw";
+import type { ApiError } from "@/api/types";
 
 // CreateVehicle.tsx submits via api.createVehicle(driverId, payload), which
 // issues `POST {API_ROOT}drivers/{id}/vehicles`. API_ROOT resolves to

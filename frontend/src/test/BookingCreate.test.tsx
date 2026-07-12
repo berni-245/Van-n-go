@@ -77,7 +77,7 @@ test("lets a client pick an available day/shift and submits a booking successful
     availabilityResponse(makeAvailability()),
     bookedTimesResponse([]),
     zonesResponse(ZONES),
-    createBookingSuccessResponse({ id: 42 }),
+    createBookingSuccessResponse({ id: 42 })
   );
 
   renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);
@@ -103,7 +103,7 @@ test("shows a field-level error returned by the API next to the relevant field",
         entity: "destinationZoneId",
         description: "The destination zone must differ from the origin.",
       },
-    ]),
+    ])
   );
 
   renderBookingCreate();
@@ -123,7 +123,7 @@ test("does not navigate away when the API reports a scheduling conflict (409)", 
     availabilityResponse(makeAvailability()),
     bookedTimesResponse([]),
     zonesResponse(ZONES),
-    createBookingConflictResponse(),
+    createBookingConflictResponse()
   );
 
   renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);

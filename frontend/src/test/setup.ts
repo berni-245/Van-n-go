@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest";
-import {afterAll, afterEach, beforeAll} from "vitest";
-import {setGlobalOrigin} from "undici";
-import {query} from "@solidjs/router";
-import {server} from "./msw/server";
+import { afterAll, afterEach, beforeAll } from "vitest";
+import { setGlobalOrigin } from "undici";
+import { query } from "@solidjs/router";
+import { server } from "./msw/server";
 
 // The app makes relative-URL requests (e.g. new Request("/api/drivers?...")).
 // Real browsers resolve those against the current page; Node's native

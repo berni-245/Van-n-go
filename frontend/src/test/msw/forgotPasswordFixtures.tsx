@@ -1,5 +1,5 @@
-import {http, HttpResponse} from "msw";
-import type {RequestPasswordToken} from "@/api/types";
+import { http, HttpResponse } from "msw";
+import type { RequestPasswordToken } from "@/api/types";
 
 // ForgotPassword.tsx calls api.requestPasswordToken({ mail }), which issues
 // `POST {API_ROOT}users`. API_ROOT resolves to `${origin}${BASE_URL}api/`, so

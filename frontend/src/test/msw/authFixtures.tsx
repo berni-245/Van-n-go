@@ -102,7 +102,7 @@ export function driverUserResponse(driver: Driver) {
  */
 export function seedLoggedInUser(
   userType: "client" | "driver",
-  overrides: { id?: number; username?: string; email?: string; language?: string; profilePic?: string } = {},
+  overrides: { id?: number; username?: string; email?: string; language?: string; profilePic?: string } = {}
 ) {
   const id = overrides.id ?? 1;
   const authPayload = tokenPayload(userType, id, "auth");

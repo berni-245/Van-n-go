@@ -3,7 +3,14 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { server } from "@/test/msw/server";
 import { renderRoute } from "@/test/renderRoute";
-import { seedLoggedInUser, clientResponse, driverUserResponse, makeClient, makeDriverUser, CLIENT_ENDPOINT } from "@/test/msw/authFixtures";
+import {
+  seedLoggedInUser,
+  clientResponse,
+  driverUserResponse,
+  makeClient,
+  makeDriverUser,
+  CLIENT_ENDPOINT,
+} from "@/test/msw/authFixtures";
 import { zonesResponse, makeZone } from "@/test/msw/zoneFixtures";
 import { zonesByIdResponse } from "@/test/msw/bookingFixtures";
 import {
@@ -86,9 +93,16 @@ async function openChangePasswordModal() {
 test("shows the client's profile info, including their zone", async () => {
   seedLoggedInUser("client", { id: 9 });
   server.use(
-      clientResponse(makeClient({ id: 9, username: "maria_client", email: "maria@example.com", zone: "http://localhost:3000/api/zones/1" })),
-      zonesByIdResponse({ 1: ZONE }),
-      defaultProfileImageResponse(),
+    clientResponse(
+      makeClient({
+        id: 9,
+        username: "maria_client",
+        email: "maria@example.com",
+        zone: "http://localhost:3000/api/zones/1",
+      })
+    ),
+    zonesByIdResponse({ 1: ZONE }),
+    defaultProfileImageResponse()
   );
 
   renderRoute("/profile", "/profile", Profile);
@@ -101,8 +115,10 @@ test("shows the client's profile info, including their zone", async () => {
 test("shows the driver's profile info, including their rating and description", async () => {
   seedLoggedInUser("driver", { id: 7 });
   server.use(
-      driverUserResponse(makeDriverUser({ id: 7, username: "juan_driver", description: "Reliable and on time.", rating: 4 })),
-      defaultProfileImageResponse(),
+    driverUserResponse(
+      makeDriverUser({ id: 7, username: "juan_driver", description: "Reliable and on time.", rating: 4 })
+    ),
+    defaultProfileImageResponse()
   );
 
   renderRoute("/profile", "/profile", Profile);
@@ -120,14 +136,14 @@ test("updates the client's profile and reflects the new username", async () => {
   // a fresh GET — that needs to reflect the update, not the original data.
   let currentClient = makeClient({ id: 9, username: "maria_client", zone: "http://localhost:3000/api/zones/1" });
   server.use(
-      http.get(CLIENT_ENDPOINT, () => HttpResponse.json(currentClient)),
-      http.patch(CLIENT_ENDPOINT, async ({ request }) => {
-        currentClient = { ...currentClient, ...((await request.json()) as object) };
-        return HttpResponse.json(currentClient);
-      }),
-      zonesResponse([ZONE]),
-      zonesByIdResponse({ 1: ZONE }),
-      defaultProfileImageResponse(),
+    http.get(CLIENT_ENDPOINT, () => HttpResponse.json(currentClient)),
+    http.patch(CLIENT_ENDPOINT, async ({ request }) => {
+      currentClient = { ...currentClient, ...((await request.json()) as object) };
+      return HttpResponse.json(currentClient);
+    }),
+    zonesResponse([ZONE]),
+    zonesByIdResponse({ 1: ZONE }),
+    defaultProfileImageResponse()
   );
 
   renderRoute("/profile", "/profile", Profile);
@@ -149,13 +165,13 @@ test("updates the client's profile and reflects the new username", async () => {
 test("shows a field-level error under the relevant field when updating the profile fails validation", async () => {
   seedLoggedInUser("client", { id: 9 });
   server.use(
-      clientResponse(makeClient({ id: 9, zone: "http://localhost:3000/api/zones/1" })),
-      zonesResponse([ZONE]),
-      zonesByIdResponse({ 1: ZONE }),
-      defaultProfileImageResponse(),
-      updateClientFieldErrorsResponse([
-        { type: "ValidationError", entity: "username", description: "That username is already taken." },
-      ]),
+    clientResponse(makeClient({ id: 9, zone: "http://localhost:3000/api/zones/1" })),
+    zonesResponse([ZONE]),
+    zonesByIdResponse({ 1: ZONE }),
+    defaultProfileImageResponse(),
+    updateClientFieldErrorsResponse([
+      { type: "ValidationError", entity: "username", description: "That username is already taken." },
+    ])
   );
 
   renderRoute("/profile", "/profile", Profile);
@@ -171,7 +187,11 @@ test("shows a field-level error under the relevant field when updating the profi
 
 test("changes the password successfully", async () => {
   seedLoggedInUser("client", { id: 9 });
-  server.use(clientResponse(makeClient({ id: 9, zone: "" })), defaultProfileImageResponse(), updatePasswordResponse(204));
+  server.use(
+    clientResponse(makeClient({ id: 9, zone: "" })),
+    defaultProfileImageResponse(),
+    updatePasswordResponse(204)
+  );
 
   renderRoute("/profile", "/profile", Profile);
   await waitFor(() => expect(header()).toBeInTheDocument());
@@ -212,9 +232,9 @@ test("shows a client-side mismatch error without calling the API when confirmati
 test("shows an error toast (not a field error) when the password API rejects the change", async () => {
   seedLoggedInUser("client", { id: 9 });
   server.use(
-      clientResponse(makeClient({ id: 9, zone: "" })),
-      defaultProfileImageResponse(),
-      updatePasswordFieldErrorsResponse([{ type: "ValidationError", description: "Old password is incorrect." }]),
+    clientResponse(makeClient({ id: 9, zone: "" })),
+    defaultProfileImageResponse(),
+    updatePasswordFieldErrorsResponse([{ type: "ValidationError", description: "Old password is incorrect." }])
   );
 
   renderRoute("/profile", "/profile", Profile);

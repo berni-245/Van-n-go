@@ -1,19 +1,19 @@
-import {screen, waitFor} from "@solidjs/testing-library";
+import { screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import type {RequestHandler} from "msw";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {seedLoggedInUser} from "@/test/msw/authFixtures";
-import {makeZone, zonesResponse} from "@/test/msw/zoneFixtures";
+import type { RequestHandler } from "msw";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { seedLoggedInUser } from "@/test/msw/authFixtures";
+import { makeZone, zonesResponse } from "@/test/msw/zoneFixtures";
 import {
-    getVehicleResponse,
-    makeEditableVehicle,
-    makeVehicleAvailability,
-    recordUpdateVehicle,
-    updateVehicleAccessError,
-    updateVehicleFieldErrors,
-    updateVehicleSuccess,
-    vehicleAvailabilityResponse,
+  getVehicleResponse,
+  makeEditableVehicle,
+  makeVehicleAvailability,
+  recordUpdateVehicle,
+  updateVehicleAccessError,
+  updateVehicleFieldErrors,
+  updateVehicleSuccess,
+  vehicleAvailabilityResponse,
 } from "@/test/msw/vehicleEditFixtures";
 import VehicleEdit from "@/pages/VehicleEdit";
 
@@ -53,7 +53,7 @@ function renderEdit(updateHandler: RequestHandler = updateVehicleSuccess()) {
     getVehicleResponse(makeEditableVehicle({ id: 5 })),
     zonesResponse([makeZone({ id: 1 })]),
     vehicleAvailabilityResponse(makeVehicleAvailability()),
-    updateHandler,
+    updateHandler
   );
   return renderRoute("/driver/vehicles/:vehicleId/edit", "/driver/vehicles/5/edit", VehicleEdit);
 }
@@ -124,7 +124,7 @@ test("surfaces an API field error next to the relevant field", async () => {
   renderEdit(
     updateVehicleFieldErrors([
       { type: "ValidationError", entity: "plateNumber", description: "That plate is already registered." },
-    ]),
+    ])
   );
   await waitForForm();
 

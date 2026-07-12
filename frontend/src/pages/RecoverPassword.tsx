@@ -1,11 +1,11 @@
-import {useApi, useTranslator} from "@/app-context/AppContext";
+import { useApi, useTranslator } from "@/app-context/AppContext";
 import Button from "@/components/Button";
 import TextInput from "@/components/inputs/TextInput";
 import PasswordInput from "@/components/inputs/PasswordInput";
-import {Title} from "@solidjs/meta";
-import {A, useNavigate, useSearchParams} from "@solidjs/router";
-import {createSignal, Show} from "solid-js";
-import {useToast} from "solid-notifications";
+import { Title } from "@solidjs/meta";
+import { A, useNavigate, useSearchParams } from "@solidjs/router";
+import { createSignal, Show } from "solid-js";
+import { useToast } from "solid-notifications";
 
 export default function RecoverPassword() {
   const t = useTranslator();

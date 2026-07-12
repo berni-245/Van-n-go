@@ -60,7 +60,7 @@ export function bookingsResponse(bookings: Booking[], pageInfo: { first?: number
       headers: {
         Link: `<${apiUri(`bookings?page=${first}`)}>; rel="first", <${apiUri(`bookings?page=${last}`)}>; rel="last"`,
       },
-    }),
+    })
   );
 }
 

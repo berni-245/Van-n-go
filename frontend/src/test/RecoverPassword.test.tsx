@@ -1,8 +1,8 @@
-import {screen, waitFor} from "@solidjs/testing-library";
+import { screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {passwordResetFailure, passwordResetSuccess, recordPasswordReset,} from "@/test/msw/recoverPasswordFixtures";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { passwordResetFailure, passwordResetSuccess, recordPasswordReset } from "@/test/msw/recoverPasswordFixtures";
 import RecoverPassword from "@/pages/RecoverPassword";
 
 const user = userEvent.setup();

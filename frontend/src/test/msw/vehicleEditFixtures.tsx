@@ -1,6 +1,6 @@
-import {http, HttpResponse} from "msw";
-import type {ApiError, Availability, Vehicle} from "@/api/types";
-import {apiUri} from "@/test/msw/bookingFixtures";
+import { http, HttpResponse } from "msw";
+import type { ApiError, Availability, Vehicle } from "@/api/types";
+import { apiUri } from "@/test/msw/bookingFixtures";
 
 // VehicleEdit loads the vehicle via api.getVehicle(userId, vehicleId) and
 // updates it via api.updateVehicle(userId, vehicleId, ...). Both hit

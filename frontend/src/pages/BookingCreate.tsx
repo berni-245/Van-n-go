@@ -352,10 +352,13 @@ export default function BookingCreate() {
                         disabled={day()?.disabled}
                         class="w-full h-full flex items-center justify-center rounded-full text-sm transition-colors"
                         classList={{
-                          "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark": selectedDateStr() === day().dateStr,
-                          "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark": !day().disabled && selectedDateStr() !== day().dateStr,
+                          "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark":
+                            selectedDateStr() === day().dateStr,
+                          "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark":
+                            !day().disabled && selectedDateStr() !== day().dateStr,
                           "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day().disabled,
-                          "border border-primary dark:border-primary-dark": day().isToday && selectedDateStr() !== day().dateStr
+                          "border border-primary dark:border-primary-dark":
+                            day().isToday && selectedDateStr() !== day().dateStr,
                         }}
                       >
                         {day().num}

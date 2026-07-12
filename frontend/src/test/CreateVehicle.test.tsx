@@ -1,13 +1,13 @@
-import {screen, waitFor} from "@solidjs/testing-library";
+import { screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {seedLoggedInUser} from "@/test/msw/authFixtures";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { seedLoggedInUser } from "@/test/msw/authFixtures";
 import {
-    createVehicleFieldErrors,
-    createVehicleLimitReached,
-    createVehicleSuccess,
-    recordCreateVehicle,
+  createVehicleFieldErrors,
+  createVehicleLimitReached,
+  createVehicleSuccess,
+  recordCreateVehicle,
 } from "@/test/msw/createVehicleFixtures";
 import CreateVehicle from "@/pages/CreateVehicle";
 
@@ -120,7 +120,7 @@ test("surfaces an API field error next to the relevant field and stays on the fo
   server.use(
     createVehicleFieldErrors([
       { type: "ValidationError", entity: "plateNumber", description: "That plate is already registered." },
-    ]),
+    ])
   );
 
   renderRoute(NEW_ROUTE, NEW_ROUTE, CreateVehicle, listStub);

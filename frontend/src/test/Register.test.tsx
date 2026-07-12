@@ -61,7 +61,7 @@ test("registers a new client and redirects to their dashboard", async () => {
     // body (via api.setUser) instead of re-fetching it afterward, so it
     // needs to actually be a Client, not an empty 201.
     http.post("*/api/clients", () => HttpResponse.json(makeClient({ id: 9 }), { status: 201 })),
-    authSuccessResponse("client", 9),
+    authSuccessResponse("client", 9)
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/client", component: () => <p>client-dashboard-stub</p> }]);
@@ -76,7 +76,7 @@ test("registers a new client and redirects to their dashboard", async () => {
 test("registers a new driver (no zone required) and redirects to their dashboard", async () => {
   server.use(
     http.post("*/api/drivers", () => HttpResponse.json(makeDriverUser({ id: 4 }), { status: 201 })),
-    authSuccessResponse("driver", 4),
+    authSuccessResponse("driver", 4)
   );
 
   renderRoute("/register", "/register", Register, [{ path: "/driver", component: () => <p>driver-dashboard-stub</p> }]);

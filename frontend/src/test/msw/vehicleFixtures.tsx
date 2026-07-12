@@ -1,10 +1,10 @@
-import {http, HttpResponse} from "msw";
-import type {Vehicle} from "@/api/types";
-import {apiUri, makeVehicle} from "@/test/msw/bookingFixtures";
+import { http, HttpResponse } from "msw";
+import type { Vehicle } from "@/api/types";
+import { apiUri, makeVehicle } from "@/test/msw/bookingFixtures";
 
 // Re-exported so vehicle tests can build fixtures from a single import without
 // reaching into bookingFixtures (where makeVehicle happens to already live).
-export {makeVehicle};
+export { makeVehicle };
 
 // Vehicles.tsx loads the logged-in driver's vehicles via
 // api.getVehicles(userId, page), which issues

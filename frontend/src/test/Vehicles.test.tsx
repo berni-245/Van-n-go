@@ -1,8 +1,8 @@
-import {screen} from "@solidjs/testing-library";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {seedLoggedInUser} from "@/test/msw/authFixtures";
-import {makeVehicle, recordVehiclesRequest, vehiclesResponse} from "@/test/msw/vehicleFixtures";
+import { screen } from "@solidjs/testing-library";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { seedLoggedInUser } from "@/test/msw/authFixtures";
+import { makeVehicle, recordVehiclesRequest, vehiclesResponse } from "@/test/msw/vehicleFixtures";
 import Vehicles from "@/pages/Vehicles";
 
 // Vehicles.tsx reads the driver id straight off the logged-in session
@@ -14,10 +14,7 @@ test("renders a card for each of the logged-in driver's vehicles", async () => {
   seedLoggedInUser("driver", { id: 9 });
 
   server.use(
-    vehiclesResponse([
-      makeVehicle({ id: 1, plateNumber: "AB123CD" }),
-      makeVehicle({ id: 2, plateNumber: "XY987ZW" }),
-    ]),
+    vehiclesResponse([makeVehicle({ id: 1, plateNumber: "AB123CD" }), makeVehicle({ id: 2, plateNumber: "XY987ZW" })])
   );
 
   renderRoute("/vehicles", "/vehicles", Vehicles);
@@ -32,7 +29,7 @@ test("shows the vehicle's details (volume, rate, description)", async () => {
   server.use(
     vehiclesResponse([
       makeVehicle({ id: 1, plateNumber: "AB123CD", volumeM3: 12, hourlyRate: 1500, description: "Cargo van" }),
-    ]),
+    ])
   );
 
   renderRoute("/vehicles", "/vehicles", Vehicles);

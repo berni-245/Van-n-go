@@ -3,8 +3,21 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { server } from "@/test/msw/server";
 import { renderRoute } from "@/test/renderRoute";
-import { seedLoggedInUser, driverUserResponse, clientResponse, makeDriverUser, makeClient } from "@/test/msw/authFixtures";
-import { makeMessage, messagesResponse, messagesNotFoundResponse, messagesNetworkErrorResponse, sendMessageResponse, MESSAGES_ENDPOINT } from "@/test/msw/chatFixtures";
+import {
+  seedLoggedInUser,
+  driverUserResponse,
+  clientResponse,
+  makeDriverUser,
+  makeClient,
+} from "@/test/msw/authFixtures";
+import {
+  makeMessage,
+  messagesResponse,
+  messagesNotFoundResponse,
+  messagesNetworkErrorResponse,
+  sendMessageResponse,
+  MESSAGES_ENDPOINT,
+} from "@/test/msw/chatFixtures";
 import Chat from "@/pages/Chat";
 
 const user = userEvent.setup();
@@ -30,7 +43,11 @@ test("shows messages oldest-first and the other party's name", async () => {
 
   // The API returns newest-first; Chat.tsx reverses it for display.
   const newer = makeMessage({ content: "Yes, morning works.", timeSent: "2026-07-10T09:00:00Z", sentByDriver: false });
-  const older = makeMessage({ content: "Hi, are you available Friday?", timeSent: "2026-07-09T09:00:00Z", sentByDriver: true });
+  const older = makeMessage({
+    content: "Hi, are you available Friday?",
+    timeSent: "2026-07-09T09:00:00Z",
+    sentByDriver: true,
+  });
 
   server.use(messagesResponse([newer, older]), driverUserResponse(makeDriverUser({ id: 7, username: "juan_driver" })));
 
@@ -49,7 +66,9 @@ test("sends a new message, appends it, and clears the input", async () => {
   server.use(
     messagesResponse([]),
     driverUserResponse(makeDriverUser({ id: 7, username: "juan_driver" })),
-    sendMessageResponse(makeMessage({ content: "See you then!", sentByDriver: false, timeSent: "2026-07-10T10:00:00Z" })),
+    sendMessageResponse(
+      makeMessage({ content: "See you then!", sentByDriver: false, timeSent: "2026-07-10T10:00:00Z" })
+    )
   );
 
   renderRoute("/chat", "/chat?driverId=7&clientId=9", Chat);
@@ -98,7 +117,7 @@ test("shows a load-older button when there are more pages, and prepends older me
         headers: { Link: `<http://localhost:3000/api/messages?page=2>; rel="last"` },
       });
     }),
-    driverUserResponse(makeDriverUser({ id: 7, username: "juan_driver" })),
+    driverUserResponse(makeDriverUser({ id: 7, username: "juan_driver" }))
   );
 
   renderRoute("/chat", "/chat?driverId=7&clientId=9", Chat);

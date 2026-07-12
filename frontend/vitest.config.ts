@@ -1,5 +1,5 @@
-import {defineConfig, mergeConfig} from "vitest/config";
-import type {PluginOption} from "vite";
+import { defineConfig, mergeConfig } from "vitest/config";
+import type { PluginOption } from "vite";
 import solid from "vite-plugin-solid";
 import viteConfig from "./vite.config";
 

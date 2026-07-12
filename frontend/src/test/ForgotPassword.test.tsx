@@ -1,8 +1,8 @@
-import {screen, waitFor} from "@solidjs/testing-library";
+import { screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {recordRequestToken, requestTokenFailure, requestTokenSuccess,} from "@/test/msw/forgotPasswordFixtures";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { recordRequestToken, requestTokenFailure, requestTokenSuccess } from "@/test/msw/forgotPasswordFixtures";
 import ForgotPassword from "@/pages/ForgotPassword";
 
 const user = userEvent.setup();
@@ -38,9 +38,7 @@ test("requests a token and shows the success message, hiding the form", async ()
   // The confirmation copy is shown. It renders in *two* places — the in-page
   // banner and a toast (both fed the same string) — so match all of them
   // rather than expecting a single element.
-  expect(
-    screen.getAllByText(/a token will be sent to the indicated inbox/i).length
-  ).toBeGreaterThan(0);
+  expect(screen.getAllByText(/a token will be sent to the indicated inbox/i).length).toBeGreaterThan(0);
 });
 
 test("sends the entered email as `mail` in the request body", async () => {

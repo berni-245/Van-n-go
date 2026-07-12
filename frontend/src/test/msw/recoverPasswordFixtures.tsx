@@ -1,5 +1,5 @@
-import {http, HttpResponse} from "msw";
-import type {RecoverPassword} from "@/api/types";
+import { http, HttpResponse } from "msw";
+import type { RecoverPassword } from "@/api/types";
 
 // RecoverPassword.tsx calls api.updateUserPasswordWithToken(id, ...), which
 // issues `PATCH {API_ROOT}users/{id}/password`. API_ROOT resolves to
