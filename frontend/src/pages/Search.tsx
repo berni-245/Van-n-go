@@ -218,9 +218,7 @@ export default function Search() {
                 >
                   <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <For each={data().drivers}>
-                      {(driver) => (
-                        <DriverCard driver={driver} from={encodeURIComponent(currentSearchUrl())} />
-                      )}
+                      {(driver) => <DriverCard driver={driver} from={encodeURIComponent(currentSearchUrl())} />}
                     </For>
                   </ul>
 
