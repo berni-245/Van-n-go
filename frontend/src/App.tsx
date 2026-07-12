@@ -1,6 +1,7 @@
 import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import { AppLayout } from "@components/AppLayout.tsx";
 import { Sidebar } from "@components/sidebar/Sidebar";
+import LoadingDots from "@components/LoadingDots";
 import {
   FaSolidAdd,
   FaSolidBook,
@@ -65,8 +66,13 @@ const App: Component<{ children: JSX.Element }> = (props) => {
         </Show>
       </Sidebar>
       <AppLayout.Content>
-        {/* TODO: prolly remove this suspense when the app is finished */}
-        <Suspense fallback="This is the app suspense, you should probably be handling this in a child component">
+        <Suspense
+          fallback={
+            <div class="flex min-h-[60vh] items-center justify-center">
+              <LoadingDots />
+            </div>
+          }
+        >
           {props.children}
         </Suspense>
       </AppLayout.Content>
