@@ -1,4 +1,4 @@
-import { TokenPayload, UserType } from "@/api/jwt";
+import { UserType } from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -24,6 +24,9 @@ import { createMediaType as createMediaTypes } from "../api/media-types";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { PaginatedResource, parsePageInfo } from "./pagination";
 import { stripBase } from "@/utils/routing";
+import { showToast } from "solid-notifications";
+import * as i18n from "@solid-primitives/i18n";
+import type { Dictionary } from "./locale";
 
 export const API_ROOT = `${window.location.origin}${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
@@ -39,53 +42,53 @@ const MediaTypesV1 = createMediaTypes("v1");
 interface VisibilityOpts {
   visibility?: "public" | "all";
 }
-export function initializeApi(appState: AppState, setAppState: SetStoreFunction<AppState>) {
+export function initializeApi(
+  appState: AppState,
+  setAppState: SetStoreFunction<AppState>,
+  t: i18n.Translator<Dictionary>
+) {
   const location = useLocation();
   const navigate = useNavigate();
 
   return {
     async authFetch(input: string | URL | Request): Promise<Response> {
-      const request = input instanceof Request ? input : new Request(input);
+      const base = input instanceof Request ? input : new Request(input);
+      base.headers.set("Accept-Language", appState.preferences.locale || "es");
 
-      if (appState.session) {
-        if (!jwtExpired(appState.session.payload.auth)) {
-          request.headers.set("Authorization", `Bearer ${appState.session.token.auth}`);
-        } else if (!jwtExpired(appState.session.payload.refresh)) {
-          console.log("Expired auth token. Sending refresh...");
-          request.headers.set("Authorization", `Bearer ${appState.session.token.refresh}`);
-        } else {
-          console.log("Expired tokens. Session reset");
-          this.logout("/login", location.pathname);
-          // TODO: maybe add a toast telling user the session has expired? Not sure if this is the
-          // right place to add it tho...
-        }
-      }
-
-      const currentLocale = appState.preferences.locale || "es";
-      request.headers.set("Accept-Language", currentLocale);
-
-      // await sleep(1000);
-      const res = await fetch(request);
-      if (res.status === 401) {
-        if (appState.session) {
-          // NOTE: e.g. the user altered the jwt to change the expiration time.
-          console.log("Invalid credentials. Session reset");
-          this.logout("/login", location.pathname);
-        }
-      } else {
+      // A successful response may carry refreshed tokens; store them whenever present.
+      const captureTokens = (res: Response): Response => {
         const authToken = res.headers.get("vango-auth-token");
         const refreshToken = res.headers.get("vango-refresh-token");
-
         if (authToken && refreshToken) {
-          console.log("Got new tokens from server. Refreshing...");
           setAppState("session", {
             token: { auth: authToken, refresh: refreshToken },
             payload: { auth: jwtDecode(authToken), refresh: jwtDecode(refreshToken) },
           });
         }
+        return res;
+      };
+
+      const attempt = (token?: string): Promise<Response> => {
+        const req = base.clone();
+        if (token) req.headers.set("Authorization", `Bearer ${token}`);
+        return fetch(req);
+      };
+
+      if (!appState.session) {
+        return captureTokens(await attempt());
       }
 
-      return res;
+      let res = await attempt(appState.session.token.auth);
+      if (res.status === 401) {
+        res = await attempt(appState.session.token.refresh);
+        if (res.status === 401) {
+          console.log("Both tokens rejected. Resetting session.");
+          this.logout("/login", location.pathname);
+          showToast(t("global.error.sessionExpired") as string, { type: "error" });
+          return res;
+        }
+      }
+      return captureTokens(res);
     },
 
     async basicAuth(username: string, password: string) {
@@ -614,10 +617,6 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
   }
 
   return new Request(url, opts);
-}
-
-function jwtExpired(payload: TokenPayload): boolean {
-  return payload.exp < Date.now() / 1000;
 }
 
 function extractNumericIdFromEndOfPath(uri: string): number | null {

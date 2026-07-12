@@ -339,6 +339,7 @@
     "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
     "passwordMismatch": "Las contraseñas no coinciden",
     "unknown": "Ocurrió un error desconocido",
+    "sessionExpired": "Tu sesión expiró. Por favor, iniciá sesión nuevamente.",
     "validation": {
       "NotBlank": "Este campo es obligatorio",
       "NotNull": "Este campo es obligatorio",

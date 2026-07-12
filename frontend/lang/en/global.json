@@ -338,6 +338,7 @@
     "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB.",
     "passwordMismatch": "Passwords do not match",
     "unknown": "An unknown error occurred",
+    "sessionExpired": "Your session expired. Please log in again.",
     "validation": {
       "NotBlank": "This field is required",
       "NotNull": "This field is required",

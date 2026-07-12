@@ -60,7 +60,7 @@ export const AppContextProvider: ParentComponent = (props) => {
   const [dict] = createResource(() => appState.preferences.locale, fetchDictionary, { initialValue: en_flat_dict });
   const t = i18n.translator(dict, i18n.resolveTemplate);
 
-  const api = initializeApi(appState, setAppState);
+  const api = initializeApi(appState, setAppState, t);
 
   return (
     <AppStateContext.Provider value={[appState, setAppState]}>
