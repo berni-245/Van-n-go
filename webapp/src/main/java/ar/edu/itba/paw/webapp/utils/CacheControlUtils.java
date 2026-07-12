@@ -44,6 +44,19 @@ public class CacheControlUtils {
         }
         // CASO 2: El contenido no cambió (304)
         return evaluatedResponseBuilder.cacheControl(cacheControl).tag(etag).build();
+    }
 
+    public static Response setPrivateEtagToResponse(final Response.ResponseBuilder responseBuilder, Request request, int resourceHash) {
+        CacheControl cacheControl = new CacheControl();
+        cacheControl.setMaxAge(MAX_CONDITIONAL_CACHE_TIME);
+        cacheControl.setPrivate(true);
+        EntityTag etag = new EntityTag(String.valueOf(resourceHash));
+        Response.ResponseBuilder evaluatedResponseBuilder = request.evaluatePreconditions(etag);
+        if (evaluatedResponseBuilder == null) {
+            // CASO 1: No hay headers condicionales o el contenido cambió.
+            return responseBuilder.cacheControl(cacheControl).tag(etag).build();
+        }
+        // CASO 2: El contenido no cambió (304)
+        return evaluatedResponseBuilder.cacheControl(cacheControl).tag(etag).build();
     }
 }

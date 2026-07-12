@@ -10,6 +10,8 @@ import ar.edu.itba.paw.webapp.dto.user.DriverDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateDriverDTO;
 import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.Vary;
+import javax.ws.rs.core.HttpHeaders;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +76,7 @@ public class DriverController {
 
     @GET
     @Path("/{id}")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
     @Produces(value = {CustomMediaType.PUBLIC_DRIVER})
     public Response getPublicDriverInfoById(@PathParam(UriUtils.ID_PARAM) int id) {
         Driver driver = ds.findById(id);
@@ -83,6 +86,7 @@ public class DriverController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
     @Produces(value = {CustomMediaType.DRIVER})
     public Response getDriverById(@PathParam(UriUtils.ID_PARAM) int id) {
         Driver driver = ds.findById(id);

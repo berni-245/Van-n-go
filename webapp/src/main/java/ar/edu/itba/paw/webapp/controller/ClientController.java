@@ -12,6 +12,8 @@ import ar.edu.itba.paw.webapp.dto.user.CreateClientDTO;
 import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
 import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
 import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.Vary;
+import javax.ws.rs.core.HttpHeaders;
 import ar.edu.itba.paw.webapp.utils.UriUtils;
 import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,7 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
     @Produces(value = {CustomMediaType.PUBLIC_CLIENT})
     public Response getPublicClientInfoById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Client client = clientService.findById(id);
@@ -60,6 +63,7 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
     @Produces(value = {CustomMediaType.CLIENT})
     public Response getClientById(@PathParam(UriUtils.ID_PARAM) final int id) {
         Client client = clientService.findById(id);
@@ -83,6 +87,7 @@ public class ClientController {
     @GET
     @Path("/{clientId}/profile-picture")
     @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
+    @Vary({HttpHeaders.AUTHORIZATION})
     @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Response getProfilePicture(@PathParam(UriUtils.CLIENT_ID_PARAM) final int id, @Context Request request) {
         Client client = clientService.findById(id);
@@ -90,7 +95,7 @@ public class ClientController {
         if(imageId != null){
             Image picture = imageService.getImage(imageId);
             if (picture.getData() != null) {
-                return CacheControlUtils.setEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
+                return CacheControlUtils.setPrivateEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
             }
         }
         return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)

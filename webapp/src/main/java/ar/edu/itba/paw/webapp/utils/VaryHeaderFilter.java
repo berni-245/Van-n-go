@@ -1,27 +1,45 @@
 package ar.edu.itba.paw.webapp.utils;
 
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
+import java.lang.reflect.Method;
 
-/**
- * Filter to add the 'Vary' header to all API responses.
- * This ensures that intermediary proxies (caches, CDNs) include Authorization, 
- * Accept, and Accept-Language in their cache keys, preventing them from 
- * serving cached data meant for one user or representation to another.
- */
+
 @Provider
+@Priority(Priorities.HEADER_DECORATOR)
 public class VaryHeaderFilter implements ContainerResponseFilter {
+
+    @Context
+    private ResourceInfo resourceInfo;
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        // We only care about GET requests as they are the primary targets for caching.
-        if (requestContext.getMethod().equalsIgnoreCase("GET")) {
-            responseContext.getHeaders().add(HttpHeaders.VARY, HttpHeaders.AUTHORIZATION);
-            responseContext.getHeaders().add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-            responseContext.getHeaders().add(HttpHeaders.VARY, HttpHeaders.ACCEPT_LANGUAGE);
+
+        if (!requestContext.getMethod().equalsIgnoreCase("GET")) {
+            return;
+        }
+
+        Method method = resourceInfo.getResourceMethod();
+        Class<?> resourceClass = resourceInfo.getResourceClass();
+
+        Vary vary = null;
+        if (method != null && method.isAnnotationPresent(Vary.class)) {
+            vary = method.getAnnotation(Vary.class);
+        } else if (resourceClass != null && resourceClass.isAnnotationPresent(Vary.class)) {
+            vary = resourceClass.getAnnotation(Vary.class);
+        }
+
+        if (vary != null) {
+            for (String header : vary.value()) {
+                responseContext.getHeaders().add(HttpHeaders.VARY, header);
+            }
         }
     }
 }
