@@ -1,14 +1,13 @@
-import { createComputed, createEffect, For, Show, Suspense } from "solid-js";
-import { query, useNavigate, useSearchParams } from "@solidjs/router";
-import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
+import {createComputed, createEffect, For, Show, Suspense} from "solid-js";
+import {query, useNavigate, useSearchParams} from "@solidjs/router";
+import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
 import BookingCard from "@components/cards/BookingCard";
-import VehicleGridSkeleton from "@components/skeletons/VehicleGridSkeleton";
 import Pagination from "@components/pagination/Pagination";
-import { Title } from "@solidjs/meta";
-import type { Booking, Client, Driver, Vehicle, Zone } from "@/api/types";
-import { BookingState } from "@/api/types";
-import { PaginatedResource } from "../app-context/pagination";
-import { createStore } from "solid-js/store";
+import {Title} from "@solidjs/meta";
+import type {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
+import {BookingState} from "@/api/types";
+import {PaginatedResource} from "../app-context/pagination";
+import {createStore} from "solid-js/store";
 import BookingCardSkeletonGrid from "../components/skeletons/BookingCardSkeletonGrid";
 
 type BookingWithTarget = {
@@ -135,41 +134,43 @@ export default function Bookings() {
         </div>
 
         {/* ── Results ── */}
-        <Suspense fallback={<BookingCardSkeletonGrid class="mt-6" />}>
-          <Pagination fetcher={(page) => bookingsQuery(state(), page)}>
-            {(bookingItemsPage) => (
-              <Show
-                when={bookingItemsPage && bookingItemsPage.length > 0}
-                fallback={
-                  <div class="flex flex-col items-center justify-center gap-3 py-24 text-center">
-                    <span class="text-5xl">{EMPTY_STATE_ICON[state()]}</span>
-                    <p class="text-lg font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
-                      {t(`global.page.bookings.empty.${state().toLowerCase()}.title` as any)}
-                    </p>
-                    <p class="max-w-sm text-sm text-on-surface dark:text-on-surface-dark">
-                      {t(`global.page.bookings.empty.${state().toLowerCase()}.subtitle` as any)}
-                    </p>
+        <Show when={state()} keyed>
+          <Suspense fallback={<BookingCardSkeletonGrid class="mt-6" />}>
+            <Pagination fetcher={(page) => bookingsQuery(state(), page)}>
+              {(bookingItemsPage) => (
+                <Show
+                  when={bookingItemsPage && bookingItemsPage.length > 0}
+                  fallback={
+                    <div class="flex flex-col items-center justify-center gap-3 py-24 text-center">
+                      <span class="text-5xl">{EMPTY_STATE_ICON[state()]}</span>
+                      <p class="text-lg font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
+                        {t(`global.page.bookings.empty.${state().toLowerCase()}.title` as any)}
+                      </p>
+                      <p class="max-w-sm text-sm text-on-surface dark:text-on-surface-dark">
+                        {t(`global.page.bookings.empty.${state().toLowerCase()}.subtitle` as any)}
+                      </p>
+                    </div>
+                  }
+                >
+                  <div class="mt-6 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+                    <For each={bookingItemsPage}>
+                      {({ booking, targetUser, vehicle, originZone, destinationZone }) => (
+                        <BookingCard
+                          booking={booking}
+                          cardUser={targetUser}
+                          cardUserType={oppositeUserType}
+                          vehicle={vehicle}
+                          originZone={originZone}
+                          destinationZone={destinationZone}
+                        />
+                      )}
+                    </For>
                   </div>
-                }
-              >
-                <div class="mt-6 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-                  <For each={bookingItemsPage}>
-                    {({ booking, targetUser, vehicle, originZone, destinationZone }) => (
-                      <BookingCard
-                        booking={booking}
-                        cardUser={targetUser}
-                        cardUserType={oppositeUserType}
-                        vehicle={vehicle}
-                        originZone={originZone}
-                        destinationZone={destinationZone}
-                      />
-                    )}
-                  </For>
-                </div>
-              </Show>
-            )}
-          </Pagination>
-        </Suspense>
+                </Show>
+              )}
+            </Pagination>
+          </Suspense>
+        </Show>
       </section>
     </div>
   );
