@@ -120,8 +120,8 @@ export function ViewProofModal(props: ViewProofModalProps) {
   const [pdfUrl] = createResource(
     () => (props.open && props.proofUrl ? props.proofUrl : false),
     async (url) => {
-      const absoluteUrl = url.startsWith("http") || url.startsWith("/") ? url : "/" + url;
-      const res = await api.authFetch(absoluteUrl);
+      // `url` is the booking's proof-of-payment HATEOAS URI (absolute); authFetch takes it as-is.
+      const res = await api.authFetch(url);
       if (!res.ok) throw new Error("Failed to fetch");
       const blob = await res.blob();
       return URL.createObjectURL(blob);
