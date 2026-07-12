@@ -1,5 +1,5 @@
 import { createSignal, For, Show, Suspense } from "solid-js";
-import { createAsync, useLocation, useNavigate, useSearchParams } from "@solidjs/router";
+import { createAsync, useLocation, useSearchParams } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
 import { stripBase } from "@/utils/routing";
 import { useApi, useTranslator } from "@/app-context/AppContext";
@@ -15,21 +15,6 @@ export default function Search() {
   const t = useTranslator();
   const api = useApi();
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const applySearchParams = (params: Record<string, string | undefined>) => {
-    const qs = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined && value !== null && value !== "") {
-        qs.set(key, value);
-      }
-    }
-    const query = qs.toString();
-    const path = stripBase(location.pathname);
-    navigate(query ? `${path}?${query}` : path, {
-      scroll: false,
-    });
-  };
 
   const [searchParams, setSearchParams] = useSearchParams<{
     zoneQuery?: string;
@@ -79,7 +64,7 @@ export default function Search() {
     }
 
     setZoneError(null);
-    applySearchParams({
+    setSearchParams({
       zoneQuery: zoneQuery(),
       zoneId: zoneId() !== null ? String(zoneId()) : undefined,
       size: size() || undefined,
@@ -92,16 +77,7 @@ export default function Search() {
   };
 
   const goToPage = (p: number) => {
-    applySearchParams({
-      zoneQuery: zoneQuery(),
-      zoneId: zoneId() !== null ? String(zoneId()) : undefined,
-      size: size() || undefined,
-      maxPrice: maxPrice() || undefined,
-      weekDay: weekDay() || undefined,
-      minRating: minRating() || undefined,
-      sortOrder: sortOrder() || undefined,
-      page: String(p),
-    });
+    setSearchParams({ page: String(p) });
   };
 
   const currentSearchUrl = () => {
@@ -243,10 +219,6 @@ export default function Search() {
                   <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <For each={data().drivers}>
                       {(driver) => (
-                        // Pass the current search URL so BookingCreate can render
-                        // a "Back to results" button that returns here exactly.
-                        // If your SearchCard accepts a `from` prop, pass it directly.
-                        // Otherwise, use the navigate approach shown in BookingCreate.
                         <DriverCard driver={driver} from={encodeURIComponent(currentSearchUrl())} />
                       )}
                     </For>
