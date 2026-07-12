@@ -1,4 +1,4 @@
-import { createEffect, createResource, onCleanup, Show } from "solid-js";
+import { createEffect, createResource, onCleanup, Show, Suspense } from "solid-js";
 import { action, useSubmission } from "@solidjs/router";
 import { useApi, useTranslator } from "@/app-context/AppContext";
 import { Api } from "@/app-context/api";
@@ -147,20 +147,25 @@ export function ViewProofModal(props: ViewProofModalProps) {
           </div>
 
           <div class="flex flex-col gap-6 px-5 py-6">
-            <Show when={pdfUrl.loading}>
-              <div class="animate-pulse py-12 text-center text-sm text-on-surface-weak dark:text-on-surface-dark-weak">
-                {t("global.proofOfPayment.loadingView")}
-              </div>
-            </Show>
-
-            <Show when={pdfUrl()}>
-              {(url) => (
-                <iframe
-                  src={url()}
-                  class="w-full h-[60vh] rounded-radius border border-outline dark:border-outline-dark"
-                />
-              )}
-            </Show>
+            {/* Local boundary: reading the pending resource value (pdfUrl()) suspends here,
+                showing the modal's own loader, instead of bubbling to the app-wide Suspense
+                and blanking the whole page. */}
+            <Suspense
+              fallback={
+                <div class="animate-pulse py-12 text-center text-sm text-on-surface-weak dark:text-on-surface-dark-weak">
+                  {t("global.proofOfPayment.loadingView")}
+                </div>
+              }
+            >
+              <Show when={pdfUrl()}>
+                {(url) => (
+                  <iframe
+                    src={url()}
+                    class="w-full h-[60vh] rounded-radius border border-outline dark:border-outline-dark"
+                  />
+                )}
+              </Show>
+            </Suspense>
 
             <div class="border-t border-outline pt-4 dark:border-outline-dark">
               <Button
