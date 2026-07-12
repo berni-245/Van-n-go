@@ -1,11 +1,12 @@
 import { JSX } from "solid-js";
+import { action } from "@solidjs/router";
 import { Booking, BookingState } from "@/api/types";
-import { useApi, useTranslator } from "@/app-context/AppContext.tsx";
+import { useTranslator } from "@/app-context/AppContext.tsx";
+import { Api } from "@/app-context/api.ts";
 
 export type UserInBookingRole = "driver" | "client";
 
 export type BookingActionContext = {
-  api: ReturnType<typeof useApi>;
   t: ReturnType<typeof useTranslator>;
   closeCurrentModal: () => void;
 
@@ -16,10 +17,25 @@ export type BookingActionContext = {
   openViewProofModal: () => void;
   openUploadReviewModal: () => void;
   openViewReviewModal: () => void;
-  refreshBookings: (newStateTab: BookingState) => void;
+  transitionBooking: (booking: Booking, newState: BookingState) => void;
 };
 
 export type BookingActionRenderer = (booking: Booking, ctx: BookingActionContext) => JSX.Element;
+
+// Mutating booking state through an action lets Solid Router track the request and
+// automatically revalidate the cached bookings queries on success — so the moved booking
+// shows up in its new tab without a manual refresh.
+export const updateBookingStateAction = action(
+  async (api: Api, bookingId: number, newState: BookingState, t: any, toaster: any) => {
+    const res = await api.updateBookingState(bookingId, newState);
+    if (!res.ok) {
+      toaster.notify(t("global.error.unknown"), { type: "error" });
+      return { ok: false as const };
+    }
+    return { ok: true as const };
+  },
+  "update-booking-state"
+);
 
 const PrimaryButton = (props: JSX.ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
@@ -55,7 +71,7 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
 
     ACCEPTED: (
       booking,
-      { api, t, closeCurrentModal, openViewProofModal, openUploadProofModal, refreshBookings, proofOfPaymentExists }
+      { t, closeCurrentModal, openViewProofModal, openUploadProofModal, transitionBooking, proofOfPaymentExists }
     ) =>
       proofOfPaymentExists ? (
         <PrimaryButton
@@ -67,13 +83,7 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
         </PrimaryButton>
       ) : (
         <>
-          <SecondaryButton
-            onClick={() => {
-              api.updateBookingState(booking.id, BookingState.Canceled);
-              // TODO manage errors
-              refreshBookings(BookingState.Canceled);
-            }}
-          >
+          <SecondaryButton onClick={() => transitionBooking(booking, BookingState.Canceled)}>
             {t("global.page.bookings.cancelBooking")}
           </SecondaryButton>
           <PrimaryButton
@@ -138,30 +148,18 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
   },
 
   client: {
-    PENDING: (booking, { api, t, refreshBookings }) => (
+    PENDING: (booking, { t, transitionBooking }) => (
       <>
-        <PrimaryButton
-          onClick={() => {
-            api.updateBookingState(booking.id, BookingState.Accepted);
-            // TODO manage errors
-            refreshBookings(BookingState.Accepted);
-          }}
-        >
+        <PrimaryButton onClick={() => transitionBooking(booking, BookingState.Accepted)}>
           {t("global.page.bookings.acceptBooking")}
         </PrimaryButton>
-        <SecondaryButton
-          onClick={() => {
-            api.updateBookingState(booking.id, BookingState.Rejected);
-            // TODO manage errors
-            refreshBookings(BookingState.Rejected);
-          }}
-        >
+        <SecondaryButton onClick={() => transitionBooking(booking, BookingState.Rejected)}>
           {t("global.page.bookings.rejectBooking")}
         </SecondaryButton>
       </>
     ),
 
-    ACCEPTED: (booking, { api, t, closeCurrentModal, openViewProofModal, refreshBookings, proofOfPaymentExists }) =>
+    ACCEPTED: (booking, { t, closeCurrentModal, openViewProofModal, transitionBooking, proofOfPaymentExists }) =>
       proofOfPaymentExists ? (
         booking.date <=
         new Intl.DateTimeFormat("en-CA", {
@@ -178,13 +176,7 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
             >
               {t("global.page.bookings.viewProofOfPayment")}
             </SecondaryButton>
-            <PrimaryButton
-              onClick={() => {
-                api.updateBookingState(booking.id, BookingState.Finished);
-                // TODO manage errors
-                refreshBookings(BookingState.Finished);
-              }}
-            >
+            <PrimaryButton onClick={() => transitionBooking(booking, BookingState.Finished)}>
               {t("global.page.bookings.finishBooking")}
             </PrimaryButton>
           </>
@@ -199,13 +191,7 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
           </SecondaryButton>
         )
       ) : (
-        <SecondaryButton
-          onClick={() => {
-            api.updateBookingState(booking.id, BookingState.Canceled);
-            // TODO manage errors
-            refreshBookings(BookingState.Canceled);
-          }}
-        >
+        <SecondaryButton onClick={() => transitionBooking(booking, BookingState.Canceled)}>
           {t("global.page.bookings.cancelBooking")}
         </SecondaryButton>
       ),

@@ -3,10 +3,11 @@ import { BsChatDots, BsJournalText } from "solid-icons/bs";
 import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import { Booking, BookingState, Client, Driver, Vehicle, Zone } from "@/api/types";
 import ImageWithFallback from "../ImageWithFallback";
-import { useNavigate } from "@solidjs/router";
+import { useAction, useNavigate } from "@solidjs/router";
+import { useToast } from "solid-notifications";
 import { BookingModal } from "@components/modal/BookingModal";
 import { ReviewBookingModal, ViewReviewModal } from "@components/modal/ReviewModal";
-import { BookingActionContext, bookingActions } from "@components/bookings/BookingActions";
+import { BookingActionContext, bookingActions, updateBookingStateAction } from "@components/bookings/BookingActions";
 import { UploadProofModal, ViewProofModal } from "@components/modal/ProofModal.tsx";
 
 type CardProps = {
@@ -23,6 +24,8 @@ const BookingCard: Component<CardProps> = (props) => {
   const api = useApi();
   const [appState] = useAppState();
   const navigate = useNavigate();
+  const toaster = useToast();
+  const runTransition = useAction(updateBookingStateAction);
 
   const [modalIsOpen, setModalIsOpen] = createSignal(false);
   const [reviewOpen, setReviewOpen] = createSignal(false);
@@ -81,7 +84,6 @@ const BookingCard: Component<CardProps> = (props) => {
     }
 
     const ctx: BookingActionContext = {
-      api,
       t,
       proofOfPaymentExists: proofOfPaymentExists() ?? false,
       reviewExists: reviewExists() ?? false,
@@ -113,9 +115,14 @@ const BookingCard: Component<CardProps> = (props) => {
         setReviewOpen(true);
       },
 
-      refreshBookings: (newStateTab: BookingState) => {
-        ctx.closeCurrentModal();
-        navigate(`?state=${newStateTab}&page=1`, { replace: true });
+      transitionBooking: async (booking: Booking, newState: BookingState) => {
+        // The action mutates on the server and, on success, Solid Router auto-revalidates the
+        // cached bookings queries — so the moved booking appears in its new tab without a reload.
+        const result = await runTransition(api, booking.id, newState, t, toaster);
+        if (result.ok) {
+          ctx.closeCurrentModal();
+          navigate(`?state=${newState}&page=1`, { replace: true });
+        }
       },
     };
 
