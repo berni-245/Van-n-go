@@ -3,14 +3,12 @@ package ar.edu.itba.paw.webapp.dto.user;
 import ar.edu.itba.paw.webapp.validation.ValidChangeLanguage;
 import ar.edu.itba.paw.webapp.validation.ValidChangeMail;
 import ar.edu.itba.paw.webapp.validation.ValidChangeUsername;
-import ar.edu.itba.paw.webapp.validation.ValidPasswordChange;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlTransient;
 
-@ValidPasswordChange
 @XmlTransient
 public abstract class UpdateUserDTO {
 
@@ -25,13 +23,6 @@ public abstract class UpdateUserDTO {
 
     @ValidChangeLanguage
     private String preferredLanguage;
-
-    @Length(min = 8, max = 32)
-    private String oldPassword;
-
-    @Length(min = 8, max = 32)
-    @Pattern(regexp = "^[A-Za-z\\d@$!%*#?&]+$", message = "{Pattern.password}")
-    private String password;
 
     public UpdateUserDTO() {
 
@@ -79,19 +70,4 @@ public abstract class UpdateUserDTO {
         this.preferredLanguage = preferredLanguage;
     }
 
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
