@@ -1,16 +1,16 @@
 /* @refresh reload */
 import "solid-devtools";
 import "@/App.css";
-import { render } from "solid-js/web";
+import {render} from "solid-js/web";
 import App from "@/App";
-import { Router, Route, Navigate } from "@solidjs/router";
-import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { AppContextProvider } from "@/app-context/AppContext";
+import {Navigate, Route, Router} from "@solidjs/router";
+import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
+import {AppContextProvider} from "@/app-context/AppContext";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import { AnonRoute, DriverRoute, ClientRoute } from "./components/ProtectedRoute";
-import { ROUTER_BASE } from "@/utils/routing";
+import {AnonRoute, ClientRoute, DriverRoute} from "./components/ProtectedRoute";
+import {ROUTER_BASE} from "@/utils/routing";
 import Profile from "@/pages/Profile";
-import { lazy } from "solid-js";
+import {lazy} from "solid-js";
 import VehicleCreate from "@/pages/CreateVehicle.tsx";
 import BookingCreate from "@/pages/BookingCreate.tsx";
 
@@ -19,7 +19,6 @@ const root = document.getElementById("root");
 // TODO: lazy load all components.
 const Home = lazy(() => import("@/pages/Home"));
 const Error404 = lazy(() => import("@/errors/404"));
-const About = lazy(() => import("@/pages/About"));
 const Login = lazy(() => import("@/pages/Login"));
 const Vehicles = lazy(() => import("@/pages/Vehicles"));
 const VehicleEdit = lazy(() => import("@/pages/VehicleEdit"));
@@ -62,7 +61,6 @@ render(
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/search" component={Search} />
-            <Route path="/about" component={About} />
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/recover-password" component={RecoverPassword} />
           </Route>
