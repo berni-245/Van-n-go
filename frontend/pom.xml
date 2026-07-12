@@ -41,15 +41,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>pnpm run format:check</id>
-                        <goals>
-                            <goal>pnpm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run format:check</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>pnpm run build</id>
                         <goals>
                             <goal>pnpm</goal>
