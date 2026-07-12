@@ -12,6 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+import java.time.Clock;
+import java.time.ZoneId;
 import java.util.Locale;
 
 @Provider
@@ -36,7 +38,7 @@ public class ValidationContextResolver implements ContextResolver<ValidationConf
                         new ResourceBundleMessageInterpolator(
                                 new PlatformResourceBundleLocator("i18n/ValidationMessages")
                         )
-                )
+                ).clockProvider(() -> Clock.system(ZoneId.of("America/Argentina/Buenos_Aires")))
                 .buildValidatorFactory();
 
         private static final MessageInterpolator defaultInterpolator = factory.getMessageInterpolator();
