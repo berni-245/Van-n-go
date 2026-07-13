@@ -1,9 +1,9 @@
-import { action, createAsync, query, useNavigate, useParams, useSubmission } from "@solidjs/router";
-import { createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense } from "solid-js";
-import { useApi, useTranslator } from "../app-context/AppContext";
-import { useToast } from "solid-notifications";
-import { ApiError, Availability, Zone } from "../api/types";
-import { Api } from "../app-context/api";
+import {action, createAsync, query, useNavigate, useParams, useSubmission} from "@solidjs/router";
+import {createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense} from "solid-js";
+import {useApi, useTranslator} from "../app-context/AppContext";
+import {useToast} from "solid-notifications";
+import {ApiError, Availability, Zone} from "../api/types";
+import {Api} from "../app-context/api";
 import Button from "../components/Button";
 import Combobox from "../components/inputs/Combobox";
 
@@ -173,12 +173,13 @@ export default function BookingCreate() {
     const daysInMonth = getDaysInMonth(year, month);
 
     let hasAnyAvailability = false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const minBookableDate = new Date();
+    minBookableDate.setHours(0, 0, 0, 0);
+    minBookableDate.setDate(minBookableDate.getDate() + 1);
 
     for (let i = 1; i <= daysInMonth; i++) {
       const checkDate = new Date(year, month, i);
-      if (checkDate < today) continue;
+      if (checkDate < minBookableDate) continue;
 
       const dateStr = checkDate.toISOString().split("T")[0];
       const dayOfWeekStr = DAYS_OF_WEEK[checkDate.getDay()];
@@ -204,22 +205,25 @@ export default function BookingCreate() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const minBookableDate = new Date(today);
+    minBookableDate.setDate(minBookableDate.getDate() + 1);
+
     const days = [];
     for (let i = 0; i < firstDay; i++) days.push(null);
 
     for (let i = 1; i <= daysInMonth; i++) {
       const dateObj = new Date(year, month, i);
-      const isPast = dateObj < today;
+      const isBeforeMin = dateObj < minBookableDate;
       const dateStr = dateObj.toISOString().split("T")[0];
       const dayOfWeekStr = DAYS_OF_WEEK[dateObj.getDay()];
 
-      const hasAvail = !isPast && getAvailableShifts(dateStr, dayOfWeekStr).length > 0;
+      const hasAvail = !isBeforeMin && getAvailableShifts(dateStr, dayOfWeekStr).length > 0;
 
       days.push({
         num: i,
         dateStr,
         dayOfWeekStr,
-        disabled: isPast || !hasAvail,
+        disabled: isBeforeMin || !hasAvail,
         isToday: dateObj.getTime() === today.getTime(),
       });
     }

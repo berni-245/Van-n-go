@@ -1,18 +1,18 @@
-import { screen, waitFor } from "@solidjs/testing-library";
+import {screen, waitFor} from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import { server } from "@/test/msw/server";
-import { renderRoute } from "@/test/renderRoute";
-import { seedLoggedInUser } from "@/test/msw/authFixtures";
-import { zonesResponse, makeZone } from "@/test/msw/zoneFixtures";
+import {server} from "@/test/msw/server";
+import {renderRoute} from "@/test/renderRoute";
+import {seedLoggedInUser} from "@/test/msw/authFixtures";
+import {makeZone, zonesResponse} from "@/test/msw/zoneFixtures";
 import {
-  makeBookableVehicle,
-  makeAvailability,
-  driverVehiclesResponse,
-  availabilityResponse,
-  bookedTimesResponse,
-  createBookingSuccessResponse,
-  createBookingFieldErrorsResponse,
-  createBookingConflictResponse,
+    availabilityResponse,
+    bookedTimesResponse,
+    createBookingConflictResponse,
+    createBookingFieldErrorsResponse,
+    createBookingSuccessResponse,
+    driverVehiclesResponse,
+    makeAvailability,
+    makeBookableVehicle,
 } from "@/test/msw/bookingCreateFixtures";
 import BookingCreate from "@/pages/BookingCreate";
 
@@ -32,19 +32,25 @@ function renderBookingCreate(extraRoutes: { path: string; component: () => unkno
 }
 
 /**
- * Drives the page up through picking today's date and an available shift —
- * the common setup for every test below. Availability is seeded for every
- * day of the week (see makeAvailability), so "today" is always bookable
- * regardless of when the test suite actually runs.
+ * Drives the page up through picking tomorrow's date and an available shift —
+ * the common setup for every test below. Bookings are only allowed from
+ * tomorrow onward (same-day is rejected by the backend), so today renders
+ * disabled. Availability is seeded for every day of the week (see
+ * makeAvailability), so tomorrow is always bookable regardless of when the
+ * suite runs. When today is the last day of the month, tomorrow falls into
+ * the next month and the calendar auto-advances; re-querying the button by
+ * its day number inside waitFor handles that DOM swap transparently.
  */
-async function selectTodayAndShift() {
-  const today = String(new Date().getDate());
-  // The day button renders disabled until availability data finishes
-  // loading, then flips to enabled in place (BookingCreate.tsx uses <Index>
-  // for the calendar grid, keyed by position, so this is the same DOM node
-  // throughout — no need to re-query on each poll).
-  const dayButton = await screen.findByRole("button", { name: today });
-  await waitFor(() => expect(dayButton).not.toBeDisabled());
+async function selectTomorrowAndShift() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDay = String(tomorrow.getDate());
+
+  const dayButton = await waitFor(() => {
+    const btn = screen.getByRole("button", { name: tomorrowDay });
+    expect(btn).not.toBeDisabled();
+    return btn;
+  });
   await user.click(dayButton);
 
   const shiftButton = await waitFor(() => {
@@ -82,7 +88,7 @@ test("lets a client pick an available day/shift and submits a booking successful
 
   renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);
 
-  await selectTodayAndShift();
+  await selectTomorrowAndShift();
   await fillAndSubmit("Moving some boxes across town.");
 
   expect(await screen.findByText("bookings-list-stub")).toBeInTheDocument();
@@ -108,7 +114,7 @@ test("shows a field-level error returned by the API next to the relevant field",
 
   renderBookingCreate();
 
-  await selectTodayAndShift();
+  await selectTomorrowAndShift();
   await fillAndSubmit("Moving some boxes across town.");
 
   expect(await screen.findByText(/The destination zone must differ from the origin\./)).toBeInTheDocument();
@@ -128,7 +134,7 @@ test("does not navigate away when the API reports a scheduling conflict (409)", 
 
   renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);
 
-  await selectTodayAndShift();
+  await selectTomorrowAndShift();
   await fillAndSubmit("Moving some boxes across town.");
 
   // stays on the booking form; conflict is surfaced via toast, not a field error
