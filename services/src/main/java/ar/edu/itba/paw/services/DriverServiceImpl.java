@@ -168,6 +168,12 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
+    public List<Booking> getBookings(Driver driver, BookingState state, Integer year, Month month) {
+        return bookingDao.getDriverBookings(driver, state, YearMonth.of(year, month));
+    }
+
+    @Transactional
+    @Override
     public int getBookingCount(Driver driver, BookingState state) {
         return bookingDao.getDriverBookingCount(driver, state);
     }

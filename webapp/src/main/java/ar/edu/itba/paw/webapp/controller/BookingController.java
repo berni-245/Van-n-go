@@ -26,6 +26,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.time.Month;
 import java.util.List;
 
 @Path(UriUtils.BOOKINGS_URL)
@@ -50,13 +51,24 @@ public class BookingController {
     public <T extends User> Response listBookings(
             @QueryParam(UriUtils.USER_ID_PARAM) Integer userId,
             @QueryParam(UriUtils.STATE_PARAM) BookingState state,
-            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page,
+            @QueryParam(UriUtils.YEAR_PARAM) Integer year,
+            @QueryParam(UriUtils.MONTH_PARAM) Month month
     ) {
         T user = getAuthUser();
         UserService<T> userService = getBookingServiceFor(user);
+
+        if (year != null && month != null) { // Optional filter for bookings in a specific month+year
+            List<BookingDTO> monthBookings = userService.getBookings(user, state, year, month)
+                    .stream().map(BookingDTO.mapper(uriInfo)).toList();
+            return Response.ok(new GenericEntity<>(monthBookings) {
+            }).build();
+        }
+
         int maxPages = userService.getBookingPages(user, state);
         Pagination.validatePage(page);
-        List<BookingDTO> bookings = userService.getBookings(user, state, page).stream().map(BookingDTO.mapper(uriInfo)).toList();
+        List<BookingDTO> bookings = userService.getBookings(user, state, page)
+                .stream().map(BookingDTO.mapper(uriInfo)).toList();
         Response.ResponseBuilder response = Response.ok(new GenericEntity<>(bookings) {
         });
         return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();

@@ -32,6 +32,8 @@ public class UriUtils {
     public static final String PAGE_PARAM = "page";
     public static final String USER_ID_PARAM = "userId";
     public static final String STATE_PARAM = "state";
+    public static final String YEAR_PARAM = "year";
+    public static final String MONTH_PARAM = "month";
 
     // Base URIs
     public static final String API_BASE_URI = "/" + API;

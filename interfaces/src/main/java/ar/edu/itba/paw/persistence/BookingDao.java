@@ -29,9 +29,13 @@ public interface BookingDao {
 
     List<Booking> getDriverBookings(Driver driver, BookingState state, int offset);
 
+    List<Booking> getDriverBookings(Driver driver, BookingState state, YearMonth yearMonth);
+
     int getDriverBookingCount(Driver driver, BookingState state);
 
     List<Booking> getClientBookings(Client client, BookingState state, int offset);
+
+    List<Booking> getClientBookings(Client client, BookingState state, YearMonth yearMonth);
 
     int getClientBookingCount(Client client, BookingState state);
 

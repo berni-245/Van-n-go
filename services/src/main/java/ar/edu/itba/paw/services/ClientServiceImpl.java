@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -100,6 +102,11 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Override
     public List<Booking> getBookings(Client client, BookingState state, int page) {
         return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
+    }
+
+    @Override
+    public List<Booking> getBookings(Client client, BookingState state, Integer year, Month month) {
+        return bookingDao.getClientBookings(client, state, YearMonth.of(year, month));
     }
 
     @Transactional

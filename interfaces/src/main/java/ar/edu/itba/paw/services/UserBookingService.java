@@ -5,10 +5,13 @@ import ar.edu.itba.paw.models.BookingState;
 import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.models.User;
 
+import java.time.Month;
 import java.util.List;
 
 public interface UserBookingService<T extends User> {
     List<Booking> getBookings(T user, BookingState state, int page);
+
+    List<Booking> getBookings(T user, BookingState state, Integer year, Month month);
 
     Booking getBookingById(T user, int id);
 

@@ -129,6 +129,22 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
+    public List<Booking> getDriverBookings(Driver driver, BookingState state, YearMonth yearMonth) {
+        return em.createQuery("""
+                        select b
+                        from Booking b join b.vehicle v
+                        where v.driver = :driver and b.state = :state
+                          and b.date between :start and :end
+                        order by b.date desc
+                        """, Booking.class)
+                .setParameter("driver", driver)
+                .setParameter("state", state)
+                .setParameter("start", yearMonth.atDay(1))
+                .setParameter("end", yearMonth.atEndOfMonth())
+                .getResultList();
+    }
+
+    @Override
     public int getDriverBookingCount(Driver driver, BookingState state) {
         return em.createQuery("""
                         select count(*) from Booking b
@@ -155,6 +171,22 @@ public class BookingJpaDao implements BookingDao {
 
         return em.createQuery("from Booking where id in (:bookingIds) order by date desc", Booking.class)
                 .setParameter("bookingIds", nativeQueryList)
+                .getResultList();
+    }
+
+    @Override
+    public List<Booking> getClientBookings(Client client, BookingState state, YearMonth yearMonth) {
+        return em.createQuery("""
+                        select b
+                        from Booking b
+                        where b.client = :client and b.state = :state
+                          and b.date between :start and :end
+                        order by b.date desc
+                        """, Booking.class)
+                .setParameter("client", client)
+                .setParameter("state", state)
+                .setParameter("start", yearMonth.atDay(1))
+                .setParameter("end", yearMonth.atEndOfMonth())
                 .getResultList();
     }
 
