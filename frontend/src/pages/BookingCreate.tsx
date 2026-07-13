@@ -94,6 +94,9 @@ const MONTHS = [
   "DECEMBER",
 ];
 const DAYS_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+// Canonical shift order (matches the backend ShiftPeriod enum). The availability
+// timeSlots arrive in arbitrary order, so shifts must be sorted before display.
+const SHIFT_ORDER = ["MORNING", "AFTERNOON", "EVENING"];
 
 function getDaysInMonth(year: number, monthIndex: number) {
   return new Date(year, monthIndex + 1, 0).getDate();
@@ -299,7 +302,7 @@ export default function BookingCreate() {
       .filter((v) => vehiclesWithSlots[v.id])
       .map((v) => ({
         ...v,
-        shifts: vehiclesWithSlots[v.id],
+        shifts: vehiclesWithSlots[v.id].sort((a, b) => SHIFT_ORDER.indexOf(a) - SHIFT_ORDER.indexOf(b)),
       }));
   });
 
