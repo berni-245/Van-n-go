@@ -1,8 +1,8 @@
-import { createSignal, For, Show, Suspense } from "solid-js";
-import { createAsync, useLocation, useSearchParams } from "@solidjs/router";
-import { Title } from "@solidjs/meta";
-import { stripBase } from "@/utils/routing";
-import { useApi, useTranslator } from "@/app-context/AppContext";
+import {createSignal, For, Show, Suspense} from "solid-js";
+import {createAsync, useLocation, useSearchParams} from "@solidjs/router";
+import {Title} from "@solidjs/meta";
+import {stripBase} from "@/utils/routing";
+import {useApi, useTranslator} from "@/app-context/AppContext";
 import ZoneInput from "@/components/inputs/ZoneInput";
 import Button from "@/components/Button";
 import DriverCard from "@/components/cards/SearchCard";
@@ -218,7 +218,13 @@ export default function Search() {
                 >
                   <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <For each={data().drivers}>
-                      {(driver) => <DriverCard driver={driver} from={encodeURIComponent(currentSearchUrl())} />}
+                      {(driver) => (
+                        <DriverCard
+                          driver={driver}
+                          originZoneId={searchParams.zoneId}
+                          from={encodeURIComponent(currentSearchUrl())}
+                        />
+                      )}
                     </For>
                   </ul>
 

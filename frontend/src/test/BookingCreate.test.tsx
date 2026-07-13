@@ -1,19 +1,22 @@
 import {screen, waitFor} from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
+import {http, HttpResponse} from "msw";
 import {server} from "@/test/msw/server";
 import {renderRoute} from "@/test/renderRoute";
 import {seedLoggedInUser} from "@/test/msw/authFixtures";
 import {makeZone, zonesResponse} from "@/test/msw/zoneFixtures";
 import {
-    availabilityResponse,
-    bookedTimesResponse,
-    createBookingConflictResponse,
-    createBookingFieldErrorsResponse,
-    createBookingSuccessResponse,
-    driverVehiclesResponse,
-    makeAvailability,
-    makeBookableVehicle,
+  AVAILABILITY_ENDPOINT,
+  availabilityResponse,
+  bookedTimesResponse,
+  createBookingConflictResponse,
+  createBookingFieldErrorsResponse,
+  createBookingSuccessResponse,
+  driverVehiclesResponse,
+  makeAvailability,
+  makeBookableVehicle,
 } from "@/test/msw/bookingCreateFixtures";
+import {apiUri} from "@/test/msw/bookingFixtures";
 import BookingCreate from "@/pages/BookingCreate";
 
 const user = userEvent.setup();
@@ -41,7 +44,7 @@ function renderBookingCreate(extraRoutes: { path: string; component: () => unkno
  * the next month and the calendar auto-advances; re-querying the button by
  * its day number inside waitFor handles that DOM swap transparently.
  */
-async function selectTomorrowAndShift() {
+async function selectTomorrow() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowDay = String(tomorrow.getDate());
@@ -52,6 +55,10 @@ async function selectTomorrowAndShift() {
     return btn;
   });
   await user.click(dayButton);
+}
+
+async function selectTomorrowAndShift() {
+  await selectTomorrow();
 
   const shiftButton = await waitFor(() => {
     const btn = document.querySelector(".flex.flex-wrap.gap-2 button") as HTMLButtonElement | null;
@@ -140,4 +147,33 @@ test("does not navigate away when the API reports a scheduling conflict (409)", 
   // stays on the booking form; conflict is surfaced via toast, not a field error
   await waitFor(() => expect(document.querySelector('button[type="submit"]')).not.toBeDisabled());
   expect(screen.queryByText("bookings-list-stub")).not.toBeInTheDocument();
+});
+
+test("only offers vehicles that work the zone the client searched in", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  // Two vehicles for the same driver: one works zone 1 (the searched zone),
+  // the other only works zone 2. The availability handler answers per-vehicle
+  // by path param so their zones actually differ.
+  const inZoneVehicle = makeBookableVehicle({ id: 5, driverId: 7, plateNumber: "INZONE01" });
+  const outZoneVehicle = makeBookableVehicle({ id: 6, driverId: 7, plateNumber: "OUTZONE9" });
+
+  server.use(
+    driverVehiclesResponse([inZoneVehicle, outZoneVehicle]),
+    http.get(AVAILABILITY_ENDPOINT, ({ params }) => {
+      const zones = params.vehicleId === "5" ? [apiUri("zones/1")] : [apiUri("zones/2")];
+      return HttpResponse.json(makeAvailability({ zones }));
+    }),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES)
+  );
+
+  // originZoneId=1 mirrors arriving from a search scoped to zone 1.
+  renderRoute("/bookings/:driverId/new", "/bookings/7/new?originZoneId=1", BookingCreate);
+
+  await selectTomorrow();
+
+  // The zone-1 vehicle is bookable; the zone-2 one is filtered out entirely.
+  expect(await screen.findByText("INZONE01")).toBeInTheDocument();
+  expect(screen.queryByText("OUTZONE9")).not.toBeInTheDocument();
 });

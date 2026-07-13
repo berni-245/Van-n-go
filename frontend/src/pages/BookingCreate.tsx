@@ -1,4 +1,4 @@
-import {action, createAsync, query, useNavigate, useParams, useSubmission} from "@solidjs/router";
+import {action, createAsync, query, useNavigate, useParams, useSearchParams, useSubmission} from "@solidjs/router";
 import {createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense} from "solid-js";
 import {useApi, useTranslator} from "../app-context/AppContext";
 import {useToast} from "solid-notifications";
@@ -115,13 +115,26 @@ export default function BookingCreate() {
   const driverVehicles = createAsync(() => driverDataQuery(driverId));
   const allZones = createAsync(() => zonesQuery());
 
+  const [searchParams] = useSearchParams<{ originZoneId?: string }>();
+  const originZoneId = () => (searchParams.originZoneId ? Number(searchParams.originZoneId) : null);
+
+  const bookableVehicles = createMemo(() => {
+    const vehicles = driverVehicles();
+    if (!vehicles) return vehicles;
+    const zoneId = originZoneId();
+    if (zoneId == null) return vehicles;
+    return vehicles.filter((v) =>
+      v.availabilityDetails?.zones?.some((uri: string) => Number(uri.split("/").pop()) === zoneId)
+    );
+  });
+
   const [currentMonthDate, setCurrentMonthDate] = createSignal(new Date());
   const [monthsAdvanced, setMonthsAdvanced] = createSignal(0);
   const [selectedDateStr, setSelectedDateStr] = createSignal<string | null>(null);
   const [selectedVehicleSlot, setSelectedVehicleSlot] = createSignal<{ vehicle: any; shift: string } | null>(null);
 
   const [bookedTimesData] = createResource(
-    () => ({ date: currentMonthDate(), vehicles: driverVehicles() }),
+    () => ({ date: currentMonthDate(), vehicles: bookableVehicles() }),
     async (source) => {
       if (!source.vehicles) return {};
       const monthStr = MONTHS[source.date.getMonth()];
@@ -138,7 +151,7 @@ export default function BookingCreate() {
   );
 
   const getAvailableShifts = (dateStr: string, dayOfWeekStr: string, vehicleId?: number) => {
-    const vehicles = driverVehicles();
+    const vehicles = bookableVehicles();
     const bookedData = bookedTimesData();
     if (!vehicles || !bookedData) return [];
 
@@ -166,7 +179,7 @@ export default function BookingCreate() {
   };
 
   createEffect(() => {
-    if (!driverVehicles() || !bookedTimesData() || bookedTimesData.loading) return;
+    if (!bookableVehicles() || !bookedTimesData() || bookedTimesData.loading) return;
 
     const year = currentMonthDate().getFullYear();
     const month = currentMonthDate().getMonth();
@@ -261,7 +274,7 @@ export default function BookingCreate() {
       vehiclesWithSlots[slot.vehicleId].push(slot.shift);
     });
 
-    return driverVehicles()!
+    return bookableVehicles()!
       .filter((v) => vehiclesWithSlots[v.id])
       .map((v) => ({
         ...v,

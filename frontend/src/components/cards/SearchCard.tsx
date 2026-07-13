@@ -1,20 +1,27 @@
-import { Show } from "solid-js";
-import { A } from "@solidjs/router";
-import { Driver } from "@/api/types";
+import {Show} from "solid-js";
+import {A} from "@solidjs/router";
+import {Driver} from "@/api/types";
 import ImageWithFallback from "@/components/ImageWithFallback";
 
 import "./SearchCard.css";
 
 interface SearchCardProps {
   driver: Driver;
+  originZoneId?: string;
+  from?: string;
 }
 
 export default function SearchCard(props: SearchCardProps) {
-  const { driver } = props;
+  const { driver, originZoneId } = props;
+
+  const bookingHref = () =>
+    originZoneId
+      ? `/client/bookings/${driver.id}/new?originZoneId=${originZoneId}`
+      : `/client/bookings/${driver.id}/new`;
 
   return (
     <li class="driver-card-wrapper">
-      <A href={`/client/bookings/${driver.id}/new`} class="driver-card">
+      <A href={bookingHref()} class="driver-card">
         <div class="flex items-center gap-4 p-4">
           <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-outline dark:border-outline-dark">
             <ImageWithFallback
