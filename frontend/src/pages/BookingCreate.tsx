@@ -1,8 +1,8 @@
 import {action, createAsync, query, useNavigate, useParams, useSearchParams, useSubmission} from "@solidjs/router";
 import {createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense} from "solid-js";
-import {useApi, useTranslator} from "../app-context/AppContext";
+import {useApi, useAppState, useTranslator} from "../app-context/AppContext";
 import {useToast} from "solid-notifications";
-import {ApiError, Availability, Zone} from "../api/types";
+import {ApiError, Availability, BookingState, Zone} from "../api/types";
 import {Api} from "../app-context/api";
 import Button from "../components/Button";
 import Combobox from "../components/inputs/Combobox";
@@ -108,6 +108,7 @@ export default function BookingCreate() {
   const driverId = parseInt(params.driverId);
 
   const api = useApi();
+  const [appState] = useAppState();
   const t = useTranslator();
   const toaster = useToast();
   const navigate = useNavigate();
@@ -150,6 +151,26 @@ export default function BookingCreate() {
     }
   );
 
+  const BLOCKED_STATES = [BookingState.Pending, BookingState.Rejected, BookingState.Canceled];
+
+  const slotKey = (vehicleId: number, dateStr: string, shift: string) => `${vehicleId}|${dateStr}|${shift}`;
+
+  const [blockedSlots] = createResource(
+    () => ({ date: currentMonthDate(), userId: appState.user?.id }),
+    async (source): Promise<Set<string>> => {
+      if (source.userId == null) return new Set();
+      const monthStr = MONTHS[source.date.getMonth()];
+      const year = source.date.getFullYear();
+
+      const bookingsPerState = await Promise.all(
+        BLOCKED_STATES.map((state) => api.getBookingsInYearMonth(source.userId!, state, year, monthStr))
+      );
+      return new Set(
+        bookingsPerState.flat().map((b) => slotKey(Number(b.vehicle.split("/").pop()), b.date, b.shiftPeriod))
+      );
+    }
+  );
+
   const getAvailableShifts = (dateStr: string, dayOfWeekStr: string, vehicleId?: number) => {
     const vehicles = bookableVehicles();
     const bookedData = bookedTimesData();
@@ -169,7 +190,8 @@ export default function BookingCreate() {
 
       shiftsForDay.forEach((shift: string) => {
         const isBooked = vehicleBooked.some((bt) => bt.date === dateStr && bt.shift === shift);
-        if (!isBooked) {
+        const isBlockedByUser = blockedSlots()?.has(slotKey(v.id, dateStr, shift)) ?? false;
+        if (!isBooked && !isBlockedByUser) {
           availableSlots.push({ vehicleId: v.id, shift });
         }
       });
@@ -237,7 +259,6 @@ export default function BookingCreate() {
         dateStr,
         dayOfWeekStr,
         disabled: isBeforeMin || !hasAvail,
-        isToday: dateObj.getTime() === today.getTime(),
       });
     }
     return days;
@@ -304,6 +325,11 @@ export default function BookingCreate() {
         return z ? { value: z.id, label: `${z.neighborhood.name}, ${z.province.name}` } : null;
       })
       .filter(Boolean) as { value: number; label: string }[];
+  });
+
+  const allZoneOptions = createMemo(() => {
+    if (!allZones()) return [];
+    return allZones()!.map((z: Zone) => ({ value: z.id, label: `${z.neighborhood.name}, ${z.province.name}` }));
   });
 
   return (
@@ -374,8 +400,6 @@ export default function BookingCreate() {
                           "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark":
                             !day().disabled && selectedDateStr() !== day().dateStr,
                           "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day().disabled,
-                          "border border-primary dark:border-primary-dark":
-                            day().isToday && selectedDateStr() !== day().dateStr,
                         }}
                       >
                         {day().num}
@@ -464,7 +488,7 @@ export default function BookingCreate() {
                     <Combobox
                       name="destinationZoneId"
                       label={t("global.page.bookingCreate.confirmation.destination")}
-                      options={currentZoneOptions()}
+                      options={allZoneOptions()}
                       error={errors()?.["destinationZoneId"]}
                     />
                   </div>

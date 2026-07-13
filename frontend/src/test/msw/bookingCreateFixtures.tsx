@@ -1,11 +1,12 @@
-import { http, HttpResponse } from "msw";
-import type { ApiError, Availability, WeekDay } from "@/api/types";
-import { apiUri } from "@/test/msw/bookingFixtures";
+import {http, HttpResponse} from "msw";
+import type {ApiError, Availability, WeekDay} from "@/api/types";
+import {apiUri} from "@/test/msw/bookingFixtures";
 
 export const DRIVER_VEHICLES_ENDPOINT = "*/api/drivers/:driverId/vehicles";
 export const AVAILABILITY_ENDPOINT = "*/api/drivers/:driverId/vehicles/:vehicleId/availability";
 export const BOOKED_TIMES_ENDPOINT = "*/api/drivers/:driverId/vehicles/:vehicleId/booked-times";
 export const CREATE_BOOKING_ENDPOINT = "*/api/bookings";
+export const USER_BOOKINGS_ENDPOINT = "*/api/bookings";
 
 const ALL_DAYS: WeekDay[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
 
@@ -56,6 +57,35 @@ export function availabilityResponse(availability: Availability) {
 
 export function bookedTimesResponse(bookedTimes: { date: string; shift: string }[] = []) {
   return http.get(BOOKED_TIMES_ENDPOINT, () => HttpResponse.json(bookedTimes));
+}
+
+/**
+ * The calendar fetches the auth user's own bookings (pending/rejected/canceled)
+ * for the visible month to block the exact vehicle+date+shift slots they already
+ * hold. Returns [] by default so nothing is blocked. This is a GET on the same
+ * `/api/bookings` path as `createBooking*` (POST), so both handlers coexist.
+ */
+export function userBookingsResponse(bookings: Record<string, unknown>[] = []) {
+  return http.get(USER_BOOKINGS_ENDPOINT, () => HttpResponse.json(bookings));
+}
+
+/**
+ * A booking shaped like what `getBookingsInYearMonth` returns, used to block a
+ * slot. Only the fields the calendar reads (`vehicle` URI, `date`, `shiftPeriod`)
+ * matter here.
+ */
+export function makeUserBooking(overrides: {
+  vehicleId: number;
+  driverId: number;
+  date: string;
+  shiftPeriod?: string;
+  [key: string]: unknown;
+}) {
+  return {
+    shiftPeriod: "MORNING",
+    ...overrides,
+    vehicle: apiUri(`drivers/${overrides.driverId}/vehicles/${overrides.vehicleId}`),
+  };
 }
 
 export function createBookingSuccessResponse(booking: Record<string, unknown> = { id: 1 }) {

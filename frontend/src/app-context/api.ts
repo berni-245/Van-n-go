@@ -1,4 +1,4 @@
-import { UserType } from "@/api/jwt";
+import {UserType} from "@/api/jwt";
 import {
   Availability,
   Booking,
@@ -6,27 +6,27 @@ import {
   Client,
   Driver,
   Message,
+  RecoverPassword,
+  RequestPasswordToken,
   Review,
   UpdateClient,
   UpdateDriver,
+  UpdateUserPassword,
   UpdateVehicle,
   Vehicle,
   Zone,
-  RecoverPassword,
-  RequestPasswordToken,
-  UpdateUserPassword,
 } from "@/api/types";
-import { AppState } from "@/app-context/appState";
-import { jwtDecode } from "jwt-decode";
-import { SetStoreFunction } from "solid-js/store";
-import { clientToUserState, driverToUserState } from "./userState";
-import { createMediaType as createMediaTypes } from "../api/media-types";
-import { useLocation, useNavigate } from "@solidjs/router";
-import { PaginatedResource, parsePageInfo } from "./pagination";
-import { stripBase } from "@/utils/routing";
-import { showToast } from "solid-notifications";
+import {AppState} from "@/app-context/appState";
+import {jwtDecode} from "jwt-decode";
+import {SetStoreFunction} from "solid-js/store";
+import {clientToUserState, driverToUserState} from "./userState";
+import {createMediaType as createMediaTypes} from "../api/media-types";
+import {useLocation, useNavigate} from "@solidjs/router";
+import {PaginatedResource, parsePageInfo} from "./pagination";
+import {stripBase} from "@/utils/routing";
+import {showToast} from "solid-notifications";
 import * as i18n from "@solid-primitives/i18n";
-import type { Dictionary } from "./locale";
+import type {Dictionary} from "./locale";
 
 export const API_ROOT = `${window.location.origin}${import.meta.env.BASE_URL}api/`;
 export type Api = ReturnType<typeof initializeApi>;
@@ -493,6 +493,17 @@ export function initializeApi(
         const data = (await res.json()) as Booking[];
         return { data, pages };
       } else return { data: [], pages: null };
+    },
+
+    async getBookingsInYearMonth(userId: number, state: BookingState, year: number, month: string): Promise<Booking[]> {
+      const req = apiRequest("bookings", {
+        queryParams: { userId: userId.toString(), state: state.toUpperCase(),
+          year: year.toString(), month: month.toUpperCase()
+        }
+      });
+      const res = await this.authFetch(req);
+      if (res.ok) return (await res.json()) as Booking[];
+      else return [];
     },
 
     async updateBookingState(bookingId: number, state: BookingState): Promise<Response> {
