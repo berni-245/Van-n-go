@@ -60,99 +60,106 @@ export default function ZoneInput(props: ZoneInputProps) {
   });
 
   return (
-    <div class="relative mb-4">
-      <label class="block mb-2">{props.label}</label>
-      <input
-        type="text"
-        class="block w-full rounded-md border px-3 py-2 focus:outline-none focus:ring"
-        value={props.value}
-        onInput={(e) => {
-          const v = e.currentTarget.value;
-          props.onInput(v);
-          props.onSelect(null as any);
-          setShowSuggestions(true);
+    <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+      <label class="flex w-fit items-center gap-1 pl-0.5 text-sm" classList={{ "text-danger": !!props.error }}>
+        {props.label}
+      </label>
+      <div class="relative w-full">
+        <input
+          type="text"
+          class="w-full rounded-radius border bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+          classList={{ "border-danger": !!props.error }}
+          value={props.value}
+          onInput={(e) => {
+            const v = e.currentTarget.value;
+            props.onInput(v);
+            props.onSelect(null as any);
+            setShowSuggestions(true);
 
-          if (fetchTimer) window.clearTimeout(fetchTimer);
+            if (fetchTimer) window.clearTimeout(fetchTimer);
 
-          fetchTimer = window.setTimeout(async () => {
+            fetchTimer = window.setTimeout(async () => {
+              await fetchZones();
+              setHighlightIndex(-1);
+            }, 180);
+          }}
+          onFocus={async () => {
             await fetchZones();
-            setHighlightIndex(-1);
-          }, 180);
-        }}
-        onFocus={async () => {
-          await fetchZones();
-          setShowSuggestions(true);
-        }}
-        onKeyDown={(e) => {
-          const list = filteredZones(props.value);
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setHighlightIndex(Math.min(highlightIndex() + 1, list.length - 1));
-          } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setHighlightIndex(Math.max(highlightIndex() - 1, 0));
-          } else if (e.key === "Enter") {
-            if (showSuggestions() && highlightIndex() >= 0) {
+            setShowSuggestions(true);
+          }}
+          onKeyDown={(e) => {
+            const list = filteredZones(props.value);
+            if (e.key === "ArrowDown") {
               e.preventDefault();
-              const sel = list[highlightIndex()];
-              if (sel) {
-                props.onInput(sel.label);
-                props.onSelect(sel.z.id);
-                setShowSuggestions(false);
+              setHighlightIndex(Math.min(highlightIndex() + 1, list.length - 1));
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setHighlightIndex(Math.max(highlightIndex() - 1, 0));
+            } else if (e.key === "Enter") {
+              if (showSuggestions() && highlightIndex() >= 0) {
+                e.preventDefault();
+                const sel = list[highlightIndex()];
+                if (sel) {
+                  props.onInput(sel.label);
+                  props.onSelect(sel.z.id);
+                  setShowSuggestions(false);
+                }
               }
+            } else if (e.key === "Escape") {
+              setShowSuggestions(false);
             }
-          } else if (e.key === "Escape") {
-            setShowSuggestions(false);
-          }
-        }}
-        onBlur={() => {
-          setTimeout(() => {
-            const q = props.value.trim().toLowerCase();
-            const matches = (zones() ?? [])
-              .map((z) => ({ z, label: zoneDisplay(z) }))
-              .filter(({ label }) => label.toLowerCase() === q);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              const q = props.value.trim().toLowerCase();
+              const matches = (zones() ?? [])
+                .map((z) => ({ z, label: zoneDisplay(z) }))
+                .filter(({ label }) => label.toLowerCase() === q);
 
-            if (matches.length === 1) {
-              props.onInput(matches[0].label);
-              props.onSelect(matches[0].z.id);
-            } else {
-              props.onSelect(null as any);
-            }
+              if (matches.length === 1) {
+                props.onInput(matches[0].label);
+                props.onSelect(matches[0].z.id);
+              } else {
+                props.onSelect(null as any);
+              }
 
-            setShowSuggestions(false);
-          }, 120);
-        }}
-      />
+              setShowSuggestions(false);
+            }, 120);
+          }}
+        />
 
-      {showSuggestions() && filteredZones(props.value).length > 0 && (
-        <ul class="absolute z-50 w-full mt-1 max-h-48 overflow-auto rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5">
-          <For each={filteredZones(props.value)}>
-            {({ z, label }, i) => {
-              const idx = i();
-              const highlighted = idx === highlightIndex();
-              return (
-                <li
-                  class={`cursor-pointer px-3 py-2 text-sm ${
-                    highlighted ? "bg-blue-100 dark:bg-blue-900" : "hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
-                  onMouseEnter={() => setHighlightIndex(idx)}
-                  onMouseDown={(ev) => {
-                    ev.preventDefault();
-                    props.onInput(label);
-                    props.onSelect(z.id);
-                    setShowSuggestions(false);
-                  }}
-                >
-                  <div class="font-medium">{label}</div>
-                  <div class="text-xs text-gray-500">{z.country?.code}</div>
-                </li>
-              );
-            }}
-          </For>
-        </ul>
-      )}
+        {showSuggestions() && filteredZones(props.value).length > 0 && (
+          <ul class="absolute top-full z-50 mt-1 max-h-48 w-full overflow-auto rounded-radius border border-outline bg-surface-alt shadow-lg dark:border-outline-dark dark:bg-surface-dark-alt">
+            <For each={filteredZones(props.value)}>
+              {({ z, label }, i) => {
+                const idx = i();
+                const highlighted = idx === highlightIndex();
+                return (
+                  <li
+                    class="cursor-pointer px-3 py-2 text-sm"
+                    classList={{
+                      "bg-primary/10 dark:bg-primary-dark/20": highlighted,
+                      "hover:bg-surface dark:hover:bg-surface-dark": !highlighted,
+                    }}
+                    onMouseEnter={() => setHighlightIndex(idx)}
+                    onMouseDown={(ev) => {
+                      ev.preventDefault();
+                      props.onInput(label);
+                      props.onSelect(z.id);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    <div class="font-medium">{label}</div>
+                    <div class="text-xs text-outline dark:text-outline-dark">{z.country?.code}</div>
+                  </li>
+                );
+              }}
+            </For>
+          </ul>
+        )}
+      </div>
 
-      {props.error && <p class="text-red-600 mt-1 text-sm">{props.error}</p>}
+      {props.error && <small class="pl-0.5 text-danger">{props.error}</small>}
     </div>
   );
 }
