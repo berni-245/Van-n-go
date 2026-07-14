@@ -16,6 +16,14 @@ type ZoneInputProps = {
   error?: string | null;
 };
 
+// Builds the "neighborhood, province, country" display label, dropping any missing parts.
+export function zoneDisplay(z: ZoneDTO): string {
+  const n = z.neighborhood?.name ?? "";
+  const p = z.province?.name ?? "";
+  const c = z.country?.name ?? "";
+  return [n, p, c].filter(Boolean).join(", ");
+}
+
 export default function ZoneInput(props: ZoneInputProps) {
   const api = useApi();
   const [zones, setZones] = createSignal<ZoneDTO[] | null>(null);
@@ -24,13 +32,6 @@ export default function ZoneInput(props: ZoneInputProps) {
 
   // debounce timer
   let fetchTimer: number | undefined;
-
-  function zoneDisplay(z: ZoneDTO) {
-    const n = z.neighborhood?.name ?? "";
-    const p = z.province?.name ?? "";
-    const c = z.country?.name ?? "";
-    return [n, p, c].filter(Boolean).join(", ");
-  }
 
   async function fetchZones() {
     if (zones()) return zones();

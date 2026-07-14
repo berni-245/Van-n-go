@@ -3,15 +3,14 @@ import { HtmlIdFamily } from "../htmlIds";
 import { useApi, useTranslator } from "~/src/app-context/AppContext";
 import { createAsync, query } from "@solidjs/router";
 import ImgSkeleton from "../skeletons/ImgSkeleton";
-
-type SizeUnits = "B" | "KB" | "MB" | "GB" | "TB";
+import { isAllowedFileType, isWithinSizeLimit, SizeUnit } from "@/utils/fileValidation";
 
 type Props = {
   name?: string;
   label?: string;
   fileTypes: string[];
   maxSize: number;
-  maxSizeUnit: SizeUnits;
+  maxSizeUnit: SizeUnit;
   putEndpoint: string;
   currentValue?: {
     url: string;
@@ -19,21 +18,11 @@ type Props = {
   };
 };
 
-const SizeMultiplier: Record<SizeUnits, number> = {
-  B: 1,
-  KB: 2 ** 10,
-  MB: 2 ** 20,
-  GB: 2 ** 30,
-  TB: 2 ** 40,
-} as const;
-
 const FileInputDragDrop: Component<Props> = (props) => {
   const t = useTranslator();
   const idFam = new HtmlIdFamily("file-input");
 
   let inputRef!: HTMLInputElement;
-
-  const maxSizeBytes = props.maxSize * SizeMultiplier[props.maxSizeUnit];
 
   const remoteFile = createAsync(async () => {
     if (props.currentValue) {
@@ -59,14 +48,12 @@ const FileInputDragDrop: Component<Props> = (props) => {
     setDragOver(false);
     setError(null);
 
-    const fileTypes = props.fileTypes.map((ft) => ft.toLowerCase());
-    const fileType = file.type.split("/").pop()!.toLowerCase();
-    if (!fileTypes.includes(fileType)) {
+    if (!isAllowedFileType(file.type, props.fileTypes)) {
       rejectFile(t("global.fileDragDrop.fileTypeNotSupported"));
       return;
     }
 
-    if (file.size > maxSizeBytes) {
+    if (!isWithinSizeLimit(file.size, props.maxSize, props.maxSizeUnit)) {
       rejectFile(t("global.fileDragDrop.fileTooLarge"));
       return;
     }

@@ -65,6 +65,14 @@ const InfoText = (props: { children: JSX.Element }) => (
   </span>
 );
 
+// A booking can only be marked "finished" once its scheduled date has arrived (today counts).
+// `bookingDate` is the API's "YYYY-MM-DD" string; `now` defaults to the real current time but
+// is overridable for testing.
+export function canFinishBooking(bookingDate: string, now: Date = new Date()): boolean {
+  const today = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+  return bookingDate <= today;
+}
+
 export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingState, BookingActionRenderer>>> = {
   driver: {
     PENDING: (_, { t }) => <InfoText>{t("global.page.bookings.waitingReply")}</InfoText>,
@@ -161,12 +169,7 @@ export const bookingActions: Record<UserInBookingRole, Partial<Record<BookingSta
 
     ACCEPTED: (booking, { t, closeCurrentModal, openViewProofModal, transitionBooking, proofOfPaymentExists }) =>
       proofOfPaymentExists ? (
-        booking.date <=
-        new Intl.DateTimeFormat("en-CA", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(new Date()) ? (
+        canFinishBooking(booking.date) ? (
           <>
             <SecondaryButton
               onClick={() => {
