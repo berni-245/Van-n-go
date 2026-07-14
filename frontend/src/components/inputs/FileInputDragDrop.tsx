@@ -81,12 +81,10 @@ const FileInputDragDrop: Component<Props> = (props) => {
   const handleEnter: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
     preventDefaultBehavior(e);
     setDragOver(true);
-    console.log("enter");
   };
   const handleLeave: JSX.EventHandlerUnion<HTMLDivElement, DragEvent> = (e) => {
     preventDefaultBehavior(e);
     setDragOver(false);
-    console.log("leave");
   };
 
   return (

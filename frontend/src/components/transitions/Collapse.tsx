@@ -31,7 +31,6 @@ export const Collapse: ParentComponent<CollapseProps> = (props) => {
 
   function onEnter(el: Element, done: VoidFunction) {
     const height = getHeight(el);
-    // console.log("onEnter: ", height);
     const a = el.animate(
       [
         COLLAPSED_PROPERTIES,
@@ -47,7 +46,6 @@ export const Collapse: ParentComponent<CollapseProps> = (props) => {
 
   function onExit(el: Element, done: VoidFunction) {
     const height = getHeight(el);
-    // console.log("onExit: ", height);
     const a = el.animate(
       [
         {

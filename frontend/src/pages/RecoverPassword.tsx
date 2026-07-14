@@ -59,7 +59,6 @@ export default function RecoverPassword() {
       toaster.notify(t("global.recoverPassword.success" as any) as string, { type: "success" });
       navigate("/login");
     } catch (e) {
-      console.error(e);
       setError("global.error.unknown");
     } finally {
       setLoading(false);

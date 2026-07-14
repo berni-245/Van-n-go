@@ -39,7 +39,6 @@ export default function ForgotPassword() {
       setSuccess(true);
       toaster.notify(t("global.forgotPassword.tokenSentSuccess" as any) as string, { type: "info" });
     } catch (e) {
-      console.error(e);
       setError("global.error.unknown");
     } finally {
       setLoading(false);

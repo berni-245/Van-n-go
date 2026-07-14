@@ -82,7 +82,6 @@ export function initializeApi(
       if (res.status === 401) {
         res = await attempt(appState.session.token.refresh);
         if (res.status === 401) {
-          console.log("Both tokens rejected. Resetting session.");
           this.logout("/login", location.pathname);
           showToast(t("global.error.sessionExpired") as string, { type: "error" });
           return res;
@@ -334,10 +333,7 @@ export function initializeApi(
       const req = apiRequest(url, { headers: { Accept: MediaTypesV1.availability } });
       const res = await this.authFetch(req);
 
-      console.log("availability status:", res.status);
-
       const text = await res.text();
-      console.log("availability raw response:", text);
 
       if (!res.ok) return null;
 

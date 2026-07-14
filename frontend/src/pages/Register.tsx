@@ -176,7 +176,6 @@ export default function Register() {
       const redirect = `/${appState.user?.type}`;
       navigate(redirect, { replace: true });
     } catch (err) {
-      console.error(err);
       if (err instanceof Error) setGeneralErrors([err.message]);
       else setGeneralErrors([t("global.error.unknown") as string]);
     } finally {

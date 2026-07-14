@@ -29,7 +29,6 @@
 //   const res = await fetch(request);
 //
 //   if (res.status === 401) {
-//     console.log("Expired tokens. User logged out");
 //     // setAppState("session", null);
 //     opts.onSessionUpdate(null);
 //   } else {

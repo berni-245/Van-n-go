@@ -40,7 +40,6 @@ export default function Login() {
         toaster.notify(t("global.error.unknown"), { type: "error" });
       }
     } catch (e) {
-      console.error(e);
       setErrors((prev) => [...prev, "global.loginError"]);
     } finally {
       setLoading(false);

@@ -49,7 +49,6 @@ export const AppContextProvider: ParentComponent = (props) => {
         locale: appState.preferences.locale,
       },
     });
-    console.log("Saved state");
   });
 
   createEffect(() => {

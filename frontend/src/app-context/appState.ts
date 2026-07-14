@@ -37,7 +37,6 @@ export function getSavedState(): AppState | null {
       const state = AppStateSchema.safeParse(parsed);
       if (state.success) return state.data;
     } catch {}
-    console.log("Found malformed state in localStorage. Resetting.");
   }
   return null;
 }
