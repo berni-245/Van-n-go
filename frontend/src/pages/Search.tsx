@@ -104,6 +104,7 @@ export default function Search() {
                 onInput={setZoneQuery}
                 onSelect={setZoneId}
                 error={zoneError()}
+                class="max-w-none"
               />
             </div>
 

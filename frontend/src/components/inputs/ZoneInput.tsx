@@ -1,4 +1,5 @@
-import { createSignal, For, onCleanup } from "solid-js";
+import { createSignal, For, onCleanup, Show } from "solid-js";
+import { BsX } from "solid-icons/bs";
 import { useApi } from "@/app-context/AppContext";
 
 export type ZoneDTO = {
@@ -15,6 +16,7 @@ type ZoneInputProps = {
   onSelect: (zoneId: number | null) => void;
   error?: string | null;
   excludeIds?: number[];
+  class?: string;
 };
 
 // Builds the "neighborhood, province, country" display label, dropping any missing parts.
@@ -61,15 +63,25 @@ export default function ZoneInput(props: ZoneInputProps) {
     if (fetchTimer) clearTimeout(fetchTimer);
   });
 
+  let inputRef: HTMLInputElement | undefined;
+
+  function clear() {
+    props.onInput("");
+    props.onSelect(null as any);
+    setShowSuggestions(false);
+    inputRef?.focus();
+  }
+
   return (
-    <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+    <div class={`flex w-full flex-col gap-1 text-on-surface dark:text-on-surface-dark ${props.class ?? "max-w-xs"}`}>
       <label class="flex w-fit items-center gap-1 pl-0.5 text-sm" classList={{ "text-danger": !!props.error }}>
         {props.label}
       </label>
       <div class="relative w-full">
         <input
+          ref={inputRef}
           type="text"
-          class="w-full rounded-radius border bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+          class="w-full rounded-radius border bg-surface-alt px-2 py-2 pr-8 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
           classList={{ "border-danger": !!props.error }}
           value={props.value}
           onInput={(e) => {
@@ -130,6 +142,18 @@ export default function ZoneInput(props: ZoneInputProps) {
             }, 120);
           }}
         />
+
+        <Show when={props.value}>
+          <button
+            type="button"
+            aria-label="Clear zone"
+            class="absolute inset-y-0 right-0 flex items-center px-2 text-on-surface/50 hover:text-on-surface dark:text-on-surface-dark/50 dark:hover:text-on-surface-dark"
+            onMouseDown={(ev) => ev.preventDefault()}
+            onClick={clear}
+          >
+            <BsX size={18} />
+          </button>
+        </Show>
 
         {showSuggestions() && filteredZones(props.value).length > 0 && (
           <ul class="absolute top-full z-50 mt-1 max-h-48 w-full overflow-auto rounded-radius border border-outline bg-surface-alt shadow-lg dark:border-outline-dark dark:bg-surface-dark-alt">

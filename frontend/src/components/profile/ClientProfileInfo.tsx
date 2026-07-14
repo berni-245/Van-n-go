@@ -20,7 +20,11 @@ export default function ClientProfileInfo(props: { user: Client }) {
           when={zone()}
           fallback={<span class="animate-pulse text-on-surface/50 dark:text-on-surface-dark/50">...</span>}
         >
-          {(z) => `${z().neighborhood.name}, ${z().province.name}`}
+          {(z) => (
+            <>
+              {z().neighborhood.name}, {z().province.name}
+            </>
+          )}
         </Show>
       </p>
     </Show>

@@ -162,6 +162,56 @@ test("updates the client's profile and reflects the new username", async () => {
   // indefinitely in tests even though isOpen() is correctly false.
 });
 
+test("updates the client's profile and reflects the new zone", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const ZONE2 = {
+    ...makeZone({ id: 2, neighborhood: { name: "Belgrano" } }),
+    self: "http://localhost:3000/api/zones/2",
+  };
+
+  // Same stateful GET/PATCH pairing as the username test above: the PATCH
+  // response is what Profile.tsx maps into appState.user, but the read-only
+  // zone display comes from the query revalidation's fresh GET instead.
+  let currentClient = makeClient({ id: 9, username: "maria_client", zone: "http://localhost:3000/api/zones/1" });
+  server.use(
+    http.get(CLIENT_ENDPOINT, () => HttpResponse.json(currentClient)),
+    http.patch(CLIENT_ENDPOINT, async ({ request }) => {
+      const body = (await request.json()) as { zoneId?: number };
+      currentClient = { ...currentClient, ...body, zone: `http://localhost:3000/api/zones/${body.zoneId}` };
+      return HttpResponse.json(currentClient);
+    }),
+    zonesResponse([ZONE, ZONE2]),
+    zonesByIdResponse({ 1: ZONE, 2: ZONE2 }),
+    defaultProfileImageResponse()
+  );
+
+  renderRoute("/profile", "/profile", Profile);
+  await waitFor(() => expect(header()).toHaveTextContent("maria_client"));
+  expect(await screen.findByText(ZONE_READ_LABEL)).toBeInTheDocument();
+
+  await user.click(editProfileButton());
+  await waitFor(() => expect(document.querySelector('input[name="zoneId"]')).toBeInTheDocument());
+
+  // ZoneInput's visible text field has no `name`/label association (only its
+  // hidden sibling input does), so it's found positionally: username, email,
+  // then the zone combobox are the only textboxes in this form.
+  const textboxes = screen.getAllByRole("textbox") as HTMLInputElement[];
+  const zoneField = textboxes[textboxes.length - 1];
+
+  await user.click(zoneField);
+  await typeReliably(zoneField, "Belgrano");
+
+  const suggestion = await screen.findByText("Belgrano, Buenos Aires, Argentina");
+  await user.click(suggestion);
+
+  await user.click(formSubmitButton());
+
+  await waitFor(() => expect(formSubmitButton()).not.toBeDisabled());
+
+  expect(await screen.findByText("Belgrano, Buenos Aires")).toBeInTheDocument();
+});
+
 test("shows a field-level error under the relevant field when updating the profile fails validation", async () => {
   seedLoggedInUser("client", { id: 9 });
   server.use(
