@@ -98,12 +98,18 @@ const DAYS_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "F
 // timeSlots arrive in arbitrary order, so shifts must be sorted before display.
 const SHIFT_ORDER = ["MORNING", "AFTERNOON", "EVENING"];
 
-function getDaysInMonth(year: number, monthIndex: number) {
+export function getDaysInMonth(year: number, monthIndex: number) {
   return new Date(year, monthIndex + 1, 0).getDate();
 }
 
-function getFirstDayOfMonth(year: number, monthIndex: number) {
+export function getFirstDayOfMonth(year: number, monthIndex: number) {
   return new Date(year, monthIndex, 1).getDay();
+}
+
+// Sorts shifts into canonical MORNING/AFTERNOON/EVENING order. Unrecognized
+// shift values sort before all known ones (indexOf returns -1).
+export function sortShifts(shifts: string[]): string[] {
+  return [...shifts].sort((a, b) => SHIFT_ORDER.indexOf(a) - SHIFT_ORDER.indexOf(b));
 }
 
 export default function BookingCreate() {
@@ -302,7 +308,7 @@ export default function BookingCreate() {
       .filter((v) => vehiclesWithSlots[v.id])
       .map((v) => ({
         ...v,
-        shifts: vehiclesWithSlots[v.id].sort((a, b) => SHIFT_ORDER.indexOf(a) - SHIFT_ORDER.indexOf(b)),
+        shifts: sortShifts(vehiclesWithSlots[v.id]),
       }));
   });
 
