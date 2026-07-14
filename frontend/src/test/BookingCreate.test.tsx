@@ -1,10 +1,10 @@
-import {screen, waitFor} from "@solidjs/testing-library";
+import { screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import {http, HttpResponse} from "msw";
-import {server} from "@/test/msw/server";
-import {renderRoute} from "@/test/renderRoute";
-import {seedLoggedInUser} from "@/test/msw/authFixtures";
-import {makeZone, zonesResponse} from "@/test/msw/zoneFixtures";
+import { http, HttpResponse } from "msw";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { seedLoggedInUser } from "@/test/msw/authFixtures";
+import { makeZone, zonesResponse } from "@/test/msw/zoneFixtures";
 import {
   AVAILABILITY_ENDPOINT,
   availabilityResponse,
@@ -18,7 +18,7 @@ import {
   makeUserBooking,
   userBookingsResponse,
 } from "@/test/msw/bookingCreateFixtures";
-import {apiUri} from "@/test/msw/bookingFixtures";
+import { apiUri } from "@/test/msw/bookingFixtures";
 import BookingCreate from "@/pages/BookingCreate";
 
 const user = userEvent.setup();

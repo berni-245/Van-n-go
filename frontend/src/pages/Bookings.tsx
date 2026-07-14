@@ -1,13 +1,13 @@
-import {createComputed, createEffect, For, Show, Suspense} from "solid-js";
-import {query, useNavigate, useSearchParams} from "@solidjs/router";
-import {useApi, useAppState, useTranslator} from "@/app-context/AppContext";
+import { createComputed, createEffect, For, Show, Suspense } from "solid-js";
+import { query, useNavigate, useSearchParams } from "@solidjs/router";
+import { useApi, useAppState, useTranslator } from "@/app-context/AppContext";
 import BookingCard from "@components/cards/BookingCard";
 import Pagination from "@components/pagination/Pagination";
-import {Title} from "@solidjs/meta";
-import type {Booking, Client, Driver, Vehicle, Zone} from "@/api/types";
-import {BookingState} from "@/api/types";
-import {PaginatedResource} from "../app-context/pagination";
-import {createStore} from "solid-js/store";
+import { Title } from "@solidjs/meta";
+import type { Booking, Client, Driver, Vehicle, Zone } from "@/api/types";
+import { BookingState } from "@/api/types";
+import { PaginatedResource } from "../app-context/pagination";
+import { createStore } from "solid-js/store";
 import BookingCardSkeletonGrid from "../components/skeletons/BookingCardSkeletonGrid";
 
 type BookingWithTarget = {

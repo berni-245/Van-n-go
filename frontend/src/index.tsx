@@ -1,16 +1,16 @@
 /* @refresh reload */
 import "solid-devtools";
 import "@/App.css";
-import {render} from "solid-js/web";
+import { render } from "solid-js/web";
 import App from "@/App";
-import {Navigate, Route, Router} from "@solidjs/router";
-import {Link, Meta, MetaProvider, Title} from "@solidjs/meta";
-import {AppContextProvider} from "@/app-context/AppContext";
+import { Navigate, Route, Router } from "@solidjs/router";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
+import { AppContextProvider } from "@/app-context/AppContext";
 import ParentErrorBoundary from "./components/ParentErrorBoundary";
-import {AnonRoute, ClientRoute, DriverRoute} from "./components/ProtectedRoute";
-import {ROUTER_BASE} from "@/utils/routing";
+import { AnonRoute, ClientRoute, DriverRoute } from "./components/ProtectedRoute";
+import { ROUTER_BASE } from "@/utils/routing";
 import Profile from "@/pages/Profile";
-import {lazy} from "solid-js";
+import { lazy } from "solid-js";
 import VehicleCreate from "@/pages/CreateVehicle.tsx";
 import BookingCreate from "@/pages/BookingCreate.tsx";
 

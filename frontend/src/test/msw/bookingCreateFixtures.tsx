@@ -1,6 +1,6 @@
-import {http, HttpResponse} from "msw";
-import type {ApiError, Availability, WeekDay} from "@/api/types";
-import {apiUri} from "@/test/msw/bookingFixtures";
+import { http, HttpResponse } from "msw";
+import type { ApiError, Availability, WeekDay } from "@/api/types";
+import { apiUri } from "@/test/msw/bookingFixtures";
 
 export const DRIVER_VEHICLES_ENDPOINT = "*/api/drivers/:driverId/vehicles";
 export const AVAILABILITY_ENDPOINT = "*/api/drivers/:driverId/vehicles/:vehicleId/availability";

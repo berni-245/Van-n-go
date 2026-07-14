@@ -1,8 +1,8 @@
-import {createSignal, For, Show, Suspense} from "solid-js";
-import {createAsync, useLocation, useSearchParams} from "@solidjs/router";
-import {Title} from "@solidjs/meta";
-import {stripBase} from "@/utils/routing";
-import {useApi, useTranslator} from "@/app-context/AppContext";
+import { createSignal, For, Show, Suspense } from "solid-js";
+import { createAsync, useLocation, useSearchParams } from "@solidjs/router";
+import { Title } from "@solidjs/meta";
+import { stripBase } from "@/utils/routing";
+import { useApi, useTranslator } from "@/app-context/AppContext";
 import ZoneInput from "@/components/inputs/ZoneInput";
 import Button from "@/components/Button";
 import DriverCard from "@/components/cards/SearchCard";

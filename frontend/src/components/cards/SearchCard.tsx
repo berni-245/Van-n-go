@@ -1,6 +1,6 @@
-import {Show} from "solid-js";
-import {A} from "@solidjs/router";
-import {Driver} from "@/api/types";
+import { Show } from "solid-js";
+import { A } from "@solidjs/router";
+import { Driver } from "@/api/types";
 import ImageWithFallback from "@/components/ImageWithFallback";
 
 import "./SearchCard.css";
