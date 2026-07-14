@@ -1,5 +1,5 @@
 import { action, createAsync, query, redirect, useParams, useSubmission } from "@solidjs/router";
-import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, For, Show, Suspense } from "solid-js";
 import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
 import { useToast } from "solid-notifications";
 import { ApiError, Availability, UpdateVehicle, Zone } from "../api/types";
@@ -7,7 +7,7 @@ import { Api } from "../app-context/api";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
-import Combobox from "@components/inputs/Combobox.tsx";
+import ZoneInput from "@components/inputs/ZoneInput.tsx";
 import {
   isValidPlateNumber,
   isValidVehicleVolume,
@@ -380,7 +380,8 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
   const errors = () => (submission.result?.ok === false ? submission.result.resp : {});
 
   const [selectedZoneIds, setSelectedZoneIds] = createSignal<number[]>([]);
-  const [zoneToAdd, setZoneToAdd] = createSignal<number | undefined>();
+  const [zoneQuery, setZoneQuery] = createSignal("");
+  const [zoneToAdd, setZoneToAdd] = createSignal<number | null>(null);
 
   let isInitialized = false;
   createEffect(() => {
@@ -395,23 +396,14 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
     const id = zoneToAdd();
     if (id && !selectedZoneIds().includes(id)) {
       setSelectedZoneIds([...selectedZoneIds(), id]);
-      setZoneToAdd(undefined);
+      setZoneToAdd(null);
+      setZoneQuery("");
     }
   };
 
   const handleRemoveZone = (idToRemove: number) => {
     setSelectedZoneIds(selectedZoneIds().filter((id) => id !== idToRemove));
   };
-
-  const availableZoneOptions = createMemo(() => {
-    if (!props.zones) return [];
-    return props.zones
-      .filter((z) => !selectedZoneIds().includes(z.id))
-      .map((z) => ({
-        value: z.id,
-        label: `${z.neighborhood.name}, ${z.province.name}`,
-      }));
-  });
 
   const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
   const SHIFTS = ["MORNING", "AFTERNOON", "EVENING"];
@@ -433,13 +425,12 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
 
         <div class="mb-4 flex items-end gap-2">
           <div class="flex-1">
-            <Combobox
-              name="zoneSelect"
+            <ZoneInput
               label={t("global.page.editVehicle.labels.addZone")}
-              options={availableZoneOptions()}
-              value={zoneToAdd()}
-              onChange={(val: any) => setZoneToAdd(Number(val))}
-              placeholder={t("global.page.editVehicle.placeholders.searchNeighborhood")}
+              value={zoneQuery()}
+              onInput={setZoneQuery}
+              onSelect={setZoneToAdd}
+              excludeIds={selectedZoneIds()}
             />
           </div>
           <Button

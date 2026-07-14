@@ -22,20 +22,26 @@ const palermoHollywood = makeZone({ id: 2, neighborhood: { name: "Palermo Hollyw
  * selected zone id is surfaced in a data-testid so tests can assert on it
  * without reaching into component internals.
  */
-function ZoneInputHarness() {
+function ZoneInputHarness(props: { excludeIds?: number[] }) {
   const [value, setValue] = createSignal("");
   const [selectedId, setSelectedId] = createSignal<number | null>(null);
 
   return (
     <div>
-      <ZoneInput label="Zone" value={value()} onInput={setValue} onSelect={setSelectedId} />
+      <ZoneInput
+        label="Zone"
+        value={value()}
+        onInput={setValue}
+        onSelect={setSelectedId}
+        excludeIds={props.excludeIds}
+      />
       <p data-testid="selected-zone-id">{selectedId() === null ? "none" : selectedId()}</p>
     </div>
   );
 }
 
-function renderHarness() {
-  return renderRoute("/zone-harness", "/zone-harness", ZoneInputHarness);
+function renderHarness(excludeIds?: number[]) {
+  return renderRoute("/zone-harness", "/zone-harness", () => <ZoneInputHarness excludeIds={excludeIds} />);
 }
 
 test("shows matching suggestions once the zones API call resolves", async () => {
@@ -147,6 +153,30 @@ test("clears the selection on blur when the typed text doesn't match any zone", 
 
   await user.clear(input);
   await user.type(input, "Somewhere else entirely");
+  await user.tab(); // blur
+
+  await waitFor(() => expect(screen.getByTestId("selected-zone-id")).toHaveTextContent("none"));
+});
+
+test("omits excluded zone ids from the suggestion list", async () => {
+  server.use(zonesResponse([palermoSoho, palermoHollywood]));
+  renderHarness([palermoHollywood.id]);
+
+  const input = screen.getByRole("textbox");
+  await user.click(input);
+  await user.type(input, "Palermo");
+
+  expect(await screen.findByText(SOHO_LABEL)).toBeInTheDocument();
+  expect(screen.queryByText(HOLLYWOOD_LABEL)).not.toBeInTheDocument();
+});
+
+test("does not auto-select an excluded zone on blur even on an exact text match", async () => {
+  server.use(zonesResponse([palermoSoho, palermoHollywood]));
+  renderHarness([palermoSoho.id]);
+
+  const input = screen.getByRole("textbox");
+  await user.click(input);
+  await user.type(input, SOHO_LABEL);
   await user.tab(); // blur
 
   await waitFor(() => expect(screen.getByTestId("selected-zone-id")).toHaveTextContent("none"));

@@ -14,6 +14,7 @@ type ZoneInputProps = {
   onInput: (value: string) => void;
   onSelect: (zoneId: number | null) => void;
   error?: string | null;
+  excludeIds?: number[];
 };
 
 // Builds the "neighborhood, province, country" display label, dropping any missing parts.
@@ -50,6 +51,7 @@ export default function ZoneInput(props: ZoneInputProps) {
     if (!q) return [];
     const ql = q.toLowerCase();
     return (zones() ?? [])
+      .filter((z) => !props.excludeIds?.includes(z.id))
       .map((z) => ({ z, label: zoneDisplay(z) }))
       .filter(({ label }) => label.toLowerCase().includes(ql))
       .slice(0, 10); // limit suggestions
@@ -113,6 +115,7 @@ export default function ZoneInput(props: ZoneInputProps) {
             setTimeout(() => {
               const q = props.value.trim().toLowerCase();
               const matches = (zones() ?? [])
+                .filter((z) => !props.excludeIds?.includes(z.id))
                 .map((z) => ({ z, label: zoneDisplay(z) }))
                 .filter(({ label }) => label.toLowerCase() === q);
 
