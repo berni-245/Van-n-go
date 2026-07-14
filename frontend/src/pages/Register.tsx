@@ -8,6 +8,7 @@ import Select from "@/components/Select";
 import { useNavigate, A } from "@solidjs/router";
 import { Title } from "@solidjs/meta";
 import type { Client, Driver } from "@/api/types";
+import { isValidEmail } from "@/utils/validation";
 
 const UserRoles = [
   { key: "CLIENT", value: "client", labelKey: "global.userType.client" },
@@ -53,8 +54,7 @@ export default function Register() {
 
     if (!username().trim()) clientErrors.username = [t("global.error.validation.NotBlank") as string];
     if (!email().trim()) clientErrors.email = [t("global.error.validation.NotBlank") as string];
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email().trim()))
-      clientErrors.email = [t("global.error.validation.Email") as string];
+    else if (!isValidEmail(email().trim())) clientErrors.email = [t("global.error.validation.Email") as string];
     if (!password().trim()) clientErrors.password = [t("global.error.validation.NotBlank") as string];
     if (!confirmedPassword().trim()) clientErrors.confirmedPassword = [t("global.error.validation.NotBlank") as string];
     else if (password() !== confirmedPassword())

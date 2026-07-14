@@ -614,7 +614,7 @@ interface ApiRequestOpts extends RequestInit {
   queryParams?: Record<string, string>;
 }
 
-function apiRequest(path: string, opts?: ApiRequestOpts): Request {
+export function apiRequest(path: string, opts?: ApiRequestOpts): Request {
   // `path` may be a relative API path (e.g. "drivers/1") or a fully-qualified HATEOAS
   // URI returned by the API (e.g. "http://host/paw-2024b-01/api/..."). `new URL(path,
   // API_ROOT)` handles both: an absolute URI ignores the base, a relative one resolves
@@ -633,7 +633,7 @@ function apiRequest(path: string, opts?: ApiRequestOpts): Request {
   return new Request(url, opts);
 }
 
-function extractNumericIdFromEndOfPath(uri: string): number | null {
+export function extractNumericIdFromEndOfPath(uri: string): number | null {
   const idStr = uri.replace(/\/+$/, "").split("/").pop();
   if (!idStr) return null;
 
@@ -651,7 +651,7 @@ export interface DriverSearchParams {
   page?: number;
 }
 
-function parseTotalPages(linkHeader: string | null, currentPage: number): number {
+export function parseTotalPages(linkHeader: string | null, currentPage: number): number {
   if (!linkHeader) return currentPage;
   const match = linkHeader.match(/[?&]page=(\d+)[^>]*>;\s*rel="last"/);
   return match ? parseInt(match[1], 10) : currentPage;

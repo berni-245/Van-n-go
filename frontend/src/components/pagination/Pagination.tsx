@@ -136,7 +136,7 @@ export default function Pagination<T>(props: PaginationProps<T>) {
   );
 }
 
-const pagesArray = (currentPage: number, firstPage: number, lastPage: number) => {
+export const pagesArray = (currentPage: number, firstPage: number, lastPage: number) => {
   const maxVisible = 5;
 
   if (lastPage - firstPage + 1 <= maxVisible) {

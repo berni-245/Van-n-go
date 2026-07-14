@@ -6,6 +6,12 @@ import { ApiError } from "../api/types";
 import { Api } from "../app-context/api";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
+import {
+  isValidPlateNumber,
+  isValidVehicleVolume,
+  isValidHourlyRate,
+  isValidVehicleDescriptionLength,
+} from "@/utils/validation";
 
 export const createVehicleAction = action(
   async (api: Api, driverId: number, t: any, toaster: any, formData: FormData) => {
@@ -18,11 +24,8 @@ export const createVehicleAction = action(
 
     if (!plateNumber) {
       fieldErrors["plateNumber"] = [t("global.page.createVehicle.errors.required")];
-    } else {
-      const plateRegex = /^([a-zA-Z]{3}[0-9]{3}|[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})$/;
-      if (!plateRegex.test(plateNumber)) {
-        fieldErrors["plateNumber"] = [t("global.page.createVehicle.errors.plateRegex")];
-      }
+    } else if (!isValidPlateNumber(plateNumber)) {
+      fieldErrors["plateNumber"] = [t("global.page.createVehicle.errors.plateRegex")];
     }
 
     let volumeM3: number | undefined;
@@ -30,7 +33,7 @@ export const createVehicleAction = action(
       fieldErrors["volumeM3"] = [t("global.page.createVehicle.errors.required")];
     } else {
       volumeM3 = parseFloat(volumeM3Str);
-      if (volumeM3 < 1 || volumeM3 > 100) {
+      if (!isValidVehicleVolume(volumeM3)) {
         fieldErrors["volumeM3"] = [t("global.page.createVehicle.errors.volume")];
       }
     }
@@ -40,14 +43,14 @@ export const createVehicleAction = action(
       fieldErrors["hourlyRate"] = [t("global.page.createVehicle.errors.required")];
     } else {
       hourlyRate = parseFloat(hourlyRateStr);
-      if (hourlyRate < 100 || hourlyRate > 100000) {
+      if (!isValidHourlyRate(hourlyRate)) {
         fieldErrors["hourlyRate"] = [t("global.page.createVehicle.errors.rate")];
       }
     }
 
     if (!description) {
       fieldErrors["description"] = [t("global.page.createVehicle.errors.required")];
-    } else if (description.length > 255) {
+    } else if (!isValidVehicleDescriptionLength(description)) {
       fieldErrors["description"] = [t("global.page.createVehicle.errors.descriptionLength")];
     }
 

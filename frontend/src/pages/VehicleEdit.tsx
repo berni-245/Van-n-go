@@ -8,6 +8,12 @@ import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
 import Combobox from "@components/inputs/Combobox.tsx";
+import {
+  isValidPlateNumber,
+  isValidVehicleVolume,
+  isValidHourlyRate,
+  isValidVehicleDescriptionLength,
+} from "@/utils/validation";
 
 export const editVehicleAction = action(
   async (api: Api, driverId: number, vehicleId: number, t: any, toaster: any, formData: FormData) => {
@@ -18,29 +24,26 @@ export const editVehicleAction = action(
     const hourlyRateStr = formData.get("hourlyRate") as string;
     const description = formData.get("description") as string;
 
-    if (plateNumber) {
-      const plateRegex = /^([a-zA-Z]{3}[0-9]{3}|[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2})$/;
-      if (!plateRegex.test(plateNumber)) {
-        fieldErrors["plateNumber"] = [t("global.page.editVehicle.errors.plateRegex")];
-      }
+    if (plateNumber && !isValidPlateNumber(plateNumber)) {
+      fieldErrors["plateNumber"] = [t("global.page.editVehicle.errors.plateRegex")];
     }
 
     let volumeM3: number | undefined;
     if (volumeM3Str) {
       volumeM3 = parseFloat(volumeM3Str);
-      if (volumeM3 < 1 || volumeM3 > 100) {
+      if (!isValidVehicleVolume(volumeM3)) {
         fieldErrors["volumeM3"] = [t("global.page.editVehicle.errors.volume")];
       }
     }
     let hourlyRate: number | undefined;
     if (hourlyRateStr) {
       hourlyRate = parseFloat(hourlyRateStr);
-      if (hourlyRate < 100 || hourlyRate > 100000) {
+      if (!isValidHourlyRate(hourlyRate)) {
         fieldErrors["hourlyRate"] = [t("global.page.editVehicle.errors.rate")];
       }
     }
 
-    if (description && description.length > 255) {
+    if (description && !isValidVehicleDescriptionLength(description)) {
       fieldErrors["description"] = [t("global.page.editVehicle.errors.descriptionLength")];
     }
 
