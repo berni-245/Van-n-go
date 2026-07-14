@@ -66,14 +66,14 @@ test("isValidVehicleVolume rejects NaN, e.g. from parseFloat('abc')", () => {
 
 // -- isValidHourlyRate ------------------------------------------------------
 
-test("isValidHourlyRate accepts values within [100, 100000]", () => {
-  expect(isValidHourlyRate(100)).toBe(true);
+test("isValidHourlyRate accepts values within [1000, 100000]", () => {
+  expect(isValidHourlyRate(1000)).toBe(true);
   expect(isValidHourlyRate(50000)).toBe(true);
   expect(isValidHourlyRate(100000)).toBe(true);
 });
 
-test("isValidHourlyRate rejects values outside [100, 100000]", () => {
-  expect(isValidHourlyRate(99.99)).toBe(false);
+test("isValidHourlyRate rejects values outside [1000, 100000]", () => {
+  expect(isValidHourlyRate(999.99)).toBe(false);
   expect(isValidHourlyRate(100000.01)).toBe(false);
 });
 

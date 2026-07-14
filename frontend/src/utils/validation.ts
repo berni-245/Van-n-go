@@ -11,7 +11,7 @@ export function isValidVehicleVolume(volumeM3: number): boolean {
 }
 
 export function isValidHourlyRate(hourlyRate: number): boolean {
-  return !Number.isNaN(hourlyRate) && hourlyRate >= 100 && hourlyRate <= 100000;
+  return !Number.isNaN(hourlyRate) && hourlyRate >= 1000 && hourlyRate <= 100000;
 }
 
 export const MAX_VEHICLE_DESCRIPTION_LENGTH = 255;

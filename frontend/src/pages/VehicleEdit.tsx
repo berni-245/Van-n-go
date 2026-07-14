@@ -179,9 +179,9 @@ function VehicleSection(props: { vehicleId: number }) {
                         value={v().hourlyRate?.toString()}
                         error={errors()?.["hourlyRate"]}
                         disabled={submission.pending}
-                        min="100"
+                        min="1000"
                         max="100000"
-                        step="0.01"
+                        step="100"
                       />
                     </div>
 
@@ -194,7 +194,7 @@ function VehicleSection(props: { vehicleId: number }) {
                       disabled={submission.pending}
                       min="1"
                       max="100"
-                      step="0.1"
+                      step="1"
                     />
 
                     <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
