@@ -65,6 +65,9 @@
         "fetchFailed": "Error fetching availability",
         "bookingFailed": "There was an error creating the booking",
         "conflict": "The vehicle is no longer available at this time",
+        "clientAlreadyAppointed": "You already have a booking for this vehicle at that time",
+        "timeAlreadyPassed": "The selected date has already passed",
+        "vehicleAlreadyAccepted": "This vehicle is already booked for that time",
         "dateRequired": "Date is required and must be in the future"
       },
       "success": "Booking requested successfully!",

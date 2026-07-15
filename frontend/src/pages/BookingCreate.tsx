@@ -7,6 +7,17 @@ import { Api } from "../app-context/api";
 import Button from "../components/Button";
 import ZoneInput from "../components/inputs/ZoneInput";
 
+// A booking-creation conflict (409) can be several distinct things; the backend distinguishes
+// them via the error `type` code. Map each to its own localized message here (the backend's
+// `description` is currently hardcoded English, so we don't rely on it). Unknown codes fall
+// back to the generic booking-failed message.
+const BOOKING_CONFLICT_MESSAGE_KEYS: Record<string, string> = {
+  CLIENT_ALREADY_APPOINTED: "global.page.bookingCreate.errors.clientAlreadyAppointed",
+  TIME_ALREADY_PASSED: "global.page.bookingCreate.errors.timeAlreadyPassed",
+  VEHICLE_IS_ALREADY_ACCEPTED: "global.page.bookingCreate.errors.vehicleAlreadyAccepted",
+  VEHICLE_NOT_AVAILABLE: "global.page.bookingCreate.errors.conflict",
+};
+
 export const createBookingAction = action(async (api: Api, t: any, toaster: any, formData: FormData) => {
   const fieldErrors: Record<string, string[]> = {};
 
@@ -40,20 +51,15 @@ export const createBookingAction = action(async (api: Api, t: any, toaster: any,
 
   if (!response.ok) {
     if (response.status === 400) {
-      const errorList: ApiError[] = await response.json();
-      const apiErrors: Record<string, string[]> = {};
-      errorList.forEach((err) => {
-        if (err.entity && err.description) {
-          if (!apiErrors[err.entity]) apiErrors[err.entity] = [];
-          apiErrors[err.entity].push(err.description);
-        } else if (err.description) {
-          toaster.notify(err.description, { type: "error" });
-        }
-      });
-      return { ok: false, resp: apiErrors };
+      // The form validates every field client-side before submitting, so a 400 here means the
+      // request bypassed the UI (tampering / stale zone list). A single generic message is enough.
+      toaster.notify(t("global.page.bookingCreate.errors.bookingFailed"), { type: "error" });
+      return { ok: false, resp: {} };
     }
     if (response.status === 409) {
-      toaster.notify(t("global.page.bookingCreate.errors.conflict"), { type: "error" });
+      const err: ApiError = await response.json();
+      const messageKey = BOOKING_CONFLICT_MESSAGE_KEYS[err.type] ?? "global.page.bookingCreate.errors.bookingFailed";
+      toaster.notify(t(messageKey), { type: "error" });
       return { ok: false, resp: {} };
     }
     throw new Error(t("global.page.bookingCreate.errors.bookingFailed"));

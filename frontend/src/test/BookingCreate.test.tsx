@@ -197,7 +197,7 @@ test("lets the client override the auto-selected date by picking a different ava
   expect(screen.queryByText(new RegExp(tomorrowDateStr))).not.toBeInTheDocument();
 });
 
-test("shows a field-level error returned by the API next to the relevant field", async () => {
+test("shows a single generic error when the API rejects the booking with a 400", async () => {
   seedLoggedInUser("client", { id: 9 });
 
   const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
@@ -221,7 +221,9 @@ test("shows a field-level error returned by the API next to the relevant field",
   await selectTomorrowAndShift();
   await fillAndSubmit("Moving some boxes across town.");
 
-  expect(await screen.findByText(/The destination zone must differ from the origin\./)).toBeInTheDocument();
+  // Every field is validated client-side before submitting, so a server 400 means the request
+  // bypassed the UI — we surface one generic message instead of the per-field API descriptions.
+  expect(await screen.findByText(/There was an error creating the booking/)).toBeInTheDocument();
 });
 
 test("does not navigate away when the API reports a scheduling conflict (409)", async () => {

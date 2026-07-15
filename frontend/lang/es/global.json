@@ -65,6 +65,9 @@
         "fetchFailed": "Error al obtener la disponibilidad",
         "bookingFailed": "Hubo un error al crear la reserva",
         "conflict": "El vehículo ya no está disponible en este horario",
+        "clientAlreadyAppointed": "Ya tenés una reserva para este vehículo en ese horario",
+        "timeAlreadyPassed": "La fecha seleccionada ya pasó",
+        "vehicleAlreadyAccepted": "Este vehículo ya está reservado para ese horario",
         "dateRequired": "La fecha es obligatoria y debe ser futura"
       },
       "success": "¡Reserva solicitada con éxito!",
