@@ -2,10 +2,10 @@ import { action, createAsync, query, useNavigate, useParams, useSearchParams, us
 import { createEffect, createMemo, createResource, createSignal, For, Index, Show, Suspense } from "solid-js";
 import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
 import { useToast } from "solid-notifications";
-import { ApiError, Availability, BookingState, Zone } from "../api/types";
+import { ApiError, Availability, BookingState } from "../api/types";
 import { Api } from "../app-context/api";
 import Button from "../components/Button";
-import Combobox from "../components/inputs/Combobox";
+import ZoneInput from "../components/inputs/ZoneInput";
 
 export const createBookingAction = action(async (api: Api, t: any, toaster: any, formData: FormData) => {
   const fieldErrors: Record<string, string[]> = {};
@@ -77,8 +77,6 @@ const driverDataQuery = query(async (driverId: number) => {
   return vehiclesWithAvail;
 }, "driver-full-data");
 
-const zonesQuery = query(() => useApi().getZones(), "zones");
-
 const MONTHS = [
   "JANUARY",
   "FEBRUARY",
@@ -123,15 +121,14 @@ export default function BookingCreate() {
   const navigate = useNavigate();
 
   const driverVehicles = createAsync(() => driverDataQuery(driverId));
-  const allZones = createAsync(() => zonesQuery());
 
   const [searchParams] = useSearchParams<{ originZoneId?: string }>();
-  const originZoneId = () => (searchParams.originZoneId ? Number(searchParams.originZoneId) : null);
+  const originZoneIdParam = () => (searchParams.originZoneId ? Number(searchParams.originZoneId) : null);
 
   const bookableVehicles = createMemo(() => {
     const vehicles = driverVehicles();
     if (!vehicles) return vehicles;
-    const zoneId = originZoneId();
+    const zoneId = originZoneIdParam();
     if (zoneId == null) return vehicles;
     return vehicles.filter((v) =>
       v.availabilityDetails?.zones?.some((uri: string) => Number(uri.split("/").pop()) === zoneId)
@@ -323,23 +320,28 @@ export default function BookingCreate() {
     return isPending;
   }, false);
 
-  const currentZoneOptions = createMemo(() => {
-    if (!selectedVehicleSlot() || !allZones()) return [];
-    const uris = selectedVehicleSlot()!.vehicle.availabilityDetails.zones as string[];
-    const validIds = uris.map((uri) => Number(uri.split("/").pop()));
-
-    return validIds
-      .map((id) => {
-        const z = allZones()!.find((zone: Zone) => zone.id === id);
-        return z ? { value: z.id, label: `${z.neighborhood.name}, ${z.province.name}` } : null;
-      })
-      .filter(Boolean) as { value: number; label: string }[];
+  const originZoneIds = createMemo(() => {
+    const slot = selectedVehicleSlot();
+    if (!slot) return [];
+    const uris = slot.vehicle.availabilityDetails.zones as string[];
+    return uris.map((uri) => Number(uri.split("/").pop()));
   });
 
-  const allZoneOptions = createMemo(() => {
-    if (!allZones()) return [];
-    return allZones()!.map((z: Zone) => ({ value: z.id, label: `${z.neighborhood.name}, ${z.province.name}` }));
-  });
+  const [originZoneQuery, setOriginZoneQuery] = createSignal("");
+  const [originZoneId, setOriginZoneId] = createSignal<number | null>(null);
+  const [destinationZoneQuery, setDestinationZoneQuery] = createSignal("");
+  const [destinationZoneId, setDestinationZoneId] = createSignal<number | null>(null);
+
+  // The set of zones a vehicle serves changes with the selected slot, so a
+  // previously chosen origin may no longer be valid.
+  createEffect((prevSlot) => {
+    const slot = selectedVehicleSlot();
+    if (slot !== prevSlot) {
+      setOriginZoneQuery("");
+      setOriginZoneId(null);
+    }
+    return slot;
+  }, null);
 
   return (
     <div class="mx-auto max-w-5xl p-4 md:p-8 space-y-8">
@@ -488,19 +490,26 @@ export default function BookingCreate() {
                   <input type="hidden" name="shiftPeriod" value={selectedVehicleSlot()!.shift} />
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Combobox
-                      name="originZoneId"
+                    <ZoneInput
                       label={t("global.page.bookingCreate.confirmation.origin")}
-                      options={currentZoneOptions()}
-                      error={errors()?.["originZoneId"]}
+                      value={originZoneQuery()}
+                      onInput={setOriginZoneQuery}
+                      onSelect={setOriginZoneId}
+                      includeIds={originZoneIds()}
+                      error={errors()?.["originZoneId"]?.[0] ?? null}
+                      class="max-w-none"
                     />
-                    <Combobox
-                      name="destinationZoneId"
+                    <ZoneInput
                       label={t("global.page.bookingCreate.confirmation.destination")}
-                      options={allZoneOptions()}
-                      error={errors()?.["destinationZoneId"]}
+                      value={destinationZoneQuery()}
+                      onInput={setDestinationZoneQuery}
+                      onSelect={setDestinationZoneId}
+                      error={errors()?.["destinationZoneId"]?.[0] ?? null}
+                      class="max-w-none"
                     />
                   </div>
+                  <input type="hidden" name="originZoneId" value={originZoneId() ?? ""} />
+                  <input type="hidden" name="destinationZoneId" value={destinationZoneId() ?? ""} />
 
                   <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label class="w-fit pl-0.5 text-sm">

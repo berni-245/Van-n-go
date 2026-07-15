@@ -23,33 +23,21 @@ import BookingCreate from "@/pages/BookingCreate";
 
 const user = userEvent.setup();
 
-// The seeded vehicle serves zones 1 and 2 for pickup (see makeAvailability),
-// but NOT zone 3. Recoleta therefore exercises the rule that a destination can
-// be any zone even when the vehicle doesn't offer it for pickup.
+// Vehicle's pickup zones are 1 and 2 (see makeAvailability); zone 3 (Recoleta) is not.
 const ZONES = [
   makeZone({ id: 1, neighborhood: { name: "Palermo" } }),
   makeZone({ id: 2, neighborhood: { name: "Belgrano" } }),
   makeZone({ id: 3, neighborhood: { name: "Recoleta" } }),
 ];
-// Built directly in BookingCreate.tsx's zone options (not translated),
-// so it's safe to assert/select on regardless of the app's locale.
-const PALERMO_OPTION = "Palermo, Buenos Aires";
-const RECOLETA_OPTION = "Recoleta, Buenos Aires";
+// Matches ZoneInput's zoneDisplay output.
+const PALERMO_OPTION = "Palermo, Buenos Aires, Argentina";
+const RECOLETA_OPTION = "Recoleta, Buenos Aires, Argentina";
 
 function renderBookingCreate(extraRoutes: { path: string; component: () => unknown }[] = []) {
   return renderRoute("/bookings/:driverId/new", "/bookings/7/new", BookingCreate, extraRoutes as never);
 }
 
-/**
- * Drives the page up through picking tomorrow's date and an available shift —
- * the common setup for every test below. Bookings are only allowed from
- * tomorrow onward (same-day is rejected by the backend), so today renders
- * disabled. Availability is seeded for every day of the week (see
- * makeAvailability), so tomorrow is always bookable regardless of when the
- * suite runs. When today is the last day of the month, tomorrow falls into
- * the next month and the calendar auto-advances; re-querying the button by
- * its day number inside waitFor handles that DOM swap transparently.
- */
+// Bookings must be at least a day out, so this picks tomorrow's day cell.
 async function selectTomorrow() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -74,17 +62,22 @@ async function selectTomorrowAndShift() {
   await user.click(shiftButton);
 }
 
-async function pickZone(comboboxIndex: number, optionLabel: string) {
-  const combobox = screen.getAllByRole("combobox")[comboboxIndex];
-  await user.click(combobox);
+// Excludes the jobDescription textarea, which also has role=textbox.
+function zoneTextInputs() {
+  return document.querySelectorAll('input[type="text"]');
+}
+
+async function pickZone(inputIndex: number, query: string, optionLabel: string) {
+  const input = zoneTextInputs()[inputIndex] as HTMLInputElement;
+  await user.click(input);
+  await user.type(input, query);
   await user.click(await screen.findByText(optionLabel));
 }
 
 async function fillAndSubmit(jobDescription: string) {
-  await pickZone(0, PALERMO_OPTION);
-  // Recoleta (zone 3) is not a pickup zone for the vehicle, so it only appears
-  // as a destination option — picking it here exercises the any-destination rule.
-  await pickZone(1, RECOLETA_OPTION);
+  await pickZone(0, "Palermo", PALERMO_OPTION);
+  // Recoleta isn't a pickup zone, so this exercises the any-destination rule.
+  await pickZone(1, "Recoleta", RECOLETA_OPTION);
   await user.type(document.querySelector('textarea[name="jobDescription"]') as HTMLTextAreaElement, jobDescription);
   await user.click(document.querySelector('button[type="submit"]') as HTMLButtonElement);
 }
@@ -163,9 +156,7 @@ test("does not navigate away when the API reports a scheduling conflict (409)", 
 test("only offers vehicles that work the zone the client searched in", async () => {
   seedLoggedInUser("client", { id: 9 });
 
-  // Two vehicles for the same driver: one works zone 1 (the searched zone),
-  // the other only works zone 2. The availability handler answers per-vehicle
-  // by path param so their zones actually differ.
+  // One vehicle works zone 1 (searched), the other only zone 2.
   const inZoneVehicle = makeBookableVehicle({ id: 5, driverId: 7, plateNumber: "INZONE01" });
   const outZoneVehicle = makeBookableVehicle({ id: 6, driverId: 7, plateNumber: "OUTZONE9" });
 
@@ -237,15 +228,16 @@ test("offers any zone as destination but restricts origin to the vehicle's picku
 
   await selectTomorrowAndShift();
 
-  const [originCombobox, destinationCombobox] = screen.getAllByRole("combobox");
+  const [originInput, destinationInput] = zoneTextInputs();
 
-  // Origin lists only the vehicle's pickup zones (1 and 2) — Recoleta (zone 3) is excluded.
-  await user.click(originCombobox);
+  // "a" matches every seeded zone's label.
+  await user.click(originInput);
+  await user.type(originInput, "a");
   expect(await screen.findByText(PALERMO_OPTION)).toBeInTheDocument();
   expect(screen.queryByText(RECOLETA_OPTION)).not.toBeInTheDocument();
-  await user.click(originCombobox); // toggle it closed before opening the other
 
   // Destination lists every zone, including the non-pickup Recoleta.
-  await user.click(destinationCombobox);
+  await user.click(destinationInput);
+  await user.type(destinationInput, "a");
   expect(await screen.findByText(RECOLETA_OPTION)).toBeInTheDocument();
 });

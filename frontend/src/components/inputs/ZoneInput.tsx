@@ -16,6 +16,7 @@ type ZoneInputProps = {
   onSelect: (zoneId: number | null) => void;
   error?: string | null;
   excludeIds?: number[];
+  includeIds?: number[];
   class?: string;
 };
 
@@ -54,6 +55,7 @@ export default function ZoneInput(props: ZoneInputProps) {
     const ql = q.toLowerCase();
     return (zones() ?? [])
       .filter((z) => !props.excludeIds?.includes(z.id))
+      .filter((z) => !props.includeIds || props.includeIds.includes(z.id))
       .map((z) => ({ z, label: zoneDisplay(z) }))
       .filter(({ label }) => label.toLowerCase().includes(ql))
       .slice(0, 10); // limit suggestions
@@ -128,6 +130,7 @@ export default function ZoneInput(props: ZoneInputProps) {
               const q = props.value.trim().toLowerCase();
               const matches = (zones() ?? [])
                 .filter((z) => !props.excludeIds?.includes(z.id))
+                .filter((z) => !props.includeIds || props.includeIds.includes(z.id))
                 .map((z) => ({ z, label: zoneDisplay(z) }))
                 .filter(({ label }) => label.toLowerCase() === q);
 

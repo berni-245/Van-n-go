@@ -15,14 +15,8 @@ const HOLLYWOOD_LABEL = "Palermo Hollywood, Buenos Aires, Argentina";
 const palermoSoho = makeZone({ id: 1, neighborhood: { name: "Palermo Soho" } });
 const palermoHollywood = makeZone({ id: 2, neighborhood: { name: "Palermo Hollywood" } });
 
-/**
- * ZoneInput is a controlled component with no route/page of its own, so we
- * mount it inside a tiny stateful harness (rendered via renderRoute, since
- * useApi() needs Router + AppContextProvider underneath it). The last
- * selected zone id is surfaced in a data-testid so tests can assert on it
- * without reaching into component internals.
- */
-function ZoneInputHarness(props: { excludeIds?: number[] }) {
+// Controlled component harness; renderRoute gives it the Router/AppContext useApi() needs.
+function ZoneInputHarness(props: { excludeIds?: number[]; includeIds?: number[] }) {
   const [value, setValue] = createSignal("");
   const [selectedId, setSelectedId] = createSignal<number | null>(null);
 
@@ -34,14 +28,17 @@ function ZoneInputHarness(props: { excludeIds?: number[] }) {
         onInput={setValue}
         onSelect={setSelectedId}
         excludeIds={props.excludeIds}
+        includeIds={props.includeIds}
       />
       <p data-testid="selected-zone-id">{selectedId() === null ? "none" : selectedId()}</p>
     </div>
   );
 }
 
-function renderHarness(excludeIds?: number[]) {
-  return renderRoute("/zone-harness", "/zone-harness", () => <ZoneInputHarness excludeIds={excludeIds} />);
+function renderHarness(excludeIds?: number[], includeIds?: number[]) {
+  return renderRoute("/zone-harness", "/zone-harness", () => (
+    <ZoneInputHarness excludeIds={excludeIds} includeIds={includeIds} />
+  ));
 }
 
 test("shows matching suggestions once the zones API call resolves", async () => {
@@ -98,7 +95,6 @@ test("falls back to no suggestions when the zones API call fails", async () => {
   await user.click(input);
   await user.type(input, "Palermo");
 
-  // Give the debounced fetch time to settle; the catch branch should have run.
   await waitFor(() => expect(consoleError).toHaveBeenCalled());
   expect(screen.queryByText(/Palermo/)).not.toBeInTheDocument();
   expect(screen.getByTestId("selected-zone-id")).toHaveTextContent("none");
@@ -124,7 +120,7 @@ test("does not refetch zones after the first successful load", async () => {
   await user.keyboard("{Escape}"); // close suggestions without selecting
   await user.type(input, "!"); // another keystroke -> another debounced fetch *attempt*
 
-  // Give the 180ms debounce time to fire before asserting no extra request went out.
+  // let the 180ms debounce fire
   await new Promise((resolve) => setTimeout(resolve, 300));
   expect(requestCount).toBe(1);
 });
@@ -180,4 +176,40 @@ test("does not auto-select an excluded zone on blur even on an exact text match"
   await user.tab(); // blur
 
   await waitFor(() => expect(screen.getByTestId("selected-zone-id")).toHaveTextContent("none"));
+});
+
+test("restricts suggestions to includeIds when provided", async () => {
+  server.use(zonesResponse([palermoSoho, palermoHollywood]));
+  renderHarness(undefined, [palermoSoho.id]);
+
+  const input = screen.getByRole("textbox");
+  await user.click(input);
+  await user.type(input, "Palermo");
+
+  expect(await screen.findByText(SOHO_LABEL)).toBeInTheDocument();
+  expect(screen.queryByText(HOLLYWOOD_LABEL)).not.toBeInTheDocument();
+});
+
+test("does not auto-select a zone outside includeIds on blur even on an exact text match", async () => {
+  server.use(zonesResponse([palermoSoho, palermoHollywood]));
+  renderHarness(undefined, [palermoSoho.id]);
+
+  const input = screen.getByRole("textbox");
+  await user.click(input);
+  await user.type(input, HOLLYWOOD_LABEL);
+  await user.tab(); // blur
+
+  await waitFor(() => expect(screen.getByTestId("selected-zone-id")).toHaveTextContent("none"));
+});
+
+test("an empty includeIds list excludes every zone from suggestions", async () => {
+  server.use(zonesResponse([palermoSoho, palermoHollywood]));
+  renderHarness(undefined, []);
+
+  const input = screen.getByRole("textbox");
+  await user.click(input);
+  await user.type(input, "Palermo");
+
+  await waitFor(() => expect(screen.queryByText(SOHO_LABEL)).not.toBeInTheDocument());
+  expect(screen.queryByText(HOLLYWOOD_LABEL)).not.toBeInTheDocument();
 });
