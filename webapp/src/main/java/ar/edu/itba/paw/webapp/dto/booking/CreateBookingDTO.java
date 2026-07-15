@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.webapp.dto.booking;
 
 import ar.edu.itba.paw.models.ShiftPeriod;
+import ar.edu.itba.paw.webapp.validation.FutureDate;
 import ar.edu.itba.paw.webapp.validation.ValidZoneId;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -25,7 +25,7 @@ public class CreateBookingDTO {
     private String jobDescription;
 
     @NotNull
-    @Future
+    @FutureDate
     private LocalDate date;
 
     @NotNull
