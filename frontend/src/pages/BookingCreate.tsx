@@ -270,6 +270,19 @@ export default function BookingCreate() {
     return days;
   });
 
+  const [hasAutoSelectedDate, setHasAutoSelectedDate] = createSignal(false);
+
+  createEffect(() => {
+    if (hasAutoSelectedDate() || selectedDateStr()) return;
+    if (!bookableVehicles() || bookedTimesData.loading) return;
+
+    const nearestAvailable = calendarDays().find((day) => day && !day.disabled);
+    if (nearestAvailable) {
+      setSelectedDateStr(nearestAvailable.dateStr);
+      setHasAutoSelectedDate(true);
+    }
+  });
+
   const handleNextMonth = () => setCurrentMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   const handlePrevMonth = () => {
     const today = new Date();
@@ -344,207 +357,231 @@ export default function BookingCreate() {
   }, null);
 
   return (
-    <div class="mx-auto max-w-5xl p-4 md:p-8 space-y-8">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-on-surface dark:text-on-surface-dark">
-          {t("global.page.bookingCreate.title")}
-        </h1>
-        <p class="text-on-surface/70 dark:text-on-surface-dark/70">{t("global.page.bookingCreate.subtitle")}</p>
-      </div>
+    <div class="mx-auto max-w-5xl p-4 md:p-8">
+      <div class="flex items-start gap-2">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label={t("generic.word.back")}
+          class="shrink-0 rounded-full p-2 text-on-surface hover:bg-surface dark:text-on-surface-dark dark:hover:bg-surface-dark transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="size-5"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+        </button>
 
-      <Suspense fallback={<div class="animate-pulse">{t("global.page.bookingCreate.emptyMonth")}</div>}>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt h-fit">
-            <div class="flex items-center justify-between mb-4">
-              <button
-                onClick={handlePrevMonth}
-                class="p-2 hover:bg-surface dark:hover:bg-surface-dark rounded-full transition-colors text-on-surface dark:text-on-surface-dark"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
-                  stroke="currentColor"
-                  class="size-5"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                </svg>
-              </button>
-              <h2 class="text-lg font-semibold capitalize text-on-surface dark:text-on-surface-dark">
-                {t(`global.page.bookingCreate.months.${MONTHS[currentMonthDate().getMonth()]}`)}{" "}
-                {currentMonthDate().getFullYear()}
-              </h2>
-              <button
-                onClick={handleNextMonth}
-                class="p-2 hover:bg-surface dark:hover:bg-surface-dark rounded-full transition-colors text-on-surface dark:text-on-surface-dark"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
-                  stroke="currentColor"
-                  class="size-5"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                </svg>
-              </button>
-            </div>
-
-            <div class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-on-surface/60 dark:text-on-surface-dark/60 mb-2">
-              <For each={t("global.page.bookingCreate.weekDays")}>{(wd) => <div>{wd}</div>}</For>
-            </div>
-
-            <div class="grid grid-cols-7 gap-1">
-              <Index each={calendarDays()}>
-                {(day) => (
-                  <div class="aspect-square p-0.5">
-                    <Show when={day()}>
-                      <button
-                        onClick={() => handleDayClick(day())}
-                        disabled={day()?.disabled}
-                        class="w-full h-full flex items-center justify-center rounded-full text-sm transition-colors"
-                        classList={{
-                          "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark":
-                            selectedDateStr() === day().dateStr,
-                          "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark":
-                            !day().disabled && selectedDateStr() !== day().dateStr,
-                          "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day().disabled,
-                        }}
-                      >
-                        {day().num}
-                      </button>
-                    </Show>
-                  </div>
-                )}
-              </Index>
-            </div>
+        <div class="flex-1 space-y-8">
+          <div class="mb-6">
+            <h1 class="text-3xl font-bold text-on-surface dark:text-on-surface-dark">
+              {t("global.page.bookingCreate.title")}
+            </h1>
+            <p class="text-on-surface/70 dark:text-on-surface-dark/70">{t("global.page.bookingCreate.subtitle")}</p>
           </div>
 
-          <div class="space-y-6">
-            <Show when={selectedDateStr()}>
-              <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
-                <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">
-                  {t("global.page.bookingCreate.availableVehicles")} {selectedDateStr()}
-                </h3>
-
-                <div class="space-y-4">
-                  <Show
-                    when={vehiclesForSelectedDate().length > 0}
-                    fallback={<p class="text-sm text-on-surface/60">No hay vehículos disponibles.</p>}
+          <Suspense fallback={<div class="animate-pulse">{t("global.page.bookingCreate.emptyMonth")}</div>}>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt h-fit">
+                <div class="flex items-center justify-between mb-4">
+                  <button
+                    onClick={handlePrevMonth}
+                    class="p-2 hover:bg-surface dark:hover:bg-surface-dark rounded-full transition-colors text-on-surface dark:text-on-surface-dark"
                   >
-                    <For each={vehiclesForSelectedDate()}>
-                      {(v) => (
-                        <div class="border border-outline/50 rounded-radius p-4 dark:border-outline-dark/50 bg-surface dark:bg-surface-dark">
-                          <div class="flex justify-between items-start mb-3">
-                            <div>
-                              <div class="font-bold text-on-surface dark:text-on-surface-dark uppercase">
-                                {v.plateNumber}
-                              </div>
-                              <div class="text-sm text-on-surface/70 dark:text-on-surface-dark/70">
-                                {t("global.page.bookingCreate.vehicleDetails.volume")}: {v.volumeM3} m³ |{" "}
-                                {t("global.page.bookingCreate.vehicleDetails.rate")}: ${v.hourlyRate}
-                              </div>
-                            </div>
-                          </div>
-                          <div class="flex flex-wrap gap-2">
-                            <For each={v.shifts}>
-                              {(shift) => (
-                                <button
-                                  onClick={() => setSelectedVehicleSlot({ vehicle: v, shift })}
-                                  class="px-4 py-1.5 rounded-full text-sm border transition-colors"
-                                  classList={{
-                                    "bg-primary text-on-primary border-primary font-medium dark:bg-primary-dark dark:text-on-primary-dark dark:border-primary-dark":
-                                      selectedVehicleSlot()?.vehicle.id === v.id &&
-                                      selectedVehicleSlot()?.shift === shift,
-                                    "bg-surface-alt border-outline text-on-surface hover:border-primary dark:bg-surface-dark-alt dark:border-outline-dark dark:text-on-surface-dark dark:hover:border-primary-dark":
-                                      !(
-                                        selectedVehicleSlot()?.vehicle.id === v.id &&
-                                        selectedVehicleSlot()?.shift === shift
-                                      ),
-                                  }}
-                                >
-                                  {t(`global.page.bookingCreate.shifts.${shift}`)}
-                                </button>
-                              )}
-                            </For>
-                          </div>
-                        </div>
-                      )}
-                    </For>
-                  </Show>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      class="size-5"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                  </button>
+                  <h2 class="text-lg font-semibold capitalize text-on-surface dark:text-on-surface-dark">
+                    {t(`global.page.bookingCreate.months.${MONTHS[currentMonthDate().getMonth()]}`)}{" "}
+                    {currentMonthDate().getFullYear()}
+                  </h2>
+                  <button
+                    onClick={handleNextMonth}
+                    class="p-2 hover:bg-surface dark:hover:bg-surface-dark rounded-full transition-colors text-on-surface dark:text-on-surface-dark"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      class="size-5"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-on-surface/60 dark:text-on-surface-dark/60 mb-2">
+                  <For each={t("global.page.bookingCreate.weekDays")}>{(wd) => <div>{wd}</div>}</For>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1">
+                  <Index each={calendarDays()}>
+                    {(day) => (
+                      <div class="aspect-square p-0.5">
+                        <Show when={day()}>
+                          <button
+                            onClick={() => handleDayClick(day())}
+                            disabled={day()?.disabled}
+                            class="w-full h-full flex items-center justify-center rounded-full text-sm transition-colors"
+                            classList={{
+                              "bg-primary text-on-primary font-bold dark:bg-primary-dark dark:text-on-primary-dark":
+                                selectedDateStr() === day().dateStr,
+                              "hover:bg-primary/20 dark:hover:bg-primary-dark/20 text-on-surface dark:text-on-surface-dark":
+                                !day().disabled && selectedDateStr() !== day().dateStr,
+                              "opacity-30 cursor-not-allowed text-on-surface dark:text-on-surface-dark": day().disabled,
+                            }}
+                          >
+                            {day().num}
+                          </button>
+                        </Show>
+                      </div>
+                    )}
+                  </Index>
                 </div>
               </div>
-            </Show>
 
-            <Show when={selectedVehicleSlot()}>
-              <div class="rounded-2xl border border-primary bg-primary/5 p-6 shadow-sm dark:border-primary-dark dark:bg-primary-dark/5">
-                <h3 class="mb-4 text-xl font-bold text-on-surface dark:text-on-surface-dark">
-                  {t("global.page.bookingCreate.confirmation.title")}
-                </h3>
+              <div class="space-y-6">
+                <Show when={selectedDateStr()}>
+                  <div class="rounded-2xl border border-outline bg-surface-alt p-6 shadow-sm dark:border-outline-dark dark:bg-surface-dark-alt">
+                    <h3 class="mb-4 text-lg font-semibold text-on-surface dark:text-on-surface-dark">
+                      {t("global.page.bookingCreate.availableVehicles")} {selectedDateStr()}
+                    </h3>
 
-                <form action={createBookingAction.with(api, t, toaster)} method="post" class="space-y-4">
-                  <input type="hidden" name="vehicleId" value={selectedVehicleSlot()!.vehicle.id} />
-                  <input type="hidden" name="date" value={selectedDateStr()!} />
-                  <input type="hidden" name="shiftPeriod" value={selectedVehicleSlot()!.shift} />
-
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <ZoneInput
-                      label={t("global.page.bookingCreate.confirmation.origin")}
-                      value={originZoneQuery()}
-                      onInput={setOriginZoneQuery}
-                      onSelect={setOriginZoneId}
-                      includeIds={originZoneIds()}
-                      error={errors()?.["originZoneId"]?.[0] ?? null}
-                      class="max-w-none"
-                    />
-                    <ZoneInput
-                      label={t("global.page.bookingCreate.confirmation.destination")}
-                      value={destinationZoneQuery()}
-                      onInput={setDestinationZoneQuery}
-                      onSelect={setDestinationZoneId}
-                      error={errors()?.["destinationZoneId"]?.[0] ?? null}
-                      class="max-w-none"
-                    />
+                    <div class="space-y-4">
+                      <Show
+                        when={vehiclesForSelectedDate().length > 0}
+                        fallback={<p class="text-sm text-on-surface/60">No hay vehículos disponibles.</p>}
+                      >
+                        <For each={vehiclesForSelectedDate()}>
+                          {(v) => (
+                            <div class="border border-outline/50 rounded-radius p-4 dark:border-outline-dark/50 bg-surface dark:bg-surface-dark">
+                              <div class="flex justify-between items-start mb-3">
+                                <div>
+                                  <div class="font-bold text-on-surface dark:text-on-surface-dark uppercase">
+                                    {v.plateNumber}
+                                  </div>
+                                  <div class="text-sm text-on-surface/70 dark:text-on-surface-dark/70">
+                                    {t("global.page.bookingCreate.vehicleDetails.volume")}: {v.volumeM3} m³ |{" "}
+                                    {t("global.page.bookingCreate.vehicleDetails.rate")}: ${v.hourlyRate}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex flex-wrap gap-2">
+                                <For each={v.shifts}>
+                                  {(shift) => (
+                                    <button
+                                      onClick={() => setSelectedVehicleSlot({ vehicle: v, shift })}
+                                      class="px-4 py-1.5 rounded-full text-sm border transition-colors"
+                                      classList={{
+                                        "bg-primary text-on-primary border-primary font-medium dark:bg-primary-dark dark:text-on-primary-dark dark:border-primary-dark":
+                                          selectedVehicleSlot()?.vehicle.id === v.id &&
+                                          selectedVehicleSlot()?.shift === shift,
+                                        "bg-surface-alt border-outline text-on-surface hover:border-primary dark:bg-surface-dark-alt dark:border-outline-dark dark:text-on-surface-dark dark:hover:border-primary-dark":
+                                          !(
+                                            selectedVehicleSlot()?.vehicle.id === v.id &&
+                                            selectedVehicleSlot()?.shift === shift
+                                          ),
+                                      }}
+                                    >
+                                      {t(`global.page.bookingCreate.shifts.${shift}`)}
+                                    </button>
+                                  )}
+                                </For>
+                              </div>
+                            </div>
+                          )}
+                        </For>
+                      </Show>
+                    </div>
                   </div>
-                  <input type="hidden" name="originZoneId" value={originZoneId() ?? ""} />
-                  <input type="hidden" name="destinationZoneId" value={destinationZoneId() ?? ""} />
+                </Show>
 
-                  <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-                    <label class="w-fit pl-0.5 text-sm">
-                      {t("global.page.bookingCreate.confirmation.description")}
-                    </label>
-                    <textarea
-                      name="jobDescription"
-                      rows="3"
-                      maxLength={500}
-                      class="w-full resize-none rounded-radius border border-outline bg-surface px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-primary dark:border-outline-dark dark:bg-surface-dark dark:focus-visible:outline-primary-dark"
-                      classList={{ "border-danger dark:border-red-400": !!errors()?.["jobDescription"] }}
-                    />
-                    <Show when={errors()?.["jobDescription"]}>
-                      <small class="pl-0.5 text-danger dark:text-red-400">• {errors()?.["jobDescription"]?.[0]}</small>
-                    </Show>
-                  </div>
+                <Show when={selectedVehicleSlot()}>
+                  <div class="rounded-2xl border border-primary bg-primary/5 p-6 shadow-sm dark:border-primary-dark dark:bg-primary-dark/5">
+                    <h3 class="mb-4 text-xl font-bold text-on-surface dark:text-on-surface-dark">
+                      {t("global.page.bookingCreate.confirmation.title")}
+                    </h3>
 
-                  <div class="pt-4 flex justify-end">
-                    <Button
-                      type="submit"
-                      category="primary"
-                      text={
-                        submission.pending
-                          ? t("global.page.bookingCreate.confirmation.submitting")
-                          : t("global.page.bookingCreate.confirmation.submit")
-                      }
-                      disabled={submission.pending}
-                    />
+                    <form action={createBookingAction.with(api, t, toaster)} method="post" class="space-y-4">
+                      <input type="hidden" name="vehicleId" value={selectedVehicleSlot()!.vehicle.id} />
+                      <input type="hidden" name="date" value={selectedDateStr()!} />
+                      <input type="hidden" name="shiftPeriod" value={selectedVehicleSlot()!.shift} />
+
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <ZoneInput
+                          label={t("global.page.bookingCreate.confirmation.origin")}
+                          value={originZoneQuery()}
+                          onInput={setOriginZoneQuery}
+                          onSelect={setOriginZoneId}
+                          includeIds={originZoneIds()}
+                          error={errors()?.["originZoneId"]?.[0] ?? null}
+                          class="max-w-none"
+                        />
+                        <ZoneInput
+                          label={t("global.page.bookingCreate.confirmation.destination")}
+                          value={destinationZoneQuery()}
+                          onInput={setDestinationZoneQuery}
+                          onSelect={setDestinationZoneId}
+                          error={errors()?.["destinationZoneId"]?.[0] ?? null}
+                          class="max-w-none"
+                        />
+                      </div>
+                      <input type="hidden" name="originZoneId" value={originZoneId() ?? ""} />
+                      <input type="hidden" name="destinationZoneId" value={destinationZoneId() ?? ""} />
+
+                      <div class="flex flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+                        <label class="w-fit pl-0.5 text-sm">
+                          {t("global.page.bookingCreate.confirmation.description")}
+                        </label>
+                        <textarea
+                          name="jobDescription"
+                          rows="3"
+                          maxLength={500}
+                          class="w-full resize-none rounded-radius border border-outline bg-surface px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-primary dark:border-outline-dark dark:bg-surface-dark dark:focus-visible:outline-primary-dark"
+                          classList={{ "border-danger dark:border-red-400": !!errors()?.["jobDescription"] }}
+                        />
+                        <Show when={errors()?.["jobDescription"]}>
+                          <small class="pl-0.5 text-danger dark:text-red-400">
+                            • {errors()?.["jobDescription"]?.[0]}
+                          </small>
+                        </Show>
+                      </div>
+
+                      <div class="pt-4 flex justify-end">
+                        <Button
+                          type="submit"
+                          category="primary"
+                          text={
+                            submission.pending
+                              ? t("global.page.bookingCreate.confirmation.submitting")
+                              : t("global.page.bookingCreate.confirmation.submit")
+                          }
+                          disabled={submission.pending}
+                        />
+                      </div>
+                    </form>
                   </div>
-                </form>
+                </Show>
               </div>
-            </Show>
-          </div>
+            </div>
+          </Suspense>
         </div>
-      </Suspense>
+      </div>
     </div>
   );
 }
