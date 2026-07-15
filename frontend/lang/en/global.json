@@ -171,6 +171,7 @@
         "imageUpload": "Error uploading image",
         "availabilityAccess": "Could not access vehicle availability",
         "availabilityUpdate": "Error updating availability",
+        "zonesUpdate": "Could not save the work zones. Your changes were reverted.",
         "verifyShifts": "Please verify the entered shifts."
       },
       "success": {
@@ -198,7 +199,6 @@
         "saveChanges": "Save Changes",
         "uploadingPhoto": "Uploading photo...",
         "savePhoto": "Save Photo",
-        "add": "Add",
         "saveAvailability": "Save Availability"
       },
       "photoSection": "Vehicle Photo",

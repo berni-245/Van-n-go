@@ -171,6 +171,7 @@
         "imageUpload": "Error al subir la imagen",
         "availabilityAccess": "No se pudo acceder a la disponibilidad del vehículo",
         "availabilityUpdate": "Error al actualizar la disponibilidad",
+        "zonesUpdate": "No se pudieron guardar las zonas de trabajo. Se revirtieron los cambios.",
         "verifyShifts": "Por favor, verificá los turnos ingresados."
       },
       "success": {
@@ -198,7 +199,6 @@
         "saveChanges": "Guardar Cambios",
         "uploadingPhoto": "Subiendo foto...",
         "savePhoto": "Guardar Foto",
-        "add": "Añadir",
         "saveAvailability": "Guardar Disponibilidad"
       },
       "photoSection": "Foto del Vehículo",

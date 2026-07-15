@@ -1,18 +1,18 @@
-import { action, createAsync, query, redirect, useParams, useSubmission } from "@solidjs/router";
-import { createEffect, createSignal, For, Show, Suspense } from "solid-js";
-import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
-import { useToast } from "solid-notifications";
-import { ApiError, Availability, UpdateVehicle, Zone } from "../api/types";
-import { Api } from "../app-context/api";
+import {action, createAsync, query, redirect, useParams, useSubmission} from "@solidjs/router";
+import {createEffect, createSignal, For, Show, Suspense} from "solid-js";
+import {useApi, useAppState, useTranslator} from "../app-context/AppContext";
+import {useToast} from "solid-notifications";
+import {ApiError, Availability, UpdateVehicle, Zone} from "../api/types";
+import {Api} from "../app-context/api";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";
 import ZoneInput from "@components/inputs/ZoneInput.tsx";
 import {
-  isValidPlateNumber,
-  isValidVehicleVolume,
   isValidHourlyRate,
+  isValidPlateNumber,
   isValidVehicleDescriptionLength,
+  isValidVehicleVolume,
 } from "@/utils/validation";
 
 export const editVehicleAction = action(
@@ -381,28 +381,61 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
 
   const [selectedZoneIds, setSelectedZoneIds] = createSignal<number[]>([]);
   const [zoneQuery, setZoneQuery] = createSignal("");
-  const [zoneToAdd, setZoneToAdd] = createSignal<number | null>(null);
 
+  let savedZoneIds: number[] = [];
   let isInitialized = false;
   createEffect(() => {
     const av = availability();
     if (av && !isInitialized) {
       setSelectedZoneIds(av.zoneIds);
+      savedZoneIds = av.zoneIds;
       isInitialized = true;
     }
   });
 
-  const handleAddZone = () => {
-    const id = zoneToAdd();
-    if (id && !selectedZoneIds().includes(id)) {
-      setSelectedZoneIds([...selectedZoneIds(), id]);
-      setZoneToAdd(null);
-      setZoneQuery("");
+  let syncSeq = 0;
+  let syncChain: Promise<void> = Promise.resolve();
+
+  const syncZones = (nextIds: number[]) => {
+    setSelectedZoneIds(nextIds);
+    const seq = ++syncSeq;
+
+    syncChain = syncChain.then(async () => {
+      if (seq !== syncSeq) return;
+      try {
+        const response = await api.updateVehicleAvailability(appState.user!.id, props.vehicleId, { zones: nextIds });
+        if (seq !== syncSeq) return;
+
+        if (!response.ok) {
+          setSelectedZoneIds(savedZoneIds);
+          toaster.notify(
+            response.status === 403 || response.status === 404
+              ? t("global.page.editVehicle.errors.availabilityAccess")
+              : t("global.page.editVehicle.errors.zonesUpdate"),
+            { type: "error" }
+          );
+          return;
+        }
+        savedZoneIds = nextIds;
+      } catch {
+        if (seq !== syncSeq) return;
+        setSelectedZoneIds(savedZoneIds);
+        toaster.notify(t("global.page.editVehicle.errors.zonesUpdate"), { type: "error" });
+      }
+    });
+  };
+
+  // ZoneInput reports null on every keystroke and on a blur that matches nothing.
+  const handleSelectZone = (id: number | null) => {
+    if (!id) return;
+    if (!selectedZoneIds().includes(id)) {
+      syncZones([...selectedZoneIds(), id]);
     }
+    setZoneQuery("");
   };
 
   const handleRemoveZone = (idToRemove: number) => {
-    setSelectedZoneIds(selectedZoneIds().filter((id) => id !== idToRemove));
+    syncZones(selectedZoneIds().filter((id) => id !== idToRemove));
   };
 
   const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
@@ -423,21 +456,13 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
           {t("global.page.editVehicle.workZones")}
         </h3>
 
-        <div class="mb-4 flex items-end gap-2">
-          <div class="flex-1">
-            <ZoneInput
-              label={t("global.page.editVehicle.labels.addZone")}
-              value={zoneQuery()}
-              onInput={setZoneQuery}
-              onSelect={setZoneToAdd}
-              excludeIds={selectedZoneIds()}
-            />
-          </div>
-          <Button
-            type="button"
-            category="secondary"
-            text={t("global.page.editVehicle.buttons.add")}
-            onClick={handleAddZone}
+        <div class="mb-4">
+          <ZoneInput
+            label={t("global.page.editVehicle.labels.addZone")}
+            value={zoneQuery()}
+            onInput={setZoneQuery}
+            onSelect={handleSelectZone}
+            excludeIds={selectedZoneIds()}
           />
         </div>
 
@@ -498,7 +523,7 @@ function AvailabilitySection(props: { vehicleId: number; url: string; zones: Zon
                     <td class="py-3 px-4 capitalize font-medium">{t(`global.page.editVehicle.days.${day}`)}</td>
                     <For each={SHIFTS}>
                       {(shift) => (
-                        <td class="py-3 px-4 text-center">
+                        <td cla ss="py-3 px-4 text-center">
                           <input
                             type="checkbox"
                             name="timeSlots"
