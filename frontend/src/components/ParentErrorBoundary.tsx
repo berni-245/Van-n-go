@@ -31,9 +31,7 @@ const ParentErrorBoundary: ParentComponent = (props) => {
 
                       <span
                         class={
-                          i() === 0
-                            ? "font-semibold text-red-400"
-                            : "text-zinc-300 group-hover/frame:text-zinc-100"
+                          i() === 0 ? "font-semibold text-red-400" : "text-zinc-300 group-hover/frame:text-zinc-100"
                         }
                       >
                         {frame.trim()}

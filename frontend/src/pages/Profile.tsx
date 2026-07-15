@@ -166,50 +166,47 @@ export default function Profile() {
   );
 }
 
-export const updateProfileAction = action(
-  async (api: Api, userId: number, userType: string, formData: FormData) => {
-    let response: Response;
-    if (userType === "client") {
-      const clientData: UpdateClient = {
-        username: formData.get("username") as string,
-        email: formData.get("email") as string,
-        zoneId: Number(formData.get("zoneId")),
-        preferredLanguage: formData.get("preferredLanguage") as string,
-      };
-      response = await api.updateClientInfo(userId, clientData);
-    } else {
-      const driverData: UpdateDriver = {
-        username: formData.get("username") as string,
-        email: formData.get("email") as string,
-        description: formData.get("description") as string,
-        preferredLanguage: formData.get("preferredLanguage") as string,
-      };
-      response = await api.updateDriverInfo(userId, driverData);
-    }
+export const updateProfileAction = action(async (api: Api, userId: number, userType: string, formData: FormData) => {
+  let response: Response;
+  if (userType === "client") {
+    const clientData: UpdateClient = {
+      username: formData.get("username") as string,
+      email: formData.get("email") as string,
+      zoneId: Number(formData.get("zoneId")),
+      preferredLanguage: formData.get("preferredLanguage") as string,
+    };
+    response = await api.updateClientInfo(userId, clientData);
+  } else {
+    const driverData: UpdateDriver = {
+      username: formData.get("username") as string,
+      email: formData.get("email") as string,
+      description: formData.get("description") as string,
+      preferredLanguage: formData.get("preferredLanguage") as string,
+    };
+    response = await api.updateDriverInfo(userId, driverData);
+  }
 
-    if (!response.ok) {
-      if (response.status === 400) {
-        const errorList: ApiError[] = await response.json();
+  if (!response.ok) {
+    if (response.status === 400) {
+      const errorList: ApiError[] = await response.json();
 
-        const fieldErrors: Record<string, string[]> = {};
+      const fieldErrors: Record<string, string[]> = {};
 
-        errorList.forEach((err) => {
-          if (err.entity && err.description) {
-            if (!fieldErrors[err.entity]) {
-              fieldErrors[err.entity] = [];
-            }
-            fieldErrors[err.entity].push(err.description);
+      errorList.forEach((err) => {
+        if (err.entity && err.description) {
+          if (!fieldErrors[err.entity]) {
+            fieldErrors[err.entity] = [];
           }
-        });
-        return { ok: false, resp: fieldErrors };
-      }
-      throw new Error();
+          fieldErrors[err.entity].push(err.description);
+        }
+      });
+      return { ok: false, resp: fieldErrors };
     }
+    throw new Error();
+  }
 
-    return { ok: true, resp: await response.json() };
-  },
-  "update-profile-action"
-);
+  return { ok: true, resp: await response.json() };
+}, "update-profile-action");
 
 function EditProfileForm(props: { user: Client | Driver }) {
   const t = useTranslator();
