@@ -18,6 +18,10 @@
   "login": "Iniciar sesión",
   "loginError": "Credenciales inválidas. Por favor, inténtalo de nuevo.",
   "loadingSession": "Cargando sesión...",
+  "loginSubtitle": "Ingresá tus credenciales para continuar",
+  "noAccountPrompt": "¿No tenés una cuenta?",
+  "registerSubtitle": "Creá una cuenta para continuar",
+  "haveAccountPrompt": "¿Ya tenés una cuenta?",
   "name": "Español",
   "page": {
     "bookingCreate": {

@@ -48,7 +48,7 @@ export default function Login() {
 
   return (
     <div class="flex min-h-svh items-center justify-center bg-surface p-4 dark:bg-surface-dark">
-      <Title>Login - Van N' Go</Title>
+      <Title>{t("global.login")} - Van N' Go</Title>
 
       <div class="w-full max-w-md rounded-2xl border border-outline bg-surface-alt p-8 shadow-xl dark:border-outline-dark dark:bg-surface-dark-alt">
         <div class="mb-8 text-center">
@@ -56,7 +56,7 @@ export default function Login() {
             {t("global.login")}
           </h1>
           <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">
-            Ingresa tus credenciales para continuar
+            {t("global.loginSubtitle")}
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function Login() {
         </form>
 
         <div class="mt-6 text-center text-sm text-on-surface dark:text-on-surface-dark">
-          ¿No tenés una cuenta?{" "}
+          {t("global.noAccountPrompt")}{" "}
           <A
             href="/register"
             class="font-semibold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-primary-dark dark:focus-visible:outline-primary-dark"

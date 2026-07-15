@@ -185,14 +185,14 @@ export default function Register() {
 
   return (
     <div class="flex min-h-svh items-center justify-center bg-surface p-4 dark:bg-surface-dark">
-      <Title>Register - Van N' Go</Title>
+      <Title>{t("global.register")} - Van N' Go</Title>
 
       <div class="w-full max-w-md rounded-2xl border border-outline bg-surface-alt p-8 shadow-xl dark:border-outline-dark dark:bg-surface-dark-alt">
         <div class="mb-8 text-center">
           <h1 class="text-3xl font-bold tracking-tight text-on-surface dark:text-on-surface-dark">
             {t("global.register")}
           </h1>
-          <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">Crea una cuenta para continuar</p>
+          <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">{t("global.registerSubtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} class="flex flex-col gap-4 items-center w-full">
@@ -287,7 +287,7 @@ export default function Register() {
         </form>
 
         <div class="mt-6 text-center text-sm text-on-surface dark:text-on-surface-dark">
-          ¿Ya tenés una cuenta?{" "}
+          {t("global.haveAccountPrompt")}{" "}
           <A
             href="/login"
             class="font-semibold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-primary-dark dark:focus-visible:outline-primary-dark"

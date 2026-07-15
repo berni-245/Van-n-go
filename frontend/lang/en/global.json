@@ -18,6 +18,10 @@
   "login": "Log in",
   "loginError": "Invalid credentials. Please try again.",
   "loadingSession": "Loading session...",
+  "loginSubtitle": "Enter your credentials to continue",
+  "noAccountPrompt": "Don't have an account?",
+  "registerSubtitle": "Create an account to continue",
+  "haveAccountPrompt": "Already have an account?",
   "name": "English",
   "page": {
     "bookingCreate": {
