@@ -2,7 +2,7 @@ import { http, HttpResponse } from "msw";
 import type { ApiError, Client, Driver } from "@/api/types";
 import { CLIENT_ENDPOINT, DRIVER_ENDPOINT } from "@/test/msw/authFixtures";
 
-export const PASSWORD_ENDPOINT = "*/api/users/:id/password";
+export const PASSWORD_ENDPOINT = "*/api/users/:id";
 
 /** PATCH clients/:id — Profile.tsx's updateProfileAction reads the returned Client straight off this response. */
 export function updateClientResponse(client: Client) {

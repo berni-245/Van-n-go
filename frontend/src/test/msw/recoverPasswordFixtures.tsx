@@ -2,10 +2,10 @@ import { http, HttpResponse } from "msw";
 import type { RecoverPassword } from "@/api/types";
 
 // RecoverPassword.tsx calls api.updateUserPasswordWithToken(id, ...), which
-// issues `PATCH {API_ROOT}users/{id}/password`. API_ROOT resolves to
+// issues `PATCH {API_ROOT}users/{id}`. API_ROOT resolves to
 // `${origin}${BASE_URL}api/`, so the path always ends in
-// `/api/users/:id/password` regardless of the configured base path.
-export const PASSWORD_RESET_ENDPOINT = "*/api/users/:id/password";
+// `/api/users/:id` regardless of the configured base path.
+export const PASSWORD_RESET_ENDPOINT = "*/api/users/:id";
 
 /** The reset succeeds: the token was valid and the password was updated. */
 export function passwordResetSuccess() {

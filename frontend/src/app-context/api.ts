@@ -581,7 +581,7 @@ export function initializeApi(
     },
 
     async updateUserPasswordWithToken(id: string | number, data: RecoverPassword): Promise<Response> {
-      const url = new URL(`users/${id}/password`, API_ROOT);
+      const url = new URL(`users/${id}`, API_ROOT);
       const req = new Request(url, {
         method: "PATCH",
         headers: {
@@ -593,7 +593,7 @@ export function initializeApi(
     },
 
     async updateUserPassword(id: number, data: UpdateUserPassword): Promise<Response> {
-      const url = new URL(`users/${id}/password`, API_ROOT);
+      const url = new URL(`users/${id}`, API_ROOT);
       const req = new Request(url, {
         method: "PATCH",
         headers: {

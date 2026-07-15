@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PATCH //PATCH con recovery token
-    @Path("/{id}/password")
+    @Path("/{id}")
     @Consumes(value = {CustomMediaType.PASSWORD_TOKEN})
     public Response validatePasswordToken(@Valid final RecoverPasswordDTO recoverPasswordDTO, @PathParam(UriUtils.ID_PARAM) Integer id){
         if(passwordTokenService.UpdatePassword(id, recoverPasswordDTO.getMail(), recoverPasswordDTO.getPassword(), recoverPasswordDTO.getToken())){
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PATCH  //PATCH con user autenticado
-    @Path("/{id}/password")
+    @Path("/{id}")
     @PreAuthorize("@authService.isAuthUser(#id)")
     @Consumes(value = {CustomMediaType.PASSWORD_CHANGE})
     public Response updateUserPassword(@Valid final UpdateUserPasswordDTO dto, @PathParam(UriUtils.ID_PARAM) String id) {
