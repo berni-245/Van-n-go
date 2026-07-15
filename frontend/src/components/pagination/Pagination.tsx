@@ -1,6 +1,7 @@
 import { For, JSX } from "solid-js";
 import { PaginatedResource } from "@/app-context/pagination";
 import { createAsync, useSearchParams } from "@solidjs/router";
+import { useTranslator } from "@/app-context/AppContext";
 
 interface PaginationProps<T> {
   fetcher: (page: number) => Promise<PaginatedResource<T>>;
@@ -8,6 +9,7 @@ interface PaginationProps<T> {
 }
 
 export default function Pagination<T>(props: PaginationProps<T>) {
+  const t = useTranslator();
   const [params, setParams] = useSearchParams();
   const page = () => Number(params.page || "1");
 
@@ -21,17 +23,16 @@ export default function Pagination<T>(props: PaginationProps<T>) {
   const prevPage = () => pageInfo()?.prev?.pageNumber || page();
   const pages = () => pagesArray(page(), firstPage(), lastPage());
 
-  // TODO: localization
   return (
     <div class="flex flex-col flex-1 min-h-0">
       <div class="flex-1">{props.children(data())}</div>
-      <nav aria-label="pagination" class="mt-6 flex justify-center">
+      <nav aria-label={t("global.sr.pagination")} class="mt-6 flex justify-center">
         <ul class="flex shrink-0 items-center gap-2 text-sm font-medium">
           <li>
             <button
               onClick={() => setParams({ page: firstPage() })}
               class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
-              aria-label="previous page"
+              aria-label={t("global.sr.previousPage")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +54,7 @@ export default function Pagination<T>(props: PaginationProps<T>) {
             <button
               onClick={() => setParams({ page: prevPage() })}
               class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
-              aria-label="previous page"
+              aria-label={t("global.sr.previousPage")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +81,7 @@ export default function Pagination<T>(props: PaginationProps<T>) {
                     "bg-primary font-bold text-on-primary dark:bg-primary-dark dark:text-on-primary-dark":
                       pageNr === page(),
                   }}
-                  aria-label="page 1"
+                  aria-label={t("global.sr.page", { number: pageNr })}
                 >
                   {pageNr}
                 </button>
@@ -91,7 +92,7 @@ export default function Pagination<T>(props: PaginationProps<T>) {
             <button
               onClick={() => setParams({ page: nextPage() })}
               class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
-              aria-label="next page"
+              aria-label={t("global.sr.nextPage")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +113,7 @@ export default function Pagination<T>(props: PaginationProps<T>) {
             <button
               onClick={() => setParams({ page: lastPage() })}
               class="flex items-center rounded-radius p-1 text-on-surface hover:text-primary dark:text-on-surface-dark dark:hover:text-primary-dark"
-              aria-label="next page"
+              aria-label={t("global.sr.nextPage")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

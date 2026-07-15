@@ -4,5 +4,9 @@
     "title": "Parece que este camino termina aquí.",
     "description": "La página que estás buscando no existe o puede que haya sido movida a otra ubicación.",
     "cheekyMsg": "Tu flete no pudo encontrar este destino."
+  },
+  "boundary": {
+    "title": "Algo salió mal",
+    "goBack": "Volver"
   }
 }

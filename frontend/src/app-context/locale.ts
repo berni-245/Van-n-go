@@ -22,9 +22,13 @@ export const en_flat_dict: Dictionary = i18n.flatten(en_dict);
 export async function fetchDictionary(locale: Locale): Promise<Dictionary> {
   if (locale === "en") return en_flat_dict;
 
-  const { dict } = await raw_dict_map[locale]();
-  const flat_dict = i18n.flatten(dict) as RawDictionary;
-  return { ...en_flat_dict, ...flat_dict };
+  try {
+    const { dict } = await raw_dict_map[locale]();
+    const flat_dict = i18n.flatten(dict) as RawDictionary;
+    return { ...en_flat_dict, ...flat_dict };
+  } catch {
+    return en_flat_dict;
+  }
 }
 
 export const toLocale = (string: string): Locale | undefined =>
