@@ -55,26 +55,6 @@ if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
 
-// jsdom doesn't implement IntersectionObserver, which createInfiniteScroll.ts
-// (used by InfiniteScroll, e.g. on the Vehicles page) instantiates on mount.
-// A no-op stub is enough for tests: the observer only *advances* to the next
-// page when the loader scrolls into view, so leaving it inert means the
-// component just loads its first page and renders that — exactly the state
-// these tests assert on.
-if (!globalThis.IntersectionObserver) {
-  globalThis.IntersectionObserver = class {
-    readonly root = null;
-    readonly rootMargin = "";
-    readonly thresholds: ReadonlyArray<number> = [];
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-    takeRecords(): IntersectionObserverEntry[] {
-      return [];
-    }
-  } as unknown as typeof IntersectionObserver;
-}
-
 // jsdom's own URL.createObjectURL/revokeObjectURL exist but the blob: URLs
 // they produce aren't resolvable by jsdom's <img> resource loading —
 // observed silently falling back to fetching the document root instead.

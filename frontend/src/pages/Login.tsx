@@ -55,9 +55,7 @@ export default function Login() {
           <h1 class="text-3xl font-bold tracking-tight text-on-surface dark:text-on-surface-dark">
             {t("global.login")}
           </h1>
-          <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">
-            {t("global.loginSubtitle")}
-          </p>
+          <p class="mt-2 text-sm text-on-surface/70 dark:text-on-surface-dark/70">{t("global.loginSubtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} class="flex flex-col gap-4 items-center">

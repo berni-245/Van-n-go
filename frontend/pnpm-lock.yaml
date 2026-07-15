@@ -11,15 +11,9 @@ importers:
       '@solid-primitives/i18n':
         specifier: ^2.2.1
         version: 2.2.1(solid-js@1.9.11)
-      '@solid-primitives/pagination':
-        specifier: ^0.5.0
-        version: 0.5.0(solid-js@1.9.11)
       '@solid-primitives/scheduled':
         specifier: ^1.5.2
         version: 1.5.2(solid-js@1.9.11)
-      '@solid-primitives/utils':
-        specifier: ^6.3.2
-        version: 6.3.2(solid-js@1.9.11)
       '@solidjs/meta':
         specifier: ^0.29.4
         version: 0.29.4(solid-js@1.9.11)
@@ -465,22 +459,12 @@ packages:
   '@jridgewell/remapping@2.3.5':
     resolution: {integrity: sha512-LI9u/+laYG4Ds1TDKSJW2YPrIlcVYOwi2fUC6xB43lueCjgxV4lffOCZCtYFiH6TNOX+tQKXx97T4IKHbhyHEQ==}
 
-  '@jridgewell/resolve-uri@3.1.0':
-    resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
-    engines: {node: '>=6.0.0'}
-
   '@jridgewell/resolve-uri@3.1.2':
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
 
-  '@jridgewell/sourcemap-codec@1.4.15':
-    resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
-
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
-
-  '@jridgewell/trace-mapping@0.3.30':
-    resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
@@ -654,11 +638,6 @@ packages:
 
   '@solid-primitives/media@2.3.3':
     resolution: {integrity: sha512-hQ4hLOGvfbugQi5Eu1BFWAIJGIAzztq9x0h02xgBGl2l0Jaa3h7tg6bz5tV1NSuNYVGio4rPoa7zVQQLkkx9dA==}
-    peerDependencies:
-      solid-js: ^1.6.12
-
-  '@solid-primitives/pagination@0.5.0':
-    resolution: {integrity: sha512-+M0QYjFhFWkI+5dK/A1lY6bk6RHU2K3Q6gGJCb7E+dGwKikxa/iClP1bx4VViEMhPUjCYV8iT+j6QIhEgtnVtQ==}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -1473,6 +1452,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -1971,25 +1951,16 @@ snapshots:
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
-      '@jridgewell/trace-mapping': 0.3.30
+      '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
-      '@jridgewell/trace-mapping': 0.3.30
-
-  '@jridgewell/resolve-uri@3.1.0': {}
+      '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
-  '@jridgewell/sourcemap-codec@1.4.15': {}
-
   '@jridgewell/sourcemap-codec@1.5.5': {}
-
-  '@jridgewell/trace-mapping@0.3.30':
-    dependencies:
-      '@jridgewell/resolve-uri': 3.1.0
-      '@jridgewell/sourcemap-codec': 1.4.15
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
@@ -2137,11 +2108,6 @@ snapshots:
       '@solid-primitives/event-listener': 2.4.3(solid-js@1.9.11)
       '@solid-primitives/rootless': 1.5.2(solid-js@1.9.11)
       '@solid-primitives/static-store': 0.1.2(solid-js@1.9.11)
-      '@solid-primitives/utils': 6.3.2(solid-js@1.9.11)
-      solid-js: 1.9.11
-
-  '@solid-primitives/pagination@0.5.0(solid-js@1.9.11)':
-    dependencies:
       '@solid-primitives/utils': 6.3.2(solid-js@1.9.11)
       solid-js: 1.9.11
 

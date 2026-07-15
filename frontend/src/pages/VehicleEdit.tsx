@@ -1,9 +1,9 @@
-import {action, createAsync, query, redirect, useParams, useSubmission} from "@solidjs/router";
-import {createEffect, createSignal, For, Show, Suspense} from "solid-js";
-import {useApi, useAppState, useTranslator} from "../app-context/AppContext";
-import {useToast} from "solid-notifications";
-import {ApiError, Availability, UpdateVehicle, Zone} from "../api/types";
-import {Api} from "../app-context/api";
+import { action, createAsync, query, redirect, useParams, useSubmission } from "@solidjs/router";
+import { createEffect, createSignal, For, Show, Suspense } from "solid-js";
+import { useApi, useAppState, useTranslator } from "../app-context/AppContext";
+import { useToast } from "solid-notifications";
+import { ApiError, Availability, UpdateVehicle, Zone } from "../api/types";
+import { Api } from "../app-context/api";
 import FileInputDragDrop from "../components/inputs/FileInputDragDrop";
 import TextInput from "../components/inputs/TextInput";
 import Button from "../components/Button";

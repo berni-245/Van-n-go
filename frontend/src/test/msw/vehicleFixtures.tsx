@@ -25,7 +25,7 @@ function pageLinkHeader(first: number, last: number) {
  * Responds with a fixed list of vehicles and a Link header reporting the given
  * page bounds. `parsePageInfo` (pagination.ts) requires both `first` and
  * `last` to be present, or it discards the whole header — which leaves the list
- * as a single, final page so InfiniteScroll stops without requesting more.
+ * as a single page.
  */
 export function vehiclesResponse(vehicles: Vehicle[], pageInfo: { first?: number; last?: number } = {}) {
   const first = pageInfo.first ?? 1;
