@@ -136,15 +136,33 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
 
     @Override
     public int getSearchCount(Zone zone, Size size, Double priceMax, DayOfWeek weekday, Integer rating) {
-        return getSearchResultIds(
-                zone,
-                size,
-                priceMax,
-                weekday,
-                rating,
-                null,
-                null
-        ).size();
+        StringBuilder countQuery = new StringBuilder("""
+                    SELECT COUNT(DISTINCT v.driver_id) FROM vehicle v
+                    JOIN driver d ON d.id = v.driver_id
+                    JOIN app_user au ON v.driver_id = au.id
+                    JOIN vehicle_zone z ON v.id = z.vehicle_id
+                    JOIN minimal_price m ON m.driver_id = v.driver_id
+                    JOIN Vehicle_availability a ON v.id = a.vehicle_id
+                    WHERE z.zone_id = :zoneId and v.plate_number IS NOT NULL
+                """);
+
+        if (size != null) countQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");
+        if (priceMax != null) countQuery.append(" AND v.hourly_rate <= :priceMax");
+        if (weekday != null) countQuery.append(" AND a.week_day = :weekday");
+        if (rating != null) countQuery.append(" AND d.rating >= :rating");
+
+        Query nativeQuery = em.createNativeQuery(countQuery.toString());
+
+        nativeQuery.setParameter("zoneId", zone.getId());
+        if (size != null) {
+            nativeQuery.setParameter("minVolume", (double) size.getMinVolume());
+            nativeQuery.setParameter("maxVolume", (double) size.getMaxVolume());
+        }
+        if (priceMax != null) nativeQuery.setParameter("priceMax", priceMax);
+        if (weekday != null) nativeQuery.setParameter("weekday", weekday.name());
+        if (rating != null) nativeQuery.setParameter("rating", rating.doubleValue());
+
+        return ((Number) nativeQuery.getSingleResult()).intValue();
     }
 
     @Override
