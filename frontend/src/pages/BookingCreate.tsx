@@ -270,6 +270,19 @@ export default function BookingCreate() {
     return days;
   });
 
+  const [hasAutoSelectedDate, setHasAutoSelectedDate] = createSignal(false);
+
+  createEffect(() => {
+    if (hasAutoSelectedDate() || selectedDateStr()) return;
+    if (!bookableVehicles() || bookedTimesData.loading) return;
+
+    const nearestAvailable = calendarDays().find((day) => day && !day.disabled);
+    if (nearestAvailable) {
+      setSelectedDateStr(nearestAvailable.dateStr);
+      setHasAutoSelectedDate(true);
+    }
+  });
+
   const handleNextMonth = () => setCurrentMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   const handlePrevMonth = () => {
     const today = new Date();

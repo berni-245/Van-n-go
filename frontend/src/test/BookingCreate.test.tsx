@@ -103,6 +103,100 @@ test("lets a client pick an available day/shift and submits a booking successful
   expect(await screen.findByText("bookings-list-stub")).toBeInTheDocument();
 });
 
+test("automatically selects the nearest available date without requiring a click", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  // No day is clicked; the date and its vehicles appear on their own.
+  expect(await screen.findByText(new RegExp(tomorrowDateStr))).toBeInTheDocument();
+  expect(await screen.findByText(vehicle.plateNumber)).toBeInTheDocument();
+});
+
+test("skips a fully-booked day and auto-selects the next available one", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 2);
+  const dayAfterDateStr = new Date(dayAfter.getFullYear(), dayAfter.getMonth(), dayAfter.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    // Vehicle only offers a MORNING shift, so booking it out blocks the whole day.
+    bookedTimesResponse([{ date: tomorrowDateStr, shift: "MORNING" }]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  expect(await screen.findByText(new RegExp(dayAfterDateStr))).toBeInTheDocument();
+  expect(screen.queryByText(new RegExp(tomorrowDateStr))).not.toBeInTheDocument();
+});
+
+test("lets the client override the auto-selected date by picking a different available day", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+  await screen.findByText(new RegExp(tomorrowDateStr));
+
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 2);
+  const dayAfterButton = await waitFor(() => {
+    const btn = screen.getByRole("button", { name: String(dayAfter.getDate()) });
+    expect(btn).not.toBeDisabled();
+    return btn;
+  });
+  await user.click(dayAfterButton);
+
+  const dayAfterDateStr = new Date(dayAfter.getFullYear(), dayAfter.getMonth(), dayAfter.getDate())
+    .toISOString()
+    .split("T")[0];
+  expect(await screen.findByText(new RegExp(dayAfterDateStr))).toBeInTheDocument();
+  expect(screen.queryByText(new RegExp(tomorrowDateStr))).not.toBeInTheDocument();
+});
+
 test("shows a field-level error returned by the API next to the relevant field", async () => {
   seedLoggedInUser("client", { id: 9 });
 
