@@ -19,6 +19,8 @@ import { EditProfilePicForm } from "@components/profile/EditProfilePicForm";
 import { clientToUserState, driverToUserState } from "@/app-context/userState.ts";
 import ProfilePageSkeleton from "@/components/skeletons/ProfilePageSkeleton";
 import { useToast } from "solid-notifications";
+import { fetchDictionary } from "@/app-context/locale.ts";
+import * as i18n from "@solid-primitives/i18n";
 
 const userProfileQuery = query(async () => {
   const api = useApi();
@@ -165,7 +167,7 @@ export default function Profile() {
 }
 
 export const updateProfileAction = action(
-  async (api: Api, userId: number, userType: string, t, toaster, formData: FormData) => {
+  async (api: Api, userId: number, userType: string, formData: FormData) => {
     let response: Response;
     if (userType === "client") {
       const clientData: UpdateClient = {
@@ -204,7 +206,6 @@ export const updateProfileAction = action(
       throw new Error();
     }
 
-    toaster.notify(t("global.user.editUser.updateProfileSuccess"), { type: "success" });
     return { ok: true, resp: await response.json() };
   },
   "update-profile-action"
@@ -245,7 +246,11 @@ function EditProfileForm(props: { user: Client | Driver }) {
       revalidate(userProfileQuery.keyFor());
 
       setIsOpen(false);
-      //toast(succes)
+
+      fetchDictionary(newLocale).then((newDict) => {
+        const newT = i18n.translator(() => newDict, i18n.resolveTemplate);
+        toaster.notify(newT("global.user.editUser.updateProfileSuccess"), { type: "success" });
+      });
     }
     return isPending;
   }, false);
@@ -253,7 +258,7 @@ function EditProfileForm(props: { user: Client | Driver }) {
 
   return (
     <form
-      action={updateProfileAction.with(api, appState.user?.id!, appState.user?.type!, t, toaster)}
+      action={updateProfileAction.with(api, appState.user?.id!, appState.user?.type!)}
       method="post"
       class="flex flex-col gap-4"
     >
