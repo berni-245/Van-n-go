@@ -15,8 +15,10 @@ public class Vehicle {
     @JoinColumn(name = "driver_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Driver driver;
-    @Column(name = "plate_number", nullable = false, unique = true)
+    @Column(name = "plate_number", unique = true)
     private String plateNumber;
+    @Column(name = "old_plate_number")
+    private String oldPlateNumber;
     @Column(name = "volume_m3", nullable = false)
     private double volume;
     @Column(nullable = false)
@@ -81,6 +83,8 @@ public class Vehicle {
     }
 
     public String getPlateNumber() {
+        if (plateNumber == null)
+            return oldPlateNumber;
         return plateNumber;
     }
 
@@ -90,6 +94,17 @@ public class Vehicle {
 
     public String getDescription() {
         return description;
+    }
+
+    public void invalidatePlateNumber() {
+        if (plateNumber != null) {
+            this.oldPlateNumber = plateNumber;
+            this.plateNumber = null;
+        }
+    }
+
+    public boolean isDeleted() {
+        return plateNumber == null;
     }
 
 
@@ -103,7 +118,7 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        return "%s||%s||%.2f".formatted(plateNumber, description, volume);
+        return "%s||%s||%.2f".formatted(getPlateNumber(), description, volume);
     }
 
     public Integer getImgId() {
@@ -145,9 +160,5 @@ public class Vehicle {
 
     public List<Booking> getBookings() {
         return bookings;
-    }
-
-    public List<Booking> getAcceptedBookings() {
-        return bookings.stream().filter(booking -> booking.getState().equals(BookingState.ACCEPTED)).toList();
     }
 }

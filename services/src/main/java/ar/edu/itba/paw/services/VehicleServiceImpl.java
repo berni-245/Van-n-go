@@ -17,6 +17,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Transactional
     @Override
     public boolean plateNumberExists(String plateNumber) {
+        if (plateNumber == null)
+            return false;
         return vehicleDao.plateNumberExists(plateNumber);
     }
 }

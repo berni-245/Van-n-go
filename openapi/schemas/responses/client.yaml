@@ -1,0 +1,43 @@
+description: >
+  A registered user of the application who can create reservations with
+  drivers and submit ratings or feedback about finished trips.
+type: object
+required: [ id, username, email, preferredLanguage ]
+properties:
+  id:
+    type: integer
+    example: 13
+  username:
+    type: string
+    example: John Doe
+  email:
+    type: string
+    format: email
+    example: johndoe@mail.com
+  preferredLanguage:
+    type: string
+    example: ENGLISH
+  self:
+    type: string
+    example: /api/clients/13
+  profilePic:
+    type: string
+    example: /api/clients/13/profile-picture
+  zone:
+    type: string
+    example: /api/zones/1
+  pendingBookings:
+    type: string
+    example: /api/bookings?userId=14&status=PENDING
+  acceptedBookings:
+    type: string
+    example: /api/bookings?userId=14&status=ACCEPTED
+  finishedBookings:
+    type: string
+    example: /api/bookings?userId=14&status=FINISHED
+  rejectedBookings:
+    type: string
+    example: /api/bookings?userId=14&status=REJECTED
+  canceledBookings:
+    type: string
+    example: /api/bookings?userId=14&status=CANCELED

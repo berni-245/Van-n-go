@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,8 +45,13 @@ public class MessageJpaDaoTest {
     private static Driver driver;
 
     private static final Integer CREATED_MSG_ID = 1;
+    private static final Integer NOT_EXISTING_MSG_ID = 9999;
+    private static final int MESSAGES_COUNT = 3;
+    private static final LocalDateTime LAST_DRIVER_MSG_TIME = LocalDateTime.of(2024, 11, 8, 13, 0, 0);
+    private static final LocalDateTime LAST_CLIENT_MSG_TIME = LocalDateTime.of(2024, 11, 8, 14, 0, 0);
     private static Client clientWithNoMessage;
     private static final String MSG = "Greeting!";
+    private static final int OFFSET = 0;
 
     @PersistenceContext
     private EntityManager em;
@@ -68,6 +73,58 @@ public class MessageJpaDaoTest {
     }
 
     @Test
+    public void testGetMessageById() {
+        Message actualMessage = messageDao.getMessageById(500);
+
+        assertNotNull(actualMessage);
+        assertEquals(500, actualMessage.getId().intValue());
+        assertEquals(FIRST_MSG, actualMessage.getContent());
+        assertEquals(CLIENT_ID, actualMessage.getClient().getId());
+    }
+
+    @Test
+    public void testGetMessageByIdNotExists() {
+        Message msg = messageDao.getMessageById(NOT_EXISTING_MSG_ID);
+
+        assertNull(msg);
+    }
+
+    @Test
+    public void testGetConversationMessageCount() {
+        int count = messageDao.getConversationMessageCount(client, driver);
+
+        assertEquals(MESSAGES_COUNT, count);
+    }
+
+    @Test
+    public void testGetConversationMessageCountEmpty() {
+        int count = messageDao.getConversationMessageCount(clientWithNoMessage, driver);
+
+        assertEquals(0, count);
+    }
+
+    @Test
+    public void testGetLastMessageSentByClient() {
+        LocalDateTime lastClientTime = messageDao.getLastMessageSentByUser(client, driver, false);
+        assertNotNull(lastClientTime);
+        assertEquals(LAST_CLIENT_MSG_TIME, lastClientTime);
+    }
+
+    @Test
+    public void testGetLastMessageSentByDriver() {
+        LocalDateTime lastDriverTime = messageDao.getLastMessageSentByUser(client, driver, true);
+        assertNotNull(lastDriverTime);
+        assertEquals(LAST_DRIVER_MSG_TIME, lastDriverTime);
+    }
+
+    @Test
+    public void testGetLastMessageSentByUserNoMessages() {
+        LocalDateTime lastTime = messageDao.getLastMessageSentByUser(clientWithNoMessage, driver, false);
+
+        assertNull(lastTime);
+    }
+
+    @Test
     public void testSendMessage() {
         Message message = messageDao.sendMessage(clientWithNoMessage, driver, MSG, false);
         assertNotNull(message);
@@ -86,7 +143,7 @@ public class MessageJpaDaoTest {
 
     @Test
     public void testGetConversation() {
-        List<Message> messages = messageDao.getConversation(client, driver);
+        List<Message> messages = messageDao.getConversation(client, driver, OFFSET);
         assertFalse(messages.isEmpty());
         Iterator<Message> iterator = messages.iterator();
         Message thirdMsg = iterator.next();
@@ -100,7 +157,8 @@ public class MessageJpaDaoTest {
 
     @Test
     public void testGetConversationWithNoMessage() {
-        List<Message> messages = messageDao.getConversation(clientWithNoMessage, driver);
+        List<Message> messages = messageDao.getConversation(clientWithNoMessage, driver, OFFSET);
         assertTrue(messages.isEmpty());
     }
+
 }

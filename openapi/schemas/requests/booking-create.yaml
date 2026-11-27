@@ -1,0 +1,22 @@
+description: Data required to create a new Booking.
+type: object
+required: [vehicleId, destinationZoneId, date, shiftPeriod]
+properties:
+  vehicleId:
+    type: integer
+    example: 0
+  destinationZoneId:
+    type: integer
+    example: 0
+  originZoneId:
+    type: integer
+    example: 0
+  date:
+    type: string
+    format: date
+    example: "2026-01-10"
+  shiftPeriod:
+    $ref: "../enums/shift-period.yaml"
+  jobDescription:
+    type: string
+    example: "Hola, necesito un flete"

@@ -5,11 +5,10 @@ import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.ShiftPeriod;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Locale;
 
 public interface ClientService extends UserService<Client>, UserBookingService<Client> {
-    Client create(String username, String mail, String password, Locale locale);
+    Client create(String username, String mail, String password, int zoneId, Locale locale);
 
     Booking appointBooking(
             int vehicleId,
@@ -25,5 +24,4 @@ public interface ClientService extends UserService<Client>, UserBookingService<C
 
     void editProfile(Client client, String username, String mail, Integer zoneId, String language);
 
-    public List<ShiftPeriod> requestedShiftPeriodsForDate(Client client, LocalDate date, String plateNumber);
 }

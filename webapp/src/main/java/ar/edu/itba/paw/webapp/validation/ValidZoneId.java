@@ -13,5 +13,5 @@ public @interface ValidZoneId {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Must be a valid zone id";
+    String message() default "{ValidZoneId}";
 }

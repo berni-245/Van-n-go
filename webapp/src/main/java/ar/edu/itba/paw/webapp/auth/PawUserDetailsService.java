@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
-import ar.edu.itba.paw.models.PawUserDetails;
 import ar.edu.itba.paw.models.UserRole;
 import ar.edu.itba.paw.services.ClientService;
 import ar.edu.itba.paw.services.DriverService;
@@ -37,6 +37,6 @@ public class PawUserDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(UserRole.DRIVER.role()));
             return new PawUserDetails(driver.get(), authorities);
         }
-        throw new UsernameNotFoundException(username);
+        throw new UserNotFoundException();
     }
 }

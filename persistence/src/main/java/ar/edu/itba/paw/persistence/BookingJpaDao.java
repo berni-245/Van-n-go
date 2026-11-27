@@ -2,16 +2,24 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.List;
 
 @Repository
 public class BookingJpaDao implements BookingDao {
+    private static final String TIME_ZONE = "America/Argentina/Buenos_Aires";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -28,7 +36,7 @@ public class BookingJpaDao implements BookingDao {
         if (date.isBefore(LocalDate.now())) throw new TimeAlreadyPassedException();
         checkVehicleAvailability(vehicle, originZone, date, period);
         checkIfVehicleIsAlreadyAccepted(vehicle, date, period);
-        checkIfClientIsAlreadyAppointed(vehicle, client, originZone, date, period);
+        checkIfClientIsAlreadyAppointed(vehicle, client, date, period);
 
         Booking toReturn = new Booking(client, vehicle, originZone, destinationZone, date, period, BookingState.PENDING, jobDescription);
         em.persist(toReturn);
@@ -65,9 +73,18 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public void checkPending() {
-        TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b FROM Booking b WHERE b.state = :state and b.date < current_date", Booking.class);
+    @Transactional
+    @Scheduled(cron = "0 0 0,12,19 * * ?", zone = TIME_ZONE)
+    public void rejectOldPendingBookings() {
+        LocalDate today = LocalDate.now(ZoneId.of(TIME_ZONE));
+        List<ShiftPeriod> shifts = ShiftPeriod.getEndedShiftPeriods(LocalTime.now(ZoneId.of(TIME_ZONE)));
+        TypedQuery<Booking> bookingQuery = em.createQuery("SELECT b " +
+                "FROM Booking b WHERE b.state = :state and " +
+                "( b.date < :today or (b.date = :today and b.shiftPeriod IN :shifts ) ) ", Booking.class
+        );
         bookingQuery.setParameter("state", BookingState.PENDING);
+        bookingQuery.setParameter("today", today);
+        bookingQuery.setParameter("shifts", shifts);
         List<Booking> bookings = bookingQuery.getResultList();
         for (Booking booking : bookings) {
             rejectBooking(booking);
@@ -98,7 +115,7 @@ public class BookingJpaDao implements BookingDao {
                         select b.id
                         from booking b join vehicle v on b.vehicle_id = v.id
                         where v.driver_id = :driverId and b.state = :state
-                        order by b.date
+                        order by b.date desc
                         """)
                 .setParameter("driverId", driver.getId())
                 .setParameter("state", state.toString())
@@ -106,8 +123,24 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+        return em.createQuery("from Booking where id in (:bookingIds) order by date desc", Booking.class)
                 .setParameter("bookingIds", nativeQueryList)
+                .getResultList();
+    }
+
+    @Override
+    public List<Booking> getDriverBookings(Driver driver, BookingState state, YearMonth yearMonth) {
+        return em.createQuery("""
+                        select b
+                        from Booking b join b.vehicle v
+                        where v.driver = :driver and b.state = :state
+                          and b.date between :start and :end
+                        order by b.date desc
+                        """, Booking.class)
+                .setParameter("driver", driver)
+                .setParameter("state", state)
+                .setParameter("start", yearMonth.atDay(1))
+                .setParameter("end", yearMonth.atEndOfMonth())
                 .getResultList();
     }
 
@@ -128,7 +161,7 @@ public class BookingJpaDao implements BookingDao {
         var nativeQueryList = em.createNativeQuery("""
                         select b.id
                         from booking b where b.client_id = :clientId and b.state = :state
-                        order by b.date
+                        order by b.date desc
                         """)
                 .setParameter("clientId", client.getId())
                 .setParameter("state", state.toString())
@@ -136,8 +169,24 @@ public class BookingJpaDao implements BookingDao {
                 .setMaxResults(Pagination.BOOKINGS_PAGE_SIZE)
                 .getResultList();
 
-        return em.createQuery("from Booking where id in (:bookingIds) order by date", Booking.class)
+        return em.createQuery("from Booking where id in (:bookingIds) order by date desc", Booking.class)
                 .setParameter("bookingIds", nativeQueryList)
+                .getResultList();
+    }
+
+    @Override
+    public List<Booking> getClientBookings(Client client, BookingState state, YearMonth yearMonth) {
+        return em.createQuery("""
+                        select b
+                        from Booking b
+                        where b.client = :client and b.state = :state
+                          and b.date between :start and :end
+                        order by b.date desc
+                        """, Booking.class)
+                .setParameter("client", client)
+                .setParameter("state", state)
+                .setParameter("start", yearMonth.atDay(1))
+                .setParameter("end", yearMonth.atEndOfMonth())
                 .getResultList();
     }
 
@@ -183,7 +232,7 @@ public class BookingJpaDao implements BookingDao {
     }
 
     private void checkVehicleAvailability(Vehicle vehicle, Zone zone, LocalDate date, ShiftPeriod sp) {
-        if (!vehicle.getZones().contains(zone))
+        if (!vehicle.getZones().contains(zone) || vehicle.isDeleted())
             throw new VehicleNotAvailableException();
 
         TypedQuery<Availability> avQuery = em.createQuery(
@@ -218,14 +267,13 @@ public class BookingJpaDao implements BookingDao {
         return query.getResultList();
     }
 
-    private void checkIfClientIsAlreadyAppointed(Vehicle vehicle, Client client, Zone zone, LocalDate date, ShiftPeriod sp) {
+    private void checkIfClientIsAlreadyAppointed(Vehicle vehicle, Client client, LocalDate date, ShiftPeriod sp) {
         TypedQuery<Booking> bookingQuery = em.createQuery("""
                 From Booking b
-                where b.vehicle = :vehicle and b.client = :client and b.originZone = :zone and b.date = :date and b.shiftPeriod = :sp
+                where b.vehicle = :vehicle and b.client = :client and b.date = :date and b.shiftPeriod = :sp
                 """, Booking.class);
         bookingQuery.setParameter("vehicle", vehicle);
         bookingQuery.setParameter("client", client);
-        bookingQuery.setParameter("zone", zone);
         bookingQuery.setParameter("date", date);
         bookingQuery.setParameter("sp", sp);
         if (!bookingQuery.getResultList().isEmpty())
@@ -233,16 +281,75 @@ public class BookingJpaDao implements BookingDao {
     }
 
     @Override
-    public List<Booking> requestedBookingsForDate(
-            Client client, LocalDate date, Vehicle vehicle
-    ) {
-        TypedQuery<Booking> bookingQuery = em.createQuery("""
-                        From Booking b where b.vehicle = :vehicle
-                        and b.client = :client and b.date = :date
-                        """, Booking.class)
-                .setParameter("vehicle", vehicle)
-                .setParameter("client", client)
-                .setParameter("date", date);
-        return bookingQuery.getResultList();
+    public boolean existsBookingBetween(Client client, Driver driver) {
+        return existsBookingBetween(client.getId(), driver.getId());
     }
+
+    @Override
+    public boolean existsBookingBetween(int clientId, int driverId) {
+        Long count = em.createQuery("""
+                        Select COUNT(b) from Booking b join b.vehicle v
+                        where v.driver.id = :driverId and b.client.id = :clientId
+                        """, Long.class)
+                .setParameter("clientId", clientId)
+                .setParameter("driverId", driverId)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public boolean hasAnAcceptedBooking(Vehicle vehicle) {
+        TypedQuery<Vehicle> query = em.createQuery(
+                "from Booking b where b.vehicle = :vehicle and b.state = :state",
+                Vehicle.class
+        );
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("state", BookingState.ACCEPTED);
+        return !query.getResultList().isEmpty();
+    }
+
+    @Override
+    public void rejectAllPendingBookingsFromVehicle(Vehicle vehicle) {
+        em.flush();
+        Query query = em.createQuery("""
+                    update Booking b set b.state = :newState
+                    where b.vehicle = :vehicle and b.state = :oldState
+                """);
+
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("oldState", BookingState.PENDING);
+        query.setParameter("newState", BookingState.REJECTED);
+        query.executeUpdate();
+        em.clear();
+    }
+
+    @Override
+    public List<Booking> getBookingsByVehicleInYearMonth(Vehicle vehicle, YearMonth yearMonth) {
+        YearMonth currentYearMonth = YearMonth.now();
+        LocalDate currentDate = LocalDate.now();
+
+        if (yearMonth.isBefore(currentYearMonth))
+            throw new TimeAlreadyPassedException();
+
+        LocalDate start = yearMonth.atDay(yearMonth.equals(currentYearMonth) ? currentDate.getDayOfMonth() : 1);
+        LocalDate end = yearMonth.atEndOfMonth();
+
+        TypedQuery<Booking> query = em.createQuery(
+                """
+                        from Booking b
+                        where b.vehicle = :vehicle
+                          and b.date between :start and :end
+                          and b.state in (:unavailableStates)
+                        """,
+                Booking.class
+        );
+
+        query.setParameter("vehicle", vehicle);
+        query.setParameter("start", start);
+        query.setParameter("end", end);
+        query.setParameter("unavailableStates", List.of(BookingState.ACCEPTED, BookingState.FINISHED));
+
+        return query.getResultList();
+    }
+
 }

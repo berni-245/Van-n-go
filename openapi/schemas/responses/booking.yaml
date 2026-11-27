@@ -1,0 +1,46 @@
+type: object
+required:
+  [id, clientId, vehicleId, shiftPeriod, originZoneId, destinationZoneId]
+properties:
+  id:
+    type: integer
+    example: 42
+  date:
+    type: string
+    formate: date
+    example: '2026-03-30'
+  shiftPeriod:
+    type: string
+    enum: [ MORNING, AFTERNOON, EVENING ]
+  state:
+    type: string
+    enum: [ PENDING, ACCEPTED, REJECTED, FINISHED, CANCELED ]
+    example: PENDING
+  jobDescription:
+    type: string
+    example: "Hola, necesito un flete"
+  review:
+    type: string
+    format: uri
+    example: /api/bookings/42/review
+  self:
+    type: string
+    example: /api/bookings/42
+  client:
+    type: string
+    example: /api/clients/13
+  driver:
+    type: string
+    example: /api/drivers/10
+  vehicle:
+    type: string
+    example: /api/drivers/10/vehicles/5
+  proofOfPayment:
+    type: string
+    example: /api/bookings/42/proof-of-payment
+  originZone:
+    type: string
+    example: /api/zones/12
+  destinationZone:
+    type: string
+    example: /api/zones/14

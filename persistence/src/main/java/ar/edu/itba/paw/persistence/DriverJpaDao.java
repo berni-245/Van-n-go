@@ -15,8 +15,8 @@ import java.util.Optional;
 public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
 
     @Override
-    public Driver create(String username, String mail, String password, String description, Language language) {
-        Driver driver = new Driver(username, mail, password, description, null, null, language);
+    public Driver create(String username, String mail, String password, String description, String cbu, Language language) {
+        Driver driver = new Driver(username, mail, password, description, null, cbu, language);
         em.persist(driver);
         return driver;
     }
@@ -40,6 +40,18 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         return Optional.of(list.getFirst());
     }
 
+    @Override
+    public Optional<Driver> findByMail(String mail) {
+        final TypedQuery<Driver> query = em.createQuery(
+                "from Driver as d where d.mail = :mail",
+                Driver.class
+        );
+        query.setParameter("mail", mail);
+        final List<Driver> list = query.getResultList();
+        if (list.isEmpty()) return Optional.empty();
+        return Optional.of(list.getFirst());
+    }
+
     private List<Integer> getSearchResultIds(
             Zone zone, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, Integer offset
@@ -51,7 +63,7 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                     JOIN vehicle_zone z ON v.id = z.vehicle_id
                     JOIN minimal_price m ON m.driver_id = v.driver_id
                     JOIN Vehicle_availability a ON v.id = a.vehicle_id
-                    WHERE z.zone_id = :zoneId
+                    WHERE z.zone_id = :zoneId and v.plate_number IS NOT NULL
                 """);
 
         if (size != null) idQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");
@@ -61,9 +73,8 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
         idQuery.append(" GROUP BY v.driver_id");
         if (order != null) {
             switch (order) {
-                case PRICE -> idQuery.append(", m.min ORDER BY m.min");
-                case RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
-                case RECENT -> idQuery.append(", au.creation_time ORDER BY au.creation_time DESC");
+                case LEAST_PRICE -> idQuery.append(", m.min ORDER BY m.min");
+                case BEST_RATING -> idQuery.append(", d.rating ORDER BY d.rating DESC");
                 case ALPHABETICAL -> idQuery.append(", au.username ORDER BY au.username");
             }
         }
@@ -98,33 +109,60 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
                 zone, size, priceMax, weekday, rating, order, offset
         );
         if (driverIds.isEmpty()) return Collections.emptyList();
-        StringBuilder driverQuery = new StringBuilder("SELECT d FROM Driver d JOIN MinimalPrice mp ON mp.driverId = d.id WHERE d.id IN :driverIds");
+        StringBuilder driverQuery = new StringBuilder("""
+                    SELECT au.id AS id, au.username AS username, au.mail AS mail, au.password AS password,
+                           au.pfp AS pfp, au.language AS language, au.creation_time AS creation_time,
+                           d.description AS description, d.rating AS rating, d.cbu AS cbu
+                    FROM driver d
+                    JOIN app_user au ON au.id = d.id
+                    JOIN minimal_price m ON m.driver_id = d.id
+                    WHERE d.id IN (:driverIds)
+                """);
         if (order != null) {
             switch (order) {
-                case PRICE -> driverQuery.append(" ORDER BY mp.min");
-                case RATING -> driverQuery.append(" ORDER BY d.rating DESC");
-                case RECENT -> driverQuery.append(" ORDER BY d.creationTime DESC");
-                case ALPHABETICAL -> driverQuery.append(" ORDER BY d.username");
+                case LEAST_PRICE -> driverQuery.append(" ORDER BY m.min");
+                case BEST_RATING -> driverQuery.append(" ORDER BY d.rating DESC");
+                case ALPHABETICAL -> driverQuery.append(" ORDER BY au.username");
             }
         }
 
-        TypedQuery<Driver> finalQuery = em.createQuery(driverQuery.toString(), Driver.class);
+        Query finalQuery = em.createNativeQuery(driverQuery.toString(), Driver.class);
         finalQuery.setParameter("driverIds", driverIds);
 
-        return finalQuery.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Driver> drivers = finalQuery.getResultList();
+        return drivers;
     }
 
     @Override
     public int getSearchCount(Zone zone, Size size, Double priceMax, DayOfWeek weekday, Integer rating) {
-        return getSearchResultIds(
-                zone,
-                size,
-                priceMax,
-                weekday,
-                rating,
-                null,
-                null
-        ).size();
+        StringBuilder countQuery = new StringBuilder("""
+                    SELECT COUNT(DISTINCT v.driver_id) FROM vehicle v
+                    JOIN driver d ON d.id = v.driver_id
+                    JOIN app_user au ON v.driver_id = au.id
+                    JOIN vehicle_zone z ON v.id = z.vehicle_id
+                    JOIN minimal_price m ON m.driver_id = v.driver_id
+                    JOIN Vehicle_availability a ON v.id = a.vehicle_id
+                    WHERE z.zone_id = :zoneId and v.plate_number IS NOT NULL
+                """);
+
+        if (size != null) countQuery.append(" AND v.volume_m3 BETWEEN :minVolume AND :maxVolume");
+        if (priceMax != null) countQuery.append(" AND v.hourly_rate <= :priceMax");
+        if (weekday != null) countQuery.append(" AND a.week_day = :weekday");
+        if (rating != null) countQuery.append(" AND d.rating >= :rating");
+
+        Query nativeQuery = em.createNativeQuery(countQuery.toString());
+
+        nativeQuery.setParameter("zoneId", zone.getId());
+        if (size != null) {
+            nativeQuery.setParameter("minVolume", (double) size.getMinVolume());
+            nativeQuery.setParameter("maxVolume", (double) size.getMaxVolume());
+        }
+        if (priceMax != null) nativeQuery.setParameter("priceMax", priceMax);
+        if (weekday != null) nativeQuery.setParameter("weekday", weekday.name());
+        if (rating != null) nativeQuery.setParameter("rating", rating.doubleValue());
+
+        return ((Number) nativeQuery.getSingleResult()).intValue();
     }
 
     @Override
@@ -136,13 +174,5 @@ public class DriverJpaDao extends UserJpaDao<Driver> implements DriverDao {
 
     }
 
-    @Override
-    public boolean mailExists(String mail) {
-        final TypedQuery<Driver> query = em.createQuery(
-                "from Driver as d where d.mail = :mail",
-                Driver.class
-        );
-        query.setParameter("mail", mail);
-        return !query.getResultList().isEmpty();
-    }
+
 }

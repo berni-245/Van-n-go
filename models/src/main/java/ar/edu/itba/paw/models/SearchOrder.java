@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
 public enum SearchOrder {
-    PRICE,RATING,RECENT,ALPHABETICAL
+    ALPHABETICAL,
+    LEAST_PRICE,
+    BEST_RATING,
+    ;
 }

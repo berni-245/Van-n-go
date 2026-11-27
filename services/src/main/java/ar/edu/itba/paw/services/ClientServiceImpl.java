@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidVehicleException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -43,8 +45,10 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
 
     @Transactional
     @Override
-    public Client create(String username, String mail, String password, Locale locale) {
-        Client client = clientDao.create(username, mail, passwordEncoder.encode(password), Language.fromLocale(locale));
+    public Client create(String username, String mail, String password, int zoneId, Locale locale) {
+        checkRepeatedUser(username, mail);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        Client client = clientDao.create(username, mail, passwordEncoder.encode(password), zone, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} client", username);
         mailService.sendClientWelcomeMail(mail, username, locale);
         return client;
@@ -54,6 +58,12 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Override
     public Optional<Client> findByUsername(String username) {
         return clientDao.findByUsername(username);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Client> findByMail(String mail){
+        return clientDao.findByMail(mail);
     }
 
     @Override
@@ -72,9 +82,9 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
             ShiftPeriod shiftPeriod,
             String jobDescription
     ) {
-        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow();
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        Zone destination = zoneDao.getZone(destinationId).orElseThrow();
+        Vehicle v = vehicleDao.findById(vehicleId).orElseThrow(VehicleNotAvailableException::new);
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        Zone destination = zoneDao.getZone(destinationId).orElseThrow(ZoneNotFoundException::new);
         Booking booking = bookingDao.appointBooking(
                 v, client, zone, destination, date, shiftPeriod, jobDescription
         );
@@ -91,9 +101,12 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public List<Booking> getBookings(Client client, BookingState state, int page) {
-        if (state.equals(BookingState.PENDING) || state.equals(BookingState.REJECTED))
-            bookingDao.checkPending();
         return bookingDao.getClientBookings(client, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
+    }
+
+    @Override
+    public List<Booking> getBookings(Client client, BookingState state, Integer year, Month month) {
+        return bookingDao.getClientBookings(client, state, YearMonth.of(year, month));
     }
 
     @Transactional
@@ -105,14 +118,26 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
     @Transactional
     @Override
     public void setBookingRatingAndReview(Client user, int bookingId, int rating, String review) {
-        bookingDao.setRatingAndReview(getBookingById(user, bookingId), rating, review);
+        Booking b = getBookingById(user, bookingId);
+        if (b.getRating() != null)
+            throw new ReviewAlreadySentException();
+        if (!b.getState().equals(BookingState.FINISHED))
+            throw new ForbiddenBookingStateOperationException();
+
+        bookingDao.setRatingAndReview(b, rating, review);
         LOGGER.info("Sent review for booking {}", bookingId);
     }
 
     @Transactional
     @Override
     public void editProfile(Client client, String username, String mail, Integer zoneId, String language) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        if (!client.getUsername().equals(username) && usernameExists(username)) {
+            throw new UserAlreadyExistsException();
+        }
+        if (!client.getMail().equals(mail) && mailExists(mail)) {
+            throw new MailAlreadyExistsException();
+        }
         clientDao.editProfile(client, username, mail, zone, Language.valueOf(language));
         LOGGER.info("{} edited their profile", username);
     }
@@ -130,10 +155,11 @@ public class ClientServiceImpl extends UserServiceImpl<Client> implements Client
         return booking;
     }
 
+    @Transactional
     @Override
-    public List<ShiftPeriod> requestedShiftPeriodsForDate(Client client, LocalDate date, String plateNumber) {
-        Vehicle v = vehicleDao.findByPlateNumber(plateNumber).orElseThrow(InvalidVehicleException::new);
-        List<Booking> bookings = bookingDao.requestedBookingsForDate(client, date, v);
-        return bookings.stream().map(Booking::getShiftPeriod).toList();
+    public void setNewBookingState(Client user, int bookingId, BookingState newState) {
+        if (!newState.equals(BookingState.CANCELED))
+            throw new ForbiddenBookingStateOperationException();
+        cancelBooking(user, bookingId);
     }
 }

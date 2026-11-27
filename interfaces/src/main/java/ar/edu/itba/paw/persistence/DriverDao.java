@@ -6,7 +6,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 
 public interface DriverDao extends UserDao<Driver> {
-    Driver create(String username, String mail, String password, String description, Language language);
+    Driver create(String username, String mail, String password, String description, String cbu, Language language);
 
     List<Driver> getSearchResults(Zone zone, Size size, Double priceMax, DayOfWeek weekday, Integer rating, SearchOrder order, int offset);
 

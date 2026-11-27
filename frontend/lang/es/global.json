@@ -1,0 +1,434 @@
+{
+  "bookings": "Reservas",
+  "fileDragDrop": {
+    "browse": "Buscar archivo",
+    "orDragAndDrop": "o arrastrar aquí",
+    "fileTypeNotSupported": "Tipo de archivo no soportado",
+    "fileTooLarge": "Archivo muy grande",
+    "max": "Máximo"
+  },
+  "find-freight": "Encuentra tu flete",
+  "home": "Inicio",
+  "language": {
+    "label": "Idioma",
+    "preferredLanguage": "Idioma preferido",
+    "ENGLISH": "Inglés",
+    "SPANISH": "Español"
+  },
+  "login": "Iniciar sesión",
+  "loginError": "Credenciales inválidas. Por favor, inténtalo de nuevo.",
+  "loadingSession": "Cargando sesión...",
+  "loginSubtitle": "Ingresá tus credenciales para continuar",
+  "noAccountPrompt": "¿No tenés una cuenta?",
+  "registerSubtitle": "Creá una cuenta para continuar",
+  "haveAccountPrompt": "¿Ya tenés una cuenta?",
+  "name": "Español",
+  "page": {
+    "bookingCreate": {
+      "title": "Solicitar Reserva",
+      "subtitle": "Seleccioná una fecha y turno en el calendario para ver los vehículos disponibles.",
+      "months": {
+        "JANUARY": "Enero",
+        "FEBRUARY": "Febrero",
+        "MARCH": "Marzo",
+        "APRIL": "Abril",
+        "MAY": "Mayo",
+        "JUNE": "Junio",
+        "JULY": "Julio",
+        "AUGUST": "Agosto",
+        "SEPTEMBER": "Septiembre",
+        "OCTOBER": "Octubre",
+        "NOVEMBER": "Noviembre",
+        "DECEMBER": "Diciembre"
+      },
+      "weekDays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+      "shifts": {
+        "MORNING": "Mañana",
+        "AFTERNOON": "Tarde",
+        "EVENING": "Noche"
+      },
+      "availableVehicles": "Vehículos disponibles para el",
+      "selectShift": "Seleccionar turno",
+      "vehicleDetails": {
+        "plate": "Patente",
+        "rate": "Precio/hr",
+        "volume": "Volumen"
+      },
+      "confirmation": {
+        "title": "Completar Reserva",
+        "origin": "Zona de Origen",
+        "destination": "Zona de Destino",
+        "description": "Descripción del trabajo",
+        "submit": "Enviar Solicitud",
+        "submitting": "Enviando..."
+      },
+      "errors": {
+        "originRequired": "Seleccioná la zona de origen",
+        "destinationRequired": "Seleccioná la zona de destino",
+        "descriptionLength": "La descripción debe tener entre 5 y 500 caracteres",
+        "fetchFailed": "Error al obtener la disponibilidad",
+        "bookingFailed": "Hubo un error al crear la reserva",
+        "conflict": "El vehículo ya no está disponible en este horario",
+        "clientAlreadyAppointed": "Ya tenés una reserva para este vehículo en ese horario",
+        "timeAlreadyPassed": "La fecha seleccionada ya pasó",
+        "vehicleAlreadyAccepted": "Este vehículo ya está reservado para ese horario",
+        "dateRequired": "La fecha es obligatoria y debe ser futura"
+      },
+      "success": "¡Reserva solicitada con éxito!",
+      "emptyMonth": "Buscando próximo mes disponible..."
+    },
+    "home": {
+      "callToAction": "¡Empecemos!",
+      "greeting": "¿Estás buscando un flete? ¿O prefieres postularte como uno? Llegaste al lugar correcto. Encuentra el servicio de fletes perfecto para ti.",
+      "aboutUs": {
+        "title": "Sobre Nosotros",
+        "description": "Somos una empresa dedicada a hacer la búsqueda de fletes más facíl."
+      },
+      "services": {
+        "title": "Nuestros Servicios",
+        "s1": "Encuentra fletes en tu zona",
+        "s2": "Fácil interacción con el fletero",
+        "s3": "Ve y escribe reseñas"
+      },
+      "clientOpinion": {
+        "title": "Lo que dicen nuestros usuarios",
+        "description": "Es fantástico, contratar un flete nunca fue tan facíl como cuando uso Van N' Go"
+      }
+    },
+    "vehicles": {
+      "sidebar": {
+        "title": "Vehículos",
+        "allVehicles": "Ver vehículos",
+        "newVehicle": "Nuevo vehículo"
+      },
+      "rate": "Precio por hora",
+      "title": "Mis vehículos",
+      "volume": "Tamaño"
+    },
+    "bookings": {
+      "myBookings": "Mis reservas",
+      "morningDateTime": "{{date}} por la mañana",
+      "afternoonDateTime": "{{date}} por la tarde",
+      "eveningDateTime": "{{date}} por la noche",
+      "travelZones": "Desde {{originNeighborhood}} hasta {{destinationNeighborhood}}",
+      "pending": "Pendiente",
+      "rejected": "Rechazada",
+      "accepted": "Aceptada",
+      "canceled": "Cancelada",
+      "finished": "Terminada",
+      "details": "Detalles",
+      "detailsForTimeShift": "Detalles para reserva durante {{timeShift}}",
+      "chat": "Chat",
+      "vehiclePlateNumber": "Asignado al vehículo con patente {{plateNumber}}",
+      "client": "Cliente",
+      "driver": "Conductor",
+      "route": "Ruta",
+      "vehicleInformation": "Información del vehículo asignado",
+      "plate": "Patente",
+      "description": "Descripción",
+      "hourlyRate": "Precio por hora",
+      "waitingReply": "Esperando respuesta del conductor",
+      "viewProofOfPayment": "Ver comprobante de pago",
+      "cancelBooking": "Cancelar reserva",
+      "uploadProofOfPayment": "Subir comprobante de pago",
+      "viewReview": "Ver reseña",
+      "leaveReview": "Dejar una reseña",
+      "rejectedBookingByDriver": "La reserva fue rechazada por el conductor",
+      "canceledBooking": "La reserva fue cancelada",
+      "acceptBooking": "Aceptar reserva",
+      "rejectBooking": "Rechazar reserva",
+      "finishBooking": "Terminar reserva",
+      "rejectedBooking": "La reserva fue rechazada",
+      "empty": {
+        "pending": {
+          "title": "No hay reservas pendientes",
+          "subtitle": "Las reservas solicitadas aparecerán aquí."
+        },
+        "accepted": {
+          "title": "No hay reservas aceptadas",
+          "subtitle": "Las reservas confirmadas se mostrarán aquí."
+        },
+        "finished": {
+          "title": "No hay reservas finalizadas",
+          "subtitle": "Los viajes completados quedarán registrados aquí."
+        },
+        "rejected": {
+          "title": "No hay reservas rechazadas",
+          "subtitle": "Las reservas rechazadas aparecerán aquí."
+        },
+        "canceled": {
+          "title": "No hay reservas canceladas",
+          "subtitle": "Las reservas canceladas se mostrarán aquí."
+        }
+      }
+    },
+    "editVehicle": {
+      "errors": {
+        "plateRegex": "El formato de la patente es inválido (Ej: ABC123 o AB123CD)",
+        "volume": "El volumen debe estar entre 1 y 100 m³",
+        "rate": "El precio por hora debe estar entre $100 y $100.000",
+        "descriptionLength": "La descripción no puede superar los 255 caracteres",
+        "vehicleAccess": "No se pudo acceder al vehículo o no está disponible",
+        "update": "Error al actualizar el vehículo",
+        "vehicleNotFound": "El vehículo solicitado no existe.",
+        "availabilityFetch": "Error al obtener la disponibilidad.",
+        "selectImageFirst": "Por favor, selecciona una imagen primero.",
+        "invalidFileType": "El archivo debe ser JPG o PNG.",
+        "imageFormat": "El formato de la imagen no es válido o es demasiado grande.",
+        "imageUpload": "Error al subir la imagen",
+        "availabilityAccess": "No se pudo acceder a la disponibilidad del vehículo",
+        "availabilityUpdate": "Error al actualizar la disponibilidad",
+        "zonesUpdate": "No se pudieron guardar las zonas de trabajo. Se revirtieron los cambios.",
+        "verifyShifts": "Por favor, verificá los turnos ingresados."
+      },
+      "success": {
+        "update": "¡Vehículo actualizado con éxito!",
+        "imageUpdate": "¡Foto del vehículo actualizada con éxito!",
+        "availabilityUpdate": "¡Disponibilidad actualizada con éxito!"
+      },
+      "title": "Editar Vehículo",
+      "subtitle": "Actualizá la información, foto y disponibilidad de tu transporte.",
+      "loading": {
+        "vehicle": "Cargando datos del vehículo...",
+        "fileUpload": "Cargando subida de archivos..."
+      },
+      "generalData": "Datos Generales",
+      "labels": {
+        "plate": "Patente (Ej: AB123CD)",
+        "rate": "Precio por hora ($)",
+        "volume": "Volumen (m³)",
+        "description": "Descripción",
+        "uploadImage": "Subir imagen",
+        "addZone": "Añadir nueva zona"
+      },
+      "buttons": {
+        "saving": "Guardando...",
+        "saveChanges": "Guardar Cambios",
+        "uploadingPhoto": "Subiendo foto...",
+        "savePhoto": "Guardar Foto",
+        "saveAvailability": "Guardar Disponibilidad"
+      },
+      "photoSection": "Foto del Vehículo",
+      "workZones": "Zonas de Trabajo",
+      "placeholders": {
+        "searchNeighborhood": "Buscar barrio..."
+      },
+      "noZonesAssigned": "No hay zonas asignadas. Añadí al menos una.",
+      "availableSchedules": "Horarios Disponibles",
+      "table": {
+        "day": "Día",
+        "morning": "Mañana",
+        "afternoon": "Tarde",
+        "evening": "Noche"
+      },
+      "days": {
+        "MONDAY": "Lunes",
+        "TUESDAY": "Martes",
+        "WEDNESDAY": "Miércoles",
+        "THURSDAY": "Jueves",
+        "FRIDAY": "Viernes",
+        "SATURDAY": "Sábado",
+        "SUNDAY": "Domingo"
+      }
+    },
+    "createVehicle": {
+      "title": "Crear Vehículo",
+      "subtitle": "Añadí un nuevo transporte a tu flota. Podrás subir fotos y configurar su disponibilidad más adelante.",
+      "generalData": "Datos Generales",
+      "labels": {
+        "plate": "Patente (Ej: AB123CD)",
+        "rate": "Precio por hora ($)",
+        "volume": "Volumen (m³)",
+        "description": "Descripción"
+      },
+      "buttons": {
+        "creating": "Creando...",
+        "create": "Crear Vehículo",
+        "cancel": "Cancelar"
+      },
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "plateRegex": "El formato de la patente es inválido (Ej: ABC123 o AB123CD)",
+        "volume": "El volumen debe estar entre 1 y 100 m³",
+        "rate": "El precio por hora debe estar entre $100 y $100.000",
+        "descriptionLength": "La descripción no puede superar los 255 caracteres",
+        "limitReached": "Has alcanzado el límite de vehículos permitidos",
+        "access": "No se pudo crear el vehículo",
+        "create": "Error al crear el vehículo"
+      },
+      "success": {
+        "create": "¡Vehículo creado con éxito!"
+      }
+    }
+  },
+  "password": "Contraseña",
+  "register": "Registrarse",
+  "settings": "Configuración",
+  "profile": "Perfil",
+  "sr": {
+    "closeSidebar": "Cerrar barra lateral",
+    "loading": "Cargando",
+    "openSidebar": "Abrir barra lateral",
+    "page": "Página {{ number }}",
+    "pagination": "Paginación",
+    "previousPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "skipToMainContent": "Saltar al contenido principal",
+    "vehicleDescription": "Descripción del vehículo",
+    "vehiclePicture": "Imagen del vehículo"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "components": {
+    "header": {
+      "profile": "Perfil"
+    },
+    "availability": {
+      "Search": "Buscar"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Idioma"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No subió su descripción",
+      "noCbu": "No subió su CBU"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No tiene reseñas"
+    }
+  },
+  "user": {
+    "editUser": {
+      "changePassword": "Cambiar contraseña",
+      "newPassword": "Nueva contraseña",
+      "oldPassword": "Contraseña actual",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "uploadPicture": "Subir una imagen de perfil. Puede ser un archivo .jpg, .jpeg o .png, y no debe superar los 10MB.",
+      "updateProfileSuccess": "Perfil actualizado exitosamente",
+      "updatePasswordSuccess": "Contraseña actualizada exitosamente",
+      "updatePfpSuccess": "Imagen de perfil actualizada exitosamente"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Correo",
+      "zone": "Zona",
+      "description": "Descripción",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "password": "Contraseña",
+      "chooseFile": "Elegir archivo",
+      "profilePicture": "Imagen de perfil",
+      "logout": "Cerrar sesión",
+      "size": "Tamaño",
+      "any": "Cualquiera",
+      "weekday": "Día",
+      "small": "Chico",
+      "medium": "Mediano",
+      "large": "Grande",
+      "close": "Cerrar",
+      "back": "Volver"
+    }
+  },
+  "error": {
+    "imageUnsupportedMediaType": "El archivo no es una imagen válida",
+    "imageTooLarge": "La imagen es demasiado grande (máximo 10MB)",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "unknown": "Ocurrió un error desconocido",
+    "sessionExpired": "Tu sesión expiró. Por favor, iniciá sesión nuevamente.",
+    "validation": {
+      "NotBlank": "Este campo es obligatorio",
+      "NotNull": "Este campo es obligatorio",
+      "NotEmpty": "Este campo no puede estar vacío",
+      "Size": "La longitud del campo no es válida",
+      "Email": "Ingresá un correo electrónico válido",
+      "ValidUsername": "El nombre de usuario ya está en uso",
+      "ValidEmail": "El correo electrónico ya está en uso",
+      "Min": "El valor es demasiado pequeño",
+      "Max": "El valor es demasiado grande",
+      "Pattern": "Formato inválido",
+      "InvalidZone": "Por favor seleccioná una zona válida de la lista",
+      "ratingRequired": "La puntuación es obligatoria",
+      "unauthorizedReview": "No estás autorizado a dejar una reseña a este usuario"
+    }
+  },
+  "reviewForm": {
+    "title": "Deja tu reseña",
+    "rating": "Calificación",
+    "comment": "Comentario",
+    "submit": "Enviar reseña",
+    "yourComment": "Tu comentario (opcional)",
+    "ratingPlaceholder": "Escribe tu reseña aquí..."
+  },
+  "title": "Van N' Go",
+  "username": "Nombre de Usuario",
+  "vehicles": "Vehículos",
+  "confirmPassword": "Confirmar contraseña",
+  "registering": "Registrando…",
+  "userType": {
+    "label": "Tipo de cuenta",
+    "client": "Cliente",
+    "driver": "Conductor"
+  },
+  "zone": {
+    "label": "Zona"
+  },
+  "chat": {
+    "loadOlder": "Cargar mensajes viejos",
+    "inputPlaceholder": "Escribe un mensaje…",
+    "enterHint": "Enter para enviar · Shift+Enter para una nueva línea"
+  },
+  "review": {
+    "success": "¡Reseña enviada con éxito!",
+    "viewTitle": "Reseña del viaje",
+    "loading": "Cargando reseña...",
+    "noComments": "El usuario no dejó ningún comentario adicional."
+  },
+  "proofOfPayment": {
+    "uploadTitle": "Subir Comprobante de Pago",
+    "viewTitle": "Comprobante de Pago",
+    "uploading": "Subiendo...",
+    "save": "Guardar Comprobante",
+    "close": "Cerrar",
+    "success": "¡Comprobante subido con éxito!",
+    "errors": {
+      "selectFirst": "Por favor, seleccioná un archivo primero.",
+      "invalidType": "El archivo debe ser un PDF.",
+      "uploadFailed": "Error al subir el comprobante.",
+      "fetchFailed": "Error al cargar el comprobante."
+    },
+    "loadingView": "Cargando comprobante..."
+  },
+  "forgotPasswordLink": "¿No recordás tu contraseña?",
+  "forgotPassword": {
+    "title": "Recuperar contraseña",
+    "subtitle": "Ingresá tu correo electrónico para recibir un token de recuperación.",
+    "email": "Correo electrónico",
+    "sendToken": "Enviar token",
+    "tokenSentSuccess": "Si el correo ingresado corresponde a un usuario registrado, se enviará un token a la casilla indicada.",
+    "tokenSentError": "Error al solicitar el token. Por favor verificá el correo.",
+    "goToRecovery": "Ir a restablecer contraseña"
+  },
+  "recoverPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresá el token que recibiste y tu nueva contraseña.",
+    "email": "Correo electrónico",
+    "token": "Token de seguridad",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "resetButton": "Restablecer contraseña",
+    "success": "Contraseña restablecida exitosamente.",
+    "error": "Error al restablecer la contraseña. Verificá que el token sea correcto y no haya expirado."
+  }
+}

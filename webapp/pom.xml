@@ -15,7 +15,7 @@
 
     <name>webapp Maven Webapp</name>
     <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>http://pawserver.it.itba.edu.ar/paw-2024b-01/</url>
 
     <dependencies>
         <dependency>
@@ -50,6 +50,12 @@
             <artifactId>persistence</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>frontend</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -100,12 +106,45 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-spring5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
         </dependency>
     </dependencies>
 
@@ -137,6 +176,11 @@
                     <version>3.2.2</version>
                     <configuration>
                         <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                        <webResources>
+                            <resource>
+                                <directory>../frontend/dist</directory>
+                            </resource>
+                        </webResources>
                     </configuration>
                 </plugin>
                 <plugin>

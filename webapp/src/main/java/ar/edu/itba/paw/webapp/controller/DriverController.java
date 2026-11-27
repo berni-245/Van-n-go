@@ -1,368 +1,138 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ImageNotFoundException;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.form.AvailabilityForm;
-import ar.edu.itba.paw.webapp.form.ChangePasswordForm;
-import ar.edu.itba.paw.webapp.form.ChangeUserInfoForm;
-import ar.edu.itba.paw.webapp.form.VehicleForm;
-import ar.edu.itba.paw.webapp.interfaces.Bookings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.paw.services.DriverService;
+import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.user.CreateDriverDTO;
+import ar.edu.itba.paw.webapp.dto.user.DriverDTO;
+import ar.edu.itba.paw.webapp.dto.user.UpdateDriverDTO;
+import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.Vary;
+import javax.ws.rs.core.HttpHeaders;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
 
-@Controller
-public class DriverController implements Bookings {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DriverController.class);
+@Path(UriUtils.DRIVERS_URL)
+@Component
+public class DriverController {
+
+    @Context
+    private UriInfo uriInfo;
 
     private final DriverService ds;
 
-    private final ClientService cs;
+    private final ImageService imageService;
 
-    private final ZoneService zs;
-
-    private final MessageService ms;
-
-    private final LocaleResolver localeResolver;
-
-    public DriverController(DriverService ds, ClientService cs, ZoneService zs, MessageService ms, LocaleResolver localeResolver) {
+    @Autowired
+    public DriverController(DriverService ds, ImageService imageService) {
         this.ds = ds;
-        this.cs = cs;
-        this.zs = zs;
-        this.ms = ms;
-        this.localeResolver = localeResolver;
+        this.imageService = imageService;
     }
 
-    @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.POST)
-    public ModelAndView addVehiclePost(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("vehicleForm") VehicleForm vehicleForm,
-            BindingResult errors,
-            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
-            RedirectAttributes redirectAttributes
-    ) throws IOException {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in VehicleForm by {}", loggedUser.getUsername());
-            return addVehicleGet(vehicleForm);
-        }
-        String imgFilename = null;
-        byte[] imgData = null;
-        if (vehicleImg != null) {
-            imgFilename = vehicleImg.getOriginalFilename();
-            imgData = vehicleImg.getBytes();
-        }
-        ds.addVehicle(
-                loggedUser,
-                vehicleForm.getPlateNumber(),
-                vehicleForm.getVolume(),
-                vehicleForm.getDescription(),
-                vehicleForm.getZoneIds(),
-                vehicleForm.getRate(),
-                imgFilename,
-                imgData
+    @GET
+    @Produces(value = {CustomMediaType.DRIVER_LIST})
+    public Response listDrivers(
+            @QueryParam("originZoneId") int zoneId,
+            @QueryParam("size") Size size,
+            @QueryParam("maxPrice") Double maxPrice,
+            @QueryParam("weekDay") DayOfWeek weekDay,
+            @QueryParam("minRating") Integer minRating,
+            @QueryParam("sortOrder") @DefaultValue("ALPHABETICAL") SearchOrder order,
+            @QueryParam(UriUtils.PAGE_PARAM) @DefaultValue("1") int page
+    ) {
+        int maxPages = ds.getSearchResultPages(zoneId, size, maxPrice, weekDay, minRating);
+        Pagination.validatePage(page);
+        List<DriverDTO> drivers = ds
+                .getSearchResults(zoneId, size, maxPrice, weekDay, minRating, order, page)
+                .stream().map(DriverDTO.mapper(uriInfo)).toList();
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<>(drivers) {
+        });
+        return UriUtils.addPaginationLinks(response, page, maxPages, uriInfo).build();
+    }
+
+    @POST
+    @Consumes(value = {CustomMediaType.DRIVER_CREATE})
+    @Produces(value = {CustomMediaType.DRIVER})
+    public Response createDriver(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateDriverDTO dto) {
+        Driver created = ds.create(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getDescription(), dto.getCbu(), Locale.forLanguageTag(lang));
+        URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(created.getId())).build();
+        return Response.created(location).entity(DriverDTO.fromDriver(uriInfo, created)).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
+    @Produces(value = {CustomMediaType.PUBLIC_DRIVER})
+    public Response getPublicDriverInfoById(@PathParam(UriUtils.ID_PARAM) int id) {
+        Driver driver = ds.findById(id);
+        return Response.ok(DriverDTO.fromPublicDriverInfo(uriInfo, driver)).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
+    @Produces(value = {CustomMediaType.DRIVER})
+    public Response getDriverById(@PathParam(UriUtils.ID_PARAM) int id) {
+        Driver driver = ds.findById(id);
+        return Response.ok(DriverDTO.fromDriver(uriInfo, driver)).build();
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Consumes(value = {CustomMediaType.DRIVER_UPDATE})
+    @Produces(value = {CustomMediaType.DRIVER})
+    public Response updateDriverById(@PathParam(UriUtils.ID_PARAM) int id, @Valid final UpdateDriverDTO dto) {
+        Driver d = ds.findById(id);
+        ds.editProfile(
+                d, dto.getUsernameOr(d.getUsername()), dto.getEmailOr(d.getMail()),
+                dto.getDescriptionOr(d.getDescription()), dto.getCbuOr(d.getCbu()),
+                dto.getPreferredLanguageOr(d.getLanguage().name())
         );
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.add.success"));
-        return redirect("/driver/vehicles");
+        return Response.ok(DriverDTO.fromDriver(uriInfo, d)).build();
     }
 
-    @RequestMapping(path = "/driver/vehicle/add", method = RequestMethod.GET)
-    public ModelAndView addVehicleGet(@ModelAttribute("vehicleForm") VehicleForm vehicleForm) {
-        ModelAndView mav = new ModelAndView("driver/addVehicle");
-        mav.addObject("zones", zs.getAllZones());
-        return mav;
-    }
-
-    @RequestMapping(value = "/driver/chat", method = RequestMethod.GET)
-    public ModelAndView chat(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam("bookingId") Integer bookingId,
-            @RequestParam("recipientId") Integer recipientId
-    ) {
-        final ModelAndView mav = new ModelAndView("driver/chat");
-        Client client = cs.findById(recipientId);
-        Booking booking = ds.getBookingById(loggedUser, bookingId);
-        List<Message> messages = ms.getConversation(booking, client, loggedUser);
-        mav.addObject("recipient", client);
-        mav.addObject("booking", booking);
-        mav.addObject("messages", messages);
-        mav.addObject("clientZone", zs.getClientZone(client));
-        return mav;
-    }
-
-    @RequestMapping(path = "/driver/send", method = RequestMethod.POST)
-    public ModelAndView send(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam("content") String content,
-            @RequestParam("bookingId") Integer bookingId,
-            @RequestParam("recipientId") Integer recipientId
-    ) {
-        ms.sendDriverMessage(bookingId, loggedUser, recipientId, content);
-        return redirect("/driver/chat?bookingId=%d&recipientId=%d", bookingId, recipientId);
-    }
-
-    @RequestMapping(
-            path = "/driver/vehicle/{plateNumber}/edit/availability",
-            method = RequestMethod.POST
-    )
-    public ModelAndView addAvailability(
-            @PathVariable(name = "plateNumber") String plateNumber,
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("availabilityForm") AvailabilityForm form,
-            RedirectAttributes redirectAttributes
-    ) {
-        Vehicle vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber).orElseThrow();
-        ds.updateAvailability(
-                vehicle,
-                form.getMondayShiftPeriods(),
-                form.getTuesdayShiftPeriods(),
-                form.getWednesdayShiftPeriods(),
-                form.getThursdayShiftPeriods(),
-                form.getFridayShiftPeriods(),
-                form.getSaturdayShiftPeriods(),
-                form.getSundayShiftPeriods()
-        );
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.availability.edit.success"));
-        return redirect("/driver/vehicle/%s/edit", plateNumber);
-    }
-
-    @RequestMapping(path = "/driver/vehicles")
-    public ModelAndView vehiclesDashboard(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            Model model
-    ) {
-        final ModelAndView mav = new ModelAndView("driver/vehicles");
-        int totalPages = ds.getVehicleCount(loggedUser);
-        page = Pagination.validatePage(page, totalPages);
-        mav.addObject("vehicles", ds.getVehicles(loggedUser, page));
-        mav.addObject("totalPages", totalPages);
-        mav.addObject("currentPage", page);
-        mav.addObject("toasts", model.getAttribute("toasts"));
-        return mav;
-    }
-
-
-    @RequestMapping(path = "/driver/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@ModelAttribute("loggedUser") Driver loggedUser) {
-        return new ModelAndView("user/profile");
-    }
-
-    @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.GET)
-    public ModelAndView editProfileForm(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors
-    ) {
-        if (!errors.hasErrors()) {
-            form.setMail(loggedUser.getMail());
-            form.setUsername(loggedUser.getUsername());
-            form.setCbu(loggedUser.getCbu());
-            form.setDescription(loggedUser.getDescription());
-            form.setLanguage(loggedUser.getLanguage().name());
+    @GET
+    @Path("/{id}/profile-picture")
+    @Produces(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Response getProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @Context Request request) {
+        Driver driver = ds.findById(id);
+        Integer imageId = driver.getPfp();
+        if (imageId != null) {
+            Image picture = imageService.getImage(imageId);
+            if (picture.getData() != null) {
+                return CacheControlUtils.setEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
+            }
         }
-        ModelAndView mav = new ModelAndView("/user/profileEdit");
-        mav.addObject("languages", Language.values());
-        return mav;
+        return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)
+                .entity(new ErrorDTO(new ImageNotFoundException())).build();
     }
 
-    @RequestMapping(path = "/driver/profile/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes,
-            HttpServletRequest request, HttpServletResponse response
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in ChangeUserInfoForm by {}", loggedUser.getUsername());
-            return editProfileForm(loggedUser, form, errors);
-        }
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
-        ds.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getDescription(), form.getCbu(), form.getLanguage());
-        localeResolver.setLocale(request, response, loggedUser.getLanguage().getLocale());
-        return redirect("/driver/profile");
+    @PUT
+    @Path("/{id}/profile-picture")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Consumes(value = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Response uploadProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @ValidImage byte[] imageData,
+                                         @HeaderParam("Content-Type") String type) {
+        Driver driver = ds.findById(id);
+        imageService.uploadPfp(driver, imageData, "driver_" + driver.getId() + "_pfp", type);
+        return Response.noContent().build();
     }
 
-
-    @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.GET)
-    public ModelAndView editVehicleGet(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable(name = "plateNumber") String plateNumber,
-            @ModelAttribute("vehicleForm") VehicleForm form,
-            BindingResult errors,
-            @ModelAttribute("availabilityForm") AvailabilityForm avForm
-    ) {
-        var vehicle = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
-        if (vehicle.isPresent()) {
-            if (errors != null && !errors.hasErrors()) form.setAll(vehicle.get());
-            avForm.setAll(vehicle.get());
-            var mav = new ModelAndView("driver/editVehicle");
-            mav.addObject("vehicle", vehicle.get());
-            String[] days = new String[]{
-                    "monday", "tuesday", "wednesday", "thursday",
-                    "friday", "saturday", "sunday"
-            };
-            mav.addObject("days", days);
-            mav.addObject("shiftPeriods", ShiftPeriod.values());
-            mav.addObject("zones", zs.getAllZones());
-            return mav;
-        } else {
-            return new ModelAndView();
-        }
-    }
-
-    @RequestMapping(path = "/driver/vehicle/{plateNumber}/edit", method = RequestMethod.POST)
-    public ModelAndView editVehiclePost(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable(name = "plateNumber") String ogPlateNumber,
-            @Valid @ModelAttribute("vehicleForm") VehicleForm form,
-            BindingResult errors,
-            @RequestParam(value = "vehicleImg", required = false) MultipartFile vehicleImg,
-            @ModelAttribute("availabilityForm") AvailabilityForm avForm,
-            RedirectAttributes redirectAttributes
-    ) throws IOException {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in VehicleForm for vehicle {}", form.getPlateNumber());
-            return editVehicleGet(loggedUser, ogPlateNumber, form, errors, avForm);
-        }
-        String imgFilename = null;
-        byte[] imgData = null;
-        if (vehicleImg != null) {
-            imgFilename = vehicleImg.getOriginalFilename();
-            imgData = vehicleImg.getBytes();
-        }
-        ds.updateVehicle(
-                loggedUser,
-                form.getId(),
-                form.getPlateNumber(),
-                form.getVolume(),
-                form.getDescription(),
-                form.getZoneIds(),
-                form.getRate(),
-                form.getImgId(),
-                imgFilename,
-                imgData
-        );
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.edit.success"));
-        return redirect("/driver/vehicle/%s/edit", form.getPlateNumber());
-    }
-
-    @RequestMapping(path = "/driver/bookings")
-    public ModelAndView driverBookings(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @RequestParam(name = "pendingPage", defaultValue = "1") int pendingPage,
-            @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
-            @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
-            @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
-            @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
-            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
-            RedirectAttributes redirectAttrs
-    ) {
-        return userBookings(
-                "driver/bookings",
-                ds,
-                loggedUser,
-                pendingPage,
-                acceptedPage,
-                finishedPage,
-                rejectedPage,
-                canceledPage,
-                activeTab,
-                redirectAttrs
-        );
-    }
-
-    @RequestMapping(path = "/driver/booking/{id:\\d+}/accept", method = RequestMethod.POST)
-    public ModelAndView acceptBooking(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") int bookingId
-    ) {
-        ds.acceptBooking(loggedUser, bookingId);
-        return redirect("/driver/bookings?activeTab=ACCEPTED");
-    }
-
-    @RequestMapping(path = "/driver/booking/{id:\\d+}/finish", method = RequestMethod.POST)
-    public ModelAndView finishBooking(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") int bookingId
-    ) {
-        ds.finishBooking(loggedUser, bookingId);
-        return redirect("/driver/bookings?activeTab=FINISHED");
-    }
-
-    @RequestMapping(path = "/driver/booking/{id:\\d+}/reject", method = RequestMethod.POST)
-    public ModelAndView rejectBooking(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") int bookingId
-    ) {
-        ds.rejectBooking(loggedUser, bookingId);
-        return redirect("/driver/bookings?activeTab=REJECTED");
-    }
-
-    @RequestMapping(path = "/driver/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
-    public ModelAndView cancelBooking(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("id") int bookingId
-    ) {
-        ds.cancelBooking(loggedUser, bookingId);
-        return redirect("/driver/bookings?activeTab=CANCELED");
-    }
-
-    @RequestMapping(path = "/driver/vehicle/{plateNumber}/delete", method = RequestMethod.POST)
-    public ModelAndView deleteVehicle(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @PathVariable("plateNumber") String plateNumber,
-            RedirectAttributes redirectAttributes
-    ) {
-        Optional<Vehicle> v = ds.findVehicleByPlateNumber(loggedUser, plateNumber);
-        if (v.isPresent()) {
-            ds.deleteVehicle(v.get());
-            setToasts(redirectAttributes, new Toast(ToastType.success, "toast.vehicle.delete.success"));
-            return redirect("/driver/vehicles");
-        } else {
-            LOGGER.error("Vehicle `{}` not found", plateNumber);
-            return new ModelAndView();
-        }
-    }
-
-
-    @RequestMapping(path = "/driver/change/password", method = RequestMethod.GET)
-    public ModelAndView changePassword(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @ModelAttribute("changePasswordForm") ChangePasswordForm form
-    ) {
-        return new ModelAndView("public/changePassword");
-    }
-
-    @RequestMapping(path = "/driver/change/password", method = RequestMethod.POST)
-    public ModelAndView postChangePassword(
-            @ModelAttribute("loggedUser") Driver loggedUser,
-            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in ChangePasswordForm for {}", loggedUser.getUsername());
-            return changePassword(loggedUser, form);
-        }
-        ds.updatePassword(loggedUser, form.getPassword());
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
-        return new ModelAndView("redirect:/profile");
-    }
 }

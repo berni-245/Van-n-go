@@ -1,0 +1,140 @@
+package ar.edu.itba.paw.webapp.dto.user;
+
+import ar.edu.itba.paw.models.BookingState;
+import ar.edu.itba.paw.models.Language;
+import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
+
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlTransient;
+import java.net.URI;
+
+@XmlTransient
+public abstract class UserDTO {
+
+    private int id;
+    private String username;
+    private String password;
+    private String email;
+    private Language preferredLanguage;
+    private URI self;
+    private URI profilePic;
+    private URI pendingBookings;
+    private URI acceptedBookings;
+    private URI finishedBookings;
+    private URI rejectedBookings;
+    private URI canceledBookings;
+
+    protected void setPublicInfoFromUser(UriInfo uriInfo, User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        UriBuilder userIdEndpointTemplate = UriUtils.userUri(uriInfo, user.getType(), user.getId());
+        this.self = userIdEndpointTemplate.clone().build();
+        this.profilePic = userIdEndpointTemplate.clone().path(UriUtils.PROFILE_PICTURE).build();
+    }
+
+    protected void setAllInfoFromUser(UriInfo uriInfo, User user) {
+        setPublicInfoFromUser(uriInfo, user);
+        this.email = user.getMail();
+        this.preferredLanguage = user.getLanguage();
+        UriBuilder bookingTemplate = UriUtils.bookingsForUser(uriInfo, user.getId());
+        this.pendingBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.PENDING.name()).build();
+        this.acceptedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.ACCEPTED.name()).build();
+        this.finishedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.FINISHED.name()).build();
+        this.rejectedBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.REJECTED.name()).build();
+        this.canceledBookings = bookingTemplate.clone().queryParam(UriUtils.STATE_PARAM, BookingState.CANCELED.name()).build();
+    }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Language getPreferredLanguage() {
+        return preferredLanguage;
+    }
+
+    public void setPreferredLanguage(Language preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
+    }
+
+    public URI getSelf() {
+        return self;
+    }
+
+    public void setSelf(URI self) {
+        this.self = self;
+    }
+
+    public URI getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(URI profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public URI getPendingBookings() {
+        return pendingBookings;
+    }
+
+    public void setPendingBookings(URI pendingBookings) {
+        this.pendingBookings = pendingBookings;
+    }
+
+    public URI getAcceptedBookings() {
+        return acceptedBookings;
+    }
+
+    public void setAcceptedBookings(URI acceptedBookings) {
+        this.acceptedBookings = acceptedBookings;
+    }
+
+    public URI getFinishedBookings() {
+        return finishedBookings;
+    }
+
+    public void setFinishedBookings(URI finishedBookings) {
+        this.finishedBookings = finishedBookings;
+    }
+
+    public URI getRejectedBookings() {
+        return rejectedBookings;
+    }
+
+    public void setRejectedBookings(URI rejectedBookings) {
+        this.rejectedBookings = rejectedBookings;
+    }
+
+    public URI getCanceledBookings() {
+        return canceledBookings;
+    }
+
+    public void setCanceledBookings(URI canceledBookings) {
+        this.canceledBookings = canceledBookings;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}

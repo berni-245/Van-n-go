@@ -1,85 +1,89 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.models.UserRole;
+// More info on how to configure things here: https://www.toptal.com/developers/spring/spring-security-tutorial
+
+import ar.edu.itba.paw.webapp.auth.BasicAuthFilter;
+import ar.edu.itba.paw.webapp.auth.JwtTokenFilter;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.controller.CustomAuthenticationFailureHandler;
-import ar.edu.itba.paw.webapp.controller.CustomSavedRequestAwareAuthenticationSuccessHandler;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PawUserDetailsService userDetailsService;
     @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private JwtTokenFilter jwtTokenFilter;
     @Autowired
-    private CustomSavedRequestAwareAuthenticationSuccessHandler customSavedRequestAwareAuthenticationSuccessHandler;
+    private BasicAuthFilter basicAuthFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    private final ClassPathResource keyRes = new ClassPathResource("secKey.txt");
-
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .invalidSessionUrl("/home")
+        http.csrf().disable().headers().cacheControl().disable().and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers("/login", "/register").anonymous()
-                .antMatchers("/client/search", "/client/availability").not().hasRole(UserRole.DRIVER.name())
-                .antMatchers("/driver/**").hasRole(UserRole.DRIVER.name())
-                .antMatchers("/client/**").hasRole(UserRole.CLIENT.name())
-                .antMatchers("/","/home","/error/**").permitAll()
-                .antMatchers("/**").authenticated()
-                .and().formLogin()
-                .successHandler(customSavedRequestAwareAuthenticationSuccessHandler)
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
-                .loginPage("/login")
-                .failureHandler(customAuthenticationFailureHandler)
-                .and().rememberMe()
-                .rememberMeParameter("j_rememberme")
-                .userDetailsService(userDetailsService)
-                .key(FileCopyUtils.copyToString(new InputStreamReader(keyRes.getInputStream(), StandardCharsets.UTF_8)))
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-                .and().logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/home")
+
+                // Public endpoints
+                .antMatchers(HttpMethod.GET, UriUtils.ZONES_URL + "/**").permitAll()
+                .antMatchers(HttpMethod.GET, UriUtils.DRIVERS_URL + "/**").permitAll()
+                .antMatchers(HttpMethod.POST, UriUtils.CLIENTS_URL, UriUtils.DRIVERS_URL).permitAll()
+
+                // Authenticated endpoints (Needs Basic auth or JWT)
+                .antMatchers(UriUtils.DRIVERS_URL + "/**").authenticated()
+                .antMatchers(UriUtils.CLIENTS_URL + "/**").authenticated()
+                .antMatchers(UriUtils.MESSAGES_URL + "/**").authenticated()
+                .antMatchers(UriUtils.BOOKINGS_URL + "/**").authenticated()
+
+                // Let Jersey send unknown endpoints to 404
+                .antMatchers("/**").permitAll()
+
                 .and().exceptionHandling()
-                .accessDeniedPage("/error/403")
-                .and().csrf().disable();
+                .authenticationEntryPoint(
+                        (request, response, ex) -> response.sendError(
+                                HttpServletResponse.SC_UNAUTHORIZED,
+                                ex.getMessage()
+                        )
+                )
+                .and()
+                .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-    @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.ignoring()
-                .antMatchers("/css/**", "/js/**", "/images/**", "/icons/**", "/favicon.ico", "/error/403");
-    }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // Needed for custom validations in Method Security
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 }

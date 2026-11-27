@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Image;
@@ -43,26 +42,24 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public int uploadPfp(User user, byte[] bin, String fileName) {
-        validateImage(fileName, bin);
-        int toReturn = imgDao.uploadPfp(bin, fileName, user);
+    public void uploadPfp(User user, byte[] bin, String fileName, String type) {
+        validateImage(fileName, bin, type);
+        imgDao.uploadPfp(bin, fileName, user, type);
         LOGGER.info("Uploaded pfp for user {}", user.getId());
-        return toReturn;
     }
 
     @Transactional
     @Override
-    public int uploadPop(Client client, byte[] bin, String fileName, int bookingId) {
-        validateImage(fileName, bin);
+    public void uploadPop(Client client, byte[] bin, String fileName, int bookingId, String type) {
+        validateImage(fileName, bin, type);
         Booking booking = bookingDao.getClientBookingById(client, bookingId);
-        int toReturn = imgDao.uploadPop(bin, fileName, booking );
+        imgDao.uploadPop(bin, fileName, booking, type);
         mailService.sendReceivedPop(client.getUsername(), booking.getDriver().getMail(), booking.getDate(), booking.getDriver().getLanguage().getLocale());
         LOGGER.info("Uploaded proof of payment pfp for booking {}", bookingId);
-        return toReturn;
     }
 
-    private void validateImage(String filename, byte[] bin) {
-        if (bin == null || bin.length > 10 * 1024 * 1024 || filename == null || filename.isEmpty())
+    private void validateImage(String filename, byte[] bin, String type) {
+        if (bin == null || bin.length > 10 * 1024 * 1024 || filename == null || filename.isEmpty() || type == null || type.isEmpty())
             throw new InvalidImageException();
     }
 }

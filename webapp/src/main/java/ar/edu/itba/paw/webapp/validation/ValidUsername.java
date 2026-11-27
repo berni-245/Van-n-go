@@ -13,5 +13,5 @@ public @interface ValidUsername {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Username already in use";
+    String message() default "{ValidUsername}";
 }

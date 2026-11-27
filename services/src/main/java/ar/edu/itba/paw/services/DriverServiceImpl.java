@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.DriverVehicleLimitReachedException;
-import ar.edu.itba.paw.exceptions.ForbiddenBookingStateOperationException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.*;
 import org.slf4j.Logger;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -28,6 +30,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     private final AvailabilityDao availabilityDao;
 
+    private final VehicleService vehicleService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverServiceImpl.class);
 
     @Autowired
@@ -40,6 +44,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             ImageDao imageDao,
             ZoneDao zoneDao,
             AvailabilityDao availabilityDao,
+            VehicleService vehicleService,
             PasswordEncoder passwordEncoder
     ) {
         super(userDao, passwordEncoder, mailService, bookingDao);
@@ -48,12 +53,19 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
         this.imageDao = imageDao;
         this.zoneDao = zoneDao;
         this.availabilityDao = availabilityDao;
+        this.vehicleService = vehicleService;
     }
 
     @Transactional
     @Override
     public Optional<Driver> findByUsername(String username) {
         return driverDao.findByUsername(username);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Driver> findByMail(String mail){
+        return driverDao.findByMail(mail);
     }
 
     @Override
@@ -63,8 +75,9 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public Driver create(String username, String mail, String password, String description, Locale locale) {
-        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, Language.fromLocale(locale));
+    public Driver create(String username, String mail, String password, String description, String cbu, Locale locale) {
+        checkRepeatedUser(username, mail);
+        Driver driver = driverDao.create(username, mail, passwordEncoder.encode(password), description, cbu, Language.fromLocale(locale));
         LOGGER.info("Successfully created {} driver", username);
         mailService.sendDriverWelcomeMail(mail, username, locale);
         return driver;
@@ -77,53 +90,49 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String plateNumber,
             double volume,
             String description,
-            List<Integer> zoneIds,
-            double rate,
-            String imgFilename,
-            byte[] imgData
+            double rate
     ) {
         if (vehicleDao.getVehicleCount(driver) >= MAX_VEHICLES_PER_DRIVER) {
             throw new DriverVehicleLimitReachedException(driver);
         }
-        Vehicle v = vehicleDao.create(
-                driver, plateNumber, volume, description, zoneDao.getZonesById(zoneIds), rate
-        );
-        if (imgFilename != null && imgData != null && imgData.length > 0) {
-            imageDao.uploadVehicleImage(imgData, imgFilename, v);
+        if (vehicleService.plateNumberExists(plateNumber)) {
+            throw new PlateNumberAlreadyExistsException();
         }
+        Vehicle v = vehicleDao.create(
+                driver, plateNumber, volume, description, rate
+        );
         LOGGER.info("{} added a vehicle with plate {}", driver, plateNumber);
         return v;
     }
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
-        List<Vehicle> vehicleList = vehicleDao.getDriverVehicles(driver, zone, size, priceMax, weekday);
-        vehicleList.removeIf(v -> v.getAvailability().isEmpty());
-        return vehicleList;
+    public List<Vehicle> getVehicles(
+            Driver driver,
+            Integer zoneId,
+            Size size,
+            Double priceMax,
+            DayOfWeek weekday,
+            int page,
+            boolean mustHaveAvailability
+    ) {
+        Zone zone = null;
+        if (zoneId != null)
+            zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        return vehicleDao.getDriverVehicles(
+                driver, zone, size, priceMax, weekday,
+                (page - 1) * Pagination.VEHICLES_PAGE_SIZE, mustHaveAvailability
+        );
     }
 
     @Transactional
     @Override
     public void updateAvailability(
             Vehicle vehicle,
-            ShiftPeriod[] mondayPeriods,
-            ShiftPeriod[] tuesdayPeriods,
-            ShiftPeriod[] wednesdayPeriods,
-            ShiftPeriod[] thursdayPeriods,
-            ShiftPeriod[] fridayPeriods,
-            ShiftPeriod[] saturdayPeriods,
-            ShiftPeriod[] sundayPeriods
+            List<Integer> zoneIds,
+            Map<DayOfWeek, ShiftPeriod[]> periods
     ) {
-        Map<DayOfWeek, ShiftPeriod[]> periods = new EnumMap<>(DayOfWeek.class);
-        periods.put(DayOfWeek.MONDAY, mondayPeriods);
-        periods.put(DayOfWeek.TUESDAY, tuesdayPeriods);
-        periods.put(DayOfWeek.WEDNESDAY, wednesdayPeriods);
-        periods.put(DayOfWeek.THURSDAY, thursdayPeriods);
-        periods.put(DayOfWeek.FRIDAY, fridayPeriods);
-        periods.put(DayOfWeek.SATURDAY, saturdayPeriods);
-        periods.put(DayOfWeek.SUNDAY, sundayPeriods);
+        vehicle.setZones(zoneDao.getZonesById(zoneIds));
         availabilityDao.updateVehicleAvailability(vehicle, periods);
         LOGGER.info("Updated weekly availability for plate {}", vehicle.getPlateNumber());
     }
@@ -134,7 +143,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating, SearchOrder order, int page
     ) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         return driverDao.getSearchResults(
                 zone, size, priceMax, weekday, rating, order,
                 (page - 1) * Pagination.SEARCH_PAGE_SIZE
@@ -147,16 +156,20 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        Zone zone = zoneDao.getZone(zoneId).orElseThrow();
+        Zone zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
         return driverDao.getSearchCount(zone, size, priceMax, weekday, rating);
     }
 
     @Transactional
     @Override
     public List<Booking> getBookings(Driver driver, BookingState state, int page) {
-        if (state.equals(BookingState.PENDING) || state.equals(BookingState.REJECTED))
-            bookingDao.checkPending();
         return bookingDao.getDriverBookings(driver, state, (page - 1) * Pagination.BOOKINGS_PAGE_SIZE);
+    }
+
+    @Transactional
+    @Override
+    public List<Booking> getBookings(Driver driver, BookingState state, Integer year, Month month) {
+        return bookingDao.getDriverBookings(driver, state, YearMonth.of(year, month));
     }
 
     @Transactional
@@ -212,7 +225,7 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Override
     public void finishBooking(Driver driver, int bookingId) {
         Booking booking = bookingDao.getDriverBookingById(driver, bookingId);
-        if (!booking.getState().equals(BookingState.ACCEPTED)) {
+        if (!booking.getState().equals(BookingState.ACCEPTED) || LocalDate.now().isBefore(booking.getDate())) {
             throw new ForbiddenBookingStateOperationException();
         }
         bookingDao.finishBooking(booking);
@@ -240,6 +253,8 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
     @Transactional
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(Driver driver, String plateNumber) {
+        if (plateNumber == null)
+            return Optional.empty();
         return vehicleDao.findByPlateNumber(driver, plateNumber);
     }
 
@@ -251,20 +266,34 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
             String plateNumber,
             double volume,
             String description,
-            List<Integer> zoneIds,
-            double rate,
-            Integer oldImgId,
-            String imgFilename,
-            byte[] imgData
+            double rate
     ) {
-        Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, oldImgId, rate);
-        v.setZones(zoneDao.getZonesById(zoneIds));
-        if (imgFilename != null && !imgFilename.isEmpty() && imgData != null && imgData.length > 0 && imgData.length < 10 * 1024 * 1024) {
-            int imgId = imageDao.uploadVehicleImage(imgData, imgFilename, v);
-            v.setImgId(imgId);
+        Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicleId);
+        if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
+            throw new VehicleNotFoundException();
+
+        if (plateNumber != null && vehicleService.plateNumberExists(plateNumber) && !oldVehicle.get().getPlateNumber().equals(plateNumber)) {
+            throw new PlateNumberAlreadyExistsException();
         }
+        Vehicle v = new Vehicle(vehicleId, driver, plateNumber, volume, description, null, rate);
+        v.setImgId(oldVehicle.get().getImgId());
         vehicleDao.updateVehicle(v);
         LOGGER.info("Driver {} updated vehicle {}", driver.getUsername(), v.getPlateNumber());
+    }
+
+    @Transactional
+    @Override
+    public void updatePicture(
+            Vehicle vehicle,
+            String imgFilename,
+            byte[] imgData,
+            String type
+    ) {
+        Optional<Vehicle> oldVehicle = vehicleDao.findById(vehicle.getId());
+        if (oldVehicle.isEmpty() || oldVehicle.get().isDeleted())
+            throw new VehicleNotFoundException();
+        Vehicle v = oldVehicle.get();
+        imageDao.uploadVehicleImage(imgData, imgFilename, v, type);
     }
 
     @Transactional
@@ -276,20 +305,48 @@ public class DriverServiceImpl extends UserServiceImpl<Driver> implements Driver
 
     @Transactional
     @Override
-    public List<Vehicle> getVehicles(Driver driver, int page) {
-        return vehicleDao.getDriverVehicles(driver, (page - 1) * Pagination.VEHICLES_PAGE_SIZE);
-    }
-
-    @Transactional
-    @Override
-    public int getVehicleCount(Driver driver) {
-        return (int) Math.ceil((double) vehicleDao.getVehicleCount(driver) / Pagination.VEHICLES_PAGE_SIZE);
+    public int getVehicleCount(Driver driver,
+                               Integer zoneId,
+                               Size size,
+                               Double priceMax,
+                               DayOfWeek weekday,
+                               boolean mustHaveAvailability
+    ) {
+        Zone zone = null;
+        if (zoneId != null)
+            zone = zoneDao.getZone(zoneId).orElseThrow(ZoneNotFoundException::new);
+        return vehicleDao.getVehicleCount(driver, zone, size, priceMax, weekday, mustHaveAvailability);
     }
 
     @Transactional
     @Override
     public void deleteVehicle(Vehicle vehicle) {
+        if (bookingDao.hasAnAcceptedBooking(vehicle))
+            throw new VehicleHasAcceptedJobsException();
         vehicleDao.deleteVehicle(vehicle);
+        bookingDao.rejectAllPendingBookingsFromVehicle(vehicle);
         LOGGER.info("Driver {} deleted it's vehicle {}", vehicle.getDriver().getUsername(), vehicle.getPlateNumber());
+    }
+
+    @Transactional
+    @Override
+    public void setNewBookingState(Driver user, int bookingId, BookingState newState) {
+        switch (newState) {
+            case CANCELED -> cancelBooking(user, bookingId);
+            case ACCEPTED -> acceptBooking(user, bookingId);
+            case REJECTED -> rejectBooking(user, bookingId);
+            case FINISHED -> finishBooking(user, bookingId);
+            default -> throw new ForbiddenBookingStateOperationException();
+        }
+    }
+
+    @Override
+    public List<Booking> getBookingsForVehicleInYearMonth(Vehicle vehicle, Integer year, Month month) {
+        if (year == null || month == null)
+            throw new YearAndMonthMustBeProvidedException();
+        YearMonth currentYearMonth = YearMonth.now();
+        if (year < currentYearMonth.getYear() || (year == currentYearMonth.getYear() && month.getValue() < currentYearMonth.getMonthValue()))
+            throw new TimeAlreadyPassedException();
+        return bookingDao.getBookingsByVehicleInYearMonth(vehicle, YearMonth.of(year, month));
     }
 }

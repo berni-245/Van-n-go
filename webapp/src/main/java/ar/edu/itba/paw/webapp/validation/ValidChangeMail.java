@@ -14,5 +14,5 @@ public @interface ValidChangeMail {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Mail address already in use";
+    String message() default "{ValidChangeMail}";
 }

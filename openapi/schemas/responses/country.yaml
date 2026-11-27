@@ -1,0 +1,14 @@
+type: object
+required: [id, name, code]
+properties:
+  # I don't think it's necessary if we don't expose a countries endpoint.
+  # id:
+  #   type: integer
+  #   example: 3
+  name:
+    type: string
+    example: "Argentina"
+  code:
+    type: string
+    pattern: "^[A-Z]{2}$"
+    example: "AR"

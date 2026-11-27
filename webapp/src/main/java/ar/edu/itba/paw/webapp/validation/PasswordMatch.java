@@ -13,5 +13,5 @@ public @interface PasswordMatch {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Passwords do not match";
+    String message() default "{PasswordMatch}";
 }

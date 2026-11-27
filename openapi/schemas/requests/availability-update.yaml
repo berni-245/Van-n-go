@@ -1,0 +1,15 @@
+description: >
+  - `zones`: array of zone ids where a vehicle works
+
+  - `timeSlots`: array of time slots, representing a day and time on which a vehicle works
+type: object
+properties:
+  zones:
+    type: array
+    items:
+      type: integer
+    example: [ 1, 2, 3 ]
+  timeSlots:
+    type: array
+    items:
+      $ref: "../responses/week-time-slot.yaml"

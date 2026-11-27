@@ -20,9 +20,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.time.DayOfWeek;
+import java.util.Collections;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Transactional
 @Rollback
@@ -93,6 +95,17 @@ public class AvailabilityJpaDaoTest {
                         PREEXISTING_VEHICLE_ID,
                         WEDNESDAY.name(), THURSDAY.name()
                 )
+        ));
+    }
+
+    @Test
+    public void testUpdateWithEmptyMapClearsSchedule() {
+        availabilityDao.updateVehicleAvailability(vehicle, Collections.emptyMap());
+        em.flush();
+
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(
+                jdbcTemplate, "vehicle_availability",
+                "vehicle_id = " + PREEXISTING_VEHICLE_ID
         ));
     }
 }

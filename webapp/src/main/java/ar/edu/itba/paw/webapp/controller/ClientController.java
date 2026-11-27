@@ -1,372 +1,117 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.InvalidImageException;
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.form.*;
-import ar.edu.itba.paw.webapp.interfaces.Bookings;
-import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import ar.edu.itba.paw.exceptions.ImageNotFoundException;
+import ar.edu.itba.paw.models.Client;
+import ar.edu.itba.paw.models.Image;
+import ar.edu.itba.paw.services.ClientService;
+import ar.edu.itba.paw.services.ImageService;
+import ar.edu.itba.paw.webapp.dto.general.ErrorDTO;
+import ar.edu.itba.paw.webapp.dto.user.ClientDTO;
+import ar.edu.itba.paw.webapp.dto.user.CreateClientDTO;
+import ar.edu.itba.paw.webapp.dto.user.UpdateClientDTO;
+import ar.edu.itba.paw.webapp.utils.CacheControlUtils;
+import ar.edu.itba.paw.webapp.utils.CustomMediaType;
+import ar.edu.itba.paw.webapp.utils.Vary;
+import javax.ws.rs.core.HttpHeaders;
+import ar.edu.itba.paw.webapp.utils.UriUtils;
+import ar.edu.itba.paw.webapp.validation.ValidImage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.Locale;
 
-@Controller
-public class ClientController implements Bookings {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
-    private final DriverService ds;
-    private final ZoneService zs;
-    private final ClientService cs;
-    private final ImageService is;
-    private final MessageService ms;
-    private final LocaleResolver localeResolver;
-
-    private static final Gson gson = new Gson();
+@Path(UriUtils.CLIENTS_URL)
+@Component
+public class ClientController {
 
     @Autowired
-    public ClientController(DriverService ds, ZoneService zs, ClientService cs, ImageService is, MessageService ms, LocaleResolver localeResolver) {
-        this.ds = ds;
-        this.zs = zs;
-        this.cs = cs;
-        this.is = is;
-        this.ms = ms;
-        this.localeResolver = localeResolver;
+    private ClientService clientService;
+
+    @Autowired
+    private ImageService imageService;
+
+    @Context
+    private UriInfo uriInfo;
+
+    @POST
+    @Consumes(value = {CustomMediaType.CLIENT_CREATE})
+    @Produces(value = {CustomMediaType.CLIENT})
+    public Response createClient(@HeaderParam("Accept-Language") @DefaultValue("es-AR") String lang, @Valid final CreateClientDTO clientDTO) {
+        Client client = clientService.create(clientDTO.getUsername(), clientDTO.getEmail(), clientDTO.getPassword(), clientDTO.getZoneId(), Locale.forLanguageTag(lang));
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(client.getId())).build()).entity(ClientDTO.fromClient(uriInfo,client)).build();
     }
 
-    @RequestMapping(path = "/client/bookings", method = RequestMethod.GET)
-    public ModelAndView bookings(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam(name = "pendingPage", defaultValue = "1") int pendingPage,
-            @RequestParam(name = "acceptedPage", defaultValue = "1") int acceptedPage,
-            @RequestParam(name = "finishedPage", defaultValue = "1") int finishedPage,
-            @RequestParam(name = "rejectedPage", defaultValue = "1") int rejectedPage,
-            @RequestParam(name = "canceledPage", defaultValue = "1") int canceledPage,
-            @RequestParam(name = "activeTab", defaultValue = "PENDING") BookingState activeTab,
-            RedirectAttributes redirectAttrs
-    ) {
-        return userBookings(
-                "client/bookings",
-                cs,
-                loggedUser,
-                pendingPage,
-                acceptedPage,
-                finishedPage,
-                rejectedPage,
-                canceledPage,
-                activeTab,
-                redirectAttrs
-        );
+    @GET
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
+    @Produces(value = {CustomMediaType.PUBLIC_CLIENT})
+    public Response getPublicClientInfoById(@PathParam(UriUtils.ID_PARAM) final int id) {
+        Client client = clientService.findById(id);
+        return Response.ok(ClientDTO.fromPublicClientInfo(uriInfo, client)).build();
     }
 
-    @RequestMapping(path = "/client/bookings/upload/pop", method = RequestMethod.POST)
-    public ModelAndView submit(
-            @RequestParam("proofOfPayment") MultipartFile file,
-            @RequestParam("bookingId") int bookingId,
-            @ModelAttribute("loggedUser") Client loggedUser
-    ) throws IOException {
-        if (file == null || file.isEmpty()) throw new InvalidImageException();
-        is.uploadPop(loggedUser, file.getBytes(), file.getOriginalFilename(), bookingId);
-        return redirect("/client/bookings?activeTab=%s", BookingState.ACCEPTED);
+    @GET
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Vary({HttpHeaders.ACCEPT, HttpHeaders.AUTHORIZATION})
+    @Produces(value = {CustomMediaType.CLIENT})
+    public Response getClientById(@PathParam(UriUtils.ID_PARAM) final int id) {
+        Client client = clientService.findById(id);
+        return Response.ok(ClientDTO.fromClient(uriInfo, client)).build();
     }
 
-    @RequestMapping(path = "/client/booking/{id:\\d+}/review", method = RequestMethod.GET)
-    public ModelAndView reviewForm(
-            @PathVariable("id") int bookingId,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingReviewForm") BookingReviewForm form
-    ) {
-        ModelAndView mav = new ModelAndView("client/bookingReview");
-        Booking b = cs.getBookingById(loggedUser, bookingId);
-        mav.addObject("driver", b.getDriver());
-        mav.addObject("bookingId", bookingId);
-        return mav;
+
+    @PATCH
+    @Path("/{id}")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Consumes(value = {CustomMediaType.CLIENT_UPDATE})
+    @Produces(value = {CustomMediaType.CLIENT})
+    public Response updateClient(@PathParam(UriUtils.ID_PARAM) final int id, @Valid final UpdateClientDTO dto) {
+        Client c = clientService.findById(id);
+        clientService.editProfile(
+                c, dto.getUsernameOr(c.getUsername()), dto.getEmailOr(c.getMail()),
+                dto.getZoneIdOr(c.getZone().getId()), dto.getPreferredLanguageOr(c.getLanguage().name()));
+        return Response.ok(ClientDTO.fromClient(uriInfo, c)).build();
     }
 
-    @InitBinder("bookingReviewForm")
-    public void initBinder(WebDataBinder binder) {
-        binder.setIgnoreInvalidFields(false);
-    }
-
-    @RequestMapping(path = "/client/booking/{id:\\d+}/review/send", method = RequestMethod.POST)
-    public ModelAndView sendReview(
-            @PathVariable("id") int bookingId,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("bookingReviewForm") BookingReviewForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttrs
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in BookingReviewForm");
-            return reviewForm(bookingId, loggedUser, form);
-        } else {
-            cs.setBookingRatingAndReview(loggedUser, bookingId, form.getRating(), form.getReview());
-            setToasts(redirectAttrs, new Toast(ToastType.success, "toast.booking.review.success"));
+    @GET
+    @Path("/{clientId}/profile-picture")
+    @PreAuthorize("@authService.isAuthUserOrDriverInBookingWith(#id)")
+    @Vary({HttpHeaders.AUTHORIZATION})
+    @Produces({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Response getProfilePicture(@PathParam(UriUtils.CLIENT_ID_PARAM) final int id, @Context Request request) {
+        Client client = clientService.findById(id);
+        Integer imageId = client.getPfp();
+        if(imageId != null){
+            Image picture = imageService.getImage(imageId);
+            if (picture.getData() != null) {
+                return CacheControlUtils.setPrivateEtagToResponse(Response.ok(picture.getData()).type(picture.getType()), request, picture.hashCode());
+            }
         }
-        return redirect(
-                "/client/bookings?activeTab=%s",
-                BookingState.FINISHED
-        );
+        return Response.status(Response.Status.NOT_FOUND).type(CustomMediaType.ERROR)
+                .entity(new ErrorDTO(new ImageNotFoundException())).build();
     }
 
-    @RequestMapping(path = "/client/booking/{id:\\d+}/cancel", method = RequestMethod.POST)
-    public ModelAndView cancelBooking(
-            @PathVariable("id") int bookingId,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            RedirectAttributes redirectAttributes
-    ) {
-        cs.cancelBooking(loggedUser, bookingId);
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.cancel.success"));
-        return redirect("/client/bookings?activeTab=%s", BookingState.CANCELED);
+    @PUT
+    @Path("/{id}/profile-picture")
+    @PreAuthorize("@authService.isAuthUser(#id)")
+    @Consumes({MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Response uploadProfilePicture(@PathParam(UriUtils.ID_PARAM) final int id, @ValidImage byte[] imageData,
+                                         @HeaderParam("Content-Type") String type) {
+        Client client = clientService.findById(id);
+        imageService.uploadPfp(client, imageData, "client_" + client.getId() + "_pfp", type);
+        return Response.noContent().build();
     }
 
-    @RequestMapping(path = "/client/search", method = RequestMethod.GET)
-    public ModelAndView search(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
-    ) {
-        ModelAndView mav = new ModelAndView("client/search");
-        if (loggedUser != null && loggedUser.getZone() != null)
-            form.setZoneId(loggedUser.getZone().getId());
-        List<Zone> zones = zs.getAllZones();
-        mav.addObject("zones", zones);
-        return mav;
-    }
 
-    @RequestMapping(path = "/client/availability", method = RequestMethod.GET)
-    public ModelAndView availability(
-            @RequestParam(name = "zoneId", required = false) Integer zoneId,
-            @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMax", required = false) Double priceMax,
-            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
-            @RequestParam(name = "rating", required = false) Integer rating,
-            @RequestParam(name = "order", defaultValue = "ALPHABETICAL") SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("availabilitySearchForm") AvailabilitySearchForm form
-    ) {
-        if (loggedUser != null) {
-            form.setZoneId(
-                    Objects.requireNonNullElseGet(
-                            zoneId,
-                            () -> loggedUser.getZone() != null ? loggedUser.getZone().getId() : 1
-                    )
-            );
-            zoneId = form.getZoneId();
-        } else if (zoneId == null) {
-            zoneId = 1;
-        }
-
-        final ModelAndView mav = new ModelAndView("client/availability");
-        int totalPages = ds.getSearchResultPages(zoneId, size, priceMax, weekday, rating);
-        page = Pagination.validatePage(page, totalPages);
-        mav.addObject(
-                "drivers",
-                ds.getSearchResults(zoneId, size, priceMax, weekday, rating, order, page)
-        );
-        mav.addObject("zones", zs.getAllZones());
-        mav.addObject("totalPages", totalPages);
-        mav.addObject("currentPage", page);
-        mav.addObject("zoneId", zoneId);
-        mav.addObject("size", size);
-        mav.addObject("priceMax", priceMax);
-        mav.addObject("weekday", weekday);
-        mav.addObject("rating", rating);
-        mav.addObject("order", order);
-        return mav;
-    }
-
-    @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.GET)
-    public ModelAndView driverAvailability(
-            @PathVariable(name = "driverId") int driverId,
-            @RequestParam(name = "zoneId") int zoneId,
-            @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMax", required = false) Double priceMax,
-            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
-            @RequestParam(name = "rating", required = false) Integer rating,
-            @RequestParam(name = "order", required = false) SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("bookingForm") BookingForm form
-    ) {
-        Driver driver = ds.findById(driverId);
-        final ModelAndView mav = new ModelAndView("client/driverAvailability");
-        mav.addObject("driverId", driverId);
-        Zone originZone = zs.getZone(zoneId).orElseThrow();
-        List<Vehicle> vehicles = ds.getVehicles(driver, zoneId, size, priceMax, weekday);
-        Set<DayOfWeek> workingDays = ds.getWorkingDays(vehicles);
-        List<Zone> zones = zs.getAllZones();
-        mav.addObject("zones", zones);
-        mav.addObject("vehicles", vehicles);
-        mav.addObject("workingDays", workingDays);
-        mav.addObject("shiftPeriods", ShiftPeriod.values());
-        mav.addObject("driver", driver);
-        mav.addObject("originZone", originZone);
-        mav.addObject("size", size);
-        mav.addObject("sizeLowerCase", size);
-        mav.addObject("priceMax", priceMax);
-        mav.addObject("rating", rating);
-        mav.addObject("weekday", weekday);
-        mav.addObject("order", order);
-        mav.addObject("page", page);
-        return mav;
-    }
-
-    @RequestMapping(path = "/client/availability/{driverId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView appointBooking(
-            @PathVariable(name = "driverId") int driverId,
-            @RequestParam(name = "zoneId") int zoneId,
-            @RequestParam(name = "size", required = false) Size size,
-            @RequestParam(name = "priceMax", required = false) Double priceMax,
-            @RequestParam(name = "weekday", required = false) DayOfWeek weekday,
-            @RequestParam(name = "rating", required = false) Integer rating,
-            @RequestParam(name = "order", required = false) SearchOrder order,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("bookingForm") BookingForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in BookingForm");
-            return driverAvailability(driverId, zoneId, size, priceMax, weekday, rating, order, page, loggedUser, form);
-        }
-        cs.appointBooking(
-                form.getVehicleId(),
-                loggedUser,
-                form.getOriginZoneId(),
-                form.getDestinationZoneId(),
-                form.getDate(),
-                ShiftPeriod.valueOf(form.getShiftPeriod()),
-                form.getJobDescription()
-        );
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.booking.success"));
-        return redirect("/client/bookings");
-    }
-
-    @RequestMapping(path = "/client/chat", method = RequestMethod.GET)
-    public ModelAndView chat(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam("bookingId") Integer bookingId,
-            @RequestParam("recipientId") Integer recipientId
-    ) {
-        final ModelAndView mav = new ModelAndView("client/chat");
-        Driver driver = ds.findById(recipientId);
-        Booking booking = cs.getBookingById(loggedUser, bookingId);
-        List<Message> messages = ms.getConversation(booking, loggedUser, driver);
-        mav.addObject("recipient", driver);
-        mav.addObject("booking", booking);
-        mav.addObject("messages", messages);
-        return mav;
-    }
-
-    @RequestMapping(path = "/client/send", method = RequestMethod.POST)
-    public ModelAndView send(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @RequestParam("content") String content,
-            @RequestParam("bookingId") Integer bookingId,
-            @RequestParam("recipientId") Integer recipientId
-    ) {
-        ms.sendClientMessage(bookingId, loggedUser, recipientId, content);
-        return redirect("/client/chat?bookingId=%d&recipientId=%d", bookingId, recipientId);
-    }
-
-    @RequestMapping(path = "/client/change/password", method = RequestMethod.GET)
-    public ModelAndView changePassword(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("changePasswordForm") ChangePasswordForm form
-    ) {
-        return new ModelAndView("public/changePassword");
-    }
-
-    @RequestMapping(path = "/client/change/password", method = RequestMethod.POST)
-    public ModelAndView postChangePassword(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in ChangePasswordForm");
-            return changePassword(loggedUser, form);
-        }
-
-        cs.updatePassword(loggedUser, form.getPassword());
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.password.success"));
-        return redirect("/client/profile");
-    }
-
-    @RequestMapping(path = "/client/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@ModelAttribute("loggedUser") Client loggedUser) {
-        ModelAndView mav = new ModelAndView("user/profile");
-        mav.addObject("clientZone", zs.getClientZone(loggedUser));
-        return mav;
-    }
-
-    @RequestMapping(path = "/client/profile/edit", method = RequestMethod.GET)
-    public ModelAndView editProfileForm(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors
-    ) {
-        form.setZoneId(Optional.ofNullable(loggedUser.getZone()).map(Zone::getId).orElse(null));
-        if (!errors.hasErrors()) {
-            form.setMail(loggedUser.getMail());
-            form.setUsername(loggedUser.getUsername());
-        }
-        ModelAndView mav = new ModelAndView("/user/profileEdit");
-        mav.addObject("zones", zs.getAllZones());
-        mav.addObject("languages", Language.values());
-        return mav;
-    }
-
-    @RequestMapping(path = "/client/profile/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(
-            @ModelAttribute("loggedUser") Client loggedUser,
-            @Valid @ModelAttribute("changeUserInfoForm") ChangeUserInfoForm form,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes,
-            HttpServletRequest request, HttpServletResponse response
-    ) {
-        if (errors.hasErrors()) {
-            LOGGER.warn("Invalid params in ChangeUserInfoForm");
-            return editProfileForm(loggedUser, form, errors);
-        }
-        cs.editProfile(loggedUser, form.getUsername(), form.getMail(), form.getZoneId(), form.getLanguage());
-        localeResolver.setLocale(request, response, loggedUser.getLanguage().getLocale());
-        setToasts(redirectAttributes, new Toast(ToastType.success, "toast.user.change.userData.success"));
-        return redirect("/client/profile");
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/client/booking/requested", method = RequestMethod.GET)
-    public String checkAvailability(
-            @ModelAttribute("loggedUser") Client user,
-            @RequestParam(name = "date") String dateStr,
-            @RequestParam(name = "plateNumber") String plateNumber
-    ) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = LocalDate.parse(dateStr);
-        List<ShiftPeriod> sps = cs.requestedShiftPeriodsForDate(user, date, plateNumber);
-
-        return gson.toJson(sps);
-    }
 }

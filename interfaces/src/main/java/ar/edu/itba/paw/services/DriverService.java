@@ -3,36 +3,26 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.*;
 
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.time.Month;
+import java.util.*;
 
 public interface DriverService extends UserService<Driver> {
-    Driver create(String username, String mail, String password, String description, Locale locale);
+    Driver create(String username, String mail, String password, String description, String cbu, Locale locale);
 
     Vehicle addVehicle(
             Driver driver,
             String plateNumber,
             double volume,
             String description,
-            List<Integer> zoneIds,
-            double rate,
-            String imgFilename,
-            byte[] imgData
+            double rate
     );
 
-    List<Vehicle> getVehicles(Driver driver, int zoneId, Size size, Double priceMax, DayOfWeek weekday);
+    List<Vehicle> getVehicles(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, int page, boolean mustHaveAvailability);
 
     void updateAvailability(
             Vehicle vehicle,
-            ShiftPeriod[] mondayPeriods,
-            ShiftPeriod[] tuesdayPeriods,
-            ShiftPeriod[] wednesdayPeriods,
-            ShiftPeriod[] thursdayPeriods,
-            ShiftPeriod[] fridayPeriods,
-            ShiftPeriod[] saturdayPeriods,
-            ShiftPeriod[] sundayPeriods
+            List<Integer> zoneIds,
+            Map<DayOfWeek, ShiftPeriod[]> periods
     );
 
     List<Driver> getSearchResults(
@@ -49,9 +39,9 @@ public interface DriverService extends UserService<Driver> {
             int zoneId, Size size, Double priceMax,
             DayOfWeek weekday, Integer rating
     ) {
-        return (int) Math.ceil((double) getSearchResultCount(
+        return Math.max(1, (int) Math.round(Math.ceil((double) getSearchResultCount(
                 zoneId, size, priceMax, weekday, rating
-        ) / Pagination.SEARCH_PAGE_SIZE);
+        ) / Pagination.SEARCH_PAGE_SIZE)));
     }
 
     void acceptBooking(Driver driver, int bookingId);
@@ -66,13 +56,19 @@ public interface DriverService extends UserService<Driver> {
 
     Set<DayOfWeek> getWorkingDays(List<Vehicle> vehicles);
 
-    void updateVehicle(Driver driver, Integer vehicleId, String plateNumber, double volume, String description, List<Integer> zoneIds, double rate, Integer oldImgId, String imgFilename, byte[] imgData);
+    void updateVehicle(Driver driver, Integer vehicleId, String plateNumber, double volume, String description, double rate);
+
+    void updatePicture(Vehicle vehicle, String imgFilename, byte[] imgData, String type);
 
     void finishBooking(Driver driver, int bookingId);
 
-    List<Vehicle> getVehicles(Driver driver, int page);
+    int getVehicleCount(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability);
 
-    int getVehicleCount(Driver driver);
+    default int getVehiclePages(Driver driver, Integer zoneId, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability) {
+        return Math.max(1, (int) Math.round(Math.ceil((double) getVehicleCount(driver, zoneId, size, priceMax, weekday, mustHaveAvailability) / Pagination.VEHICLES_PAGE_SIZE)));
+    }
 
     void deleteVehicle(Vehicle vehicle);
+
+    List<Booking> getBookingsForVehicleInYearMonth(Vehicle vehicle, Integer year, Month month);
 }

@@ -1,0 +1,9 @@
+type: object
+required: [id, name]
+properties:
+  # I don't think it's necessary if we don't expose a province endpoint.
+  # id:
+  #   type: integer
+  name:
+    type: string
+    example: Buenos Aires

@@ -1,0 +1,157 @@
+@import "tailwindcss";
+@import "solid-notifications/index.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato/Lato-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato/Lato-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Fonts */
+  /* --font-lato: "Lato", sans-serif; */
+  /* --font-inter: "Lato", sans-serif; */
+
+  --font-body: "Inter", sans-serif;
+  --font-title: "Inter", sans-serif;
+
+  /* light theme */
+  --color-surface: var(--color-gray-50);
+  --color-surface-alt: var(--color-gray-200);
+  --color-on-surface: var(--color-gray-800);
+  --color-on-surface-strong: var(--color-gray-950);
+  --color-primary: var(--color-sky-900);
+  --color-on-primary: var(--color-white);
+  --color-secondary: var(--color-indigo-900);
+  --color-on-secondary: var(--color-white);
+  --color-outline: var(--color-gray-500);
+  --color-outline-strong: var(--color-gray-900);
+
+  /* dark theme */
+  --color-surface-dark: var(--color-gray-900);
+  --color-surface-dark-alt: var(--color-gray-800);
+  --color-on-surface-dark: var(--color-gray-300);
+  --color-on-surface-dark-strong: var(--color-gray-100);
+  --color-primary-dark: var(--color-sky-400);
+  --color-on-primary-dark: var(--color-black);
+  --color-secondary-dark: var(--color-indigo-400);
+  --color-on-secondary-dark: var(--color-black);
+  --color-outline-dark: var(--color-gray-500);
+  --color-outline-dark-strong: var(--color-gray-300);
+
+  /* shared colors */
+  --color-info: var(--color-sky-500);
+  --color-on-info: var(--color-black);
+  --color-success: var(--color-green-500);
+  --color-on-success: var(--color-black);
+  --color-warning: var(--color-yellow-500);
+  --color-on-warning: var(--color-black);
+  --color-danger: var(--color-red-500);
+  --color-on-danger: var(--color-black);
+
+  /* border radius */
+  --radius-radius: var(--radius-sm);
+}
+
+:root {
+  /* Solid Notifications */
+  --sn-progress-bar-height: 3px;
+}
+
+@layer base {
+  :root {
+  }
+
+  body {
+    @apply font-body bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
+  }
+
+  h1 {
+    @apply text-4xl font-title font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-title font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-title font-semibold;
+  }
+
+  h4 {
+    @apply text-xl font-title font-medium;
+  }
+
+  p {
+    @apply text-base;
+  }
+
+  select {
+    @apply bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark;
+  }
+
+  a {
+    @apply font-medium text-primary underline-offset-2 hover:underline focus:underline focus:outline-hidden dark:text-primary-dark;
+  }
+}
+
+@layer transitions {
+  .fade-enter-active,
+  .fade-exit-active {
+    transition: opacity 0.3s;
+  }
+  .fade-enter,
+  .fade-exit-to {
+    opacity: 0;
+  }
+  .fade-enter {
+  }
+
+  .slide-fade-enter-active,
+  .slide-fade-exit-active {
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+  }
+  .slide-fade-enter,
+  .slide-fade-exit-to {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  .slide-fade-enter {
+    transform: translateX(-10px);
+  }
+
+  .ease-out-enter-active,
+  .ease-out-exit-active {
+    transition: all 0.3s ease-out;
+  }
+
+  .ease-out-enter,
+  .ease-out-exit-to {
+    opacity: 0;
+  }
+
+  .ease-out-enter {
+    transform: scale(0.98); /* optional micro motion */
+  }
+}

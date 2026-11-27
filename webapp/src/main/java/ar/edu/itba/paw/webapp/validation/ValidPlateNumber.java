@@ -4,7 +4,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target({ElementType.TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = ValidPlateNumberValidator.class)
@@ -13,5 +13,5 @@ public @interface ValidPlateNumber {
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Plate number already registered";
+    String message() default "{ValidPlateNumber}";
 }

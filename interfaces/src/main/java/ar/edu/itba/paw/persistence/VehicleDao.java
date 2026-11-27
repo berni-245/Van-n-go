@@ -15,7 +15,6 @@ public interface VehicleDao {
             String plateNumber,
             double volume,
             String description,
-            List<Zone> zones,
             double rate
     );
 
@@ -23,11 +22,9 @@ public interface VehicleDao {
 
     Optional<Vehicle> findOwnedById(Driver driver, int id);
 
-    Optional<Vehicle> findByPlateNumber(String plateNumber);
-
     Optional<Vehicle> findByPlateNumber(Driver driver, String plateNumber);
 
-    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double maxPrice, DayOfWeek weekday);
+    List<Vehicle> getDriverVehicles(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday, int page, boolean mustHaveAvailability);
 
     boolean plateNumberExists(String plateNumber);
 
@@ -35,7 +32,7 @@ public interface VehicleDao {
 
     void deleteVehicle(Vehicle vehicle);
 
-    List<Vehicle> getDriverVehicles(Driver driver, int offset);
-
     int getVehicleCount(Driver driver);
+
+    int getVehicleCount(Driver driver, Zone zone, Size size, Double priceMax, DayOfWeek weekday, boolean mustHaveAvailability);
 }

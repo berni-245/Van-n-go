@@ -1,0 +1,21 @@
+{
+  "search": {
+    "title": "Find a Driver",
+    "sortOrder": "Sort by",
+    "maxPrice": "Max price",
+    "minRating": "Min rating (1–5)",
+    "noResults": "No drivers found for your search.",
+    "order": {
+      "alphabetical": "Alphabetical",
+      "best_rating": "Best rated",
+      "least_price": "Lowest price"
+    }
+  },
+  "vehicles": {
+    "title": "My vehicles",
+    "empty": {
+      "title": "No vehicles yet",
+      "subtitle": "Add your first vehicle to start accepting bookings."
+    }
+  }
+}

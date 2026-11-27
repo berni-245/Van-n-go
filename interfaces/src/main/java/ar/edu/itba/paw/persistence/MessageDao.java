@@ -4,10 +4,17 @@ import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MessageDao {
-    List<Message> getConversation(Client client, Driver driver);
+    List<Message> getConversation(Client client, Driver driver, int offset);
 
     Message sendMessage(Client client, Driver driver, String content, boolean sentByDriver);
+
+    Message getMessageById(Integer messageId);
+
+    LocalDateTime getLastMessageSentByUser(Client client, Driver driver, boolean sentByDriver);
+
+    int getConversationMessageCount(Client client, Driver driver);
 }

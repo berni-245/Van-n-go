@@ -1,0 +1,433 @@
+{
+  "bookings": "Bookings",
+  "fileDragDrop": {
+    "browse": "Browse",
+    "orDragAndDrop": "or drag and drop here",
+    "fileTypeNotSupported": "File type not supported",
+    "fileTooLarge": "File too large",
+    "max": "Max"
+  },
+  "find-freight": "Find your freight",
+  "home": "Home",
+  "language": {
+    "label": "Language",
+    "preferredLanguage": "Preferred language",
+    "ENGLISH": "English",
+    "SPANISH": "Spanish"
+  },
+  "login": "Log in",
+  "loginError": "Invalid credentials. Please try again.",
+  "loadingSession": "Loading session...",
+  "loginSubtitle": "Enter your credentials to continue",
+  "noAccountPrompt": "Don't have an account?",
+  "registerSubtitle": "Create an account to continue",
+  "haveAccountPrompt": "Already have an account?",
+  "name": "English",
+  "page": {
+    "bookingCreate": {
+      "title": "Request Booking",
+      "subtitle": "Select a date and shift on the calendar to see available vehicles.",
+      "months": {
+        "JANUARY": "January",
+        "FEBRUARY": "February",
+        "MARCH": "March",
+        "APRIL": "April",
+        "MAY": "May",
+        "JUNE": "June",
+        "JULY": "July",
+        "AUGUST": "August",
+        "SEPTEMBER": "September",
+        "OCTOBER": "October",
+        "NOVEMBER": "November",
+        "DECEMBER": "December"
+      },
+      "weekDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "shifts": {
+        "MORNING": "Morning",
+        "AFTERNOON": "Afternoon",
+        "EVENING": "Evening"
+      },
+      "availableVehicles": "Vehicles available on",
+      "selectShift": "Select shift",
+      "vehicleDetails": {
+        "plate": "Plate",
+        "rate": "Rate/hr",
+        "volume": "Volume"
+      },
+      "confirmation": {
+        "title": "Complete Booking",
+        "origin": "Origin Zone",
+        "destination": "Destination Zone",
+        "description": "Job description",
+        "submit": "Submit Request",
+        "submitting": "Submitting..."
+      },
+      "errors": {
+        "originRequired": "Select the origin zone",
+        "destinationRequired": "Select the destination zone",
+        "descriptionLength": "Description must be between 5 and 500 characters",
+        "fetchFailed": "Error fetching availability",
+        "bookingFailed": "There was an error creating the booking",
+        "conflict": "The vehicle is no longer available at this time",
+        "clientAlreadyAppointed": "You already have a booking for this vehicle at that time",
+        "timeAlreadyPassed": "The selected date has already passed",
+        "vehicleAlreadyAccepted": "This vehicle is already booked for that time",
+        "dateRequired": "Date is required and must be in the future"
+      },
+      "success": "Booking requested successfully!",
+      "emptyMonth": "Searching for next available month..."
+    },
+    "home": {
+      "callToAction": "Let's start!",
+      "greeting": "Are you looking for a Hauler? Or would you prefer to apply as one? You've come to the right place. Find the perfect freight service for you.",
+      "aboutUs": {
+        "title": "About Us",
+        "description": "Our mission is to make driver searches easier."
+      },
+      "services": {
+        "title": "Our Services",
+        "s1": "Find drivers in your area",
+        "s2": "Register your transport service",
+        "s3": "View and write reviews"
+      },
+      "clientOpinion": {
+        "title": "What Our Clients Say",
+        "description": "It's fantastic! Exceptional service, highly recommend"
+      }
+    },
+    "vehicles": {
+      "sidebar": {
+        "title": "Vehicles",
+        "allVehicles": "All vehicles",
+        "newVehicle": "New vehicle"
+      },
+      "rate": "Hourly Rate",
+      "title": "My vehicles",
+      "volume": "Size"
+    },
+    "bookings": {
+      "myBookings": "My bookings",
+      "morningDateTime": "{{date}} in the morning",
+      "afternoonDateTime": "{{date}} in the afternoon",
+      "eveningDateTime": "{{date}} in the evening",
+      "travelZones": "From {{originNeighborhood}} to {{destinationNeighborhood}}",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "accepted": "Accepted",
+      "canceled": "Canceled",
+      "finished": "Finished",
+      "details": "Details",
+      "detailsForTimeShift": "Details for booking during {{timeShift}}",
+      "chat": "Chat",
+      "vehiclePlateNumber": "Assigned to vehicle with plate number {{plateNumber}}",
+      "client": "Client",
+      "driver": "Driver",
+      "route": "Route",
+      "vehicleInformation": "Assigned vehicle information",
+      "plate": "License plate",
+      "description": "Description",
+      "hourlyRate": "Price per hour",
+      "waitingReply": "Waiting for reply from driver",
+      "viewProofOfPayment": "View proof of payment",
+      "cancelBooking": "Cancel booking",
+      "uploadProofOfPayment": "Upload proof of payment",
+      "viewReview": "View review",
+      "leaveReview": "Leave a review",
+      "rejectedBookingByDriver": "The booking was rejected by the driver",
+      "canceledBooking": "The booking was canceled",
+      "acceptBooking": "Accept booking",
+      "rejectBooking": "Reject booking",
+      "finishBooking": "Finish booking",
+      "rejectedBooking": "The booking was rejected",
+      "empty": {
+        "pending": {
+          "title": "No pending bookings",
+          "subtitle": "Requested Bookings will appear here."
+        },
+        "accepted": {
+          "title": "No accepted bookings",
+          "subtitle": "Confirmed bookings will show up here."
+        },
+        "finished": {
+          "title": "No finished bookings",
+          "subtitle": "Completed trips will be recorded here."
+        },
+        "rejected": {
+          "title": "No rejected bookings",
+          "subtitle": "Declined bookings will appear here."
+        },
+        "canceled": {
+          "title": "No canceled bookings",
+          "subtitle": "Bookings canceled by either party will show up here."
+        }
+      }
+    },
+    "editVehicle": {
+      "errors": {
+        "plateRegex": "Invalid license plate format (e.g., ABC123 or AB123CD)",
+        "volume": "Volume must be between 1 and 100 m³",
+        "rate": "Hourly rate must be between $100 and $100,000",
+        "descriptionLength": "Description cannot exceed 255 characters",
+        "vehicleAccess": "Could not access the vehicle or it is unavailable",
+        "update": "Error updating vehicle",
+        "vehicleNotFound": "Requested vehicle does not exist.",
+        "availabilityFetch": "Failed to get availability.",
+        "selectImageFirst": "Please select an image first.",
+        "invalidFileType": "File must be JPG or PNG.",
+        "imageFormat": "Image format is invalid or file is too large.",
+        "imageUpload": "Error uploading image",
+        "availabilityAccess": "Could not access vehicle availability",
+        "availabilityUpdate": "Error updating availability",
+        "zonesUpdate": "Could not save the work zones. Your changes were reverted.",
+        "verifyShifts": "Please verify the entered shifts."
+      },
+      "success": {
+        "update": "Vehicle successfully updated!",
+        "imageUpdate": "Vehicle photo successfully updated!",
+        "availabilityUpdate": "Availability successfully updated!"
+      },
+      "title": "Edit Vehicle",
+      "subtitle": "Update your transport's information, photo, and availability.",
+      "loading": {
+        "vehicle": "Loading vehicle data...",
+        "fileUpload": "Loading file upload..."
+      },
+      "generalData": "General Data",
+      "labels": {
+        "plate": "License Plate (e.g., AB123CD)",
+        "rate": "Hourly Rate ($)",
+        "volume": "Volume (m³)",
+        "description": "Description",
+        "uploadImage": "Upload image",
+        "addZone": "Add new zone"
+      },
+      "buttons": {
+        "saving": "Saving...",
+        "saveChanges": "Save Changes",
+        "uploadingPhoto": "Uploading photo...",
+        "savePhoto": "Save Photo",
+        "saveAvailability": "Save Availability"
+      },
+      "photoSection": "Vehicle Photo",
+      "workZones": "Work Zones",
+      "placeholders": {
+        "searchNeighborhood": "Search neighborhood..."
+      },
+      "noZonesAssigned": "No zones assigned. Add at least one.",
+      "availableSchedules": "Available Schedules",
+      "table": {
+        "day": "Day",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      },
+      "days": {
+        "MONDAY": "Monday",
+        "TUESDAY": "Tuesday",
+        "WEDNESDAY": "Wednesday",
+        "THURSDAY": "Thursday",
+        "FRIDAY": "Friday",
+        "SATURDAY": "Saturday",
+        "SUNDAY": "Sunday"
+      }
+    },
+    "createVehicle": {
+      "title": "Create Vehicle",
+      "subtitle": "Add a new transport to your fleet. You will be able to upload photos and set availability later.",
+      "generalData": "General Data",
+      "labels": {
+        "plate": "License Plate (e.g., AB123CD)",
+        "rate": "Hourly Rate ($)",
+        "volume": "Volume (m³)",
+        "description": "Description"
+      },
+      "buttons": {
+        "creating": "Creating...",
+        "create": "Create Vehicle",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "required": "This field is required",
+        "plateRegex": "Invalid license plate format (e.g., ABC123 or AB123CD)",
+        "volume": "Volume must be between 1 and 100 m³",
+        "rate": "Hourly rate must be between $100 and $100,000",
+        "descriptionLength": "Description cannot exceed 255 characters",
+        "limitReached": "You have reached the maximum vehicle limit",
+        "access": "Could not create the vehicle",
+        "create": "Error creating vehicle"
+      },
+      "success": {
+        "create": "Vehicle successfully created!"
+      }
+    }
+  },
+  "password": "Password",
+  "register": "Register",
+  "settings": "Settings",
+  "profile": "Profile",
+  "sr": {
+    "closeSidebar": "Close sidebar",
+    "loading": "Loading",
+    "openSidebar": "Open sidebar",
+    "page": "Page {{ number }}",
+    "pagination": "Pagination",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "skipToMainContent": "Skip to main content",
+    "vehicleDescription": "Vehicle description",
+    "vehiclePicture": "Vehicle picture"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "components": {
+    "header": {
+      "profile": "Profile"
+    },
+    "availability": {
+      "Search": "Search"
+    }
+  },
+  "global": {
+    "language": {
+      "label": "Language"
+    }
+  },
+  "public": {
+    "profile": {
+      "noDescription": "No description uploaded yet",
+      "noCbu": "No CBU uploaded yet"
+    }
+  },
+  "client": {
+    "availability": {
+      "no_rating": "No rating available"
+    }
+  },
+  "user": {
+    "editUser": {
+      "changePassword": "Change password",
+      "newPassword": "New password",
+      "oldPassword": "Old password",
+      "confirmNewPassword": "Confirm new password",
+      "uploadPicture": "Upload profile picture. Supported formats: jpg, jpeg, png. Max size: 10MB.",
+      "updateProfileSuccess": "Profile updated successfully",
+      "updatePfpSuccess": "Profile picture updated successfully"
+    }
+  },
+  "generic": {
+    "word": {
+      "email": "Email",
+      "zone": "Zone",
+      "description": "Description",
+      "cbu": "CBU/CVU/Alias",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "send": "Send",
+      "password": "Password",
+      "chooseFile": "Choose file",
+      "profilePicture": "Profile picture",
+      "logout": "Logout",
+      "size": "Size",
+      "any": "Any",
+      "weekday": "Weekday",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "close": "Close",
+      "back": "Back"
+    }
+  },
+  "error": {
+    "imageUnsupportedMediaType": "Unsupported media type. Please upload an image file (jpg, jpeg, png).",
+    "imageTooLarge": "File size exceeds the limit. Please upload an image smaller than 10MB.",
+    "passwordMismatch": "Passwords do not match",
+    "unknown": "An unknown error occurred",
+    "sessionExpired": "Your session expired. Please log in again.",
+    "validation": {
+      "NotBlank": "This field is required",
+      "NotNull": "This field is required",
+      "NotEmpty": "This field must not be empty",
+      "Size": "This field has an invalid length",
+      "Email": "Please enter a valid email address",
+      "ValidUsername": "Username is already in use",
+      "ValidEmail": "Email is already in use",
+      "Min": "Value is too small",
+      "Max": "Value is too large",
+      "Pattern": "Invalid format",
+      "InvalidZone": "Please select a valid zone from the list",
+      "ratingRequired": "Rating is required",
+      "unauthorizedReview": "You are not authorized to review this user"
+    }
+  },
+  "reviewForm": {
+    "title": "Leave your review here",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submit": "Send review",
+    "yourComment": "Your comment (optional)",
+    "ratingPlaceholder": "Write your review here..."
+  },
+  "title": "Van N' Go",
+  "username": "Username",
+  "vehicles": "Vehicles",
+  "confirmPassword": "Confirm password",
+  "registering": "Registering…",
+  "userType": {
+    "label": "Account type",
+    "client": "Client",
+    "driver": "Driver"
+  },
+  "zone": {
+    "label": "Zone"
+  },
+  "chat": {
+    "loadOlder": "Load older messages",
+    "inputPlaceholder": "Type a message…",
+    "enterHint": "Enter to send · Shift+Enter for new line"
+  },
+  "review": {
+    "success": "Review submitted successfully!",
+    "viewTitle": "Trip Review",
+    "loading": "Loading review...",
+    "noComments": "The user didn't leave any additional comments."
+  },
+  "proofOfPayment": {
+    "uploadTitle": "Upload Proof of Payment",
+    "viewTitle": "Proof of Payment",
+    "uploading": "Uploading...",
+    "save": "Save Proof",
+    "close": "Close",
+    "success": "Proof of payment uploaded successfully!",
+    "errors": {
+      "selectFirst": "Please select a file first.",
+      "invalidType": "The file must be a PDF.",
+      "uploadFailed": "Error uploading proof of payment.",
+      "fetchFailed": "Error loading proof of payment."
+    },
+    "loadingView": "Loading proof..."
+  },
+  "forgotPasswordLink": "Forgot your password?",
+  "forgotPassword": {
+    "title": "Recover password",
+    "subtitle": "Enter your email to receive a recovery token.",
+    "email": "Email address",
+    "sendToken": "Send token",
+    "tokenSentSuccess": "If the entered email corresponds to a registered user, a token will be sent to the indicated inbox.",
+    "tokenSentError": "Error requesting token. Please verify your email.",
+    "goToRecovery": "Go to reset password"
+  },
+  "recoverPassword": {
+    "title": "Reset password",
+    "subtitle": "Enter the token you received and your new password.",
+    "email": "Email address",
+    "token": "Security token",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "resetButton": "Reset password",
+    "success": "Password reset successfully.",
+    "error": "Error resetting password. Check that the token is correct and hasn't expired."
+  }
+}

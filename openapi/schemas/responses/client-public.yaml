@@ -1,0 +1,18 @@
+description: >
+  A public client information of the application who can create reservations with
+  drivers and submit ratings or feedback about finished trips.
+type: object
+required: [ id, username ]
+properties:
+  id:
+    type: integer
+    example: 13
+  username:
+    type: string
+    example: John Doe
+  self:
+    type: string
+    example: /api/clients/13
+  profilePic:
+    type: string
+    example: /api/clients/13/profile-picture

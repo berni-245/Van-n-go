@@ -330,4 +330,24 @@ public class BookingJpaDaoTest {
                         PREEXISTING_ACCEPTED_BOOK, RATING)));
     }
 
+    @Test
+    public void testGetDriverBookingCount() {
+        int countPending = bookingDao.getDriverBookingCount(driver, BookingState.PENDING);
+        assertEquals(DRIVER_BOOKING_PENDING_COUNT, countPending); // 3 (ids: 501, 502, 503)
+    }
+
+    @Test
+    public void testGetClientBookingCount() {
+        int countPending = bookingDao.getClientBookingCount(client, BookingState.PENDING);
+        assertEquals(CLIENT_BOOKING_PENDING_COUNT, countPending); // 2 (ids: 501, 503)
+    }
+
+
+    @Test
+    public void testExistsBookingBetween() {
+        assertTrue(bookingDao.existsBookingBetween(client, driver));
+        assertTrue(bookingDao.existsBookingBetween(clientTwo, driver));
+        assertFalse(bookingDao.existsBookingBetween(client, driverTwo));
+    }
+
 }

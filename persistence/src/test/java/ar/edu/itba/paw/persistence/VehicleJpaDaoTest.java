@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Driver;
+import ar.edu.itba.paw.models.Size;
+import ar.edu.itba.paw.models.Vehicle;
+import ar.edu.itba.paw.models.Zone;
 import ar.edu.itba.paw.persistence.config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,7 @@ import static org.junit.Assert.*;
 @Sql(scripts = "classpath:add_vehicle_data.sql")
 public class VehicleJpaDaoTest {
     private final static Integer PREEXISTING_USER_ID = 500;
-    private final static Integer PREEXISTING_USER_ID_TWO = 502;
+    private final static Integer PREEXISTING_VEHICLE_ID_TWO = 502;
 
     private final static Integer PREEXISTING_USER_NO_VEHICLE = 502;
     private final static String PLATE_NUMBER = "ABC123";
@@ -43,6 +45,7 @@ public class VehicleJpaDaoTest {
 
     private final static Integer PREEXISTING_VEHICLE = 500;
     private final static String PREEXISTING_PLATE_NUMBER = "AAA999";
+    private final static String PREEXISTING_PLATE_NUMBER_FOUR = "DDD999";
     private final static Size PREEXISTING_VEHICLE_SIZE = Size.LARGE;
     private final static double MAX_PRICE = 200;
     private final static Integer PREEXISTING_VEHICLE_TWO = 501;
@@ -82,9 +85,10 @@ public class VehicleJpaDaoTest {
         adrogue = em.find(Zone.class, ZONE_ID);
     }
 
+
     @Test
     public void testCreate() {
-        Vehicle vehicle = vehicleDao.create(preexistingDriverNoVehicle, PLATE_NUMBER, VOLUME, DESCRIPTION, List.of(adrogue), HOURLY_RATE);
+        Vehicle vehicle = vehicleDao.create(preexistingDriverNoVehicle, PLATE_NUMBER, VOLUME, DESCRIPTION, HOURLY_RATE);
 
         assertNotNull(vehicle);
         em.flush();
@@ -103,6 +107,7 @@ public class VehicleJpaDaoTest {
         assertEquals(HOURLY_RATE, (double) result.get("hourly_rate"), 0.001);
         assertEquals(VOLUME, (double) result.get("volume_m3"), 0.001);
     }
+
 
     @Test
     public void testFindById() {
@@ -157,11 +162,11 @@ public class VehicleJpaDaoTest {
 
     @Test
     public void testGetDriverVehicles() {
-        List<Vehicle> vehicles = vehicleDao.getDriverVehicles(preexistingDriver, adrogue, PREEXISTING_VEHICLE_SIZE, MAX_PRICE, DayOfWeek.WEDNESDAY);
+        List<Vehicle> vehicles = vehicleDao.getDriverVehicles(preexistingDriver, adrogue, PREEXISTING_VEHICLE_SIZE, MAX_PRICE, DayOfWeek.WEDNESDAY, 0, false);
         assertEquals(VEHICLE_COUNT, vehicles.size());
 
         assertTrue(vehicles.stream().anyMatch(vehicle -> vehicle.getId().equals(PREEXISTING_VEHICLE)));
-        assertTrue(vehicles.stream().anyMatch(vehicle -> vehicle.getId().equals(PREEXISTING_USER_ID_TWO)));
+        assertTrue(vehicles.stream().anyMatch(vehicle -> vehicle.getId().equals(PREEXISTING_VEHICLE_ID_TWO)));
     }
 
     @Test
@@ -193,9 +198,14 @@ public class VehicleJpaDaoTest {
         vehicleDao.deleteVehicle(preexistingVehicleFour);
         em.flush();
 
+
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(
                 jdbcTemplate, "vehicle",
-                String.format("id = '%d'", PREEXISTING_VEHICLE_FOUR)
+                String.format("id = '%d' and plate_number = '%s'", PREEXISTING_VEHICLE_FOUR, PREEXISTING_PLATE_NUMBER_FOUR)
+        ));
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(
+                jdbcTemplate, "vehicle",
+                String.format("id = '%d' and old_plate_number = '%s'", PREEXISTING_VEHICLE_FOUR, PREEXISTING_PLATE_NUMBER_FOUR)
         ));
     }
 

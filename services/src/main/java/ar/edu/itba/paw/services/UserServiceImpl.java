@@ -49,7 +49,7 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Transactional
     @Override
     public boolean usernameExists(String username) {
-        return userDao.findByUsername(username).isPresent();
+        return userDao.usernameExists(username);
     }
 
     @Transactional
@@ -74,12 +74,17 @@ public abstract class UserServiceImpl<T extends User> implements UserService<T> 
     @Override
     public Booking cancelBooking(T user, int bookingId) {
         Booking booking = getBookingById(user, bookingId);
-        if (!booking.getState().equals(BookingState.ACCEPTED)) {
+        if (!booking.getState().equals(BookingState.ACCEPTED) || booking.getPop() != null) {
             if (user.isDriver()) throw new ForbiddenDriverCancelBookingException();
             else throw new ForbiddenClientCancelBookingException();
         }
         bookingDao.cancelBooking(booking);
         LOGGER.info("{} canceled booking {}", user.getUsername(), bookingId);
         return booking;
+    }
+
+    @Override
+    public boolean existsBookingBetween(int clientId, int driverId) {
+        return bookingDao.existsBookingBetween(clientId, driverId);
     }
 }

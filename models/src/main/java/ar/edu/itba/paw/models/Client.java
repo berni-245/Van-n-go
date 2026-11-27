@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -11,8 +12,9 @@ public class Client extends User {
         //This is used by hibernate. Do not remove.
     }
 
-    public Client(String username, String mail, String password, Language language) {
+    public Client(String username, String mail, String password, Zone zone, Language language) {
         super(username, mail, password, language);
+        this.zone = zone;
     }
 
     @Override
@@ -27,6 +29,7 @@ public class Client extends User {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Zone zone;
 
     public Zone getZone() {

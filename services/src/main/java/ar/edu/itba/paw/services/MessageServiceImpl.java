@@ -2,10 +2,10 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.ForbiddenConversationException;
 import ar.edu.itba.paw.exceptions.InvalidMessageException;
-import ar.edu.itba.paw.models.Booking;
 import ar.edu.itba.paw.models.Client;
 import ar.edu.itba.paw.models.Driver;
 import ar.edu.itba.paw.models.Message;
+import ar.edu.itba.paw.models.Pagination;
 import ar.edu.itba.paw.persistence.BookingDao;
 import ar.edu.itba.paw.persistence.ClientDao;
 import ar.edu.itba.paw.persistence.DriverDao;
@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
     private final int MAX_MSG_LENGTH = 255;
+    private final int EMAIL_THROTTLING_MINUTES = 10;
 
     private final MessageDao messageDao;
     private final DriverDao driverDao;
@@ -38,36 +40,58 @@ public class MessageServiceImpl implements MessageService {
         this.mailService = mailService;
     }
 
-    @Transactional
-    @Override
-    public void sendClientMessage(Integer bookingId, Client sender, Integer recipientId, String message) {
-        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
-        Driver driver = driverDao.findById(recipientId);
-        Booking booking = bookingDao.getClientBookingById(sender, bookingId);
-        if (!booking.getDriver().equals(driver)) throw new ForbiddenConversationException();
-        messageDao.sendMessage(sender, driver, message, false);
-        mailService.sendReceivedMessage(driver, sender, booking, message, LocalDateTime.now(), driver.getLanguage().getLocale());
-    }
 
     @Transactional
     @Override
-    public void sendDriverMessage(Integer bookingId, Driver sender, Integer recipientId, String message) {
+    public Message sendClientMessage(Client sender, Integer recipient, String message) {
         if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
-        Client client = clientDao.findById(recipientId);
-        Booking booking = bookingDao.getDriverBookingById(sender, bookingId);
-        if (!booking.getClient().equals(client)) throw new ForbiddenConversationException();
-        messageDao.sendMessage(client, sender, message, true);
-        mailService.sendReceivedMessage(client, sender, booking, message, LocalDateTime.now(), client.getLanguage().getLocale());
-    }
-
-    @Override
-    public List<Message> getConversation(Booking booking, Client client, Driver driver) {
-        checkValidConversation(booking, client, driver);
-        return messageDao.getConversation(client, driver);
-    }
-
-    private void checkValidConversation(Booking booking, Client client, Driver driver) {
-        if (!booking.getClient().equals(client) || !booking.getDriver().equals(driver))
+        Driver driver = driverDao.findById(recipient);
+        if (!bookingDao.existsBookingBetween(sender, driver)) {
             throw new ForbiddenConversationException();
+        }
+        LocalDateTime lastMessageTime = messageDao.getLastMessageSentByUser(sender, driver, false);
+        Message createdMessage = messageDao.sendMessage(sender, driver, message, false);
+        if (shouldSendEmail(lastMessageTime))
+            mailService.sendReceivedMessage(driver, sender, message, LocalDateTime.now(), driver.getLanguage().getLocale());
+        return createdMessage;
+    }
+
+    private boolean shouldSendEmail(LocalDateTime lastMessageTime) {
+        if (lastMessageTime == null) return true;
+        LocalDateTime now = LocalDateTime.now();
+        return Duration.between(lastMessageTime, now).toMinutes() >= EMAIL_THROTTLING_MINUTES;
+    }
+
+
+    @Transactional
+    @Override
+    public Message sendDriverMessage(Driver sender, Integer recipient, String message) {
+        if (message.length() > MAX_MSG_LENGTH) throw new InvalidMessageException();
+        Client client = clientDao.findById(recipient);
+        if (!bookingDao.existsBookingBetween(client, sender)) {
+            throw new ForbiddenConversationException();
+        }
+        LocalDateTime lastMessageTime = messageDao.getLastMessageSentByUser(client, sender , true);
+        Message createdMessage = messageDao.sendMessage(client, sender, message, true);
+        if (shouldSendEmail(lastMessageTime)) mailService.sendReceivedMessage(client, sender, message, LocalDateTime.now(), client.getLanguage().getLocale());
+        return createdMessage;
+    }
+
+    @Override
+    public List<Message> getConversation(Client client, Driver driver, int page) {
+        if (!bookingDao.existsBookingBetween(client, driver)) {
+            throw new ForbiddenConversationException();
+        }
+        return messageDao.getConversation(client, driver, (page - 1) * Pagination.MAX_MESSAGE_RETRIEVAL);
+    }
+
+    @Override
+    public Message getMessageById(Integer messageId) {
+        return messageDao.getMessageById(messageId);
+    }
+
+    @Override
+    public int getConversationMessageCount(Client client, Driver driver) {
+        return messageDao.getConversationMessageCount(client, driver);
     }
 }

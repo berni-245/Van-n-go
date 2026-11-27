@@ -1,0 +1,339 @@
+import { screen, waitFor } from "@solidjs/testing-library";
+import userEvent from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
+import { server } from "@/test/msw/server";
+import { renderRoute } from "@/test/renderRoute";
+import { seedLoggedInUser } from "@/test/msw/authFixtures";
+import { makeZone, zonesResponse } from "@/test/msw/zoneFixtures";
+import {
+  AVAILABILITY_ENDPOINT,
+  availabilityResponse,
+  bookedTimesResponse,
+  createBookingConflictResponse,
+  createBookingFieldErrorsResponse,
+  createBookingSuccessResponse,
+  driverVehiclesResponse,
+  makeAvailability,
+  makeBookableVehicle,
+  makeUserBooking,
+  userBookingsResponse,
+} from "@/test/msw/bookingCreateFixtures";
+import { apiUri } from "@/test/msw/bookingFixtures";
+import BookingCreate from "@/pages/BookingCreate";
+
+const user = userEvent.setup();
+
+// Vehicle's pickup zones are 1 and 2 (see makeAvailability); zone 3 (Recoleta) is not.
+const ZONES = [
+  makeZone({ id: 1, neighborhood: { name: "Palermo" } }),
+  makeZone({ id: 2, neighborhood: { name: "Belgrano" } }),
+  makeZone({ id: 3, neighborhood: { name: "Recoleta" } }),
+];
+// Matches ZoneInput's zoneDisplay output.
+const PALERMO_OPTION = "Palermo, Buenos Aires, Argentina";
+const RECOLETA_OPTION = "Recoleta, Buenos Aires, Argentina";
+
+function renderBookingCreate(extraRoutes: { path: string; component: () => unknown }[] = []) {
+  return renderRoute("/bookings/:driverId/new", "/bookings/7/new", BookingCreate, extraRoutes as never);
+}
+
+// Bookings must be at least a day out, so this picks tomorrow's day cell.
+async function selectTomorrow() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDay = String(tomorrow.getDate());
+
+  const dayButton = await waitFor(() => {
+    const btn = screen.getByRole("button", { name: tomorrowDay });
+    expect(btn).not.toBeDisabled();
+    return btn;
+  });
+  await user.click(dayButton);
+}
+
+async function selectTomorrowAndShift() {
+  await selectTomorrow();
+
+  const shiftButton = await waitFor(() => {
+    const btn = document.querySelector(".flex.flex-wrap.gap-2 button") as HTMLButtonElement | null;
+    if (!btn) throw new Error("no shift button rendered yet");
+    return btn;
+  });
+  await user.click(shiftButton);
+}
+
+// Excludes the jobDescription textarea, which also has role=textbox.
+function zoneTextInputs() {
+  return document.querySelectorAll('input[type="text"]');
+}
+
+async function pickZone(inputIndex: number, query: string, optionLabel: string) {
+  const input = zoneTextInputs()[inputIndex] as HTMLInputElement;
+  await user.click(input);
+  await user.type(input, query);
+  await user.click(await screen.findByText(optionLabel));
+}
+
+async function fillAndSubmit(jobDescription: string) {
+  await pickZone(0, "Palermo", PALERMO_OPTION);
+  // Recoleta isn't a pickup zone, so this exercises the any-destination rule.
+  await pickZone(1, "Recoleta", RECOLETA_OPTION);
+  await user.type(document.querySelector('textarea[name="jobDescription"]') as HTMLTextAreaElement, jobDescription);
+  await user.click(document.querySelector('button[type="submit"]') as HTMLButtonElement);
+}
+
+test("lets a client pick an available day/shift and submits a booking successfully", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse(),
+    createBookingSuccessResponse({ id: 42 })
+  );
+
+  renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);
+
+  await selectTomorrowAndShift();
+  await fillAndSubmit("Moving some boxes across town.");
+
+  expect(await screen.findByText("bookings-list-stub")).toBeInTheDocument();
+});
+
+test("automatically selects the nearest available date without requiring a click", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  // No day is clicked; the date and its vehicles appear on their own.
+  expect(await screen.findByText(new RegExp(tomorrowDateStr))).toBeInTheDocument();
+  expect(await screen.findByText(vehicle.plateNumber)).toBeInTheDocument();
+});
+
+test("skips a fully-booked day and auto-selects the next available one", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 2);
+  const dayAfterDateStr = new Date(dayAfter.getFullYear(), dayAfter.getMonth(), dayAfter.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    // Vehicle only offers a MORNING shift, so booking it out blocks the whole day.
+    bookedTimesResponse([{ date: tomorrowDateStr, shift: "MORNING" }]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  expect(await screen.findByText(new RegExp(dayAfterDateStr))).toBeInTheDocument();
+  expect(screen.queryByText(new RegExp(tomorrowDateStr))).not.toBeInTheDocument();
+});
+
+test("lets the client override the auto-selected date by picking a different available day", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+  await screen.findByText(new RegExp(tomorrowDateStr));
+
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 2);
+  const dayAfterButton = await waitFor(() => {
+    const btn = screen.getByRole("button", { name: String(dayAfter.getDate()) });
+    expect(btn).not.toBeDisabled();
+    return btn;
+  });
+  await user.click(dayAfterButton);
+
+  const dayAfterDateStr = new Date(dayAfter.getFullYear(), dayAfter.getMonth(), dayAfter.getDate())
+    .toISOString()
+    .split("T")[0];
+  expect(await screen.findByText(new RegExp(dayAfterDateStr))).toBeInTheDocument();
+  expect(screen.queryByText(new RegExp(tomorrowDateStr))).not.toBeInTheDocument();
+});
+
+test("shows a single generic error when the API rejects the booking with a 400", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse(),
+    createBookingFieldErrorsResponse([
+      {
+        type: "ValidationError",
+        entity: "destinationZoneId",
+        description: "The destination zone must differ from the origin.",
+      },
+    ])
+  );
+
+  renderBookingCreate();
+
+  await selectTomorrowAndShift();
+  await fillAndSubmit("Moving some boxes across town.");
+
+  // Every field is validated client-side before submitting, so a server 400 means the request
+  // bypassed the UI — we surface one generic message instead of the per-field API descriptions.
+  expect(await screen.findByText(/There was an error creating the booking/)).toBeInTheDocument();
+});
+
+test("does not navigate away when the API reports a scheduling conflict (409)", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse(),
+    createBookingConflictResponse()
+  );
+
+  renderBookingCreate([{ path: "/client/bookings", component: () => <p>bookings-list-stub</p> }]);
+
+  await selectTomorrowAndShift();
+  await fillAndSubmit("Moving some boxes across town.");
+
+  // stays on the booking form; conflict is surfaced via toast, not a field error
+  await waitFor(() => expect(document.querySelector('button[type="submit"]')).not.toBeDisabled());
+  expect(screen.queryByText("bookings-list-stub")).not.toBeInTheDocument();
+});
+
+test("only offers vehicles that work the zone the client searched in", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  // One vehicle works zone 1 (searched), the other only zone 2.
+  const inZoneVehicle = makeBookableVehicle({ id: 5, driverId: 7, plateNumber: "INZONE01" });
+  const outZoneVehicle = makeBookableVehicle({ id: 6, driverId: 7, plateNumber: "OUTZONE9" });
+
+  server.use(
+    driverVehiclesResponse([inZoneVehicle, outZoneVehicle]),
+    http.get(AVAILABILITY_ENDPOINT, ({ params }) => {
+      const zones = params.vehicleId === "5" ? [apiUri("zones/1")] : [apiUri("zones/2")];
+      return HttpResponse.json(makeAvailability({ zones }));
+    }),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  // originZoneId=1 mirrors arriving from a search scoped to zone 1.
+  renderRoute("/bookings/:driverId/new", "/bookings/7/new?originZoneId=1", BookingCreate);
+
+  await selectTomorrow();
+
+  // The zone-1 vehicle is bookable; the zone-2 one is filtered out entirely.
+  expect(await screen.findByText("INZONE01")).toBeInTheDocument();
+  expect(screen.queryByText("OUTZONE9")).not.toBeInTheDocument();
+});
+
+test("hides only the exact vehicle+shift the client already booked, leaving other vehicles open", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const bookedVehicle = makeBookableVehicle({ id: 5, driverId: 7, plateNumber: "BOOKED05" });
+  const freeVehicle = makeBookableVehicle({ id: 6, driverId: 7, plateNumber: "FREE0006" });
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDateStr = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate())
+    .toISOString()
+    .split("T")[0];
+
+  server.use(
+    driverVehiclesResponse([bookedVehicle, freeVehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse([
+      makeUserBooking({ vehicleId: 5, driverId: 7, date: tomorrowDateStr, shiftPeriod: "MORNING" }),
+    ])
+  );
+
+  renderBookingCreate();
+
+  await selectTomorrow();
+
+  // Vehicle 6 is offered; vehicle 5 (already booked that morning) is not.
+  expect(await screen.findByText("FREE0006")).toBeInTheDocument();
+  expect(screen.queryByText("BOOKED05")).not.toBeInTheDocument();
+});
+
+test("offers any zone as destination but restricts origin to the vehicle's pickup zones", async () => {
+  seedLoggedInUser("client", { id: 9 });
+
+  const vehicle = makeBookableVehicle({ id: 5, driverId: 7 });
+  server.use(
+    driverVehiclesResponse([vehicle]),
+    availabilityResponse(makeAvailability()),
+    bookedTimesResponse([]),
+    zonesResponse(ZONES),
+    userBookingsResponse()
+  );
+
+  renderBookingCreate();
+
+  await selectTomorrowAndShift();
+
+  const [originInput, destinationInput] = zoneTextInputs();
+
+  // "a" matches every seeded zone's label.
+  await user.click(originInput);
+  await user.type(originInput, "a");
+  expect(await screen.findByText(PALERMO_OPTION)).toBeInTheDocument();
+  expect(screen.queryByText(RECOLETA_OPTION)).not.toBeInTheDocument();
+
+  // Destination lists every zone, including the non-pickup Recoleta.
+  await user.click(destinationInput);
+  await user.type(destinationInput, "a");
+  expect(await screen.findByText(RECOLETA_OPTION)).toBeInTheDocument();
+});
